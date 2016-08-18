@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('/test', 'GenericController@test'); // Test route.. ignore it! :)
+
 Route::get('/', function () {
     return view('welcome');
 });
