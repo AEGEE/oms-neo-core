@@ -13,13 +13,12 @@ Have a read at [this branching model](http://nvie.com/posts/a-successful-git-bra
 
 ## Language
 
-The language for the Core is Node.js, because there are plenty of REST libraries for the purpose, because there are plenty of tutorials, and finally because the employers LOVE this thing so chances are that when you finish with the Core you find a job without even realising.
-
+The language for the Core is PHP (Laravel framework).
 
 ## Architecture
 
-You can read more about the architecture on the [wiki](https://github.com/aegee/oms-core/wiki)
+You can read more about the architecture on the [wiki](https://oms-project.atlassian.net/wiki/display/OMSCORE/Home+page)
 
-## API
+## API (Comming soon)
 
-For better visualisation and more detailed API consult [Apiary](http://docs.omscore.apiary.io/) (not sure how the permissions to edit work, but nothing that can't be solved by asking).
+For better visualisation and more detailed API consult
