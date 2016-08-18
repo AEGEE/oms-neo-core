@@ -4,9 +4,62 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1cc762efd9f1238ca53d768c7ae9c995",
-    "content-hash": "8b1485987e7c5949da82435d403e52e8",
+    "hash": "9eeddc281e2216ff6680f80906ffb49e",
+    "content-hash": "7f72dca6ebf8126fdfc175fd3ee5f35d",
     "packages": [
+        {
+            "name": "barryvdh/laravel-cors",
+            "version": "v0.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-cors.git",
+                "reference": "1998c8c7295d167cb744bbc45fbefad9b86b836c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-cors/zipball/1998c8c7295d167cb744bbc45fbefad9b86b836c",
+                "reference": "1998c8c7295d167cb744bbc45fbefad9b86b836c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.1.x|5.2.x|5.3.x",
+                "php": ">=5.5.9",
+                "symfony/http-foundation": "~2.7|~3.0",
+                "symfony/http-kernel": "~2.7|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.8-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Barryvdh\\Cors\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Adds CORS (Cross-Origin Resource Sharing) headers support in your Laravel application",
+            "keywords": [
+                "api",
+                "cors",
+                "crossdomain",
+                "laravel"
+            ],
+            "time": "2016-06-22 06:36:34"
+        },
         {
             "name": "classpreloader/classpreloader",
             "version": "3.0.0",
@@ -1778,6 +1831,53 @@
                 "environment"
             ],
             "time": "2016-06-14 14:14:52"
+        },
+        {
+            "name": "webpatser/laravel-uuid",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/webpatser/laravel-uuid.git",
+                "reference": "6ed2705775e3edf066b90e1292f76f157ec00507"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/webpatser/laravel-uuid/zipball/6ed2705775e3edf066b90e1292f76f157ec00507",
+                "reference": "6ed2705775e3edf066b90e1292f76f157ec00507",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "1.5.*",
+                "phpunit/phpunit": "4.7.*"
+            },
+            "suggest": {
+                "paragonie/random_compat": "A random_bytes Php 5.x polyfill."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Webpatser\\Uuid": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christoph Kempen",
+                    "email": "christoph@downsized.nl"
+                }
+            ],
+            "description": "Class to generate a UUID according to the RFC 4122 standard. Support for version 1, 3, 4 and 5 UUID are built-in.",
+            "homepage": "https://github.com/webpatser/uuid",
+            "keywords": [
+                "UUID RFC4122"
+            ],
+            "time": "2016-05-09 09:22:18"
         }
     ],
     "packages-dev": [
