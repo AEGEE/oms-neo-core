@@ -1,0 +1,47 @@
+<!-- begin #header -->
+<div ng-include src="'template/header.html'"></div>
+<!-- end #header -->
+
+<div ng-if="setting.layout.pageTopMenu">
+    <!-- begin #top-menu -->
+    <div ng-include src="'template/top-menu.html'"></div>
+    <!-- end #top-menu -->
+</div>
+
+<div ng-if="setting.layout.pageWithoutSidebar === false">
+    <!-- begin #sidebar -->
+    <div ng-include src="'template/sidebar.html'"></div>
+    <!-- end #sidebar -->
+</div>
+
+<!-- begin #content -->
+<div id="content" view-content class="content" ng-class="{ 
+    'content-full-width': setting.layout.pageContentFullWidth, 
+    'height-full': setting.layout.pageContentFullHeight, 
+    'content-inverse-mode': setting.layout.pageContentInverseMode 
+}">
+    <div ui-view></div>
+</div>
+<!-- end #content -->
+
+<div ng-if="setting.layout.pageWithFooter === true">
+    <!-- begin #footer -->
+    <div id="footer" class="footer">
+        &copy; 2014 Color Admin Responsive Admin Template - Sean Ngu All Rights Reserved
+    </div>
+    <!-- end #footer -->
+</div>
+
+<div ng-if="setting.layout.pageTwoSidebar === true">
+    <!-- begin #sidebar-right -->
+    <div ng-include src="'template/sidebar-right.html'"></div>
+    <!-- end #sidebar-right -->
+</div>
+
+<!-- begin #theme-panel -->
+<div ng-include src="'template/theme-panel.html'"></div>
+<!-- end #theme-panel -->
+
+<!-- begin scroll to top btn -->
+<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+<!-- end scroll to top btn -->

@@ -1,0 +1,198 @@
+<div ng-controller="uiModalNotificationController">
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a href="javascript:;">Home</a></li>
+        <li><a href="javascript:;">UI Elements</a></li>
+        <li class="active">Modal & Notification</li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">Modal & Notification <small>header small text goes here...</small></h1>
+    <!-- end page-header -->
+    
+    <!-- begin row -->
+    <div class="row">
+        <!-- begin col-6 -->
+        <div class="col-md-6">
+            <div class="panel panel-inverse" data-sortable-id="ui-modal-notification-1">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                    <h4 class="panel-title">Gritter Notifications</h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Demo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Add default notification.</td>
+                                <td><a href="javascript:;" id="add-regular" class="btn btn-sm btn-inverse">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add sticky notification</td>
+                                <td><a href="javascript:;" id="add-sticky" class="btn btn-sm btn-primary">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add notification without image</td>
+                                <td><a href="javascript:;" id="add-without-image" class="btn btn-sm btn-info">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add a white notification</td>
+                                <td><a href="javascript:;" id="add-gritter-light" class="btn btn-sm btn-success">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add notification (with callbacks)</td>
+                                <td><a href="javascript:;" id="add-with-callbacks" class="btn btn-sm btn-warning">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add a sticky notification (with callbacks)</td>
+                                <td><a href="javascript:;" id="add-sticky-with-callbacks" class="btn btn-sm btn-danger">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Add notification with max of 3</td>
+                                <td><a href="javascript:;" id="add-max" class="btn btn-sm btn-default">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Remove all notifications</td>
+                                <td><a href="javascript:;" id="remove-all" class="btn btn-sm btn-white">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Remove all notifications (with callbacks)</td>
+                                <td><a href="javascript:;" id="remove-all-with-callbacks" class="btn btn-sm btn-white">Demo</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- end col-6 -->
+        <!-- begin col-6 -->
+        <div class="col-md-6">
+            <div class="panel panel-inverse" data-sortable-id="ui-modal-notification-2">
+                <div class="panel-heading">
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                    <h4 class="panel-title">Modal</h4>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Demo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Default Modal Dialog Box.</td>
+                                <td><a href="#" data-target="#modal-dialog" class="btn btn-sm btn-success" data-toggle="modal">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Modal Dialog Box with fade out animation.</td>
+                                <td><a href="#" data-target="#modal-without-animation" class="btn btn-sm btn-default" data-toggle="modal">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Modal Dialog Box with full width white background.</td>
+                                <td><a href="#" data-target="#modal-message" class="btn btn-sm btn-primary" data-toggle="modal">Demo</a></td>
+                            </tr>
+                            <tr>
+                                <td>Modal Dialog Box with alert message.</td>
+                                <td><a href="#" data-target="#modal-alert" class="btn btn-sm btn-danger" data-toggle="modal">Demo</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- #modal-dialog -->
+                    <div class="modal fade" id="modal-dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 class="modal-title">Modal Dialog</h4>
+                                </div>
+                                <div class="modal-body">
+                                    Modal body content here...
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                    <a href="javascript:;" class="btn btn-sm btn-success">Action</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #modal-without-animation -->
+                    <div class="modal" id="modal-without-animation">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 class="modal-title">Modal Without Animation</h4>
+                                </div>
+                                <div class="modal-body">
+                                    Modal body content here...
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #modal-message -->
+                    <div class="modal modal-message fade" id="modal-message">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 class="modal-title">Modal Message Header</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Text in a modal</p>
+                                    <p>Do you want to turn on location services so GPS can use your location ?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                    <a href="javascript:;" class="btn btn-sm btn-primary">Save Changes</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #modal-alert -->
+                    <div class="modal fade" id="modal-alert">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                    <h4 class="modal-title">Alert Header</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="alert alert-danger m-b-0">
+                                        <h4><i class="fa fa-info-circle"></i> Alert Header</h4>
+                                        <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.</p>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <a href="javascript:;" class="btn btn-sm btn-white" data-dismiss="modal">Close</a>
+                                    <a href="javascript:;" class="btn btn-sm btn-danger" data-dismiss="modal">Action</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end col-6 -->
+    </div>
+    <!-- end row -->
+</div>

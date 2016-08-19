@@ -1,0 +1,85 @@
+<div ng-controller="emailComposeController">
+    <!-- begin vertical-box -->
+    <div class="vertical-box">
+        <!-- begin vertical-box-column -->
+        <div class="vertical-box-column width-250">
+            <!-- begin wrapper -->
+            <div class="wrapper bg-silver text-center">
+                <a ui-sref="app.email.compose" class="btn btn-success p-l-40 p-r-40 btn-sm">
+                    Compose
+                </a>
+            </div>
+            <!-- end wrapper -->
+            <!-- begin wrapper -->
+            <div class="wrapper">
+                <p><b>FOLDERS</b></p>
+                <ul class="nav nav-pills nav-stacked nav-sm">
+                    <li><a ui-sref="app.email.inbox-v2"><i class="fa fa-inbox fa-fw m-r-5"></i> Inbox <span class="badge pull-right">52</span></a></li>
+                    <li><a ui-sref="app.email.inbox-v2"><i class="fa fa-flag fa-fw m-r-5"></i> Important</a></li>
+                    <li><a ui-sref="app.email.inbox-v2"><i class="fa fa-send fa-fw m-r-5"></i> Sent</a></li>
+                    <li><a ui-sref="app.email.inbox-v2"><i class="fa fa-pencil fa-fw m-r-5"></i> Drafts</a></li>
+                    <li><a ui-sref="app.email.inbox-v2"><i class="fa fa-trash fa-fw m-r-5"></i> Trash</a></li>
+                </ul>
+                <p><b>LABEL</b></p>
+                <ul class="nav nav-pills nav-stacked nav-sm m-b-0">
+                    <li><a href="javascript:;"><i class="fa fa-fw m-r-5 fa-circle text-inverse"></i> Admin</a></li>
+                    <li><a href="javascript:;"><i class="fa fa-fw m-r-5 fa-circle text-primary"></i> Designer & Employer</a></li>
+                    <li><a href="javascript:;"><i class="fa fa-fw m-r-5 fa-circle text-success"></i> Staff</a></li>
+                    <li><a href="javascript:;"><i class="fa fa-fw m-r-5 fa-circle text-warning"></i> Sponsorer</a></li>
+                    <li><a href="javascript:;"><i class="fa fa-fw m-r-5 fa-circle text-danger"></i> Client</a></li>
+                </ul>
+            </div>
+            <!-- end wrapper -->
+        </div>
+        <!-- end vertical-box-column -->
+        <!-- begin vertical-box-column -->
+        <div class="vertical-box-column">
+            <!-- begin wrapper -->
+            <div class="wrapper bg-silver-lighter">
+                <!-- begin btn-toolbar -->
+                <div class="btn-toolbar">
+                    <div class="btn-group">
+                        <a href="inbox_v2.html" class="btn btn-white btn-sm p-l-20 p-r-20"><i class="fa fa-file"></i></a>
+                        <a href="inbox_v2.html" class="btn btn-white btn-sm p-l-20 p-r-20"><i class="fa fa-trash"></i></a>
+                    </div>
+                </div>
+                <!-- end btn-toolbar -->
+            </div>
+            <!-- end wrapper -->
+            <!-- begin wrapper -->
+            <div class="wrapper">
+                <div class="p-30 bg-white">
+                    <!-- begin email form -->
+                    <form action="/" method="POST" name="email_to_form">
+                        <!-- begin email to -->
+                        <label class="control-label">To:</label>
+                        <div class="m-b-15">
+                            <ul id="email-to" class="inverse">
+                                <li>bootstrap@gmail.com</li>
+                                <li>google@gmail.com</li>
+                            </ul>
+                        </div>
+                        <!-- end email to -->
+                        <!-- begin email subject -->
+                        <label class="control-label">Subject:</label>
+                        <div class="m-b-15">
+                            <input type="text" class="form-control" />
+                        </div>
+                        <!-- end email subject -->
+                        <!-- begin email content -->
+                        <label class="control-label">Content:</label>
+                        <div class="m-b-15">
+                            <textarea class="textarea form-control" id="wysihtml5" placeholder="Enter text ..." rows="12"></textarea>
+                        </div>
+                        <!-- end email content -->
+                        <button type="submit" class="btn btn-primary p-l-40 p-r-40">Send</button>
+                    </form>
+                    <!-- end email form -->
+                </div>
+            </div>
+            <!-- end wrapper -->
+        </div>
+        <!-- end vertical-box-column -->
+    </div>
+    <!-- end vertical-box -->
+</div>

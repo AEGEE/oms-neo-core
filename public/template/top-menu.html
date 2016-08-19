@@ -1,0 +1,266 @@
+<!-- begin #top-menu -->
+<div id="top-menu" class="top-menu" ng-controller="topMenuController">
+    <div class="container-fluid">
+    <!-- begin top-menu nav -->
+    <ul class="nav">
+        <li class="has-sub" ng-class="{active:$state.includes('app.dashboard')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-laptop"></i>
+                <span>Dashboard</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.dashboard.v1">Dashboard v1</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.dashboard.v2">Dashboard v2</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.email')}">
+            <a href="javascript:;">
+                <span class="badge pull-right">10</span>
+                <i class="fa fa-inbox"></i> 
+                <span>Email</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.email.inbox">Inbox v1</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.email.inbox-v2">Inbox v2</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.email.compose">Compose</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.email.detail">Detail</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.ui')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-suitcase"></i>
+                <span>UI Elements</span> 
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.ui.general">General</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.typography">Typography</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.tabsAccordions">Tabs & Accordions</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.unlimitedTabs">Unlimited Nav Tabs</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.modalNotification">Modal & Notification</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.widgetBoxes">Widget Boxes</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.mediaObject">Media Object</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.buttons">Buttons</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.icons">Icons</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.simpleLineIcons">Simple Line Icons</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.ionicons">Ionicons</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.tree">Tree View</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.ui.languageBarIcon">Language Bar & Icon</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.form')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-file-o"></i>
+                <span>Form Stuff</span> 
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.form.elements">Form Elements</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.form.plugins">Form Plugins</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.form.sliderSwitcher">Form Slider + Switcher</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.form.validation">Form Validation</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.table')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-th"></i>
+                <span>Tables  <span class="label label-theme m-l-5">NEW</span></span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.table.basic">Basic Tables</a></li>
+                <li class="has-sub" ng-class="{active:$state.includes('app.table.manage')}">
+                    <a href="javascript:;"><b class="caret pull-right"></b> Managed Tables</a>
+                    <ul class="sub-menu">
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.default">Default</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.autofill">Autofill</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.buttons">Buttons</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.colReorder">ColReorder</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.fixedColumns">Fixed Columns</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.fixedHeader">Fixed Header</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.keyTable">KeyTable</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.responsive">Responsive</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.rowReorder">RowReorder <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.scroller">Scroller</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.select">Select</a></li>
+                        <li ui-sref-active="active"><a ui-sref="app.table.manage.combine">Extension Combination</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-star"></i> 
+                <span>Front End</span>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="../../frontend/one-page-parallax/template_content_html/index.html" target="_blank">One Page Parallax</a></li>
+                <li><a href="../../frontend/blog/template_content_html/index.html" target="_blank">Blog</a></li>
+                <li><a href="../../frontend/forum/template_content_html/index.html" target="_blank">Forum</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-envelope"></i>
+                <span>Email Template</span>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="views/email_system.html" target="_blank">System Template</a></li>
+                <li><a href="views/email_newsletter.html" target="_blank">Newsletter Template</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.chart')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-area-chart"></i>
+                <span>Chart <span class="label label-theme m-l-5">NEW</span></span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.chart.flot">Flot Chart</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.chart.morris">Morris Chart</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.chart.js">Chart JS</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.chart.d3">d3 Chart <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+            </ul>
+        </li>
+        <li ui-sref-active="active"><a ui-sref="app.calendar"><i class="fa fa-calendar"></i> <span>Calendar</span></a></li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.map')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-map-marker"></i>
+                <span>Map</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.map.vector">Vector Map</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.map.google">Google Map</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.gallery')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-camera"></i>
+                <span>Gallery</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.gallery.v1">Gallery v1</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.gallery.v2">Gallery v2</a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.options')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-cogs"></i>
+                <span>Page Options <span class="label label-theme m-l-5">NEW</span></span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.options.pageBlank">Blank Page</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithFooter">Page with Footer</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithoutSidebar">Page without Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithRightSidebar">Page with Right Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithMinifiedSidebar">Page with Minified Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithTwoSidebar">Page with Two Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageFullHeightContent">Full Height Content</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithWideSidebar">Page with Wide Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithLightSidebar">Page with Light Sidebar</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithMegaMenu">Page with Mega Menu</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithTopMenu">Page with Top Menu <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithBoxedLayout">Page with Boxed Layout <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithMixedMenu">Page with Mixed Menu <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithBoxedMixedMenu">Boxed Layout with Mixed Menu <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+                <li ui-sref-active="active"><a ui-sref="app.options.pageWithTransparentSidebar">Page with Transparent Sidebar <i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.extra')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-gift"></i>
+                <span>Extra</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.extra.timeline">Timeline</a></li>
+                <li ui-sref-active="active"><a ui-sref="comingSoon">Coming Soon Page</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.extra.searchResults">Search Results</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.extra.invoice">Invoice</a></li>
+                <li ui-sref-active="active"><a ui-sref="error">404 Error Page</a></li>
+                <li ui-sref-active="active"><a ui-sref="app.extra.profile">Profile Page</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-key"></i>
+                <span>Login & Register</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="login-v1">Login</a></li>
+                <li ui-sref-active="active"><a ui-sref="login-v2">Login v2</a></li>
+                <li ui-sref-active="active"><a ui-sref="login-v3">Login v3</a></li>
+                <li ui-sref-active="active"><a ui-sref="register">Register v3</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-cubes"></i>
+                <span>Version <span class="label label-theme m-l-5">NEW</span></span>
+            </a>
+            <ul class="sub-menu">
+                <li><a href="../template_content_html/index.html">HTML</a></li>
+                <li><a href="../template_content_ajax/index.html">AJAX</a></li>
+                <li><a href="javascript:;">ANGULAR JS<i class="fa fa-paper-plane text-theme m-l-5"></i></a></li>
+            </ul>
+        </li>
+        <li class="has-sub" ng-class="{active:$state.includes('app.helper')}">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-medkit"></i>
+                <span>Helper</span>
+            </a>
+            <ul class="sub-menu">
+                <li ui-sref-active="active"><a ui-sref="app.helper.css">Predefined CSS Classes</a></li>
+            </ul>
+        </li>
+        <li class="has-sub">
+            <a href="javascript:;">
+                <b class="caret pull-right"></b>
+                <i class="fa fa-align-left"></i> 
+                <span>Menu Level</span>
+            </a>
+            <ul class="sub-menu">
+                <li class="has-sub">
+                    <a href="javascript:;">
+                        <b class="caret pull-right"></b>
+                        Menu 1.1
+                    </a>
+                    <ul class="sub-menu">
+                        <li class="has-sub">
+                            <a href="javascript:;">
+                                <b class="caret pull-right"></b>
+                                Menu 2.1
+                            </a>
+                            <ul class="sub-menu">
+                                <li><a href="javascript:;">Menu 3.1</a></li>
+                                <li><a href="javascript:;">Menu 3.2</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="javascript:;">Menu 2.2</a></li>
+                        <li><a href="javascript:;">Menu 2.3</a></li>
+                    </ul>
+                </li>
+                <li><a href="javascript:;">Menu 1.2</a></li>
+                <li><a href="javascript:;">Menu 1.3</a></li>
+            </ul>
+        </li>
+        <li class="menu-control menu-control-left">
+            <a href="#" data-click="prev-menu"><i class="fa fa-angle-left"></i></a>
+        </li>
+        <li class="menu-control menu-control-right">
+            <a href="#" data-click="next-menu"><i class="fa fa-angle-right"></i></a>
+        </li>
+    </ul>
+    <!-- end top-menu nav -->
+    </div>
+</div>
+<!-- end #top-menu -->
