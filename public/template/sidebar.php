@@ -16,6 +16,7 @@ session_write_close();
                 </div>
                 <div class="info">
                     <?=$userData['fullname']?>
+                    <small><?=$userData['is_superadmin'] == 1 ? "Superadmin" : "Member"?></small>
                 </div>
             </li>
         </ul>

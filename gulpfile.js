@@ -22,7 +22,8 @@ elixir(function(mix) {
 		'../../../public/assets/css/style-responsive.min.css',
 		'../../../public/assets/css/theme/default.css',
 		'../../../public/assets/plugins/gritter/css/jquery.gritter.css',
-		'../../../public/assets/plugins/select2/dist/css/select2.min.css'
+		'../../../public/assets/plugins/select2/dist/css/select2.min.css',
+		'../../../public/assets/plugins/ionicons/css/ionicons.min.css'
 	],
 	'public/vendor/vendor.css');
 

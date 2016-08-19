@@ -17,6 +17,7 @@ class ModuleSeeder extends Seeder
         	'name'			=>	'Antennae management',
         	'code'			=>	'antennae_management',
         	'module_link'	=>	'modules/loggedIn/antennae_management/antennae_management.js',
+            'icon'          =>  'ion-android-wifi',
         	'is_active'		=>	1
         ]);
     }

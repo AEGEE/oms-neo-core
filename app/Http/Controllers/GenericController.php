@@ -50,7 +50,7 @@ class GenericController extends Controller
                     $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
                 }
 
-                $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><span>'.$module->name.'</span></a></li>';
+                $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
             }
 
             $addToView['modulesSrc'] = $modulesSrc;
