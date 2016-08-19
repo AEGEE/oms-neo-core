@@ -13,6 +13,11 @@ class ModulePage extends Model
     	return $this->belongsTo('App\Models\Module');
     }
 
+    public function roles() {
+        return $this->belongsToMany('App\Models\Role', 'role_module_pages', 'module_page_id', 'role_id')
+                    ->withPivot('permission_level');
+    }
+
     public function roleModulePage() {
     	return $this->hasMany('App\Models\RoleModulePage');
     }

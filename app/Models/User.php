@@ -25,8 +25,17 @@ class User extends Model
     	return $this->belongsTo('App\Models\Department');
     }
 
+    public function fees() {
+        return $this->belongsToMany('App\Models\Fee', 'fee_users', 'user_id', 'fee_id')
+                    ->withPivot('date_paid', 'expiration_date');
+    }
+
     public function feeUser() {
     	return $this->hasMany('App\Models\FeeUser');
+    }
+
+    public function roles() {
+        return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
     }
 
     public function studyField() {
@@ -43,6 +52,11 @@ class User extends Model
 
     public function userWorkingGroup() {
     	return $this->hasMany('App\Models\UserWorkingGroup');
+    }
+
+    public function workingGroups() {
+        return $this->belongsToMany('App\Models\WorkingGroup', 'user_working_groups', 'user_id', 'work_group_id')
+                    ->withPivot('start_date', 'end_date');
     }
 
     // Model methods go down here..
