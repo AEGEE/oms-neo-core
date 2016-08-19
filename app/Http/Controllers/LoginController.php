@@ -82,7 +82,8 @@ class LoginController extends Controller
     		'fullname'			=>	$user->first_name." ".$user->last_name,
     		'is_superadmin'		=>	$user->is_superadmin,
     		'department_id'		=>	$user->department_id,
-            'logged_in'         =>  true
+            'logged_in'         =>  true,
+            'authToken'         =>  $loginKey
     	);
 
 		Session::put('userData', $userData);

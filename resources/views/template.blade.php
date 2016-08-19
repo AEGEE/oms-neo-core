@@ -14,7 +14,7 @@
 	<!-- ================== BEGIN BASE CSS STYLE ================== -->
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
 	<link href="vendor/vendor.css" rel="stylesheet" />
-
+	<link rel="stylesheet" type="text/css" href="vendor/grid/css/ui.jqgrid-bootstrap.css">
 	<!-- ================== END BASE CSS STYLE ================== -->
 </head>
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
@@ -66,9 +66,10 @@
 		            @yield('modules')  
 		        ])
 		        .config(routeConfig)
-		        .run(['$rootScope', '$state', 'setting', function($rootScope, $state, setting) {
+		        .run(['$rootScope', '$state', 'setting', '$http', function($rootScope, $state, setting, $http) {
 				    $rootScope.$state = $state;
 				    $rootScope.setting = setting;
+				    @yield('otherConfig')
 				}]);
 		        
 
@@ -78,12 +79,14 @@
 		        $locationProvider.html5Mode(true);
 
 		        @yield('routeConfig')
-
-		        
 		    }
 	</script>
 
     <script src="vendor/template.js"></script>
+    
+    <script type="text/javascript" src="vendor/grid/js/i18n/grid.locale-en.js"></script>
+	<script type="text/javascript" src="vendor/grid/js/jquery.jqGrid.min.js"></script>
+	<script type="text/javascript" src="vendor/grid/plugins/grid.postext.js"></script>
 	<!-- ================== END PAGE LEVEL JS ================== -->
 	@yield('modulesSrc')
 </body>

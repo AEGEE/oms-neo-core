@@ -1,6 +1,7 @@
 <?php
 session_start();
 $userData = $_SESSION['userData'];
+$menuMarkup = $_SESSION['moduleMarkup'];
 session_write_close();
 ?>
 <!-- begin #sidebar -->
@@ -23,7 +24,7 @@ session_write_close();
         <ul class="nav">
             <li class="nav-header">Navigation</li>
             <li ui-sref-active="active"><a ui-sref="app.dashboard"><i class="fa fa-laptop"></i> <span>Dashboard</span></a></li>
-            
+            <?=$menuMarkup?>
             <!-- begin sidebar minify button -->
             <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
             <!-- end sidebar minify button -->

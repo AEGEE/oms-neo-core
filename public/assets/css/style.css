@@ -6751,3 +6751,7 @@ body .bootstrap-datetimepicker-widget table td {
 .hiddenItem {
     display: none;
 }
+
+.ui-jqgrid {
+    background-color: #fff;
+}

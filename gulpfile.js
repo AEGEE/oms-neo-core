@@ -1,3 +1,4 @@
+
 var elixir = require('laravel-elixir');
 
 /*
@@ -13,14 +14,15 @@ var elixir = require('laravel-elixir');
 
 elixir(function(mix) {
 	mix.styles([
-		'../../../public/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css',
 		'../../../public/assets/plugins/bootstrap/css/bootstrap.min.css',
+		'../../../public/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css',
 		'../../../public/assets/plugins/font-awesome/css/font-awesome.min.css',
 		'../../../public/assets/css/animate.min.css',
 		'../../../public/assets/css/style.css',
 		'../../../public/assets/css/style-responsive.min.css',
-		'../../../public/assets/css/theme/default.css'
-
+		'../../../public/assets/css/theme/default.css',
+		'../../../public/assets/plugins/gritter/css/jquery.gritter.css',
+		'../../../public/assets/plugins/select2/dist/css/select2.min.css'
 	],
 	'public/vendor/vendor.css');
 
@@ -35,7 +37,9 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js',
 		'../../../public/assets/plugins/bootstrap/js/bootstrap.min.js',
 		'../../../public/assets/plugins/slimscroll/jquery.slimscroll.min.js',
-		'../../../public/assets/plugins/jquery-cookie/jquery.cookie.js'
+		'../../../public/assets/plugins/jquery-cookie/jquery.cookie.js',
+		'../../../public/assets/plugins/gritter/js/jquery.gritter.js',
+		'../../../public/assets/plugins/select2/dist/js/select2.min.js'
 	],
 	'public/vendor/vendor.js');
 

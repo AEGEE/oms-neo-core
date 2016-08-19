@@ -47,7 +47,13 @@
                     $('#loginError').show();
                 }
             }, function errorCallback(response) {
-                $('#loginError').show();
+                $.gritter.add({
+                    title: 'Login error!',
+                    text: 'Username / password invalid',
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
             });
         }
 

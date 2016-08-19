@@ -17,17 +17,16 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
-	Route::post('/api/testMiddleware', function() {
-		print_r(Request::get('userData'));
-		return 'hello!';
+	
+	// Antennae management..
+	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
+		Route::get('/api/getAntennaeForGrid', 'AntennaController@getAntennaeForGrid');
+		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
+		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
 	});
 });
 
 // Generic routes.. TODO
-// Route::get('/', function () {
-//     return view('template');
-// });
-
 Route::any('/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
