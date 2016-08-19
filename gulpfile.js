@@ -12,5 +12,47 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+	mix.styles([
+		'../../../public/assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css',
+		'../../../public/assets/plugins/bootstrap/css/bootstrap.min.css',
+		'../../../public/assets/plugins/font-awesome/css/font-awesome.min.css',
+		'../../../public/assets/css/animate.min.css',
+		'../../../public/assets/css/style.css',
+		'../../../public/assets/css/style-responsive.min.css',
+		'../../../public/assets/css/theme/default.css'
+
+	],
+	'public/vendor/vendor.css');
+
+	mix.scripts([
+		'../../../public/assets/plugins/pace/pace.min.js',
+		'../../../public/assets/plugins/angularjs/angular.min.js',
+		'../../../public/assets/plugins/angularjs/angular-ui-route.min.js',
+		'../../../public/assets/plugins/bootstrap-angular-ui/ui-bootstrap-tpls.min.js',
+		'../../../public/assets/plugins/angularjs/ocLazyLoad.min.js',
+		'../../../public/assets/plugins/jquery/jquery-1.9.1.min.js',
+		'../../../public/assets/plugins/jquery/jquery-migrate-1.1.0.min.js',
+		'../../../public/assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js',
+		'../../../public/assets/plugins/bootstrap/js/bootstrap.min.js',
+		'../../../public/assets/plugins/slimscroll/jquery.slimscroll.min.js',
+		'../../../public/assets/plugins/jquery-cookie/jquery.cookie.js'
+	],
+	'public/vendor/vendor.js');
+
+	mix.scripts([
+		'../../../public/assets/crossbrowserjs/excanvas.min.js',
+		'../../../public/assets/crossbrowserjs/html5shiv.js',
+		'../../../public/assets/crossbrowserjs/respond.min.js'
+
+	],
+	'public/vendor/crossbrowser.js');
+
+	mix.scripts([
+		'../../../public/assets/js/angular-setting.js',
+		'../../../public/assets/js/angular-controller.js',
+		'../../../public/assets/js/angular-directive.js',
+		'../../../public/assets/js/apps.js',
+
+	],
+	'public/vendor/template.js');
 });

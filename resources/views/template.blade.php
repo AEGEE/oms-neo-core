@@ -13,29 +13,9 @@
 	
 	<!-- ================== BEGIN BASE CSS STYLE ================== -->
 	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-	<link href="assets/plugins/jquery-ui/themes/base/minified/jquery-ui.min.css" rel="stylesheet" />
-	<link href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-	<link href="assets/css/animate.min.css" rel="stylesheet" />
-	<link href="assets/css/style.css" rel="stylesheet" />
-	<link href="assets/css/style-responsive.min.css" rel="stylesheet" />
-	<link href="assets/css/theme/default.css" rel="stylesheet" id="theme" />
+	<link href="vendor/vendor.css" rel="stylesheet" />
+
 	<!-- ================== END BASE CSS STYLE ================== -->
-    
-	<!-- ================== BEGIN BASE JS ================== -->
-	<script src="assets/plugins/pace/pace.min.js"></script>
-	<!-- ================== END BASE JS ================== -->
-	
-	<!--[if lt IE 9]>
-	    <script src="assets/crossbrowserjs/excanvas.min.js"></script>
-	<![endif]-->
-	
-	<!-- ================== BEGIN BASE ANGULAR JS ================== -->
-    <script src="assets/plugins/angularjs/angular.min.js"></script>
-    <script src="assets/plugins/angularjs/angular-ui-route.min.js"></script>
-    <script src="assets/plugins/bootstrap-angular-ui/ui-bootstrap-tpls.min.js"></script>
-    <script src="assets/plugins/angularjs/ocLazyLoad.min.js"></script>
-	<!-- ================== END BASE ANGULAR JS ================== -->
 </head>
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
     
@@ -65,16 +45,10 @@
 	
 	
 	<!-- ================== BEGIN BASE JS ================== -->
-	<script src="assets/plugins/jquery/jquery-1.9.1.min.js"></script>
-	<script src="assets/plugins/jquery/jquery-migrate-1.1.0.min.js"></script>
-	<script src="assets/plugins/jquery-ui/ui/minified/jquery-ui.min.js"></script>
-	<script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+	<script src="vendor/vendor.js"></script>
 	<!--[if lt IE 9]>
-		<script src="assets/crossbrowserjs/html5shiv.js"></script>
-		<script src="assets/crossbrowserjs/respond.min.js"></script>
+		<script src="vendor/crossbrowser.js"></script>
 	<![endif]-->
-	<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-	<script src="assets/plugins/jquery-cookie/jquery.cookie.js"></script>
 	<!-- ================== END BASE JS ================== -->
 	
 	<!-- ================== BEGIN PAGE LEVEL JS ================== -->
@@ -109,11 +83,7 @@
 		    }
 	</script>
 
-    <!-- <script src="assets/js/angular-app.js"></script> -->
-    <script src="assets/js/angular-setting.js"></script>
-    <script src="assets/js/angular-controller.js"></script>
-    <script src="assets/js/angular-directive.js"></script>
-    <script src="assets/js/apps.min.js"></script>
+    <script src="vendor/template.js"></script>
 	<!-- ================== END PAGE LEVEL JS ================== -->
 	@yield('modulesSrc')
 </body>
