@@ -221,6 +221,13 @@
                 responseType: 'arraybuffer',
                 params: {
                     name: vm.filter.name,
+                    availability_from: vm.filter.availability_from,
+                    availability_to: vm.filter.availability_to,
+                    availability_unit: vm.filter.availability_unit,
+                    price_from: vm.filter.price_from,
+                    price_to: vm.filter.price_to,
+                    currency: vm.filter.currency,
+                    mandatory: vm.filter.mandatory,
                     export: 1
                 },
                 headers: {

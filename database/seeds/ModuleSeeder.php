@@ -44,5 +44,13 @@ class ModuleSeeder extends Seeder
             'icon'          =>  'fa fa-usd',
             'is_active'     =>  1
         ]);
+
+        ModulePage::create([
+            'name'          =>  'Roles',
+            'code'          =>  'roles',
+            'module_link'   =>  'modules/loggedIn/roles/roles.js',
+            'icon'          =>  'fa fa-unlock-alt',
+            'is_active'     =>  1
+        ]);
     }
 }

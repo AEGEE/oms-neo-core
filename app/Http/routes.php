@@ -46,6 +46,14 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/saveFee', 'FeeController@saveFee');
 		Route::get('/api/getFee', 'FeeController@getFee');
 	});
+
+	// Roles..
+	Route::group(['middleware' => 'checkAccess:roles'], function() {
+		Route::get('/api/getRoles', 'RoleController@getRoles');
+		Route::get('/api/getModulePages', 'ModuleController@getModulePages');
+		Route::post('/api/saveRole', 'RoleController@saveRole');
+		Route::get('/api/getRole', 'RoleController@getRole');
+	});
 });
 
 // Generic routes.. TODO
