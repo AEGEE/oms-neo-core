@@ -3,47 +3,45 @@
     'use strict';
 
     angular
-        .module('app.antennae_management', [])
+        .module('app.working_groups', [])
         .config(config)
-        .controller('AntennaController', AntennaController);
+        .controller('WorkGroupController', WorkGroupController);
 
     /** @ngInject */
     function config($stateProvider)
     {
         // State
          $stateProvider
-            .state('app.antennae_management', {
-                url: '/antennae_management',
-                data: {'pageTitle': 'Antennae Management'},
+            .state('app.working_groups', {
+                url: '/working_groups',
+                data: {'pageTitle': 'Working groups'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/antennae_management/antennae_management.html',
-                        controller: 'AntennaController as vm'
+                        templateUrl: 'modules/loggedIn/working_groups/working_groups.html',
+                        controller: 'WorkGroupController as vm'
                     }
                 }
             });
     }
 
-    function AntennaController($http, $compile, $scope, $window, $httpParamSerializer) {
+    function WorkGroupController($http, $compile, $scope, $window, $httpParamSerializer) {
         // Data
         var vm = this;
-        vm.antenna = {};
+        vm.workGroup = {};
         vm.filter = {};
 
-        vm.countries = countries;
-
-        var ant_grid_container = "#antennaeGrid";
-        var ant_grid_pager = "#antennaePager";
+        var wg_grid_container = "#workGroupGrid";
+        var wg_grid_pager = "#workGroupPager";
 
         // Methods
 
-        vm.loadAntennaeGrid = function() {
+        vm.loadWorkingGroupsGrid = function() {
             var params = {};
             params.postData = {
                 is_grid: 1
             };
 
-            params.url = "/api/getAntennae";
+            params.url = "/api/getWorkingGroups";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -54,8 +52,7 @@
             params.colNames = [
                 'Actions',
                 'Name',
-                'City',
-                'Country'
+                'Description'
             ];
             params.colModel = [
                 {
@@ -68,31 +65,26 @@
                     index: 'name',
                     width: 200
                 }, {
-                    name: 'city',
-                    index: 'city',
+                    name: 'description',
+                    index: 'description',
                     width: 100
-                }, {
-                    name: 'country',
-                    index: 'country',
-                    sortable: false,
-                    width: 150
                 }
             ];
             params.rowNum = 25;
             params.rowList = [10, 25, 50, 75, 100, 150];
-            params.pager = ant_grid_pager;
+            params.pager = wg_grid_pager;
             params.sortname = 'title';
             params.sortorder = 'ASC';
             params.viewrecords = true;
-            params.caption = "Antennae";
+            params.caption = "Working groups";
 
             params.gridComplete = function() {
-                $compile($('.clickMeAnt'))($scope);
+                $compile($('.clickMeWg'))($scope);
             }
 
-            jQuery(ant_grid_container).jqGrid(params);
+            jQuery(wg_grid_container).jqGrid(params);
 
-            jQuery(ant_grid_container).jqGrid('navGrid', ant_grid_pager, {
+            jQuery(wg_grid_container).jqGrid('navGrid', wg_grid_pager, {
                 refresh: true,
                 edit: false,
                 add: false,
@@ -101,50 +93,42 @@
             });
         }
 
-        vm.searchAntennaGrid = function() {
+        vm.searchWorkGroupGrid = function() {
             var object = {};
             object = vm.filter;
-            object.country_id = $('#fCountry').val();
 
             object.is_grid = 1;
-            jQuery(ant_grid_container).jqGrid('setPostData', object);
-            jQuery(ant_grid_container).trigger("reloadGrid");
+            jQuery(wg_grid_container).jqGrid('setPostData', object);
+            jQuery(wg_grid_container).trigger("reloadGrid");
         }
 
         vm.clearSearch = function() {
             vm.filter = {};
-            $('#fCountry').val("").trigger("change");
-            vm.searchAntennaGrid();
+            vm.searchWorkGroupGrid();
         }
 
         vm.closeAndReset = function() {
-            $('#antennaModal').modal('hide');
-            vm.antenna = {};
-            $('#countries').val("").trigger("change");
+            $('#workGroupModal').modal('hide');
+            vm.workGroup = {};
         }
 
-        vm.saveAntenna = function() {
+        vm.saveWorkGroup = function() {
             $http({
                 method: "POST",
-                url: '/api/saveAntenna',
-                data: {
-                    id: vm.antenna.id,
-                    name: vm.antenna.name,
-                    city: vm.antenna.city,
-                    country_id: $('#countries').val()
-                }
+                url: '/api/saveWorkGroup',
+                data: vm.workGroup,
             })
             .then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $.gritter.add({
                         title: 'Success!',
-                        text: 'Antenna saved successfully!',
+                        text: 'WorkGroup saved successfully!',
                         sticky: true,
                         time: '',
                         class_name: 'my-sticky-class'
                     });
                     vm.closeAndReset();
-                    vm.searchAntennaGrid();
+                    vm.searchWorkGroupGrid();
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -172,17 +156,16 @@
             });
         }
 
-        vm.editAntenna = function(id) {
+        vm.editWorkGroup = function(id) {
             $http({
                 method: 'GET',
-                url: "/api/getAntenna",
+                url: "/api/getWorkGroup",
                 params: {
                     id: id
                 }
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
-                    vm.antenna = response.data.antenna;
-                    $('#countries').val(response.data.antenna.country_id).trigger("change");
+                    vm.workGroup = response.data.workgroup;
                     vm.openModal();
                 } else  {
                     $.gritter.add({
@@ -197,18 +180,16 @@
         }
 
         vm.openModal = function() {
-            $('#antennaModal').modal('show');
+            $('#workGroupModal').modal('show');
         }
 
         vm.exportGrid = function() {
             $http({
-                url: 'api/getAntennae',
+                url: 'api/getWorkingGroups',
                 method: 'GET',
                 responseType: 'arraybuffer',
                 params: {
                     name: vm.filter.name,
-                    city: vm.filter.city,
-                    country_id: $('#fCountry').val(),
                     export: 1
                 },
                 headers: {
@@ -237,10 +218,7 @@
         }
 
         ///////
-        vm.loadAntennaeGrid();
-        $("#countries").select2({width: '100%'});
-        $("#fCountry").select2({width: '100%'});
-        
+        vm.loadWorkingGroupsGrid();
     }
 
 })();

@@ -3,47 +3,45 @@
     'use strict';
 
     angular
-        .module('app.antennae_management', [])
+        .module('app.departments', [])
         .config(config)
-        .controller('AntennaController', AntennaController);
+        .controller('DepartmentController', DepartmentController);
 
     /** @ngInject */
     function config($stateProvider)
     {
         // State
          $stateProvider
-            .state('app.antennae_management', {
-                url: '/antennae_management',
-                data: {'pageTitle': 'Antennae Management'},
+            .state('app.departments', {
+                url: '/departments',
+                data: {'pageTitle': 'Departments'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/antennae_management/antennae_management.html',
-                        controller: 'AntennaController as vm'
+                        templateUrl: 'modules/loggedIn/departments/departments.html',
+                        controller: 'DepartmentController as vm'
                     }
                 }
             });
     }
 
-    function AntennaController($http, $compile, $scope, $window, $httpParamSerializer) {
+    function DepartmentController($http, $compile, $scope, $window, $httpParamSerializer) {
         // Data
         var vm = this;
-        vm.antenna = {};
+        vm.department = {};
         vm.filter = {};
 
-        vm.countries = countries;
-
-        var ant_grid_container = "#antennaeGrid";
-        var ant_grid_pager = "#antennaePager";
+        var deparment_grid_container = "#departmentGrid";
+        var department_grid_pager = "#departmentPager";
 
         // Methods
 
-        vm.loadAntennaeGrid = function() {
+        vm.loadDepartmentsGrid = function() {
             var params = {};
             params.postData = {
                 is_grid: 1
             };
 
-            params.url = "/api/getAntennae";
+            params.url = "/api/getDepartments";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -54,8 +52,7 @@
             params.colNames = [
                 'Actions',
                 'Name',
-                'City',
-                'Country'
+                'Description'
             ];
             params.colModel = [
                 {
@@ -68,31 +65,26 @@
                     index: 'name',
                     width: 200
                 }, {
-                    name: 'city',
-                    index: 'city',
+                    name: 'description',
+                    index: 'description',
                     width: 100
-                }, {
-                    name: 'country',
-                    index: 'country',
-                    sortable: false,
-                    width: 150
                 }
             ];
             params.rowNum = 25;
             params.rowList = [10, 25, 50, 75, 100, 150];
-            params.pager = ant_grid_pager;
+            params.pager = department_grid_pager;
             params.sortname = 'title';
             params.sortorder = 'ASC';
             params.viewrecords = true;
-            params.caption = "Antennae";
+            params.caption = "Departments";
 
             params.gridComplete = function() {
-                $compile($('.clickMeAnt'))($scope);
+                $compile($('.clickMeDep'))($scope);
             }
 
-            jQuery(ant_grid_container).jqGrid(params);
+            jQuery(deparment_grid_container).jqGrid(params);
 
-            jQuery(ant_grid_container).jqGrid('navGrid', ant_grid_pager, {
+            jQuery(deparment_grid_container).jqGrid('navGrid', department_grid_pager, {
                 refresh: true,
                 edit: false,
                 add: false,
@@ -101,50 +93,42 @@
             });
         }
 
-        vm.searchAntennaGrid = function() {
+        vm.searchDepartmentGrid = function() {
             var object = {};
             object = vm.filter;
-            object.country_id = $('#fCountry').val();
 
             object.is_grid = 1;
-            jQuery(ant_grid_container).jqGrid('setPostData', object);
-            jQuery(ant_grid_container).trigger("reloadGrid");
+            jQuery(deparment_grid_container).jqGrid('setPostData', object);
+            jQuery(deparment_grid_container).trigger("reloadGrid");
         }
 
         vm.clearSearch = function() {
             vm.filter = {};
-            $('#fCountry').val("").trigger("change");
-            vm.searchAntennaGrid();
+            vm.searchDepartmentGrid();
         }
 
         vm.closeAndReset = function() {
-            $('#antennaModal').modal('hide');
-            vm.antenna = {};
-            $('#countries').val("").trigger("change");
+            $('#departmentModal').modal('hide');
+            vm.department = {};
         }
 
-        vm.saveAntenna = function() {
+        vm.saveDepartment = function() {
             $http({
                 method: "POST",
-                url: '/api/saveAntenna',
-                data: {
-                    id: vm.antenna.id,
-                    name: vm.antenna.name,
-                    city: vm.antenna.city,
-                    country_id: $('#countries').val()
-                }
+                url: '/api/saveDepartment',
+                data: vm.department,
             })
             .then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $.gritter.add({
                         title: 'Success!',
-                        text: 'Antenna saved successfully!',
+                        text: 'Department saved successfully!',
                         sticky: true,
                         time: '',
                         class_name: 'my-sticky-class'
                     });
                     vm.closeAndReset();
-                    vm.searchAntennaGrid();
+                    vm.searchDepartmentGrid();
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -172,17 +156,16 @@
             });
         }
 
-        vm.editAntenna = function(id) {
+        vm.editDepartment = function(id) {
             $http({
                 method: 'GET',
-                url: "/api/getAntenna",
+                url: "/api/getDepartment",
                 params: {
                     id: id
                 }
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
-                    vm.antenna = response.data.antenna;
-                    $('#countries').val(response.data.antenna.country_id).trigger("change");
+                    vm.department = response.data.department;
                     vm.openModal();
                 } else  {
                     $.gritter.add({
@@ -197,18 +180,16 @@
         }
 
         vm.openModal = function() {
-            $('#antennaModal').modal('show');
+            $('#departmentModal').modal('show');
         }
 
         vm.exportGrid = function() {
             $http({
-                url: 'api/getAntennae',
+                url: 'api/getDepartments',
                 method: 'GET',
                 responseType: 'arraybuffer',
                 params: {
                     name: vm.filter.name,
-                    city: vm.filter.city,
-                    country_id: $('#fCountry').val(),
                     export: 1
                 },
                 headers: {
@@ -237,10 +218,7 @@
         }
 
         ///////
-        vm.loadAntennaeGrid();
-        $("#countries").select2({width: '100%'});
-        $("#fCountry").select2({width: '100%'});
-        
+        vm.loadDepartmentsGrid();
     }
 
 })();

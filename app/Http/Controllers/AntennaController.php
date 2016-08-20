@@ -15,7 +15,7 @@ use Input;
 
 class AntennaController extends Controller
 {
-    public function getAntennaeForGrid(Antenna $ant) {
+    public function getAntennae(Antenna $ant) {
     	$search = array(
             'name'          =>  Input::get('name'),
             'city'          =>  Input::get('city'),
@@ -42,7 +42,6 @@ class AntennaController extends Controller
             return;
         }
 
-
     	$antennaCount = $ant->getFiltered($search, true);
     	if($antennaCount == 0) {
             $numPages = 0;
@@ -61,9 +60,15 @@ class AntennaController extends Controller
             'total'     =>  $numPages
         );
 
+        $isGrid = Input::get('is_grid', false); // Checking if the caller is jqGrid -> if yes, we add actions to the response..
+
         foreach($antennae as $antenna) {
             $actions = "";
-            $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editAntenna(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+            if($isGrid) {
+                $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editAntenna(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+            } else {
+                $actions = $antenna->id;
+            }
         	$toReturn['rows'][] = array(
         		'id'	=>	$antenna->id,
         		'cell'	=> 	array(

@@ -21,9 +21,21 @@ Route::group(['middleware' => 'api'], function() {
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-		Route::get('/api/getAntennaeForGrid', 'AntennaController@getAntennaeForGrid');
+		Route::get('/api/getAntennae', 'AntennaController@getAntennae');
 		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
 		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
+	});
+
+	Route::group(['middleware' => 'checkAccess:working_groups'], function() {
+		Route::get('/api/getWorkingGroups', 'WorkingGroupController@getWorkingGroups');
+		Route::post('/api/saveWorkGroup', 'WorkingGroupController@saveWorkGroup');
+		Route::get('/api/getWorkGroup', 'WorkingGroupController@getWorkGroup');
+	});
+
+	Route::group(['middleware' => 'checkAccess:departments'], function() {
+		Route::get('/api/getDepartments', 'DepartmentController@getDepartments');
+		Route::post('/api/saveDepartment', 'DepartmentController@saveDepartment');
+		Route::get('/api/getDepartment', 'DepartmentController@getDepartment');
 	});
 });
 
