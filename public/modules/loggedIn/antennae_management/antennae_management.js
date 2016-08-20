@@ -24,7 +24,7 @@
             });
     }
 
-    function AntennaController($http, $compile, $scope) {
+    function AntennaController($http, $compile, $scope, $window, $httpParamSerializer) {
         // Data
         var vm = this;
         vm.antenna = {};
@@ -195,6 +195,42 @@
 
         vm.openModal = function() {
             $('#antennaModal').modal('show');
+        }
+
+        vm.exportGrid = function() {
+            $http({
+                url: 'api/getAntennaeForGrid',
+                method: 'GET',
+                responseType: 'arraybuffer',
+                params: {
+                    name: vm.filter.name,
+                    city: vm.filter.city,
+                    country_id: $('#fCountry').val(),
+                    export: 1
+                },
+                headers: {
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            }).success(function(data){
+                var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                var objectUrl = URL.createObjectURL(blob);
+                window.open(objectUrl);
+                $.gritter.add({
+                    title: 'Export generated successfully!',
+                    text: 'If you did not receive it, please make sure that your browser isn\'t blocking pop-ups.',
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            }).error(function(){
+                $.gritter.add({
+                    title: 'Error!',
+                    text: 'An error occoured! Please try again!',
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
         }
 
         ///////

@@ -17,7 +17,8 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
-	
+	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
+
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
 		Route::get('/api/getAntennaeForGrid', 'AntennaController@getAntennaeForGrid');

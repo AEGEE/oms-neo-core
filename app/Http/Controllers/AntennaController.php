@@ -10,6 +10,7 @@ use App\Http\Requests\SaveAntennaRequest;
 use App\Models\Antenna;
 use App\Models\Country;
 
+use Excel;
 use Input;
 
 class AntennaController extends Controller
@@ -25,9 +26,24 @@ class AntennaController extends Controller
             'page'      	=>  empty(Input::get('page')) ? 1 : Input::get('page')
     	);
 
-    	$antennaCount = $ant->getFiltered($search, true);
-    	$antennae = $ant->getFiltered($search);
+        $export = Input::get('export', false);
+        if($export) {
+            $search['noLimit'] = true;
+        }
 
+        $antennae = $ant->getFiltered($search);
+
+        if($export) {
+            Excel::create('antennae', function($excel) use ($antennae) {
+                $excel->sheet('antennae', function($sheet) use ($antennae) {
+                    $sheet->loadView('excel_templates.antennae')->with("antennae", $antennae);
+                });
+            })->export('xlsx');
+            return;
+        }
+
+
+    	$antennaCount = $ant->getFiltered($search, true);
     	if($antennaCount == 0) {
             $numPages = 0;
         } else {

@@ -167,6 +167,8 @@ return [
          * Other providers..
          */
         Barryvdh\Cors\ServiceProvider::class,
+        Collective\Bus\BusServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],
 
@@ -222,6 +224,7 @@ return [
         /*
          * Other Aliases..
          */
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
     ],
 

@@ -45,6 +45,7 @@
 @stop
 
 @section('modulesSrc')
+    <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
 	<script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
     {!!$modulesSrc!!}
     <script type="text/javascript">

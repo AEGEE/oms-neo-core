@@ -84,4 +84,16 @@ class GenericController extends Controller
         session_destroy();
         return redirect('/');
     }
+
+    public function noSessionTimeout() {    
+        $now = date('now');
+
+        Session::put('lastActive', $now);
+
+        session_start();
+        $_SESSION['lastActive'] = $now;
+        session_write_close();
+
+        return 1;
+    }
 }
