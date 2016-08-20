@@ -29,11 +29,19 @@ class ModuleSeeder extends Seeder
             'is_active'     =>  1
         ]);
         
-         ModulePage::create([
+        ModulePage::create([
             'name'          =>  'Departments',
             'code'          =>  'departments',
             'module_link'   =>  'modules/loggedIn/departments/departments.js',
             'icon'          =>  'fa fa-briefcase',
+            'is_active'     =>  1
+        ]);
+
+        ModulePage::create([
+            'name'          =>  'Fees management',
+            'code'          =>  'fees_management',
+            'module_link'   =>  'modules/loggedIn/fees_management/fees_management.js',
+            'icon'          =>  'fa fa-usd',
             'is_active'     =>  1
         ]);
     }
