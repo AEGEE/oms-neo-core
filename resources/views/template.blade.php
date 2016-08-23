@@ -18,7 +18,6 @@
 	<!-- ================== END BASE CSS STYLE ================== -->
 </head>
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
-    
 	<!-- begin #page-loader -->
 	<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>
 	<!-- end #page-loader -->
@@ -39,6 +38,11 @@
 	        'page-with-light-sidebar': setting.layout.pageLightSidebar,
 	        'p-t-0': setting.layout.pageWithoutHeader
 	    }">
+	    <div id="loadingOverlay" class="hiddenItem">
+		    <div class="loadingText">
+		        <img src="assets/img/loading.gif" /> Loading, please wait!
+		    </div>
+		</div>
 	    <div id="main" ui-view="main"></div>
 	</div>
 	<!-- end page container -->

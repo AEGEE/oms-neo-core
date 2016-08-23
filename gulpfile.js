@@ -23,7 +23,11 @@ elixir(function(mix) {
 		'../../../public/assets/css/theme/default.css',
 		'../../../public/assets/plugins/gritter/css/jquery.gritter.css',
 		'../../../public/assets/plugins/select2/dist/css/select2.min.css',
-		'../../../public/assets/plugins/ionicons/css/ionicons.min.css'
+		'../../../public/assets/plugins/ionicons/css/ionicons.min.css',
+		'../../../public/assets/plugins/bootstrap-wizard/css/bwizard.min.css',
+		'../../../public/assets/plugins/bootstrap-datepicker/css/datepicker.css',
+        '../../../public/assets/plugins/bootstrap-datepicker/css/datepicker3.css',
+        '../../../public/assets/plugins/parsley/src/parsley.css'
 	],
 	'public/vendor/vendor.css');
 
@@ -40,7 +44,10 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/slimscroll/jquery.slimscroll.min.js',
 		'../../../public/assets/plugins/jquery-cookie/jquery.cookie.js',
 		'../../../public/assets/plugins/gritter/js/jquery.gritter.js',
-		'../../../public/assets/plugins/select2/dist/js/select2.min.js'
+		'../../../public/assets/plugins/select2/dist/js/select2.min.js',
+		'../../../public/assets/plugins/bootstrap-wizard/js/bwizard.js',
+		'../../../public/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
+		'../../../public/assets/plugins/parsley/dist/parsley.js'
 	],
 	'public/vendor/vendor.js');
 

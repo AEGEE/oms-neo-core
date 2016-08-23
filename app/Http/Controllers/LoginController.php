@@ -8,8 +8,12 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Http\Requests;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\SignupRequest;
 
 use App\Models\Auth;
+use App\Models\Antenna;
+use App\Models\StudyField;
+use App\Models\StudyType;
 use App\Models\User;
 
 use Hash;
@@ -99,5 +103,62 @@ class LoginController extends Controller
 
     	// Login successful.. returning data..
 		return response(json_encode($toReturn), 200);
+    }
+
+    public function getRegistrationFields(Antenna $ant, StudyType $studType, StudyField $studField) {
+        $toReturn = array(
+            'antennae'      =>  array(),
+            'study_type'    =>  array(),
+            'study_field'   =>  array()
+        );
+
+        $antenna = $ant->all();
+        foreach($antenna as $antX) {
+            $toReturn['antennae'][] = array(
+                'id'    =>  $antX->id,
+                'name'  =>  $antX->name
+            );
+        }
+
+        $study_types = $studType->all();
+        foreach($study_types as $study_type) {
+            $toReturn['study_type'][] = array(
+                'id'    =>  $study_type->id,
+                'name'  =>  $study_type->name
+            );
+        }
+
+        $study_fields = $studField->all();
+        foreach($study_fields as $study_field) {
+            $toReturn['study_field'][] = array(
+                'id'    =>  $study_field->id,
+                'name'  =>  $study_field->name
+            );
+        }
+
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function signup(SignupRequest $req, User $usr) {
+        $usr->first_name = Input::get('first_name');
+        $usr->last_name = Input::get('last_name');
+        $usr->date_of_birth = Input::get('date_of_birth');
+        $usr->gender = Input::get('gender');
+        $usr->contact_email = Input::get('contact_email');
+        $usr->phone = Input::get('phone');
+        $usr->address = Input::get('address');
+        $usr->city = Input::get('city');
+        $usr->antenna_id = Input::get('antenna_id');
+        $usr->university = Input::get('university');
+        $usr->studies_type_id = Input::get('studies_type');
+        $usr->studies_field_id = Input::get('study_field');
+        $usr->is_suspended = 1;
+        $usr->save();
+
+        $toReturn = array(
+            'success'   =>  1,
+        );
+
+        return response(json_encode($toReturn), 200);
     }
 }

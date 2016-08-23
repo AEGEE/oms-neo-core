@@ -13,6 +13,8 @@
 
 // Login route..
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
+Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
+Route::post('/api/signup', 'LoginController@signup');
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {

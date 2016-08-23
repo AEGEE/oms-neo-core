@@ -4,8 +4,6 @@ use Illuminate\Database\Seeder;
 
 use App\Models\Antenna;
 use App\Models\Country;
-use App\Models\StudyField;
-use App\Models\StudyType;
 use App\Models\User;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +16,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(CountrySeeder::class);
+        $this->call(TypeAndFieldOfStudiesSeeder::class);
         $this->call(ModuleSeeder::class);
     }
 }
@@ -34,14 +33,6 @@ class userSeeder extends Seeder {
 			'country_id' 	=>	$country->id
 		]);
 
-		$studies_type = StudyType::create([
-			'name'	=>	'Masters'
-		]);
-
-		$study_fields = StudyField::create([
-			'name'	=>	'IT'
-		]);
-
 		User::create([
 			'contact_email' 	=> 	'flaviu@glitch.ro',
 			'first_name'		=>	'Flaviu',
@@ -50,8 +41,8 @@ class userSeeder extends Seeder {
 			'gender'			=>	1,
 			'antenna_id'		=>	$antenna->id,
 			'university'		=>	'UBB Cluj',
-			'studies_type_id'	=>	$studies_type->id,
-			'studies_field_id'	=>	$study_fields->id,
+			'studies_type_id'	=>	1,
+			'studies_field_id'	=>	1,
 			'password'			=>	Hash::make('1234'),
 			'is_superadmin'		=>	1
 		]);

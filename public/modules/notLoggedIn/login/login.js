@@ -32,6 +32,7 @@
         // Methods
 
         vm.login = function() {
+            $('#loadingOverlay').show();
             $http({
                 method: 'POST',
                 url: '/api/login',
@@ -45,6 +46,7 @@
                     location.reload();
                 } else {
                     $('#loginError').show();
+                    $('#loadingOverlay').hide();
                 }
             }, function errorCallback(response) {
                 $.gritter.add({
@@ -54,6 +56,7 @@
                     time: '',
                     class_name: 'my-sticky-class'
                 });
+                $('#loadingOverlay').hide();
             });
         }
 
