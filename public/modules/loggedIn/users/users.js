@@ -125,7 +125,8 @@
                 'Department',
                 'Internal email',
                 'Studies type',
-                'Studies field'
+                'Studies field',
+                'Status'
             ];
             params.colModel = [
                 {
@@ -172,7 +173,13 @@
                     name: 'studies_field',
                     index: 'studies_field',
                     sortable: false,
-                    width: 100
+                    width: 95
+                }, {
+                    name: 'status',
+                    index: 'status',
+                    sortable: false,
+                    hidden: true,
+                    width: 1
                 }
             ];
             params.rowNum = 25;
@@ -185,6 +192,18 @@
 
             params.gridComplete = function() {
                 $compile($('.clickMeUser'))($scope);
+            }
+
+            params.rowattr = function (rd) {
+                var row = rd.status;
+                switch(row) {
+                    case '1': // Active
+                        return {'style': "background: #5cb85c; color: #000"}; // green
+                    case '2': // Inactive
+                        return {'style': "background: #C1BCBC; color: #000"}; // grey
+                    case '3': // Suspended
+                        return {'style': "background: #d9534f; color: #000"}; // red
+                }
             }
 
             jQuery(user_grid_container).jqGrid(params);

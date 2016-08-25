@@ -87,6 +87,7 @@ class UserController extends Controller
         			$userX->internal_email,
         			$userX->studyField->name,
         			$userX->studyType->name,
+        			$userX->status
         		)
         	);
         }

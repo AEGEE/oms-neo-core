@@ -51,6 +51,9 @@
 				<th>
 					Studies field
 				</th>
+				<th>
+					Status
+				</th>
 			</tr>
 			@foreach($users as $userX)
 				<tr>
@@ -64,6 +67,7 @@
 					<td>{{$userX->internal_email}}</td>
 					<td>{{$userX->studyField->name}}</td>
 					<td>{{$userX->studyType->name}}</td>
+					<td>{{$userX->status_text}}</td>
 				</tr>
 			@endforeach
 		</table>

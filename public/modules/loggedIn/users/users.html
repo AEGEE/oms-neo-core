@@ -10,7 +10,7 @@
     <h1 class="page-header">Users</h1>
     <!-- end page-header -->
 
-    <div class="row">
+    <div class="row m-1">
         <div class="panel panel-inverse" data-sortable-id="ui-general-1">
             <div class="panel-heading">
                 <h4 class="panel-title">Filter</h4>
@@ -102,7 +102,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <!-- <button class="btn btn-primary" data-target="#userModal" data-toggle="modal"><i class="fa fa-plus"></i> Add User</button> -->
+            <button class="btn btn-primary" data-target="#userModal" data-toggle="modal"><i class="fa fa-plus"></i> Add User</button>
         </div>
         <div class="col-md-6 text-right">
             <button class="btn btn-warning" ng-click="vm.exportGrid()"><i class="fa fa-file-excel-o"></i> Export to XLS</button>
@@ -117,6 +117,27 @@
 			<div id="usersPager"></div>
 		</div>
 	</div>
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row well m-2">
+        <h5>Legend</h5>
+        <div class="col-md-4 text-center">
+            <div class="p-10" style="background: #5cb85c; color: #000; width: 100%">
+                Active
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="p-10" style="background: #C1BCBC; color: #000; width: 100%">
+                Inactive
+            </div>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="p-10" style="background: #d9534f; color: #000; width: 100%">
+                Suspended
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- #modal-dialog -->

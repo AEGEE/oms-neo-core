@@ -63,7 +63,7 @@ class User extends Model
                     ->withPivot('start_date', 'end_date');
     }
 
-    // Mutators..
+    // Accessors..
     public function getGenderAttribute($gender) {
         $genderText = "";
 
@@ -83,6 +83,32 @@ class User extends Model
 
     public function getInternalEmailAttribute($value) {
         return empty($value) ? "No internal email assigned!" : $value;
+    }
+
+    public function getStatusTextAttribute($value) {
+        $suspended = empty($this->is_suspended) ? false : true;
+        $active = empty($this->activated_at) ? false : true;
+        $status = "Active";
+        if($suspended) {
+            $status = "Suspended";
+        } elseif(!$active) {
+            $status = "Inactive";
+        }
+
+        return $status;
+    }
+
+    public function getStatusAttribute($value) {
+        $suspended = empty($this->is_suspended) ? false : true;
+        $active = empty($this->activated_at) ? false : true;
+        $status = "1";
+        if($suspended) {
+            $status = "3";
+        } elseif(!$active) {
+            $status = "2";
+        }
+
+        return $status;
     }
 
     // Model methods go down here..
