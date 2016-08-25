@@ -60,4 +60,27 @@ class User extends Model
     }
 
     // Model methods go down here..
+    public function getEmailHash($email) {
+        $emailHash = strtolower($email);
+
+        $emailSplit = explode('@', $emailHash);
+        $emailUsername = $emailSplit[0];
+        $emailTld = $emailSplit[1];
+
+        // We remove any labels we have in the email name (everything that's after +)
+        $emailUsername = preg_replace('/\+.*/', "", $emailUsername);
+
+        // Special check for gmail accounts..
+        if(preg_match('/gmail/', $emailTld)) {
+            // If it's gmail, then dots (.) don't represent anything in the email username, so we just remove them..
+            $emailUsername = preg_replace('/\./', '', $emailUsername);
+        }
+
+        $emailHash = $emailUsername."@".$emailTld;
+        return $emailHash;
+    }
+
+    public function checkEmailHash($emailHash) {
+        return $this->where('email_hash', $emailHash)->count() >= 1;
+    }
 }

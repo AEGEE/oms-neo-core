@@ -44,6 +44,7 @@ class userSeeder extends Seeder {
 			'studies_type_id'	=>	1,
 			'studies_field_id'	=>	1,
 			'password'			=>	Hash::make('1234'),
+			'activated_at'		=>	date('Y-m-d H:i:S'),
 			'is_superadmin'		=>	1
 		]);
 	}

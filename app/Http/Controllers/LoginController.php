@@ -55,7 +55,7 @@ class LoginController extends Controller
     	try {
     		$user = $user->where('contact_email', $username)
     					->whereNotNull('password')
-    					->whereNull('is_suspended')
+    					->whereNotNull('activated_at') // If its null, then the account was not activated..
     					->firstOrFail(); // If password is null, then account should be used with oAuth..
     	} catch(ModelNotFoundException $ex) {
     		$auth->save();
@@ -70,7 +70,6 @@ class LoginController extends Controller
     		$auth->save();
     		return response(json_encode($toReturn), 422);
     	}
-
 
     	// all good..
     	$loginKey = Uuid::generate(1);
@@ -140,11 +139,20 @@ class LoginController extends Controller
     }
 
     public function signup(SignupRequest $req, User $usr) {
+        // Checking email for duplicate..
+        $email = Input::get('contact_email');
+        $emailHash = $usr->getEmailHash($email);
+        if($usr->checkEmailHash($emailHash)) {
+            $toReturn['success'] = 0;
+            $toReturn['message'] = "Email already exists!";
+            return response(json_encode($toReturn), 200);
+        }
+
         $usr->first_name = Input::get('first_name');
         $usr->last_name = Input::get('last_name');
         $usr->date_of_birth = Input::get('date_of_birth');
         $usr->gender = Input::get('gender');
-        $usr->contact_email = Input::get('contact_email');
+        $usr->contact_email = $email;
         $usr->phone = Input::get('phone');
         $usr->address = Input::get('address');
         $usr->city = Input::get('city');
@@ -152,7 +160,7 @@ class LoginController extends Controller
         $usr->university = Input::get('university');
         $usr->studies_type_id = Input::get('studies_type');
         $usr->studies_field_id = Input::get('study_field');
-        $usr->is_suspended = 1;
+        $usr->email_hash = $emailHash;
         $usr->save();
 
         $toReturn = array(
