@@ -245,12 +245,21 @@
         vm.closeAndReset = function() {
             $('#userModal').modal('hide');
             vm.user = {};
+            $('#antenna').val("").trigger("change");
+            $('#studies_type').val("").trigger("change");
+            $('#study_field').val("").trigger("change");
+            $('#date_of_birth').val("");
         }
 
         vm.saveUser = function() {
+            vm.user.antenna_id = $('#antenna').val();
+            vm.user.studies_type = $('#studies_type').val();
+            vm.user.study_field = $('#study_field').val();
+            vm.user.date_of_birth = $('#date_of_birth').val();
+
             $http({
                 method: "POST",
-                url: '/api/saveUser',
+                url: '/api/signup',
                 data: vm.user,
             })
             .then(function successCallback(response) {
@@ -301,6 +310,11 @@
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
                     vm.user = response.data.user;
+                    $('#antenna').val(response.data.user.antenna_id).trigger("change");
+                    $('#studies_type').val(response.data.user.studies_type_id).trigger("change");
+                    $('#study_field').val(response.data.user.studies_field_id).trigger("change");
+                    $('#date_of_birth').val(response.data.user.date_of_birth);
+                    $('#gender').val(response.data.user.gender).trigger("change");
                     vm.openModal();
                 } else  {
                     $.gritter.add({
@@ -362,12 +376,12 @@
         }
 
         vm.initControls = function() {
-            $('#fDob').datepicker({
+            $('#fDob, #date_of_birth').datepicker({
                 todayHighlight: true,
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
-            $("#fAntenna, #fStudyType, #fStudyField, #fDepartment").select2({width: '100%'});
+            $("#fAntenna, #fStudyType, #fStudyField, #fDepartment, #antenna, #studies_type, #study_field").select2({width: '100%'});
         }
 
         ///////

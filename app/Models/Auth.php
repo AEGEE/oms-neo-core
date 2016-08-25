@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Auth extends Model
 {
@@ -14,4 +15,24 @@ class Auth extends Model
     }
 
     // Model methods go down here..
+    public function isUserLogged($xApiKey = '') {
+    	if(empty($xApiKey)) {
+    		return false;
+    	}
+
+    	$now = date('Y-m-d H:i:s');
+
+    	try {
+    		$auth = $this->where('token_generated', $xApiKey)
+                        ->where(function($query) use($now) {
+                            $query->where('expiration', '>', $now)
+                                    ->orWhereNull('expiration');
+                        })
+                        ->firstOrFail();
+        } catch(ModelNotFoundException $ex) {
+            return false;
+        }
+
+        return true;
+    }
 }

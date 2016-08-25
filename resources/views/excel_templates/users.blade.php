@@ -61,7 +61,7 @@
 					<td>{{$userX->first_name." ".$userX->last_name}}</td>
 					<td>{{$userX->date_of_birth->format('d/m/Y')}}</td>
 					<td>{{$userX->contact_email}}</td>
-					<td>{{$userX->gender}}</td>
+					<td>{{$userX->gender_text}}</td>
 					<td>{{$userX->antenna->name}}</td>
 					<td>{{empty($userX->department_id) ? "-" : $userX->department->name}}</td>
 					<td>{{$userX->internal_email}}</td>

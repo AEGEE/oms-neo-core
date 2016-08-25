@@ -70,7 +70,7 @@ class UserController extends Controller
         foreach($users as $userX) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editDepartment(".$userX->id.")'><i class='fa fa-pencil'></i></button>";
+                // $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editUser(".$userX->id.")'><i class='fa fa-pencil'></i></button>"; // Temporary disabled due to some angular bugs
             } else {
                 $actions = $userX->id;
             }
@@ -81,7 +81,7 @@ class UserController extends Controller
         			$userX->first_name." ".$userX->last_name,
         			$userX->date_of_birth->format('d/m/Y'),
         			$userX->contact_email,
-        			$userX->gender,
+        			$userX->gender_text,
         			$userX->antenna->name,
         			empty($userX->department_id) ? "-" : $userX->department->name,
         			$userX->internal_email,
@@ -92,6 +92,15 @@ class UserController extends Controller
         	);
         }
 
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function getUser(User $user) {
+        $id = Input::get('id');
+        $user = $user->findOrFail($id);
+
+        $toReturn['success'] = 1;
+        $toReturn['user'] = $user;
         return response(json_encode($toReturn), 200);
     }
 }

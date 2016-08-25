@@ -6824,6 +6824,10 @@ body .bootstrap-datetimepicker-widget table td {
 .color-b {
     color: #000 !important;
 }
+
+.datepicker{
+    z-index:1151 !important;
+}
 /*
 Template Name: Color Admin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
 Version: 2.0.0

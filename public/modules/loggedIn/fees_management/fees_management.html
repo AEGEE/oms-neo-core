@@ -145,8 +145,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="javascript:;" class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</a>
-                    <a href="javascript:;" ng-disabled="feeForm.$pristine || feeForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveFee()"><i class="fa fa-save"></i> Save fee</a>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</button>
+                    <button ng-disabled="feeForm.$pristine || feeForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveFee()"><i class="fa fa-save"></i> Save fee</button>
                 </div>
             </form>
         </div>

@@ -84,8 +84,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="javascript:;" class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</a>
-                    <a href="javascript:;" ng-disabled="roleForm.$pristine || roleForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveRole()"><i class="fa fa-save"></i> Save role</a>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</button>
+                    <button ng-disabled="roleForm.$pristine || roleForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveRole()"><i class="fa fa-save"></i> Save role</button>
                 </div>
             </form>
         </div>

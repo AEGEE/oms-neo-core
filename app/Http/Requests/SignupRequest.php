@@ -28,7 +28,7 @@ class SignupRequest extends Request
             'last_name'                     =>  'required',
             'date_of_birth'                 =>  'required|date',
             'gender'                        =>  'required|integer|min:1|max:3',
-            'contact_email'                 =>  'required|confirmed|unique:users,contact_email',
+            'contact_email'                 =>  'required|confirmed|unique:users,contact_email'.empty($id) ? "" : ", ".$id,
             'contact_email_confirmation'    =>  'required',
             'antenna_id'                    =>  'required|integer|exists:antennas,id',
             'university'                    =>  'required',

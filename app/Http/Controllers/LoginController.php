@@ -138,11 +138,23 @@ class LoginController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function signup(SignupRequest $req, User $usr) {
+    public function signup(SignupRequest $req, User $usr, Auth $auth) {
+        // Checking if user is logged in..
+        $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
+
+        $id = 0;
+        if($auth->isUserLogged($xAuthToken)) {
+            // User logged.. do stuff..
+            $id = Input::get('id');
+            if(!empty($id)) {
+                $usr = $usr->firstOrFail($id);
+            }
+        }
+
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
-        if($usr->checkEmailHash($emailHash)) {
+        if($usr->checkEmailHash($emailHash, $id)) {
             $toReturn['success'] = 0;
             $toReturn['message'] = "Email already exists!";
             return response(json_encode($toReturn), 200);

@@ -71,8 +71,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="javascript:;" class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</a>
-                    <a href="javascript:;" ng-disabled="workGroupForm.$pristine || workGroupForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveWorkGroup()"><i class="fa fa-save"></i> Save work group</a>
+                    <button class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</button>
+                    <button ng-disabled="workGroupForm.$pristine || workGroupForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveWorkGroup()"><i class="fa fa-save"></i> Save work group</button>
                 </div>
             </form>
         </div>

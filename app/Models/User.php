@@ -64,10 +64,10 @@ class User extends Model
     }
 
     // Accessors..
-    public function getGenderAttribute($gender) {
+    public function getGenderTextAttribute($value) {
         $genderText = "";
 
-        switch ($gender) {
+        switch ($this->gender) {
             case '1':
                 $genderText = "Male";
                 break;
@@ -132,8 +132,8 @@ class User extends Model
         return $emailHash;
     }
 
-    public function checkEmailHash($emailHash) {
-        return $this->where('email_hash', $emailHash)->count() >= 1;
+    public function checkEmailHash($emailHash, $exceptId) {
+        return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
     public function getFiltered($search = array(), $onlyTotal = false) {
