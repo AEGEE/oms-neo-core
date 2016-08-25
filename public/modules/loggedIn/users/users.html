@@ -1,0 +1,148 @@
+<div>
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+        <li><a ui-sref="app.dashboard">Dashboard</a></li>
+        <li class="active">Users</li>
+    </ol>
+    <!-- end breadcrumb -->
+
+    <!-- begin page-header -->
+    <h1 class="page-header">Users</h1>
+    <!-- end page-header -->
+
+    <div class="row">
+        <div class="panel panel-inverse" data-sortable-id="ui-general-1">
+            <div class="panel-heading">
+                <h4 class="panel-title">Filter</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fName">Name</label>
+                            <input type="text" id="fName" class="form-control" ng-model="vm.filter.name" placeholder="User name" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fDob">Date of birth</label>
+                            <input type="text" id="fDob" class="form-control" ng-model="vm.filter.date_of_birth" placeholder="Date of birth" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fContactEmail">Registration email</label>
+                            <input type="text" id="fContactEmail" class="form-control" ng-model="vm.filter.contact_email" placeholder="Registration email" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fGender">Gender</label>
+                            <select id="fGender" class="form-control" ng-model="vm.filter.gender" ng-options="value.id as value.name for value in vm.genderTypes track by value.id">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fAntenna">Antenna</label>
+                            <select class="form-control" id="fAntenna" ng-model="vm.filter.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fDepartment">Department</label>
+                            <select class="form-control" id="fDepartment" ng-model="vm.filter.department_id" ng-options="department.cell[0] as department.cell[1] for department in vm.departments.rows track by department.cell[0]">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fInternalEmail">Internal email</label>
+                            <input type="text" id="fInternalEmail" class="form-control" ng-model="vm.filter.internal_email" placeholder="Internal email" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fStudyType">Study type</label>
+                            <select class="form-control" id="fStudyType" ng-model="vm.filter.studies_type_id" ng-options="type.id as type.name for type in vm.registrationFields.study_type track by type.id">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fStudyField">Study field</label>
+                            <select class="form-control" id="fStudyField" ng-model="vm.filter.studies_field_id" ng-options="field.id as field.name for field in vm.registrationFields.study_field track by field.id">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="fStatus">Status</label>
+                            <select class="form-control" id="fStatus" ng-model="vm.filter.status" ng-options="status.id as status.name for status in vm.statuses track by status.id">
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-success" ng-click="vm.searchUserGrid()"><i class="fa fa-search"></i> Search</button>
+                        <button class="btn btn-danger" ng-click="vm.clearSearch()"><i class="fa fa-ban"></i> Clear search</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <!-- <button class="btn btn-primary" data-target="#userModal" data-toggle="modal"><i class="fa fa-plus"></i> Add User</button> -->
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-warning" ng-click="vm.exportGrid()"><i class="fa fa-file-excel-o"></i> Export to XLS</button>
+        </div>
+    </div>
+    <div class="row">
+        &nbsp;
+    </div>
+	<div class="row">
+		<div class="col-md-12">
+			<table id="usersGrid"></table>
+			<div id="usersPager"></div>
+		</div>
+	</div>
+</div>
+
+<!-- #modal-dialog -->
+<div class="modal fade" id="userModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">User add/edit</h4>
+            </div>
+            <form name="workGroupForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="form-group m-b-20">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.department.name" placeholder="Department name" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="description">Description</label>
+                        <textarea id="description" class="form-control" ng-model="vm.department.description" placeholder="Department description" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="javascript:;" class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</a>
+                    <a href="javascript:;" ng-disabled="workGroupForm.$pristine || workGroupForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveDepartment()"><i class="fa fa-save"></i> Save department</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -56,6 +56,11 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/saveRole', 'RoleController@saveRole');
 		Route::get('/api/getRole', 'RoleController@getRole');
 	});
+
+	// Users..
+	Route::group(['middleware' => 'checkAccess:users'], function() {
+		Route::get('/api/getUsers', 'UserController@getUsers');
+	});
 });
 
 // Generic routes.. TODO

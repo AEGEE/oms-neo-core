@@ -52,5 +52,13 @@ class ModuleSeeder extends Seeder
             'icon'          =>  'fa fa-unlock-alt',
             'is_active'     =>  1
         ]);
+
+        ModulePage::create([
+            'name'          =>  'Users',
+            'code'          =>  'users',
+            'module_link'   =>  'modules/loggedIn/users/users.js',
+            'icon'          =>  'fa fa-user',
+            'is_active'     =>  1
+        ]);
     }
 }
