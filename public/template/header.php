@@ -1,6 +1,7 @@
 <?php
 session_start();
 $userData = $_SESSION['userData'];
+$options = $_SESSION['globals'];
 session_write_close();
 ?>
 <!-- begin #header -->
@@ -9,7 +10,7 @@ session_write_close();
     <div class="container-fluid">
         <!-- begin mobile sidebar expand / collapse button -->
         <div class="navbar-header">
-            <a ui-sref="app.dashboard" class="navbar-brand"><span class="navbar-logo"></span> OMS</a>
+            <a ui-sref="app.dashboard" class="navbar-brand"><span class="navbar-logo"></span> <?=$options['app_name']?></a>
             <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>

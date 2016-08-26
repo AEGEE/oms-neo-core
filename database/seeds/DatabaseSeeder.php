@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CountrySeeder::class);
         $this->call(TypeAndFieldOfStudiesSeeder::class);
         $this->call(ModuleSeeder::class);
+        $this->call(OptionsSeeder::class);
+        $this->call(EmailTemplateSeeder::class);
     }
 }
 

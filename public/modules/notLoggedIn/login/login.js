@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Login'},
                 views   : {
                     'main@'         : {
-                        templateUrl: 'modules/notLoggedIn/login/login.html',
+                        templateUrl: 'modules/notLoggedIn/login/login.php',
                         controller: 'LoginController as vm'
                     }
                 }

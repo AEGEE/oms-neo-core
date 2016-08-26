@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Signup'},
                 views   : {
                     'main@'         : {
-                        templateUrl: 'modules/notLoggedIn/signup/signup.html',
+                        templateUrl: 'modules/notLoggedIn/signup/signup.php',
                         controller: 'SignupController as vm'
                     }
                 }

@@ -7,14 +7,25 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 
 use App\Models\Country;
+use App\Models\GlobalOption;
 use App\Models\ModulePage;
 
 use Session;
 
 class GenericController extends Controller
 {
-    public function defaultRoute() {
+    public function defaultRoute(GlobalOption $opt) {
     	$userData = Session::get('userData');
+
+        // Options..
+        $optionsArr = array();
+        $allOptions = $opt->all();
+        foreach ($allOptions as $option) {
+            $optionsArr[$option->code] = $option->value;
+        }
+        session_start();
+        $_SESSION['globals'] = $optionsArr;
+        session_write_close();
 
     	if($userData['logged_in']) {
             $addToView = array();
@@ -35,6 +46,7 @@ class GenericController extends Controller
             $modulesSrc = "";
             $modulesNames = "";
             $menuMarkUp = "";
+            $moduleAccess = array();
             foreach($modules as $module) {
                 $moduleBase = empty($module->module_id) ? "" : $module->module->base_url;
                 
@@ -51,6 +63,8 @@ class GenericController extends Controller
                 }
 
                 $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
+
+                $moduleAccess[$module->code] = 1; // todo get highest access level..
             }
 
             $addToView['modulesSrc'] = $modulesSrc;
@@ -60,7 +74,10 @@ class GenericController extends Controller
             // Mirroring links accessible to session so they can be accessed in partials..
             session_start();
             $_SESSION['moduleMarkup'] = $menuMarkUp;
+            $_SESSION['moduleAccess'] = $moduleAccess;
             session_write_close();
+
+            Session::put('moduleAccess', $moduleAccess);
 
             // Countries..
             $countries = Country::all();
@@ -75,6 +92,7 @@ class GenericController extends Controller
 
     		return view('loggedIn', $addToView);
     	}
+
 		return view('notLogged');
     }
 

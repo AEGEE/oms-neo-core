@@ -1,3 +1,8 @@
+<?php
+session_start();
+$options = $_SESSION['globals'];
+session_write_close();
+?>
 <!-- begin #header -->
 <div ui-view="header"></div>
 <!-- end #header -->
@@ -18,7 +23,7 @@
 
 <!-- begin #footer -->
 <div id="footer" class="footer">
-	&copy; <?=date('Y')?> OMS - Open management system
+	&copy; <?=date('Y')?> <?=$options['app_copyright']?>
 </div>
 <!-- end #footer -->
 

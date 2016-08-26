@@ -1,3 +1,8 @@
+<?php
+session_start();
+$options = $_SESSION['globals'];
+session_write_close();
+?>
 <div>
 	<div class="login-cover">
 	    <div class="login-cover-image"><img src="assets/img/login-bg/bg-1.jpg" data-id="login-cover-image" alt="" /></div>
@@ -9,8 +14,8 @@
         <!-- begin brand -->
         <div class="login-header">
             <div class="brand">
-                <span class="logo"></span> OMS
-                <small>Online management system login</small>
+                <span class="logo"></span> <?=$options['app_name']?>
+                <small>Login</small>
             </div>
             <div class="icon">
                 <i class="fa fa-sign-in"></i>

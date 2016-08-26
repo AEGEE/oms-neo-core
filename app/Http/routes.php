@@ -16,6 +16,9 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 Route::post('/api/signup', 'LoginController@signup');
 
+// UI accessible only!
+Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
+
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
@@ -61,6 +64,19 @@ Route::group(['middleware' => 'api'], function() {
 	Route::group(['middleware' => 'checkAccess:users'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
 		Route::get('/api/getUser', 'UserController@getUser');
+	});
+
+	// Settings..
+	Route::group(['middleware' => 'checkAccess:settings'], function() {
+		// Global..
+		Route::get('/api/getOptions', 'OptionController@getOptions');
+		Route::get('/api/getOption', 'OptionController@getOption');
+		Route::post('/api/saveOption', 'OptionController@saveOption');
+
+		// Mails..
+		Route::get('/api/getEmailTemplates', 'EmailController@getEmailTemplates');
+		Route::get('/api/getEmailTemplate', 'EmailController@getEmailTemplate');
+		Route::post('/api/saveEmailTemplate', 'EmailController@saveEmailTemplate');
 	});
 });
 
