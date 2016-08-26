@@ -70,7 +70,10 @@ class UserController extends Controller
         foreach($users as $userX) {
             $actions = "";
             if($isGrid) {
-                // $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editUser(".$userX->id.")'><i class='fa fa-pencil'></i></button>"; // Temporary disabled due to some angular bugs
+                // $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editUser(".$userX->id.", \"userModal\")'><i class='fa fa-pencil'></i></button>"; // Temporary disabled due to some angular bugs
+                if($userX->status == 2) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Activate user' ng-click='vm.editUser(".$userX->id.", \"activateUserModal\")'><i class='fa fa-check'></i></button>"; // Temporary disabled due to some angular bugs
+                }
             } else {
                 $actions = $userX->id;
             }
@@ -101,6 +104,79 @@ class UserController extends Controller
 
         $toReturn['success'] = 1;
         $toReturn['user'] = $user;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function activateUser(User $user) {
+        // User..
+        $id = Input::get('id');
+        $user = $user->findOrFail($id);
+
+        if(!empty($user->activated_at)) {
+            $toReturn['success'] = 0;
+            $toReturn['message'] = "User already activated!";
+            return response(json_encode($toReturn), 200);
+        }
+
+        $departmentId = Input::get('department_id');
+        $departmentCheck = Department::findOrFail($departmentId);
+
+        $user->department_id = $departmentId;
+        $user->seo_url = $user->generateSeoUrl();
+        $user->activated_at = date('Y-m-d H:i:s');
+
+        $userPass = $user->generateRandomPassword();
+
+        $oAuthActive = false;
+        if($oAuthActive) {
+            // Todo.. activate account with oauth..
+
+        } else {
+            $user->password = $userPass;
+        }
+
+        $user->save();
+
+        // !!!!! Todo: get caches of roles and fees..
+
+        // Now for roles..
+        $roles = Input::get('roles');
+        foreach($roles as $key => $val) {
+            if(!$val) {
+                continue;
+            }
+            $tmpRole = new UserRole();
+            $tmpRole->user_id = $user->id;
+            $tmpRole->role_id = $key;
+            $tmpRole->save();
+        }
+
+        // Now for fees..
+        $fees = Input::get('fees');
+        $feesPaid = Input::get('feesPaid');
+        foreach($fees as $key => $val) {
+            if(!$val) {
+                continue;
+            }
+
+            $tmpFee = new FeeUser();
+            $tmpFee->fee_id = $key;
+            $tmpFee->user_id = $user->id;
+            if(isset($feesPaid[$key])) {
+                $tmpFee->date_paid = $feesPaid[$key];
+            } else {
+                $tmpFee->date_paid = date('Y-m-d');
+            }
+
+            //Todo: calculate end time..
+
+            $tmpFee->save();
+
+        }
+
+        // Todo: shoot email with password to user!
+
+        $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
     }
 }

@@ -228,4 +228,27 @@ class User extends Model
 
         return $users->get();
     }
+
+    public function generateRandomPassword($max_length = 8) {
+        $str = "qwertyuiopasdfghjklzxcvbnm1234567890";
+        $shuffled = str_shuffle($str);
+        return substr($shuffled, 0, $max_length);
+    }
+
+    public function generateSeoUrl() {
+        $url = $this->first_name."_".$this->last_name;
+
+        $url_final = $url;
+        $counter = 1;
+        while(!$this->checkSeoUrlIsAvailable($url_final)) {
+            $url_final = $url."_".$counter;
+            $counter++;
+        }
+
+        return $url_final;
+    }
+
+    public function checkSeoUrlIsAvailable($url) {
+        return $this->where('seo_url', $url)->first() == 0;
+    }
 }

@@ -29,6 +29,8 @@
         var vm = this;
         vm.user = {};
         vm.filter = {};
+        vm.roles = {};
+        vm.fees = {};
 
         vm.genderTypes = [
             {
@@ -251,6 +253,14 @@
             $('#date_of_birth').val("");
         }
 
+        vm.closeAndResetActivate = function() {
+            $('#activateUserModal').modal('hide');
+            vm.user = {};
+            $('#activateDepartment').val("").trigger("change");
+            $('.paidOnDateFee').val("");
+
+        }
+
         vm.saveUser = function() {
             vm.user.antenna_id = $('#antenna').val();
             vm.user.studies_type = $('#studies_type').val();
@@ -300,7 +310,7 @@
             });
         }
 
-        vm.editUser = function(id) {
+        vm.editUser = function(id, modal_id) {
             $http({
                 method: 'GET',
                 url: "/api/getUser",
@@ -315,7 +325,7 @@
                     $('#study_field').val(response.data.user.studies_field_id).trigger("change");
                     $('#date_of_birth').val(response.data.user.date_of_birth);
                     $('#gender').val(response.data.user.gender).trigger("change");
-                    vm.openModal();
+                    $('#'+modal_id).modal('show');
                 } else  {
                     $.gritter.add({
                         title: 'Error!',
@@ -326,10 +336,6 @@
                     });
                 }
             })
-        }
-
-        vm.openModal = function() {
-            $('#userModal').modal('show');
         }
 
         vm.exportGrid = function() {
@@ -376,18 +382,56 @@
         }
 
         vm.initControls = function() {
-            $('#fDob, #date_of_birth').datepicker({
+            $('#fDob, #date_of_birth, .paidOnDateFee').datepicker({
                 todayHighlight: true,
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
-            $("#fAntenna, #fStudyType, #fStudyField, #fDepartment, #antenna, #studies_type, #study_field").select2({width: '100%'});
+            $("#fAntenna, #fStudyType, #fStudyField, #fDepartment, #antenna, #studies_type, #study_field, #activateDepartment").select2({width: '100%'});
+        }
+
+        vm.getRoles = function() {
+            $http({
+                method: 'GET',
+                url: "/api/getRoles"
+            }).then(function successCallback(response) {
+                vm.roles = response.data.rows;
+            })
+        }
+
+        vm.addContoltoFee = function() {
+            $('.paidOnDateFee').datepicker({
+                todayHighlight: true,
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+        }
+
+        vm.getFees = function() {
+            $http({
+                method: 'GET',
+                url: "/api/getFees"
+            }).then(function successCallback(response) {
+                vm.fees = response.data.rows;
+                setTimeout(vm.addContoltoFee, 1000);
+            })
+        }
+
+        vm.activateUser = function() {
+            vm.user.department_id = $('#activateDepartment').val();
+            vm.user.feesPaid = {};
+            $.each(vm.fees, function(key, val) {   
+                vm.user.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
+            });
+            console.log(vm.user);
         }
 
         ///////
         vm.loadUsersGrid();
         vm.getRegistrationFields();
         vm.getDepartments();
+        vm.getRoles();
+        vm.getFees();
         vm.initControls();
     }
 
