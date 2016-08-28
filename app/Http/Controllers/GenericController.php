@@ -36,7 +36,7 @@ class GenericController extends Controller
             if($userData['is_superadmin'] == 1) {
                 // Has access to all modules, regardless of roles assigned..
                 $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                        ->orderBy('module_pages.module_id', 'ASC')
+                                        ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                         ->orderBy('module_pages.name', 'ASC')->get();
             } else {
                 // Getting module pages ids to which it has access to..
@@ -44,7 +44,7 @@ class GenericController extends Controller
                 $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
                 $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
                                         ->whereIn('module_pages.id', $modulePageIds)
-                                        ->orderBy('module_pages.module_id', 'ASC')
+                                        ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                         ->orderBy('module_pages.name', 'ASC')->get();
             }
 
@@ -52,9 +52,10 @@ class GenericController extends Controller
             $modulesSrc = "";
             $modulesNames = "";
             $menuMarkUp = "";
+            $baseUrlRepo = "";
             $moduleAccess = array();
             foreach($modules as $module) {
-                $moduleBase = empty($module->module_id) ? "" : $module->module->base_url;
+                $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
                 
                 if(!empty($module->module_id) && empty($module->module->is_active)) {
                     continue;
@@ -64,6 +65,11 @@ class GenericController extends Controller
                 $modulesNames .= ", 'app.".$module->code."'";
 
                 if($lastModuleId != $module->module_id) {
+                    if(strlen($baseUrlRepo) > 0) {
+                        $baseUrlRepo .= ",";
+                    }
+                    
+                    $baseUrlRepo .= "'".$module->module->code."': '".$moduleBase."'";
                     $lastModuleId = $module->module_id;
                     $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
                 }
@@ -74,6 +80,7 @@ class GenericController extends Controller
             }
 
             $addToView['modulesSrc'] = $modulesSrc;
+            $addToView['baseUrlRepo'] = $baseUrlRepo;
             $addToView['modulesNames'] = $modulesNames;
             $addToView['authToken'] = $userData['authToken'];
 

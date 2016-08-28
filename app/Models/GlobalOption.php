@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Hash;
+use Uuid;
+
 class GlobalOption extends Model
 {
     protected $table = "global_options";
@@ -68,5 +71,12 @@ class GlobalOption extends Model
         }
 
         return $toReturn;
+    }
+
+    public function generateNewSecretToken($string = '') {
+        // Algorithm for generating: Hash(UUID + timestamp [+ string])
+        $unencrypted = Uuid::generate().strtotime('now').$string;
+        $final = Hash::make($unencrypted);
+        return $final;
     }
 }

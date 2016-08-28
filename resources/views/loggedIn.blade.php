@@ -1,18 +1,5 @@
 @extends('template')
 
-<?php 
-// $modulesCodes = "";
-// $modulesSrc = "";
-
-// foreach($modules as $key => $value) {
-//     foreach($value as $singleModule) {
-//         $modulesCodes .= ", 'app.".$singleModule['code']."'";
-//         $modulesSrc .= "<script type='text/javascript' src='".$singleModule['link']."'></script>";
-//     }
-// }
-    
-?>
-
 @section('modules')
 	, 'app.dashboard'
     {!!$modulesNames!!}
@@ -45,15 +32,18 @@
 @stop
 
 @section('modulesSrc')
-    <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
-	<script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
-    {!!$modulesSrc!!}
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {'X-Auth-Token': '{!!$authToken!!}'}
         });
         var countries = {
             {!!$countries!!}
-        }
+        };
+        var baseUrlRepository = {
+            {!!$baseUrlRepo!!}
+        };
     </script>
+    <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
+    {!!$modulesSrc!!}
 @stop

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\Models\Auth;
 use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
@@ -201,6 +202,26 @@ class UserController extends Controller
         });
 
         $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function getUserByToken(Auth $auth) {
+        $token = Input::get('token');
+        if(empty($token)) {
+            $toReturn['success'] = 0;
+            return response(json_encode($toReturn), 200);
+        }
+
+        $now = date('Y-m-d H:i:s');
+        $userData = $auth->with('user')->where('token_generated', $token)
+                        ->where(function($query) use($now) {
+                            $query->where('expiration', '>', $now)
+                                    ->orWhereNull('expiration');
+                        })
+                        ->firstOrFail();
+
+        $toReturn['success'] = 1;
+        $toReturn['user'] = $userData->user;
         return response(json_encode($toReturn), 200);
     }
 }

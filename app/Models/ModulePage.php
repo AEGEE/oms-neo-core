@@ -10,7 +10,7 @@ class ModulePage extends Model
 
     // Relationships..
     public function module() {
-    	return $this->belongsTo('App\Models\Module');
+    	return $this->belongsTo('App\Models\Module', 'module_id');
     }
 
     public function roles() {
@@ -51,6 +51,14 @@ class ModulePage extends Model
                                                             });
                                                 });
                     break;
+            }
+        }
+
+        if(isset($search['module_id']) && !empty($search['module_id'])) {
+            if($search['module_id'] == -1) {
+                $modulePages = $modulePages->whereNull('module_id');
+            } else {
+                $modulePages = $modulePages->where('module_id', $search['module_id']);
             }
         }
         // END filters..

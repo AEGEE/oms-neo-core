@@ -79,6 +79,24 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getEmailTemplate', 'EmailController@getEmailTemplate');
 		Route::post('/api/saveEmailTemplate', 'EmailController@saveEmailTemplate');
 	});
+
+	// Modules..
+	Route::group(['middleware' => 'checkAccess:modules'], function() {
+		Route::get('/api/getModules', 'ModuleController@getModules');
+		Route::get('/api/getModulePagesForSubgrid', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+		Route::post('/api/activateDeactivatePage', 'ModuleController@activateDeactivatePage');
+		Route::post('/api/activateDeactivateModule', 'ModuleController@activateDeactivateModule');
+		Route::get('/api/getSharedSecret', 'ModuleController@getSharedSecret');
+		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
+	});
+});
+
+// Microservice routes..
+Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice');
+
+// Microservice group..
+Route::group(['middleware' => 'microServiceAuth'], function() {
+	Route::post('/api/getUserByToken', 'UserController@getUserByToken');
 });
 
 // Generic routes.. TODO

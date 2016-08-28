@@ -12,6 +12,8 @@ class User extends Model
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
 
+    protected $hidden = ['password'];
+
     // Relationships..
     public function antenna() {
     	return $this->belongsTo('App\Models\Antenna');

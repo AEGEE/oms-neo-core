@@ -2,10 +2,6 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Models\Antenna;
-use App\Models\Country;
-use App\Models\User;
-
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -20,21 +16,12 @@ class DatabaseSeeder extends Seeder
         $this->call(ModuleSeeder::class);
         $this->call(OptionsSeeder::class);
         $this->call(EmailTemplateSeeder::class);
+        $this->call(AddSuperAdmin::class);
     }
 }
 
 class userSeeder extends Seeder {
 	public function run() {
-		$country = Country::create([
-			'name'	=>	'Romania'
-		]);
-
-		$antenna = Antenna::create([
-			'name'			=>	'Aegee Cluj',
-			'city'			=>	'Cluj-Napoca',
-			'country_id' 	=>	$country->id
-		]);
-
 		User::create([
 			'contact_email' 	=> 	'flaviu@glitch.ro',
 			'first_name'		=>	'Flaviu',

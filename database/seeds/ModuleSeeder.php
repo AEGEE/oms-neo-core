@@ -68,5 +68,13 @@ class ModuleSeeder extends Seeder
             'icon'          =>  'fa fa-cog',
             'is_active'     =>  1
         ]);
+
+        ModulePage::create([
+            'name'          =>  'Modules',
+            'code'          =>  'modules',
+            'module_link'   =>  'modules/loggedIn/modules/modules.js',
+            'icon'          =>  'fa fa-puzzle-piece',
+            'is_active'     =>  1
+        ]);
     }
 }

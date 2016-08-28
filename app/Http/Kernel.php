@@ -51,5 +51,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'checkKey' => \App\Http\Middleware\ApiCheckMiddleware::class,
         'checkAccess' => \App\Http\Middleware\CheckModuleAccess::class,
+        'microServiceAuth' => \App\Http\Middleware\MicroServiceAuth::class,
     ];
 }
