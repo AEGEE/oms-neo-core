@@ -64,6 +64,7 @@ Route::group(['middleware' => 'api'], function() {
 	Route::group(['middleware' => 'checkAccess:users'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
 		Route::get('/api/getUser', 'UserController@getUser');
+		Route::post('/api/activateUser', 'UserController@activateUser');
 	});
 
 	// Settings..

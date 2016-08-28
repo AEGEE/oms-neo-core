@@ -63,4 +63,15 @@ class Role extends Model
 
         return $roles->get();
     }
+
+    public function getCache() {
+        $all = $this->all();
+        $toReturn = array();
+
+        foreach($all as $role) {
+            $toReturn[$role->id] = $role->name;
+        }
+
+        return $toReturn;
+    }
 }

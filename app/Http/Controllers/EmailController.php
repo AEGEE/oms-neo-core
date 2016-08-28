@@ -112,6 +112,6 @@ class EmailController extends Controller
 
     	$addToView = $tpl->prepareContentForView($toReplace);
 
-    	return view('emails.email', $addToView);
+    	return view('emails.email2', $addToView);
     }
 }

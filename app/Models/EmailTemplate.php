@@ -67,7 +67,7 @@ class EmailTemplate extends Model
             $linkTpl = '</td>
                     </tr>
                     <tr>
-                        <td class="panel">
+                        <td style="background: #1b2024;border: none; padding: 10px !important;">
                             <a href="'.$replaceArr['{link}'].'">'.$replaceArr['{link}'].'</a>
                         </td>
                     </tr>

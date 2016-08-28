@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class Fee extends Model
 {
     protected $table = "fees";
@@ -94,5 +96,36 @@ class Fee extends Model
         }
 
         return $fees->get();
+    }
+
+    public function getCache() {
+        $all = $this->all();
+        $toReturn = array();
+
+        foreach($all as $fee) {
+            $toReturn[$fee->id] = array(
+                'name'                  =>  $fee->name,
+                'is_mandatory'          =>  empty($fee->is_mandatory) ? false : true,
+                'availability'          =>  $fee->availability,
+                'availability_unit'     =>  $fee->availability_unit
+            );
+        }
+
+        return $toReturn;
+    }
+
+    public function getFeeEndTime($duration, $unit, $startTime) {
+        $startParsed = Carbon::createFromFormat('Y-m-d', $startTime);
+        $endTime = $startParsed;
+        switch ($unit) {
+            case '1': // Month
+                $endTime = $startParsed->addMonths($duration);
+                break;
+            case '2': // Year
+                $endTime = $startParsed->addYears($duration);
+                break;
+        }
+
+        return $endTime;
     }
 }

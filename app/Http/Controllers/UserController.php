@@ -6,10 +6,18 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\Models\Department;
+use App\Models\EmailTemplate;
+use App\Models\Fee;
+use App\Models\FeeUser;
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserRole;
 
 use Excel;
+use Hash;
 use Input;
+use Mail;
 
 class UserController extends Controller
 {
@@ -107,7 +115,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function activateUser(User $user) {
+    public function activateUser(User $user, Role $role, Fee $fee, EmailTemplate $tpl) {
         // User..
         $id = Input::get('id');
         $user = $user->findOrFail($id);
@@ -129,20 +137,22 @@ class UserController extends Controller
 
         $oAuthActive = false;
         if($oAuthActive) {
+            $username = ""; // Todo..
             // Todo.. activate account with oauth..
-
         } else {
-            $user->password = $userPass;
+            $username = $user->contact_email;
+            $user->password = Hash::make($userPass);
         }
 
         $user->save();
 
-        // !!!!! Todo: get caches of roles and fees..
+        $rolesCache = $role->getCache();
+        $feesCache = $fee->getCache();
 
         // Now for roles..
         $roles = Input::get('roles');
         foreach($roles as $key => $val) {
-            if(!$val) {
+            if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
                 continue;
             }
             $tmpRole = new UserRole();
@@ -155,7 +165,7 @@ class UserController extends Controller
         $fees = Input::get('fees');
         $feesPaid = Input::get('feesPaid');
         foreach($fees as $key => $val) {
-            if(!$val) {
+            if(!$val || !isset($feesCache[$key])) { // Fee set as false or does not exist..
                 continue;
             }
 
@@ -168,13 +178,27 @@ class UserController extends Controller
                 $tmpFee->date_paid = date('Y-m-d');
             }
 
-            //Todo: calculate end time..
-
+            $tmpFee->expiration_date = $fee->getFeeEndTime($feesCache[$key]['availability'], $feesCache[$key]['availability_unit'], $tmpFee->date_paid);
             $tmpFee->save();
 
         }
 
-        // Todo: shoot email with password to user!
+        // Email user with all data..
+        $tpl = $tpl->where('code', 'account_activated')->first();
+        $toReplace = array(
+            '{fullname}'        =>  $user->first_name." ".$user->last_name,
+            '{username}'        =>  $username,
+            '{password}'        =>  $userPass,
+            '{link}'            =>  url('/')
+        );
+
+        $addToView = $tpl->prepareContentForView($toReplace);
+
+        Mail::send('emails.email2', $addToView, function($message) use($user, $addToView) {
+            $message->from($addToView['globals']['email_sender'], $addToView['globals']['app_name']);
+            $message->to($user->contact_email);
+            $message->subject($addToView['title']);
+        });
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);

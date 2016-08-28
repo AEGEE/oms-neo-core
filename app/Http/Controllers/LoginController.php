@@ -81,6 +81,7 @@ class LoginController extends Controller
 
     	// We try to also add it to session..
     	$userData = array(
+            'id'                =>  $user->id,
     		'username'			=>	$user->contact_email,
     		'fullname'			=>	$user->first_name." ".$user->last_name,
     		'is_superadmin'		=>	$user->is_superadmin,

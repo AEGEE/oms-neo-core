@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Models\Country;
 use App\Models\GlobalOption;
 use App\Models\ModulePage;
+use App\Models\UserRole;
 
 use Session;
 
@@ -38,8 +39,13 @@ class GenericController extends Controller
                                         ->orderBy('module_pages.module_id', 'ASC')
                                         ->orderBy('module_pages.name', 'ASC')->get();
             } else {
-                // Need to check roles..
-                // TODO
+                // Getting module pages ids to which it has access to..
+                $userRolesObj = new UserRole();
+                $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
+                $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
+                                        ->whereIn('module_pages.id', $modulePageIds)
+                                        ->orderBy('module_pages.module_id', 'ASC')
+                                        ->orderBy('module_pages.name', 'ASC')->get();
             }
 
             $lastModuleId = 0;

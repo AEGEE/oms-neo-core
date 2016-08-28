@@ -249,6 +249,6 @@ class User extends Model
     }
 
     public function checkSeoUrlIsAvailable($url) {
-        return $this->where('seo_url', $url)->first() == 0;
+        return $this->where('seo_url', $url)->count() == 0;
     }
 }

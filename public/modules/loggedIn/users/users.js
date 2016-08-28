@@ -423,7 +423,47 @@
             $.each(vm.fees, function(key, val) {   
                 vm.user.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
             });
-            console.log(vm.user);
+            $http({
+                method: "POST",
+                url: '/api/activateUser',
+                data: vm.user,
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'User activated successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.closeAndResetActivate();
+                    vm.searchUserGrid();
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
         }
 
         ///////
