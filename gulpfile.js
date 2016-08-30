@@ -48,7 +48,7 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/select2/dist/js/select2.min.js',
 		'../../../public/assets/plugins/bootstrap-wizard/js/bwizard.js',
 		'../../../public/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
-		'../../../public/assets/plugins/moment/moment.min.js',
+		'../../../public/assets/plugins/bootstrap-daterangepicker/moment.js',
 		'../../../public/assets/plugins/parsley/dist/parsley.js',
 		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
 	],
