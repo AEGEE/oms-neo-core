@@ -24,7 +24,7 @@
             });
     }
 
-    function UserController($http, $compile, $scope) {
+    function UserController($http, $compile, $scope, $state) {
         // Data
         var vm = this;
         vm.user = {};
@@ -463,6 +463,12 @@
                     time: '',
                     class_name: 'my-sticky-class'
                 });
+            });
+        }
+
+        vm.visitProfile = function(url) {
+            $state.go('app.profile', {
+                    'seo': url
             });
         }
 

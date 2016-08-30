@@ -87,7 +87,8 @@ class LoginController extends Controller
     		'is_superadmin'		=>	$user->is_superadmin,
     		'department_id'		=>	$user->department_id,
             'logged_in'         =>  true,
-            'authToken'         =>  $loginKey
+            'authToken'         =>  $loginKey,
+            'seo_url'           =>  $user->seo_url
     	);
 
 		Session::put('userData', $userData);

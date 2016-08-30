@@ -74,4 +74,12 @@ class Role extends Model
 
         return $toReturn;
     }
+
+    public function getUserRoles($userId) {
+        return $this->select('roles.name', 'user_roles.id')
+                    ->join('user_roles', 'user_roles.role_id', '=', 'roles.id')
+                    ->where('user_id', $userId)
+                    ->whereNull('is_disabled')
+                    ->get();
+    }
 }

@@ -4,9 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class Department extends Model
 {
     protected $table = "departments";
+
+    protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
     // Relationships..
     public function user() {
@@ -54,5 +58,21 @@ class Department extends Model
         }
 
         return $departments->get();
+    }
+
+    public function getUserBoardMemberships($userId) {
+        $memberships = $this->select('departments.name', 'board_members.id', 'board_members.start_date', 'board_members.end_date')
+                            ->join('board_members', 'board_members.department_id', '=', 'departments.id')
+                            ->where('user_id', $userId)
+                            ->get();
+        return $memberships;
+    }
+
+    public function getPeriod() {
+        return $this->start_date->format('Y-m-d')." - ".$this->end_date->format('Y-m-d');
+    }
+
+    public function isActiveMembership() {
+        return Carbon::now()->between($this->start_date, $this->end_date);
     }
 }

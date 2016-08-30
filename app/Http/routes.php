@@ -23,6 +23,12 @@ Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
+	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
+
+	// Personal routes..
+	Route::post('/api/changeEmail', 'UserController@changeEmail');
+	Route::post('/api/changePassword', 'UserController@changePassword');
+	Route::post('/api/editBio', 'UserController@editBio');
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
@@ -65,6 +71,23 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
 		Route::get('/api/getUser', 'UserController@getUser');
 		Route::post('/api/activateUser', 'UserController@activateUser');
+		
+		// Creates..
+		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
+		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
+		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
+
+		// Deletes..
+		Route::post('/api/deleteFee', 'UserController@deleteFee');
+		Route::post('/api/deleteRole', 'UserController@deleteRole');
+		Route::post('/api/deleteMembership', 'UserController@deleteMembership');
+		Route::post('/api/deleteWorkGroup', 'UserController@deleteWorkGroup');
+
+		// Suspensions and others..
+		Route::post('/api/suspendAccount', 'UserController@suspendAccount');
+		Route::post('/api/unsuspendAccount', 'UserController@unsuspendAccount');
+		Route::post('/api/impersonateUser', 'UserController@impersonateUser');
+
 	});
 
 	// Settings..

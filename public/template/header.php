@@ -110,7 +110,7 @@ session_write_close();
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>
-                    <li><a href="javascript:;">Edit Profile</a></li>
+                    <li><a href="javascript:;" ui-sref="app.profile({seo: '<?=$userData['seo_url']?>'})">Edit Profile</a></li>
                     <li class="divider"></li>
                     <li><a href="javascript:;" ng-click="vm.logout()">Log Out</a></li>
                 </ul>

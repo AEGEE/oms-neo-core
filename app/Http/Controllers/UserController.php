@@ -5,8 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\AddBoardPositionRequest;
+use App\Http\Requests\AddFeesRequest;
+use App\Http\Requests\AddRoleRequest;
+use App\Http\Requests\ChangeEmailRequest;
+use App\Http\Requests\ChangePasswordRequest;
 
 use App\Models\Auth;
+use App\Models\BoardMember;
+use App\Models\Country;
 use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
@@ -14,6 +21,8 @@ use App\Models\FeeUser;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Models\UserWorkingGroup;
+use App\Models\WorkingGroup;
 
 use Excel;
 use Hash;
@@ -22,8 +31,9 @@ use Mail;
 
 class UserController extends Controller
 {
-    public function getUsers(User $user) {
-    	$search = array(
+    public function getUsers(User $user, Request $req) {
+    	$userData = $req->get('userData');
+        $search = array(
             'name'          	=>  Input::get('name'),
             'date_of_birth'		=>	Input::get('date_of_birth'),
             'contact_email'		=>	Input::get('contact_email'),
@@ -81,7 +91,9 @@ class UserController extends Controller
             if($isGrid) {
                 // $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editUser(".$userX->id.", \"userModal\")'><i class='fa fa-pencil'></i></button>"; // Temporary disabled due to some angular bugs
                 if($userX->status == 2) {
-                    $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Activate user' ng-click='vm.editUser(".$userX->id.", \"activateUserModal\")'><i class='fa fa-check'></i></button>"; // Temporary disabled due to some angular bugs
+                    $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Activate user' ng-click='vm.editUser(".$userX->id.", \"activateUserModal\")'><i class='fa fa-check'></i></button>";
+                } elseif($userX->status != 2 && $userX->id != $userData->id) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='View user profile' ng-click='vm.visitProfile(\"".$userX->seo_url."\")'><i class='fa fa-search'></i></button>";
                 }
             } else {
                 $actions = $userX->id;
@@ -224,4 +236,278 @@ class UserController extends Controller
         $toReturn['user'] = $userData->user;
         return response(json_encode($toReturn), 200);
     }
+
+    public function getUserProfile(User $user, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, UserRole $userRole, Request $req) {
+        $isOauthDefined = false;
+
+        $userData = $req->get('userData');
+        $url = Input::get('seo_url', $userData['seo_url']);
+        $isUi = Input::get('is_ui', false);
+        $user = $user->with('antenna', 'department', 'studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        $id = $user->id;
+
+        $toReturn['success'] = 1;
+        $country = Country::find($user->antenna->country_id);
+        $toReturn['user'] = array(
+            'id'                =>  $user->id,
+            'fullname'          =>  $user->first_name." ".$user->last_name,
+            'antenna'           =>  $user->antenna->name,
+            'antenna_city'      =>  $user->antenna->city,
+            'country'           =>  $country->name,
+            'department'        =>  !empty($user->department) ? $user->department->name : "-",
+            'date_of_birth'     =>  $user->date_of_birth->format('Y-m-d'),
+            'gender'            =>  $user->genderText,
+            'university'        =>  $user->university,
+            'studies'           =>  $user->studyField->name." (".$user->studyType->name.")",
+            'city'              =>  $user->city,
+            'bio'               =>  !empty($user->other) ? $user->other : "No bio available",
+            'rank'              =>  'Member',
+            'email'             =>  $user->getEmailAddress(),
+            'activated_at'      =>  $user->activated_at->format('Y-m-d'),
+            'status'            =>  $user->status_text,
+            'suspended_for'     =>  $user->suspended_reason
+        );
+
+        $toReturn['workingGroups'] = array();
+        $wgs = $wg->getUserWorkingGroups($id);
+        foreach ($wgs as $work) {
+            $toReturn['workingGroups'][] = array(
+                'id'        =>  $work->id,
+                'name'      =>  $work->name,
+                'period'    =>  $work->getPeriod()
+            );
+        }
+
+        $toReturn['board_positions'] = array();
+        $isCurrentBoardMember = false;
+        $boards = $dep->getUserBoardMemberships($id);
+        foreach ($boards as $membership) {
+            $toReturn['board_positions'][] = array(
+                'id'        =>  $membership->id,
+                'name'      =>  $membership->name,
+                'period'    =>  $membership->getPeriod()
+            );
+            if(!$isCurrentBoardMember) {
+                $isCurrentBoardMember = $membership->isActiveMembership();
+            }
+        }
+
+        $toReturn['roles'] = array();
+        $roles = $role->getUserRoles($id);
+        foreach ($roles as $roleX) {
+            $toReturn['roles'][] = array(
+                'id'        =>  $roleX->id,
+                'name'      =>  $roleX->name,
+            );
+        }
+
+        $toReturn['fees_paid'] = array();
+        $fees = $fee->getUserFees($id);
+        foreach ($fees as $userFee) {
+            $toReturn['fees_paid'][] = array(
+                'id'        =>  $userFee->id,
+                'name'      =>  $userFee->name,
+                'period'    =>  $userFee->getPeriod()
+            );
+        }
+
+        // Determining highest rank..
+        if(!empty($user->is_superadmin)) {
+            $toReturn['user']['rank'] = 'Super Admin';
+        } else if($isCurrentBoardMember) {
+            $toReturn['user']['rank'] = "Board member";
+        }
+
+        if(!empty($user->is_suspended)) {
+            $toReturn['user']['rank'] = 'Suspended';
+        }
+
+        $userMaxLevelOfEditing = $userRole->getMaxPermissionLevelForRole('users', $userData->id);
+
+        $toReturn['active_fields'] = array(
+            'change_avatar'         =>  ($id == $userData->id) ? true : false,
+            'change_password'       =>  ($id == $userData->id && !$isOauthDefined) ? true : false,
+            'change_email'          =>  ($id == $userData->id && !$isOauthDefined) ? true : false,
+            'change_bio'            =>  ($id == $userData->id) ? true : false,
+            'addEditStuff'          =>  ($userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'account_info'          =>  ($userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'suspend_account'       =>  ($user->status == 1 && $id != $userData->id) ? true : false,
+            'unsuspend_account'     =>  ($user->status == 3 && $id != $userData->id) ? true : false,
+            'impersonate'           =>  ($id != $userData->id) ? true : false,
+            'suspended'             =>  empty($user->suspended_reason) ? false : true,
+            'work_groups'           =>  (count($toReturn['workingGroups']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'board_positions'       =>  (count($toReturn['board_positions']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'role'                  =>  (count($toReturn['roles']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+        );
+
+
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function setBoardPosition(BoardMember $bm, AddBoardPositionRequest $req) {
+        $bm->user_id = Input::get('user_id');
+        $bm->department_id = Input::get('department_id');
+        $bm->start_date = Input::get('start_date');
+        $bm->end_date = Input::get('end_date');
+        $bm->save();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function addUserRoles(Role $role, AddRoleRequest $req) {
+        $id = Input::get('user_id');
+        $rolesCache = $role->getCache();
+
+        $roles = Input::get('roles');
+        foreach ($roles as $key => $val) {
+            if(!$val || !isset($rolesCache[$key])) {
+                continue;
+            }
+
+            UserRole::firstOrCreate([
+                'user_id'   =>  $id,
+                'role_id'   =>  $key
+            ]);
+        }
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function addFeesToUser(Fee $fee, AddFeesRequest $req) {
+        $id = Input::get('user_id');
+
+        $feesCache = $fee->getCache();
+
+        $fees = Input::get('fees');
+        $feesPaid = Input::get('feesPaid');
+        foreach($fees as $key => $val) {
+            if(!$val || !isset($feesCache[$key])) { // Fee set as false or does not exist..
+                continue;
+            }
+
+            $tmpFee = new FeeUser();
+            $tmpFee->fee_id = $key;
+            $tmpFee->user_id = $id;
+            if(isset($feesPaid[$key])) {
+                $tmpFee->date_paid = $feesPaid[$key];
+            } else {
+                $tmpFee->date_paid = date('Y-m-d');
+            }
+
+            $tmpFee->expiration_date = $fee->getFeeEndTime($feesCache[$key]['availability'], $feesCache[$key]['availability_unit'], $tmpFee->date_paid);
+            $tmpFee->save();
+
+        }
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function deleteFee(FeeUser $obj) {
+        $id = Input::get('id');
+        $obj = $obj->findOrFail($id);
+        $obj->delete();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function deleteRole(UserRole $obj) {
+        $id = Input::get('id');
+        $obj = $obj->findOrFail($id);
+        $obj->delete();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function deleteMembership(BoardMember $obj) {
+        $id = Input::get('id');
+        $obj = $obj->findOrFail($id);
+        $obj->delete();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function deleteWorkGroup(UserWorkingGroup $obj) {
+        $id = Input::get('id');
+        $obj = $obj->findOrFail($id);
+        $obj->delete();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function changeEmail(User $user, ChangeEmailRequest $req) {
+        $userData = $req->get('userData');
+        $user = $user->findOrFail($userData['id']);
+        $user->email = Input::get('email');
+        $user->save();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function changePassword(User $user, ChangePasswordRequest $req) {
+        $userData = $req->get('userData');
+        $user = $user->findOrFail($userData['id']);
+        
+        $newPassword = Input::get('password');
+        $user->password = Hash::make($newPassword);
+        $user->save();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function editBio(User $user, Request $req) {
+        $userData = $req->get('userData');
+        $user = $user->findOrFail($userData['id']);
+
+        $user->other = Input::get('bio');
+        $user->save();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function suspendAccount(User $user, Request $req) {
+        $userData = $req->get('userData');
+
+        $id = Input::get('id');
+        $user = $user->findOrFail($id);
+        
+        $suspensionReason = Input::get('reason');
+        $user->suspendAccount($suspensionReason, $userData['fullname']);
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function unsuspendAccount(User $user, Request $req) {
+        $userData = $req->get('userData');
+
+        $id = Input::get('id');
+        $user = $user->findOrFail($id);
+        
+        $suspensionReason = Input::get('reason');
+        $user->unsuspendAccount();
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function impersonateUser(User $user, Request $req, Auth $auth) {
+        $userData = $req->get('userData');
+
+        $id = Input::get('id');
+        $user = $user->findOrFail($id);
+
+        // TODO
+    }
+
+
 }

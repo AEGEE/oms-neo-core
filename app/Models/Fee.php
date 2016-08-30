@@ -10,6 +10,8 @@ class Fee extends Model
 {
     protected $table = "fees";
 
+    protected $dates = ['created_at', 'updated_at', 'date_paid', 'expiration_date'];
+
     // Relationships..
     public function feeUser() {
     	return $this->hasMany('App\Models\FeeUser');
@@ -127,5 +129,24 @@ class Fee extends Model
         }
 
         return $endTime;
+    }
+
+    public function getUserFees($userId) {
+        return $this->select('fees.name', 'fee_users.id', 'fee_users.date_paid', 'fee_users.expiration_date')
+                    ->join('fee_users', 'fee_users.fee_id', '=', 'fees.id')
+                    ->where('user_id', $userId)
+                    ->get();
+    }
+
+    public function getPeriod() {
+        $toReturn = $this->date_paid->format('Y-m-d');
+
+        if(!empty($this->expiration_date)) {
+            $toReturn .= " - ".$this->expiration_date->format('Y-m-d');
+        } else {
+            $toReturn .= " - Not expiring";
+        }
+
+        return $toReturn;
     }
 }

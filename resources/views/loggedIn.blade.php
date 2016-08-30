@@ -1,7 +1,8 @@
 @extends('template')
 
 @section('modules')
-	, 'app.dashboard'
+    , 'app.dashboard'
+	, 'app.profile'
     {!!$modulesNames!!}
     
 @stop
@@ -45,5 +46,6 @@
     </script>
     <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
     <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/profile/profile.js"></script>
     {!!$modulesSrc!!}
 @stop

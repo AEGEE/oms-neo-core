@@ -8,6 +8,8 @@ class UserRole extends Model
 {
     protected $table = "user_roles";
 
+    protected $fillable = ['user_id', 'role_id'];
+
     // Relationships..
     public function user() {
     	return $this->belongsTo('App\Models\User');
@@ -22,7 +24,7 @@ class UserRole extends Model
     	$toReturn = array();
     	$pages = $this->select('role_module_pages.*')
     					->join('roles', 'roles.id', '=', 'user_roles.role_id')
-    					->join('role_module_pages', 'roles.id', '=', 'user_roles.role_id')
+    					->join('role_module_pages', 'roles.id', '=', 'role_module_pages.role_id')
     					->where('user_roles.user_id', $userId)
     					->get();
     	foreach($pages as $page) {
@@ -30,5 +32,16 @@ class UserRole extends Model
     	}
 
     	return $toReturn;
+    }
+
+    public function getMaxPermissionLevelForRole($page_code, $user_id) {
+        $maxLevel = $this
+                        ->join('roles', 'roles.id', '=', 'user_roles.role_id')
+                        ->join('role_module_pages', 'roles.id', '=', 'role_module_pages.role_id')
+                        ->join('module_pages', 'module_pages.id', '=', 'role_module_pages.module_page_id')
+                        ->where('user_id', $user_id)
+                        ->where('code', $page_code)
+                        ->max('role_module_pages.permission_level');
+        return $maxLevel;
     }
 }

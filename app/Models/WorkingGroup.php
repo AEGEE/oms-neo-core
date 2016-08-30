@@ -56,4 +56,27 @@ class WorkingGroup extends Model
 
         return $workGroups->get();
     }
+
+    public function getUserWorkingGroups($userId) {
+        $wg = $this->select('working_groups.name', 'user_working_groups.id', 'user_working_groups.start_date', 'user_working_groups.end_date')
+                    ->join('user_working_groups', 'user_working_groups.work_group_id', '=', 'working_groups.id')
+                    ->where('user_id', $userId)
+                    ->get();
+        return $wg;
+    }
+
+    public function getPeriod() {
+        $toReturn = "";
+        if(empty($this->start_date)) {
+           return $toReturn; 
+        }
+
+        $toReturn = $this->start_date->format('Y-m-d');
+
+        if(!empty($this->end_date)) {
+            $toReturn .= " - ".$this->end_date->format('Y-m-d');
+        }
+
+        return $toReturn;
+    }
 }

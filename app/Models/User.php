@@ -103,14 +103,18 @@ class User extends Model
     public function getStatusAttribute($value) {
         $suspended = empty($this->is_suspended) ? false : true;
         $active = empty($this->activated_at) ? false : true;
-        $status = "1";
+        $status = "1"; // Active
         if($suspended) {
-            $status = "3";
+            $status = "3"; // Suspended
         } elseif(!$active) {
             $status = "2";
         }
 
         return $status;
+    }
+
+    public function getEmailAddress() {
+        return empty($this->getOriginal('internal_email')) ? $this->contact_email : $this->internal_email;
     }
 
     // Model methods go down here..
@@ -239,6 +243,7 @@ class User extends Model
 
     public function generateSeoUrl() {
         $url = $this->first_name."_".$this->last_name;
+        $url = strtolower($url);
 
         $url_final = $url;
         $counter = 1;
@@ -252,5 +257,21 @@ class User extends Model
 
     public function checkSeoUrlIsAvailable($url) {
         return $this->where('seo_url', $url)->count() == 0;
+    }
+
+    public function suspendAccount($reason, $suspender = 'System') {
+        $this->is_suspended = 1;
+        $this->suspended_reason = $reason." Suspended by: ".$suspender." on ".date('Y-m-d H:i:s');
+        $this->save();
+
+        // Todo send email..
+    }
+
+    public function unsuspendAccount() {
+        $this->is_suspended = null;
+        $this->suspended_reason = null;
+        $this->save();
+
+        // Todo send email..
     }
 }

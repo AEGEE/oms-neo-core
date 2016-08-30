@@ -32,7 +32,9 @@ class AddSuperAdmin extends Seeder
 			'studies_field_id'	=>	1,
 			'password'			=>	Hash::make('1234'),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1
+			'is_superadmin'		=>	1,
+            'city'              =>  'Cluj',
+            'seo_url'           =>  'glitch'
 		]);
     }
 }
