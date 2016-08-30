@@ -27,7 +27,8 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/bootstrap-wizard/css/bwizard.min.css',
 		'../../../public/assets/plugins/bootstrap-datepicker/css/datepicker.css',
         '../../../public/assets/plugins/bootstrap-datepicker/css/datepicker3.css',
-        '../../../public/assets/plugins/parsley/src/parsley.css'
+        '../../../public/assets/plugins/parsley/src/parsley.css',
+        '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
 	],
 	'public/vendor/vendor.css');
 
@@ -47,7 +48,8 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/select2/dist/js/select2.min.js',
 		'../../../public/assets/plugins/bootstrap-wizard/js/bwizard.js',
 		'../../../public/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
-		'../../../public/assets/plugins/parsley/dist/parsley.js'
+		'../../../public/assets/plugins/parsley/dist/parsley.js',
+		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
 	],
 	'public/vendor/vendor.js');
 
