@@ -12,6 +12,7 @@ use App\Http\Requests\SignupRequest;
 
 use App\Models\Auth;
 use App\Models\Antenna;
+use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\User;
@@ -23,7 +24,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth) {
+    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth, Fee $fee) {
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -79,17 +80,25 @@ class LoginController extends Controller
     	$auth->successful = 1;
     	$auth->save();
 
+        // We check if user has all fees paid, if not, we auto-suspend him..
+        if(empty($user->is_superadmin)) {
+            $fee->checkFeesForSuspention($user);
+        }
+
     	// We try to also add it to session..
-    	$userData = array(
-            'id'                =>  $user->id,
-    		'username'			=>	$user->contact_email,
-    		'fullname'			=>	$user->first_name." ".$user->last_name,
-    		'is_superadmin'		=>	$user->is_superadmin,
-    		'department_id'		=>	$user->department_id,
-            'logged_in'         =>  true,
-            'authToken'         =>  $loginKey,
-            'seo_url'           =>  $user->seo_url
-    	);
+    	// $userData = array(
+     //        'id'                =>  $user->id,
+    	// 	'username'			=>	$user->contact_email,
+    	// 	'fullname'			=>	$user->first_name." ".$user->last_name,
+    	// 	'is_superadmin'		=>	$user->is_superadmin,
+    	// 	'department_id'		=>	$user->department_id,
+     //        'logged_in'         =>  true,
+     //        'authToken'         =>  $loginKey,
+     //        'seo_url'           =>  $user->seo_url,
+     //        'is_suspended'      =>  !empty($user->is_suspended) ? true : false,
+     //        'suspended_reason'  =>  $user->suspended_reason
+    	// );
+        $userData = $user->getLoginUserArray($loginKey);
 
 		Session::put('userData', $userData);
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..

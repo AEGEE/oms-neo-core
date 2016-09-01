@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Requests\AddBoardPositionRequest;
 use App\Http\Requests\AddFeesRequest;
 use App\Http\Requests\AddRoleRequest;
+use App\Http\Requests\AddWorkingGroupRequest;
 use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\ChangePasswordRequest;
 
@@ -25,9 +26,13 @@ use App\Models\UserWorkingGroup;
 use App\Models\WorkingGroup;
 
 use Excel;
+use File;
 use Hash;
+use Image;
 use Input;
 use Mail;
+use Response;
+use Session;
 
 class UserController extends Controller
 {
@@ -444,7 +449,15 @@ class UserController extends Controller
     public function changeEmail(User $user, ChangeEmailRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
-        $user->email = Input::get('email');
+        $user->contact_email = Input::get('email');
+
+        $emailHash = $user->getEmailHash($user->contact_email);
+        if($user->checkEmailHash($emailHash, $user->id)) {
+            $toReturn['success'] = 0;
+            $toReturn['message'] = "Email already exists!";
+            return response(json_encode($toReturn), 200);
+        }
+
         $user->save();
 
         $toReturn['success'] = 1;
@@ -467,7 +480,8 @@ class UserController extends Controller
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
 
-        $user->other = Input::get('bio');
+        $bio = Input::get('bio');
+        $user->other = nl2br($bio);
         $user->save();
 
         $toReturn['success'] = 1;
@@ -481,7 +495,7 @@ class UserController extends Controller
         $user = $user->findOrFail($id);
         
         $suspensionReason = Input::get('reason');
-        $user->suspendAccount($suspensionReason, $userData['fullname']);
+        $user->suspendAccount($suspensionReason, $userData->first_name." ".$userData->last_name);
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
@@ -493,7 +507,6 @@ class UserController extends Controller
         $id = Input::get('id');
         $user = $user->findOrFail($id);
         
-        $suspensionReason = Input::get('reason');
         $user->unsuspendAccount();
 
         $toReturn['success'] = 1;
@@ -502,12 +515,127 @@ class UserController extends Controller
 
     public function impersonateUser(User $user, Request $req, Auth $auth) {
         $userData = $req->get('userData');
+        $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         $id = Input::get('id');
         $user = $user->findOrFail($id);
 
-        // TODO
+        $auth = $auth->where('token_generated', $xAuthToken)->firstOrFail();
+        $auth->user_id = $id; // Switching token to new user..
+        $auth->save();
+
+        $userData = $user->getLoginUserArray($xAuthToken);
+
+        Session::put('userData', $userData);
+        // Mirroring Laravel session data to PHP native session.. For use with angular partials..
+        session_start();
+        $_SESSION['userData'] = Session::get('userData');
+        session_write_close();      
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
     }
 
+    public function addWorkingGroupToUser(User $user, UserWorkingGroup $uWg, AddWorkingGroupRequest $req) {
+        $id = Input::get('user_id');
+        $wgId = Input::get('work_group_id');
 
+        $uWg = $uWg->firstOrCreate([
+            'user_id'       =>  $id,
+            'work_group_id' =>  $wgId
+        ]);
+
+        $start_date = Input::get('start_date');
+        $end_date = Input::get('end_date');
+
+        $needsSave = false;
+        if(!empty($start_date)) {
+            $uWg->start_date = $start_date;
+            $needsSave = true;
+        }
+
+        if(!empty($end_date)) {
+            $uWg->end_date = $end_date;
+            $needsSave = true;
+        }
+
+        if($needsSave) {
+            $uWg->save();
+        }
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function getDashboardData(User $user) {
+        $toReturn = array();
+        $toReturn['userCount'] = $user->count();
+        $newestMembers = $user->with('antenna')->orderBy('activated_at', 'DESC')->take(10)->get();
+        foreach($newestMembers as $member) {
+            $toReturn['newestMembers'][] = array(
+                'fullname'  =>  $member->first_name." ".$member->last_name,
+                'local'     =>  $member->antenna->name,
+                'seo_url'   =>  $member->seo_url
+            );
+            
+        }
+
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function uploadUserAvatar(Request $req) {
+        $userData = $req->get('userData');
+
+        $allowedExt = array(
+            'png', 'jpg', 'jpeg'
+        );
+
+        $path = storage_path();
+        $baseDir = $path."/userAvatars/";
+        if(!file_exists($baseDir)) {
+            mkdir($baseDir, 0777, true);
+        }
+        $tmpPlace = $path."/userAvatarsTmp/";
+        if(!file_exists($tmpPlace)) {
+            mkdir($tmpPlace, 0777, true);
+        }
+
+        $file = $req->file('avatar');
+
+        $filename = $file->getClientOriginalName();
+        $extension = explode('.', $filename);
+        $extension = strtolower($extension[count($extension)-1]);
+        if(!in_array($extension, $allowedExt)) {
+            $toReturn['success'] = 0;
+            $toReturn['message'] = "Extension not allowed!";
+            return response(json_encode($toReturn), 200);
+        }
+
+        $file->move($tmpPlace, $filename);
+        $tmpIm = Image::make($tmpPlace.$filename);
+        $tmpIm->fit(300);
+        $tmpIm->save($baseDir.$userData->id.".jpg");
+
+        unlink($tmpPlace.$filename);
+
+        $toReturn['success'] = 1;
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function getUserAvatar($avatarId) {
+        $fallbackAvatar = storage_path()."/userAvatars/0.jpg";
+        $path = storage_path()."/userAvatars/".$avatarId.".jpg";
+
+        if(!File::exists($path)) {
+            $file = File::get($fallbackAvatar);
+            $type = File::mimeType($fallbackAvatar);
+        } else {
+            $file = File::get($path);
+            $type = File::mimeType($path);
+        }
+
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
+    }
 }

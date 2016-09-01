@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class ChangePasswordRequest extends Request
+class AddWorkingGroupRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +13,7 @@ class ChangePasswordRequest extends Request
      */
     public function authorize()
     {
-        $isOauthDefined = false;
-        return !$isOauthDefined;
+        return true;
     }
 
     /**
@@ -25,8 +24,8 @@ class ChangePasswordRequest extends Request
     public function rules()
     {
         return [
-            'password'                 =>      'required|confirmed',
-            'password_confirmation'    =>      'required'
+            'user_id'           =>  'required|exists:users,id',
+            'work_group_id'     =>  'required|exists:working_groups,id'
         ];
     }
 }

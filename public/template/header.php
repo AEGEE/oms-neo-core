@@ -105,7 +105,7 @@ session_write_close();
             </li>
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="assets/img/user-13.jpg" alt="" /> 
+                    <img src="/api/getUserAvatar/<?=$userData['id']?>" alt="" /> 
                     <span class="hidden-xs"><?=$userData['fullname']?></span> <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">

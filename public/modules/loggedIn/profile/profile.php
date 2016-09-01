@@ -17,15 +17,15 @@
 	            <div class="col-md-2">
 	                <!-- begin profile-image -->
 	                <div class="profile-image" id="bigAvatar">
-	                    <img style="width: 100%" src="assets/img/profile-cover.jpg" />
+	                    <img style="width: 100%" src="/api/getUserAvatar/{{vm.user.id}}" />
 	                    <i class="fa fa-user hide"></i>
 	                </div>
 	                <!-- end profile-image -->
 	                <div class="m-b-10">
 	                	<!-- <h5>Actions</h5> -->
 	                    <button class="btn btn-warning btn-block btn-sm" ng-show="vm.active_fields.change_avatar"><i class="fa fa-photo"></i> Change avatar</button>
-	                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.change_password"><i class="fa fa-lock"></i> Change password</button>
-	                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.change_email"><i class="fa fa-envelope"></i> Change email</button>
+	                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.change_password" data-toggle="modal" data-target="#changePasswordModal"><i class="fa fa-lock"></i> Change password</button>
+	                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.change_email" data-toggle="modal" data-target="#changeEmailModal"><i class="fa fa-envelope"></i> Change email</button>
 	                    <div ng-show="vm.active_fields.account_info">
 		                    <h5 class="text-center"><b>Account info</b></h5>
 		                    <table class="table">
@@ -54,9 +54,9 @@
 		                    		</td>
 		                    	</tr>
 		                    </table>
-		                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.suspend_account">Suspend account</button>
-		                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.unsuspend_account">Unsuspend account</button>
-		                    <button class="btn btn-warning btn-block btn-sm" ng-show="vm.active_fields.impersonate">Impersonate user</button>
+		                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.suspend_account" data-toggle="modal" data-target="#suspendAccountModal">Suspend account</button>
+		                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.unsuspend_account" ng-click="vm.unsuspendAccount()">Unsuspend account</button>
+		                    <button class="btn btn-warning btn-block btn-sm" ng-show="vm.active_fields.impersonate" ng-click="vm.impersonate()">Impersonate user</button>
 	                   </div>
 	                </div>
 	            </div>
@@ -143,18 +143,18 @@
 		            <hr />
 		            <div class="row">
 		            	<div class="col-md-6">
-		            		<h4>Bio <button class="btn btn-xs btn-warning" ng-show="vm.active_fields.change_bio"><i class="fa fa-pencil"></i></button></h4>
-							{{vm.user.bio}}
+		            		<h4>Bio <button class="btn btn-xs btn-warning" data-toggle="modal" data-target="#editBioModal" ng-show="vm.active_fields.change_bio"><i class="fa fa-pencil"></i></button></h4>
+							<div ng-bind-html="bio"></div>
 		            	</div>
 		            	<div class="col-md-6" ng-show="vm.active_fields.work_groups">
-		            		<h4>Working groups <button class="btn btn-success btn-xs" ng-show="vm.active_fields.addEditStuff"><i class="fa fa-plus"></i></button></h4>
+		            		<h4>Working groups <button class="btn btn-success btn-xs" data-toggle="modal" data-target="#addWorkGroupModal" ng-show="vm.active_fields.addEditStuff"><i class="fa fa-plus"></i></button></h4>
 							<table class="table">
 								<tr>
 									<th ng-show="vm.active_fields.addEditStuff">Actions</th>
 									<th>Name</th>
 									<th>Period</th>
 								</tr>
-								<tr ng-repeat="workGroup in vm.workGroups">
+								<tr ng-repeat="workGroup in vm.workingGroups">
 									<td ng-show="vm.active_fields.addEditStuff">
 										<button class='btn btn-default btn-xs clickMeProfile' title='Delete' ng-click='vm.deleteWorkGroup(workGroup.id)'><i class='fa fa-ban'></i></button>
 									</td>
@@ -377,6 +377,151 @@
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
                     <button class="btn btn-sm btn-success" ng-click="vm.addBoardMembership()"><i class="fa fa-save"></i> Add membership</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addWorkGroupModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Add working group</h4>
+            </div>
+            <form name="activateForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+	                        <div class="form-group m-b-20">
+		                        <label for="workgroup">Working group</label>
+		                        <select class="form-control" id="workgroup" ng-model="vm.workgroup" ng-options="workgroup.cell[0] as workgroup.cell[1] for workgroup in vm.allWorkingGroups.rows track by workgroup.cell[0]">
+		                            <option></option>
+		                        </select>
+		                    </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label>Starting date</label>
+	                        <input id="startDateWg" class="form-control" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Ending date</label>
+	                        <input id="endDateWg" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
+                    <button class="btn btn-sm btn-success" ng-click="vm.addBoardMembership()"><i class="fa fa-save"></i> Add membership</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editBioModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Edit Bio</h4>
+            </div>
+            <form name="activateForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="bio">Bio</label>
+	                        <textarea class="form-control" id="bio" ng-model="vm.user.bio"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
+                    <button class="btn btn-sm btn-success" ng-click="vm.editBio()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changePasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Change password</h4>
+            </div>
+            <form name="changePasswordForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="password">Password</label>
+	                        <input type="password" name="password" id="password" ng-model="vm.user.password" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="password_confirmation">Password confirm</label>
+	                        <input type="password" name="password_confirmation" id="password_confirmation" ng-model="vm.user.password_confirmation" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
+                    <button class="btn btn-sm btn-success" ng-disabled="changePasswordForm.$pristine || changePasswordForm.$invalid" ng-click="vm.changePassword()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="changeEmailModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Change email</h4>
+            </div>
+            <form name="changeEmailForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="email">Email</label>
+	                        <input type="email" name="email" id="email" ng-model="vm.user.email_change" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email_confirmation">Email confirm</label>
+	                        <input type="email" name="email_confirmation" id="email_confirmation" ng-model="vm.user.email_confirmation" class="form-control" required />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
+                    <button class="btn btn-sm btn-success" ng-disabled="changeEmailForm.$pristine || changeEmailForm.$invalid" ng-click="vm.changeEmail()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="suspendAccountModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Suspend account</h4>
+            </div>
+            <form name="suspendForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="reason">Reason</label>
+	                        <textarea name="reason" id="reason" ng-model="vm.reason" class="form-control" required></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
+                    <button class="btn btn-sm btn-success" ng-disabled="suspendForm.$pristine || suspendForm.$invalid" ng-click="vm.suspendAccount()"><i class="fa fa-lock"></i> Suspend</button>
                 </div>
             </form>
         </div>

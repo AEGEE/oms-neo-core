@@ -8,6 +8,8 @@ class UserWorkingGroup extends Model
 {
     protected $table = "user_working_groups";
 
+    protected $fillable = ['user_id', 'work_group_id'];
+
     // Relationships..
     public function user() {
     	return $this->belongsTo('App\Models\User');

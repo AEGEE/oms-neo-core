@@ -1,7 +1,7 @@
 <?php
 session_start();
 $userData = $_SESSION['userData'];
-$menuMarkup = $_SESSION['moduleMarkup'];
+$menuMarkup = isset($_SESSION['moduleMarkup']) ? $_SESSION['moduleMarkup'] : "";
 session_write_close();
 ?>
 <!-- begin #sidebar -->
@@ -12,7 +12,7 @@ session_write_close();
         <ul class="nav">
             <li class="nav-profile">
                 <div class="image">
-                    <a href="javascript:;"><img src="assets/img/user-13.jpg" alt="" /></a>
+                    <a href="javascript:;"><img src="/api/getUserAvatar/<?=$userData['id']?>" alt="" /></a>
                 </div>
                 <div class="info">
                     <?=$userData['fullname']?>

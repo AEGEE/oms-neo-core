@@ -8,6 +8,8 @@ class WorkingGroup extends Model
 {
     protected $table = "working_groups";
 
+    protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
+
     // Relationships..
     public function userWorkingGroup() {
     	return $this->hasMany('App\Models\UserWorkingGroup');

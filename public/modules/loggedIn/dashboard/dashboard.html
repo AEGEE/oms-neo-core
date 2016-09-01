@@ -8,4 +8,38 @@
     <!-- begin page-header -->
     <h1 class="page-header">Dashboard</h1>
     <!-- end page-header -->
+    <div class="alert alert-danger" ng-show="vm.suspended">
+    	You account was suspended!<br />
+    	You only have access to limited features. <br />
+    	Suspention reason: {{vm.suspendedFor}}
+    </div>
+
+    <div class="row">
+        <!-- begin col-3 -->
+        <div class="col-md-3 col-sm-6">
+            <div class="widget widget-stats bg-green">
+                <div class="stats-icon stats-icon-lg"><i class="fa fa-users fa-fw"></i></div>
+                <div class="stats-title">Total members</div>
+                <div class="stats-number">{{vm.users}}</div>
+            </div>
+        </div>
+        <div class="col-md-6 col-md-offset-1">
+            <!-- begin panel -->
+            <div class="panel panel-inverse">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Newest members</h4>
+                </div>
+                <ul class="registered-users-list clearfix">
+                    <li ng-repeat="user in vm.newestMembers">
+                        <a href="javascript:;" ui-sref="app.profile({seo: user.seo_url})"><img src="assets/img/user-5.jpg" alt="" /></a>
+                        <h4 class="username text-ellipsis">
+                            {{user.fullname}}
+                            <small>{{user.local}}</small>
+                        </h4>
+                    </li>
+                </ul>
+            </div>
+            <!-- end panel -->
+        </div>
+    </div>
 </div>

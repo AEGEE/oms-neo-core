@@ -1,5 +1,7 @@
 @extends('template')
 
+
+
 @section('modules')
     , 'app.dashboard'
 	, 'app.profile'
@@ -43,6 +45,12 @@
         var baseUrlRepository = {
             {!!$baseUrlRepo!!}
         };
+        @if(isset($suspention))
+            var suspendedFor = "{{$suspention}}";
+            var suspended = true;
+        @else
+            var suspended = false;
+        @endif    
     </script>
     <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
     <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>

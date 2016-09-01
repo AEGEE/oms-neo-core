@@ -149,4 +149,31 @@ class Fee extends Model
 
         return $toReturn;
     }
+
+    public function checkFeesForSuspention(&$user) {
+        $existingFeesCache = $this->getCache();
+
+        $now = date('Y-m-d');
+        $feeUser = new FeeUser();
+        $feesPaid = $feeUser->getPaidUserFees($user->id, $now);
+
+        $hasFeesPaid = true;
+        foreach($existingFeesCache as $key => $fee) {
+            if(!$fee['is_mandatory']) {
+                continue;
+            }
+
+            if(!in_array($key, $feesPaid)) {
+                $hasFeesPaid = false;
+            }
+        }
+
+        if($hasFeesPaid && !empty($user->is_suspended)) { // Everything is paid and user is suspended.. we unsuspend him..
+            $user->unsuspendAccount();
+        } elseif(!$hasFeesPaid && empty($user->is_suspended)) { // Has at least one mandatory fee not paid and he's not suspended, we suspend him..
+            $user->suspendAccount("One or more mandatory fees are unpaid!");
+        }
+
+        return $hasFeesPaid;
+    }
 }

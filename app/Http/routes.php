@@ -16,6 +16,7 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 Route::post('/api/signup', 'LoginController@signup');
 
+Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
 // UI accessible only!
 Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 
@@ -24,11 +25,13 @@ Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
 	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
+	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
 
 	// Personal routes..
 	Route::post('/api/changeEmail', 'UserController@changeEmail');
 	Route::post('/api/changePassword', 'UserController@changePassword');
 	Route::post('/api/editBio', 'UserController@editBio');
+	Route::post('/api/uploadUserAvatar', 'UserController@uploadUserAvatar');
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
@@ -76,6 +79,7 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
 		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
 		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
+		Route::post('/api/addWorkingGroupToUser', 'UserController@addWorkingGroupToUser');
 
 		// Deletes..
 		Route::post('/api/deleteFee', 'UserController@deleteFee');

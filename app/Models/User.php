@@ -12,7 +12,7 @@ class User extends Model
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
 
-    protected $hidden = ['password'];
+    protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
     // Relationships..
     public function antenna() {
@@ -273,5 +273,20 @@ class User extends Model
         $this->save();
 
         // Todo send email..
+    }
+
+    public function getLoginUserArray($authToken) {
+        return array(
+            'id'                =>  $this->id,
+            'username'          =>  empty($this->internal_email) ? $this->contact_email : $this->internal_email,
+            'fullname'          =>  $this->first_name." ".$this->last_name,
+            'is_superadmin'     =>  $this->is_superadmin,
+            'department_id'     =>  $this->department_id,
+            'logged_in'         =>  true,
+            'authToken'         =>  $authToken,
+            'seo_url'           =>  $this->seo_url,
+            'is_suspended'      =>  !empty($this->is_suspended) ? true : false,
+            'suspended_reason'  =>  $this->suspended_reason
+        );
     }
 }

@@ -169,6 +169,7 @@ return [
         Barryvdh\Cors\ServiceProvider::class,
         Collective\Bus\BusServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -226,6 +227,7 @@ return [
          */
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Uuid' => Webpatser\Uuid\Uuid::class,
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

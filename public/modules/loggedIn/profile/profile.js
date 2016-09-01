@@ -24,7 +24,7 @@
             });
     }
 
-    function ProfileController($http, $stateParams, $state) {
+    function ProfileController($http, $stateParams, $state, $scope, $sce) {
         // Data
         var vm = this;
         vm.user = {};
@@ -34,6 +34,7 @@
         vm.fees_paid = {};
         vm.active_fields = {};
         vm.allRoles = {};
+        vm.allWorkingGroups = {};
         vm.roleChecked = {};
         vm.feesToPay = {};
 
@@ -60,6 +61,7 @@
                     vm.roles = response.data.roles;
                     vm.fees_paid = response.data.fees_paid;
                     vm.active_fields = response.data.active_fields;
+                    $scope.bio = $sce.trustAsHtml(vm.user.bio);
 
                     setTimeout(vm.fixUiHeights, 500);
             }, function errorCallback() {
@@ -96,12 +98,13 @@
         }
 
         vm.initControls = function() {
-            $('#startDateBoard, #endDateBoard').datepicker({
+            $('#startDateBoard, #endDateBoard, #startDateWg, #endDateWg').datepicker({
                 todayHighlight: true,
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
             $("#department").select2({width: '100%'});
+            $("#workgroup").select2({width: '100%'});
         }
 
         vm.getDepartments = function() {
@@ -111,6 +114,24 @@
             })
             .then(function successCallback(response) {
                 vm.departments = response.data;
+            }, function errorCallback(response) {
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.data,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.getWorkingGroups = function() {
+            $http({
+                method: 'GET',
+                url: '/api/getWorkingGroups'
+            })
+            .then(function successCallback(response) {
+                vm.allWorkingGroups = response.data;
             }, function errorCallback(response) {
                 $.gritter.add({
                     title: 'Error!',
@@ -145,6 +166,55 @@
                     });
                     vm.getUserProfile();
                     $('#addBoardModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.addBoardMembership = function() {
+            $http({
+                method: "POST",
+                url: '/api/addWorkingGroupToUser',
+                data: {
+                    user_id: vm.user.id,
+                    work_group_id: $('#workgroup').val(),
+                    start_date: $('#startDateWg').val(),
+                    end_date: $('#endDateWg').val()
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'User added to working group successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.getUserProfile();
+                    $('#addWorkGroupModal').modal('hide');
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -245,7 +315,147 @@
                         class_name: 'my-sticky-class'
                     });
                     vm.getUserProfile();
-                    $('#addRolesModal').modal('hide');
+                    $('#addFeesModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.editBio = function() {
+            $http({
+                method: "POST",
+                url: '/api/editBio',
+                data: {
+                    bio: vm.user.bio
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'Bio saved successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.getUserProfile();
+                    $('#editBioModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.changeEmail = function() {
+            $http({
+                method: "POST",
+                url: '/api/changeEmail',
+                data: {
+                    email: vm.user.email_change,
+                    email_confirmation: vm.user.email_confirmation
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'Email changed successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.getUserProfile();
+                    $('#changeEmailModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.changePassword = function() {
+            $http({
+                method: "POST",
+                url: '/api/changePassword',
+                data: {
+                    password: vm.user.password,
+                    password_confirmation: vm.user.password_confirmation
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'Password changed successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+
+                    $('#changePasswordModal').modal('hide');
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -473,6 +683,143 @@
             });
         }
 
+        vm.suspendAccount = function() {
+            $http({
+                method: "POST",
+                url: '/api/suspendAccount',
+                data: {
+                    reason: vm.reason,
+                    id: vm.user.id
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'Account suspended successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.getUserProfile();
+                    $('#suspendAccountModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.unsuspendAccount = function() {
+            if(!confirm("Are you sure you want to unsuspend this account? Account suspension will not be lifted if the user was suspended by the System!")) {
+                return;
+            }
+            $http({
+                method: "POST",
+                url: '/api/unsuspendAccount',
+                data: {
+                    id: vm.user.id
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'Account unsuspended successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.getUserProfile();
+                    $('#suspendAccountModal').modal('hide');
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.impersonate = function() {
+            if(!confirm("Are you sure you want to impersonate this account? You will need to logout afterwards to be able to login back to your own account!")) {
+                return;
+            }
+            $http({
+                method: "POST",
+                url: '/api/impersonateUser',
+                data: {
+                    id: vm.user.id
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    location.reload();
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
         vm.fixUiHeights = function() {
             $('#bigAvatar').height($('#bigAvatar').width());
 
@@ -493,6 +840,7 @@
         vm.getRoles();
         vm.getFees();
         vm.getDepartments();
+        vm.getWorkingGroups();
         vm.initControls();
     }
 

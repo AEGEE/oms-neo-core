@@ -18,4 +18,20 @@ class FeeUser extends Model
     }
 
     // Model methods go down here..
+    public function getPaidUserFees($userId, $date) {
+        $feesPaid = $this->where('user_id', $userId)
+        					->where('date_paid', '<=', $date)
+        					->where(function($query) use ($date) {
+        							$query->where('expiration_date', '>=', $date)
+        									->orWhereNull('expiration_date');
+        						})
+        					->get();
+        $toReturn = array();
+        foreach($feesPaid as $fee) {
+        	$toReturn[] = $fee->fee_id;
+        }
+
+        return $toReturn;
+    }
+
 }

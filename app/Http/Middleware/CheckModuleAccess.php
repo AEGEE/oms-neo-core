@@ -21,6 +21,9 @@ class CheckModuleAccess
     public function handle($request, Closure $next, $moduleCode)
     {
         $userData = $request->get('userData');
+        if(!empty($userData->is_suspended)) {
+            return response('Forbidden', 403);
+        }
 
         try {
             $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
