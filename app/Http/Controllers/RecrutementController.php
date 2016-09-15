@@ -16,7 +16,9 @@ use Input;
 
 class RecrutementController extends Controller
 {
-    public function getRecrutementCampaigns(RecrutementCampaign $campaign) {
+    public function getRecrutementCampaigns(RecrutementCampaign $campaign, Request $req) {
+        $userData = $req->get('userData');
+
         $search = array(
             'antenna_id'            =>  Input::get('antenna_id'),
             'start_date'            =>  Input::get('start_date'),
@@ -26,6 +28,10 @@ class RecrutementController extends Controller
             'limit'                 =>  empty(Input::get('rows')) ? 10 : Input::get('rows'),
             'page'                  =>  empty(Input::get('page')) ? 1 : Input::get('page')
         );
+
+        if($userData['is_superadmin'] != 1) {
+            $search['antenna_id'] = $userData['antenna_id'];
+        }
 
         $campaigns = $campaign->getFiltered($search);
         $campaignsCount = $campaign->getFiltered($search, true);
@@ -59,9 +65,11 @@ class RecrutementController extends Controller
                     $customFields .= "<li>".$field->name.": Type: ".$type."</li>";
                 }
                 $customFields .= "</ul>";
+                $linkX = $camp->link." (".url('/register/'.$camp->link).")";
             } else {
                 $actions = $camp->id;
                 $customFields = json_decode($camp->custom_fields);
+                $linkX = $camp->link;
             }
 
             $toReturn['rows'][] = array(
@@ -71,7 +79,7 @@ class RecrutementController extends Controller
                     $camp->antenna->name,
                     $camp->start_date->format('Y-m-d'),
                     $camp->end_date->format('Y-m-d'),
-                    $camp->link." (".url('/register/'.$camp->link).")",
+                    $linkX,
                     $customFields
                 )
             );
@@ -175,6 +183,71 @@ class RecrutementController extends Controller
         $toReturn = array(
             'success'   =>  1,
         );
+
+        return response(json_encode($toReturn), 200);
+    }
+
+    public function getRecrutedUsers(RecrutedUser $user, Request $req) {
+        $userData = $req->get('userData');
+
+        $search = array(
+            'name'                  =>  Input::get('name'),
+            'email'                 =>  Input::get('contact_email'),
+            'antenna_id'            =>  Input::get('antenna_id'),
+            'campaign_id'           =>  Input::get('campaign'),
+            'status'                =>  Input::get('status'),
+            'sidx'                  =>  Input::get('sidx'),
+            'sord'                  =>  Input::get('sord'),
+            'limit'                 =>  empty(Input::get('rows')) ? 10 : Input::get('rows'),
+            'page'                  =>  empty(Input::get('page')) ? 1 : Input::get('page')
+        );
+
+        if($userData['is_superadmin'] != 1) {
+            $search['antenna_id'] = $userData['antenna_id'];
+        }
+
+        $users = $user->getFiltered($search);
+        $usersCount = $user->getFiltered($search, true);
+        if($usersCount == 0) {
+            $numPages = 0;
+        } else {
+            if($usersCount % $search['limit'] > 0) {
+                $numPages = ($usersCount - ($usersCount % $search['limit'])) / $search['limit'] + 1;
+            } else {
+                $numPages = $usersCount / $search['limit'];
+            }
+        }
+
+        $toReturn = array(
+            'rows'      =>  array(),
+            'records'   =>  $usersCount,
+            'page'      =>  $search['page'],
+            'total'     =>  $numPages
+        );
+
+        $isGrid = Input::get('is_grid', false); // Checking if the caller is jqGrid -> if yes, we add actions to the response..
+
+        foreach($users as $usr) {
+            $actions = "";
+            if($isGrid) {
+                // $actions .= "<button class='btn btn-default btn-xs clickMeFee' title='Edit' ng-click='vm.editFee(".$feeX->id.")'><i class='fa fa-pencil'></i></button>";
+            } else {
+                $actions = $usr->id;
+            }
+
+            $toReturn['rows'][] = array(
+                'id'    =>  $usr->id,
+                'cell'  =>  array(
+                    $actions,
+                    $usr->first_name." ".$usr->last_name,
+                    $usr->date_of_birth->format('d/m/Y'),
+                    $usr->email,
+                    $usr->getGenderText(),
+                    $usr->antenna_name,
+                    $usr->getStatus(true)
+                )
+            );
+        }
 
         return response(json_encode($toReturn), 200);
     }

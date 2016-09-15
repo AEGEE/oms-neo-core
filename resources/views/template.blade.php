@@ -1,3 +1,7 @@
+<?php
+// Determining application environment
+$isProduction = App::environment() == 'production' ? true : false;
+?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
 <!--[if !IE]><!-->
@@ -16,6 +20,27 @@
 	<link href="vendor/vendor.css" rel="stylesheet" />
 	<link rel="stylesheet" type="text/css" href="vendor/grid/css/ui.jqgrid-bootstrap.css">
 	<!-- ================== END BASE CSS STYLE ================== -->
+	@if(!$isProduction)
+		<style type="text/css">
+			#devMode {
+			    display: block;
+				/*position: absolute;*/
+				height: 60px;
+				/*width: 400px;*/
+				background-color: #E91E63;
+				z-index: 99998;
+				box-shadow: 0 1px 5px 0 rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.12);
+				color: #fff;
+				top: 90%;
+				right: 0.5%;
+			}
+
+			#devMessage {
+				padding: 8px;
+	            font-size: 16px;
+			}
+		</style>
+	@endif
 </head>
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
 	<!-- begin #page-loader -->
@@ -46,7 +71,13 @@
 	    <div id="main" ui-view="main"></div>
 	</div>
 	<!-- end page container -->
-	
+	@if(!$isProduction)
+		<div id="devMode">
+			<div id="devMessage" class="text-center">
+				<b>** DEBUG BUILD **</b> <br />All data is volatile and can be reverted at any time!
+			</div>
+		</div>
+	@endif
 	
 	<!-- ================== BEGIN BASE JS ================== -->
 	<script src="vendor/vendor.js"></script>

@@ -129,6 +129,7 @@ Route::group(['middleware' => 'api'], function() {
 
 	// Recruted users
 	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
+		Route::get('/api/getRecrutedUsers', 'RecrutementController@getRecrutedUsers');
 		
 	});
 });

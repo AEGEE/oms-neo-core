@@ -65,8 +65,6 @@
         var user_grid_pager = "#usersPager";
 
         // Methods
-
-
         vm.getRegistrationFields = function() {
             $http({
                 method: 'GET',
