@@ -40,7 +40,7 @@ class UserRole extends Model
                         ->join('role_module_pages', 'roles.id', '=', 'role_module_pages.role_id')
                         ->join('module_pages', 'module_pages.id', '=', 'role_module_pages.module_page_id')
                         ->where('user_id', $user_id)
-                        ->where('code', $page_code)
+                        ->where('module_pages.code', $page_code)
                         ->max('role_module_pages.permission_level');
         return $maxLevel;
     }

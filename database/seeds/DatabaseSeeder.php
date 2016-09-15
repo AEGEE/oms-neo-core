@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
+use App\Models\SeederLog;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -11,12 +13,39 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(CountrySeeder::class);
-        $this->call(TypeAndFieldOfStudiesSeeder::class);
-        $this->call(ModuleSeeder::class);
-        $this->call(OptionsSeeder::class);
-        $this->call(EmailTemplateSeeder::class);
-        $this->call(AddSuperAdmin::class);
+    	$seedersToRun = array(
+    		'CountrySeeder',
+    		'TypeAndFieldOfStudiesSeeder',
+    		'ModuleSeeder',
+    		'OptionsSeeder',
+    		'EmailTemplateSeeder',
+    		'AddSuperAdmin',
+            'AddRecrutementModuleSeeder'
+    	);
+
+    	$seeders = SeederLog::all();
+    	$seedersArr = array();
+    	foreach($seeders as $seeder) {
+    		$seedersArr[] = $seeder->code;
+    	}
+
+    	$seededSomething = false;
+    	foreach($seedersToRun as $seeder) {
+    		if(in_array($seeder, $seedersArr)) {
+    			continue;
+    		}
+
+    		eval('$this->call('.$seeder.'::class);');
+    		SeederLog::create([
+    			'code'	=>	$seeder
+    		]);
+
+    		$seededSomething = true;
+    	}
+
+    	if(!$seededSomething) {
+    		echo "Nothing to seed!".PHP_EOL;
+    	}
     }
 }
 

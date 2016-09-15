@@ -14,7 +14,7 @@ class Role extends Model
                     ->withPivot('permission_level');
     }
 
-    public function roles() {
+    public function user() {
         return $this->belongsToMany('App\Models\User', 'user_roles', 'role_id', 'user_id');
     }
 

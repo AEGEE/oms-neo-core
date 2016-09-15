@@ -14,7 +14,10 @@
 // Login route..
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
-Route::post('/api/signup', 'LoginController@signup');
+// Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
+
+Route::post('/api/recruitUser', 'RecrutementController@recruitUser');
+Route::get('/api/checkCampaignExists', 'RecrutementController@checkCampaignExists');
 
 Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
 // UI accessible only!
@@ -115,6 +118,18 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/activateDeactivateModule', 'ModuleController@activateDeactivateModule');
 		Route::get('/api/getSharedSecret', 'ModuleController@getSharedSecret');
 		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
+	});
+
+	// Recrutement campaigns
+	Route::group(['middleware' => 'checkSpecialRoles:recrutement_campaigns,recruter'], function() {
+		Route::get('/api/getRecrutementCampaigns', 'RecrutementController@getRecrutementCampaigns');
+		Route::get('/api/checkLinkAvailability', 'RecrutementController@checkLinkAvailability');
+		Route::post('/api/saveCampaign', 'RecrutementController@saveCampaign');
+	});
+
+	// Recruted users
+	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
+		
 	});
 });
 

@@ -66,7 +66,9 @@ class RoleController extends Controller
         foreach($roles as $roleX) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeRole' title='Edit' ng-click='vm.editRole(".$roleX->id.")'><i class='fa fa-pencil'></i></button>";
+                if(empty($roleX->system_role)) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeRole' title='Edit' ng-click='vm.editRole(".$roleX->id.")'><i class='fa fa-pencil'></i></button>";
+                }
             } else {
                 $actions = $roleX->id;
             }
@@ -98,7 +100,8 @@ class RoleController extends Controller
         		'cell'	=> 	array(
         			$actions,
         			$roleX->name,
-        			$accessToPages
+        			$accessToPages,
+                    empty($roleX->system_role) ? 'User defined' : "System"
         		)
         	);
         }
@@ -110,6 +113,11 @@ class RoleController extends Controller
     	$id = Input::get('id');
         if(!empty($id)) {
             $role = $role->findOrFail($id);
+            if(!empty($role->system_role)) {
+                $toReturn['success'] = 0;
+                $toReturn['message'] = "Cannot edit system roles!";
+                return response(json_encode($toReturn), 200);
+            }
 
             $rolePage->where('role_id', $id)->delete();
         }

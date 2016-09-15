@@ -52,5 +52,6 @@ class Kernel extends HttpKernel
         'checkKey' => \App\Http\Middleware\ApiCheckMiddleware::class,
         'checkAccess' => \App\Http\Middleware\CheckModuleAccess::class,
         'microServiceAuth' => \App\Http\Middleware\MicroServiceAuth::class,
+        'checkSpecialRoles' => \App\Http\Middleware\CheckSpecialRoles::class,
     ];
 }

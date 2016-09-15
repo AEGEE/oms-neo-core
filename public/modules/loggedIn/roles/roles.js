@@ -62,7 +62,8 @@
             params.colNames = [
                 'Actions',
                 'Name',
-                'Access to pages'
+                'Access to pages',
+                'Role type'
             ];
             params.colModel = [
                 {
@@ -77,6 +78,11 @@
                 }, {
                     name: 'pages',
                     index: 'pages',
+                    sortable: false,
+                    width: 100
+                }, {
+                    name: 'role_type',
+                    index: 'role_type',
                     sortable: false,
                     width: 100
                 }

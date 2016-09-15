@@ -61,6 +61,10 @@ class ModulePage extends Model
                 $modulePages = $modulePages->where('module_id', $search['module_id']);
             }
         }
+
+        if(isset($search['with_hidden']) && $search['with_hidden'] == 0) {
+            $modulePages = $modulePages->whereNull('is_hidden');
+        }
         // END filters..
 
         if($onlyTotal) {

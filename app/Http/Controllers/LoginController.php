@@ -150,6 +150,7 @@ class LoginController extends Controller
     }
 
     public function signup(SignupRequest $req, User $usr, Auth $auth) {
+        die("Endpoint not available anymore!");
         // Checking if user is logged in..
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 

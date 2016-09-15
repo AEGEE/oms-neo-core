@@ -40,6 +40,10 @@ class User extends Model
     	return $this->hasMany('App\Models\FeeUser');
     }
 
+    public function recrutedUser() {
+        return $this->belongsTo('App\Models\RecrutedUser');
+    }
+
     public function roles() {
         return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
     }

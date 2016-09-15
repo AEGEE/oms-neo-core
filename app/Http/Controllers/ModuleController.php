@@ -92,6 +92,7 @@ class ModuleController extends Controller
             'name'          =>  Input::get('name'),
             'active'		=>	Input::get('active'),
             'module_id'     =>  Input::get('id'),
+            'with_hidden'   =>  Input::get('with_hidden', 0),
     		'sidx'      	=>  Input::get('sidx'),
     		'sord'			=>	Input::get('sord'),
     		'limit'     	=>  empty(Input::get('rows')) ? 10 : Input::get('rows'),

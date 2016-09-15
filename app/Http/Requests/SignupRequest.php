@@ -30,10 +30,10 @@ class SignupRequest extends Request
             'gender'                        =>  'required|integer|min:1|max:3',
             'contact_email'                 =>  'required|confirmed|unique:users,contact_email'.empty($id) ? "" : ", ".$id,
             'contact_email_confirmation'    =>  'required',
-            'antenna_id'                    =>  'required|integer|exists:antennas,id',
             'university'                    =>  'required',
             'studies_type'                  =>  'required|integer|exists:study_types,id',
-            'study_field'                   =>  'required|integer|exists:study_fields,id'
+            'study_field'                   =>  'required|integer|exists:study_fields,id',
+            'link'                          =>  'required'
         ];
     }
 }

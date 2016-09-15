@@ -34,9 +34,6 @@ session_write_close();
                 <div class="login-buttons">
                     <button type="submit" class="btn btn-success btn-block btn-lg" ng-disabled="loginForm.$pristine || loginForm.$invalid">Sign me in</button>
                 </div>
-                <div class="m-t-20">
-                    Not a member yet? Click <a ui-sref="app.signup" href="#">here</a> to register.
-                </div>
             </form>
         </div>
     </div>

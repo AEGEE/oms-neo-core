@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.signup', {
-                url: '/signup',
+                url: '/register/:link',
                 data: {'pageTitle': 'Signup'},
                 views   : {
                     'main@'         : {
@@ -24,10 +24,12 @@
             });
     }
 
-    function SignupController($http) {
+    function SignupController($http, $stateParams, $state) {
         // Data
         var vm = this;
         vm.user = {};
+
+        vm.customFields = [];
 
         vm.genderTypes = [
             {
@@ -43,6 +45,28 @@
         ];
 
         vm.registrationFields = {};
+
+        vm.checkCampaignExists = function() {
+            $('#loadingOverlay').show();
+            $http({
+                method: 'GET',
+                url: "/api/checkCampaignExists",
+                params: {
+                    link: $stateParams.link
+                }
+            }).then(function successCallback(response) {
+                    if(response.data.success == 0) {
+                        $state.go('app.login');
+                    }
+                    vm.customFields = response.data.customFields;
+                    $('#loadingOverlay').hide();
+                    console.log(vm.customFields);
+
+            }, function errorCallback() {
+                $state.go('app.login');
+                $('#loadingOverlay').hide();
+            })
+        }
 
         vm.getRegistrationFields = function() {
             $http({
@@ -97,15 +121,17 @@
                 return false;
             }
 
-            vm.user.antenna_id = $('#antenna').val();
             vm.user.studies_type = $('#studies_type').val();
             vm.user.study_field = $('#study_field').val();
             vm.user.date_of_birth = $('#date_of_birth').val();
 
+            vm.user.fields = vm.customFields;
+            vm.user.link = $stateParams.link;
+
             $('#loadingOverlay').show();
             $http({
                 method: 'POST',
-                url: '/api/signup',
+                url: '/api/recruitUser',
                 data: vm.user
             })
             .then(function successCallback(response) {
@@ -146,6 +172,7 @@
         // setTimeout(
         //     $("#wizard").bwizard(), 3000
         // )
+        vm.checkCampaignExists();
         vm.getRegistrationFields();
         $("#antenna, #studies_type, #study_field").select2({width: '100%'});
 

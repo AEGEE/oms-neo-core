@@ -45,6 +45,8 @@
         var baseUrlRepository = {
             {!!$baseUrlRepo!!}
         };
+        var isSuperAdmin = {{$userData['is_superadmin'] == 1 ? 'true' : 'false' }};
+
         @if(isset($suspention))
             var suspendedFor = "{{$suspention}}";
             var suspended = true;
