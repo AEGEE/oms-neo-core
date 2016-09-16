@@ -24,7 +24,7 @@
             });
     }
 
-    function ProfileController($http, $stateParams, $state, $scope, $sce) {
+    function ProfileController($http, $stateParams, $state, $scope, $sce, FileUploader) {
         // Data
         var vm = this;
         vm.user = {};
@@ -37,6 +37,7 @@
         vm.allWorkingGroups = {};
         vm.roleChecked = {};
         vm.feesToPay = {};
+        vm.avatar = "";
 
         // Methods
         vm.getUserProfile = function() {
@@ -62,12 +63,25 @@
                     vm.fees_paid = response.data.fees_paid;
                     vm.active_fields = response.data.active_fields;
                     $scope.bio = $sce.trustAsHtml(vm.user.bio);
+                    vm.avatar = "/api/getUserAvatar/"+vm.user.id+"?"+new Date().getTime();
 
                     setTimeout(vm.fixUiHeights, 500);
             }, function errorCallback() {
                 $state.go('app.dashboard');
                 $('#loadingOverlay').hide();
             })
+        }
+
+        vm.uploader = new FileUploader();
+        vm.uploader.url = "/api/uploadUserAvatar";
+        vm.uploader.alias = "avatar";
+        vm.uploader.autoUpload = true;
+        vm.uploader.headers = {
+            'X-Auth-Token': xAuthToken
+        }
+        vm.uploader.onCompleteAll = function(response) {
+            // location.reload();
+            vm.getUserProfile();
         }
 
         vm.getRoles = function() {

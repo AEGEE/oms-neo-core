@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.login', {
-                url: '/login',
+                url: '/',
                 data: {'pageTitle': 'Login'},
                 views   : {
                     'main@'         : {

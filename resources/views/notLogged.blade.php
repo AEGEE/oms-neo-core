@@ -6,7 +6,7 @@
 @stop
 
 @section('routeConfig')
-	$urlRouterProvider.otherwise('/login');
+	$urlRouterProvider.otherwise('/');
 
 	$stateProvider.state('app', {
     	abstract: true

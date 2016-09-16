@@ -230,8 +230,45 @@ omsApp.controller('rightSidebarController', function($scope, $rootScope, $state)
 /* -------------------------------
    4.0 CONTROLLER - Header
 ------------------------------- */
-omsApp.controller('headerController', function($scope, $rootScope, $state) {
+omsApp.controller('headerController', function($scope, $rootScope, $state, $http, $q) {
     var vm = this;
+    vm.users = {};
+
+    vm.isSearching = false;
+    vm.lastSearch = "";
+
+    vm.searchUsers = function() {
+        if(vm.isSearching) {
+            setTimeout(vm.checkLinkAvailability, 1000);
+            return;
+        }
+
+        if(vm.lastSearch == vm.search) {
+            return;
+        }
+
+        vm.lastSearch = vm.search;
+        vm.isSearching = true;
+
+        var deferred = $q.defer();
+
+        $http({
+            method: "GET",
+            url: '/api/getUsers',
+            params: {
+                name: vm.search
+            }
+        })
+        .success(function successCallback(response) {
+            deferred.resolve(response);
+        });
+        deferred.promise.then(function (result) {
+            vm.users = result.rows;
+            vm.isSearching = false;
+            console.log(vm.users);
+        });
+    }
+
     vm.logout = function() {
         console.log('here');
         location.href = '/logout';

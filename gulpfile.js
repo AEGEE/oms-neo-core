@@ -50,7 +50,8 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js',
 		'../../../public/assets/plugins/bootstrap-daterangepicker/moment.js',
 		'../../../public/assets/plugins/parsley/dist/parsley.js',
-		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js'
+		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
+		'../bower_components/angular-file-upload/dist/angular-file-upload.min.js'
 	],
 	'public/vendor/vendor.js');
 

@@ -24,13 +24,19 @@
             });
     }
 
-    function RecrutedUsersController($http, $compile, $scope) {
+    function RecrutedUsersController($http, $compile, $scope, $sce) {
         // Data
         var vm = this;
         vm.filter = {};
 
         vm.antennae = {};
         vm.campaigns = {};
+
+        vm.roles = {};
+        vm.fees = {};
+        vm.departments = {};
+
+        vm.currentUser = {};
 
         vm.is_superadmin = isSuperAdmin;
 
@@ -191,10 +197,222 @@
             });
         }
 
+        vm.getUserDetails = function(userId, openModal) {
+            $http({
+                method: 'GET',
+                url: '/api/getUserDetails',
+                params: {
+                    id: userId
+                }
+            })
+            .then(function successCallback(response) {
+                vm.currentUser = response.data;
+                $scope.status = $sce.trustAsHtml(vm.currentUser.status);
+                vm.hideCommentArea();
+                if(openModal) {
+                    $('#userDetailsModal').modal('show');
+                }
+            }, function errorCallback(response) {
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.data,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.hideCommentArea = function() {
+            $('#commentArea').hide();
+            $('#addCommBtn').show();
+            vm.comment = "";
+        }
+
+        vm.showCommentArea = function() {
+            $('#commentArea').show();
+            $('#addCommBtn').hide();
+        }
+
+        vm.addComment = function() {
+            $http({
+                method: 'POST',
+                url: '/api/addComment',
+                data: {
+                    user_id: vm.currentUser.id,
+                    comment: vm.comment
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == 1) {
+                    vm.getUserDetails(vm.currentUser.id);
+                } else {
+                    $.gritter.add({
+                    title: 'Error!',
+                    text: "An error occoured",
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+                }
+            }, function errorCallback(response) {
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.data,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.changeStatus = function(newStatus) {
+            if(newStatus == 2) { // accepted.. launch acception modal..
+                vm.activateUser();
+                $('#userDetailsModal').modal('hide');
+                return;
+            }
+            $http({
+                method: 'POST',
+                url: '/api/changeStatus',
+                data: {
+                    user_id: vm.currentUser.id,
+                    newStatus: newStatus
+                }
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == 1) {
+                    vm.getUserDetails(vm.currentUser.id);
+                } else {
+                    $.gritter.add({
+                    title: 'Error!',
+                    text: "An error occoured",
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+                }
+            }, function errorCallback(response) {
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.data.message,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.getDepartments = function() {
+            $http({
+                method: 'GET',
+                url: '/api/getDepartments'
+            })
+            .then(function successCallback(response) {
+                vm.departments = response.data;
+            }, function errorCallback(response) {
+                $.gritter.add({
+                    title: 'Error!',
+                    text: response.data,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
+        vm.getRoles = function() {
+            $http({
+                method: 'GET',
+                url: "/api/getRoles"
+            }).then(function successCallback(response) {
+                vm.roles = response.data.rows;
+            })
+        }
+
+        vm.getFees = function() {
+            $http({
+                method: 'GET',
+                url: "/api/getFees"
+            }).then(function successCallback(response) {
+                vm.fees = response.data.rows;
+                setTimeout(vm.addContoltoFee, 1000);
+            })
+        }
+
+        vm.activateUser = function() {
+            $('#activateUserModal').modal('show');
+        }
+
+        vm.closeAndResetActivate = function() {
+            $('#activateUserModal').modal('hide');
+            $('.paidOnDateFee').val("");
+        }
+
+        vm.addContoltoFee = function() {
+            $('.paidOnDateFee').datepicker({
+                todayHighlight: true,
+                autoclose: true,
+                format: 'yyyy-mm-dd'
+            });
+        }
+        vm.createAndActivateUser = function() {
+            vm.currentUser.feesPaid = {};
+            $.each(vm.fees, function(key, val) {   
+                vm.currentUser.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
+            });
+            $http({
+                method: "POST",
+                url: '/api/activateUserRecruted',
+                data: vm.currentUser,
+            })
+            .then(function successCallback(response) {
+                if(response.data.success == '1') {
+                    $.gritter.add({
+                        title: 'Success!',
+                        text: 'User activated successfully!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    vm.closeAndResetActivate();
+                    vm.searchGrid();
+                } else {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: response.data.message,
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                }
+            },
+            function errorCallback(response) {
+                var messages = "";
+                $.each(response.data, function(key, val) {
+                    $.each(val, function(key2, val2) {
+                        messages += "\n"+val2;
+                    });
+                });
+                $.gritter.add({
+                    title: 'Error!',
+                    text: "The following errors occoured:"+messages,
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+            });
+        }
+
         ///////
         vm.loadGrid();
         vm.getAntennae();
         vm.getCampaigns();
+
+        // Needed for activation..
+        vm.getDepartments();
+        vm.getRoles();
+        vm.getFees();
     }
 
 })();

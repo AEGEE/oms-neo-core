@@ -44,7 +44,6 @@
             }).then(function successCallback(response) {
                     vm.users = response.data.userCount;
                     vm.newestMembers = response.data.newestMembers;
-                    console.log(vm.newestMembers);
                     $('#loadingOverlay').hide();
             }, function errorCallback() {
                 $('#loadingOverlay').hide();

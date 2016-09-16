@@ -46,6 +46,7 @@
             {!!$baseUrlRepo!!}
         };
         var isSuperAdmin = {{$userData['is_superadmin'] == 1 ? 'true' : 'false' }};
+        var xAuthToken = '{!!$authToken!!}';
 
         @if(isset($suspention))
             var suspendedFor = "{{$suspention}}";

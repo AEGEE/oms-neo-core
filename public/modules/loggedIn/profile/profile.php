@@ -17,13 +17,14 @@
 	            <div class="col-md-2">
 	                <!-- begin profile-image -->
 	                <div class="profile-image" id="bigAvatar">
-	                    <img style="width: 100%" src="/api/getUserAvatar/{{vm.user.id}}" />
+	                    <img style="width: 100%" ng-src="{{vm.avatar}}" />
 	                    <i class="fa fa-user hide"></i>
 	                </div>
 	                <!-- end profile-image -->
 	                <div class="m-b-10">
 	                	<!-- <h5>Actions</h5> -->
-	                    <button class="btn btn-warning btn-block btn-sm" ng-show="vm.active_fields.change_avatar"><i class="fa fa-photo"></i> Change avatar</button>
+	                    <button class="btn btn-warning btn-block btn-sm" ng-show="vm.active_fields.change_avatar "onclick="$('#uploaderBtn').click()"><i class="fa fa-photo"></i> Change avatar</button>
+	                    <input style="display:none" id="uploaderBtn" class="hiddenElement" type="file" nv-file-select="" uploader="vm.uploader" />
 	                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.change_password" data-toggle="modal" data-target="#changePasswordModal"><i class="fa fa-lock"></i> Change password</button>
 	                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.change_email" data-toggle="modal" data-target="#changeEmailModal"><i class="fa fa-envelope"></i> Change email</button>
 	                    <div ng-show="vm.active_fields.account_info">

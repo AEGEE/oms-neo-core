@@ -116,7 +116,8 @@ class UserController extends Controller
         			$userX->internal_email,
         			$userX->studyField->name,
         			$userX->studyType->name,
-        			$userX->status
+        			$userX->status,
+                    $userX->seo_url
         		)
         	);
         }
@@ -573,6 +574,7 @@ class UserController extends Controller
         $newestMembers = $user->with('antenna')->orderBy('activated_at', 'DESC')->take(10)->get();
         foreach($newestMembers as $member) {
             $toReturn['newestMembers'][] = array(
+                'id'        =>  $member->id,
                 'fullname'  =>  $member->first_name." ".$member->last_name,
                 'local'     =>  $member->antenna->name,
                 'seo_url'   =>  $member->seo_url

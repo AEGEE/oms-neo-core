@@ -10,7 +10,21 @@ class RecrutedUser extends Model
 {
     protected $table = "recruted_users";
 
-     protected $dates = ['created_at', 'updated_at', 'date_of_birth'];
+    protected $dates = ['created_at', 'updated_at', 'date_of_birth'];
+
+    /**
+     * Workflow transitions
+     * 0 / null = Opened
+     * 1 = In progress
+     * 2 = Accepted
+     * -1 = Rejected
+     */
+    protected $workflowTransitions = array(
+        '-1'    =>  array(), // rejected is final
+        '0'     =>  array(-1, 1, 2), // opened can go to any
+        '1'     =>  array(-1, 2), // in progress can only accept or reject
+        '2'     =>  array() // accepted is final
+    );
 
     // Relationships..
     public function recruted_comment() {
@@ -18,7 +32,15 @@ class RecrutedUser extends Model
     }
 
     public function recrutement_campaigns() {
-        return $this->belongsTo('App\Models\RecrutementCampaign');
+        return $this->belongsTo('App\Models\RecrutementCampaign', 'campaign_id');
+    }
+
+    public function studyField() {
+        return $this->belongsTo('App\Models\StudyField', 'studies_field_id');
+    }
+
+    public function studyType() {
+        return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
     }
 
     public function user() {
@@ -26,31 +48,50 @@ class RecrutedUser extends Model
     }
 
     // Model methods go down here..
+    public function getWorkflowTransitions($needsMarkup = false) {
+        $currentPlace = empty($this->status) ? 0 : $this->status; // In case we send null..
+        $available_transitions = $this->workflowTransitions[$currentPlace];
+
+        $toReturn = array();
+        foreach ($available_transitions as $value) {
+            $toReturn[$value] = $this->getStatusStuff($value);
+        }
+
+        return $toReturn;
+    }
+
     public function checkEmailHash($emailHash, $exceptId) {
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
-    public function getStatus($isGrid = false) {
-        switch ($this->status) {
+    private function getStatusStuff($status) {
+        $toReturn = array();
+        switch ($status) {
             case '1':
-                $labelType = "warning";
-                $statusText = "In progress";
+                $toReturn['labelType'] = "warning";
+                $toReturn['statusText'] = "In progress";
                 break;
             case '-1':  
-                $labelType = "danger";
-                $statusText = "Rejected";
+                $toReturn['labelType'] = "danger";
+                $toReturn['statusText'] = "Rejected";
                 break;
             case '2':
-                $labelType = "success";
-                $statusText = "Accepted";
+                $toReturn['labelType'] = "success";
+                $toReturn['statusText'] = "Accepted";
                 break;
             default:
-                $labelType = "primary";
-                $statusText = "Opened";
+                $toReturn['labelType'] = "primary";
+                $toReturn['statusText'] = "Opened";
                 break;
         }
+
+        return $toReturn;
+    }
+
+    public function getStatus($isGrid = false) {
+        $statusDetails = $this->getStatusStuff($this->status);
         if($isGrid) {
-            $statusText = "<span class='label label-".$labelType."'>".$statusText."</span>";
+            $statusText = "<span class='label label-".$statusDetails['labelType']."'>".$statusDetails['statusText']."</span>";
         }
         return $statusText;
     }
@@ -90,9 +131,12 @@ class RecrutedUser extends Model
             $user = $user->where('antenna_id', $search['antenna_id']);
         }
 
-        if(isset($search['status']) && !empty($search['status'])) {
-            $search['status'] = ($search['status'] == 0) ? null : $search['status'];
-            $user = $user->where('status', $search['status']);
+        if(isset($search['status'])) {
+            if($search['status'] == 0) {
+                $user = $user->whereNull('status');
+            } else {
+                $user = $user->where('status', $search['status']);
+            }
         }
 
         if(isset($search['campaign_id']) && !empty($search['campaign_id'])) {

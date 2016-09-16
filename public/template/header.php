@@ -5,7 +5,7 @@ $options = $_SESSION['globals'];
 session_write_close();
 ?>
 <!-- begin #header -->
-<div id="header" ng-controller="headerController" class="header navbar navbar-default navbar-fixed-top">
+<div id="header" ng-controller="headerController as vm" class="header navbar navbar-default navbar-fixed-top">
     <!-- begin container-fluid -->
     <div class="container-fluid">
         <!-- begin mobile sidebar expand / collapse button -->
@@ -24,8 +24,18 @@ session_write_close();
             <li>
                 <form class="navbar-form full-width">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Enter keyword" />
+                        <input type="text" ng-model="vm.search" ng-change="vm.searchUsers()" class="form-control" placeholder="Enter keyword" />
                         <button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="dropdownAutocomplete" ng-show="vm.search">
+                        <ul>
+                            <li ng-repeat="user in vm.users" ui-sref="app.profile({seo: '{{user.cell[11]}}'})">
+                                <img class="comment-photo" src="/api/getUserAvatar/{{user.cell[0]}}"> <span class="comment-name">{{user.cell[1]}}<br /><small>{{user.cell[5]}}</small></span>
+                            </li>
+                            <li ng-if="vm.users.length == 0">
+                                No results found
+                            </li>
+                        </ul>
                     </div>
                 </form>
             </li>

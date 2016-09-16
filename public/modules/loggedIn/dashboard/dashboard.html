@@ -31,7 +31,7 @@
                 </div>
                 <ul class="registered-users-list clearfix">
                     <li ng-repeat="user in vm.newestMembers">
-                        <a href="javascript:;" ui-sref="app.profile({seo: user.seo_url})"><img src="assets/img/user-5.jpg" alt="" /></a>
+                        <a href="javascript:;" ui-sref="app.profile({seo: user.seo_url})"><img class="dashboardPics" src="/api/getUserAvatar/{{user.id}}" alt="" /></a>
                         <h4 class="username text-ellipsis">
                             {{user.fullname}}
                             <small>{{user.local}}</small>

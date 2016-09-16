@@ -6830,6 +6830,57 @@ body .bootstrap-datetimepicker-widget table td {
 .datepicker{
     z-index:1151 !important;
 }
+
+.bigModal {
+    width: 800px;
+}
+
+.comment {
+    height: 35px;
+}
+
+.comment-photo {
+    height: 35px;
+}
+
+.comment-name {
+     font-size: 13px;
+}
+
+.comment-text {
+    color: #000;
+    padding-left: 15px;
+}
+
+.dashboardPics {
+    max-width: 125px !important;
+}
+
+.dropdownAutocomplete {
+    position: absolute;
+    top: 54px;
+}
+
+.dropdownAutocomplete ul {
+    list-style: none;
+    background-color: #fff;
+    padding: 0px;
+    width: 300px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border: 1px solid #dcdcde;
+}
+
+.dropdownAutocomplete li {
+    padding: 15px;
+}
+
+.dropdownAutocomplete li:hover {
+    background-color: #00acac;
+    cursor: pointer;
+    color: #fff;
+}
+
 /*
 Template Name: Color Admin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
 Version: 2.0.0

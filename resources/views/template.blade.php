@@ -97,7 +97,8 @@ $isProduction = App::environment() == 'production' ? true : false;
 		        .module('omsApp', [
 		            'ui.router',
 		            'ui.bootstrap',
-		            'oc.lazyLoad'     
+		            'oc.lazyLoad',
+		            'angularFileUpload'
 		            @yield('modules')  
 		        ])
 		        .config(routeConfig)
