@@ -12915,4 +12915,614 @@ if ('function' === typeof define && define.amd)
 
 !function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports["angular-file-upload"]=t():e["angular-file-upload"]=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var r=o[n]={exports:{},id:n,loaded:!1};return e[n].call(r.exports,r,r.exports,t),r.loaded=!0,r.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}var r=o(1),i=n(r),s=o(2),a=n(s),l=o(3),u=n(l),p=o(4),c=n(p),f=o(5),d=n(f),h=o(6),y=n(h),m=o(7),_=n(m),v=o(8),g=n(v),F=o(9),b=n(F),O=o(10),C=n(O),I=o(11),U=n(I),w=o(12),A=n(w);angular.module(i["default"].name,[]).value("fileUploaderOptions",a["default"]).factory("FileUploader",u["default"]).factory("FileLikeObject",c["default"]).factory("FileItem",d["default"]).factory("FileDirective",y["default"]).factory("FileSelect",_["default"]).factory("FileDrop",g["default"]).factory("FileOver",b["default"]).directive("nvFileSelect",C["default"]).directive("nvFileDrop",U["default"]).directive("nvFileOver",A["default"]).run(["FileUploader","FileLikeObject","FileItem","FileDirective","FileSelect","FileDrop","FileOver",function(e,t,o,n,r,i,s){e.FileLikeObject=t,e.FileItem=o,e.FileDirective=n,e.FileSelect=r,e.FileDrop=i,e.FileOver=s}])},function(e,t){e.exports={name:"angularFileUpload"}},function(e,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t["default"]={url:"/",alias:"file",headers:{},queue:[],progress:0,autoUpload:!1,removeAfterUpload:!1,method:"POST",filters:[],formData:[],queueLimit:Number.MAX_VALUE,withCredentials:!1,disableMultipart:!1}},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t,o,n,i,s,a){var m=n.File,_=n.FormData,v=function(){function n(t){r(this,n);var o=l(e);u(this,o,t,{isUploading:!1,_nextIndex:0,_failFilterIndex:-1,_directives:{select:[],drop:[],over:[]}}),this.filters.unshift({name:"queueLimit",fn:this._queueLimitFilter}),this.filters.unshift({name:"folder",fn:this._folderFilter})}return n.prototype.addToQueue=function(e,t,o){var n=this,r=this.isArrayLikeObject(e)?e:[e],i=this._getFilters(o),l=this.queue.length,u=[];p(r,function(e){var o=new s(e);if(n._isValidFile(o,i,t)){var r=new a(n,e,t);u.push(r),n.queue.push(r),n._onAfterAddingFile(r)}else{var l=i[n._failFilterIndex];n._onWhenAddingFileFailed(o,l,t)}}),this.queue.length!==l&&(this._onAfterAddingAll(u),this.progress=this._getTotalProgress()),this._render(),this.autoUpload&&this.uploadAll()},n.prototype.removeFromQueue=function(e){var t=this.getIndexOfItem(e),o=this.queue[t];o.isUploading&&o.cancel(),this.queue.splice(t,1),o._destroy(),this.progress=this._getTotalProgress()},n.prototype.clearQueue=function(){for(;this.queue.length;)this.queue[0].remove();this.progress=0},n.prototype.uploadItem=function(e){var t=this.getIndexOfItem(e),o=this.queue[t],n=this.isHTML5?"_xhrTransport":"_iframeTransport";o._prepareToUploading(),this.isUploading||(this._onBeforeUploadItem(o),o.isCancel||(o.isUploading=!0,this.isUploading=!0,this[n](o),this._render()))},n.prototype.cancelItem=function(e){var t=this,o=this.getIndexOfItem(e),n=this.queue[o],r=this.isHTML5?"_xhr":"_form";n&&(n.isCancel=!0,n.isUploading?n[r].abort():!function(){var e=[void 0,0,{}],o=function(){t._onCancelItem.apply(t,[n].concat(e)),t._onCompleteItem.apply(t,[n].concat(e))};i(o)}())},n.prototype.uploadAll=function(){var e=this.getNotUploadedItems().filter(function(e){return!e.isUploading});e.length&&(p(e,function(e){return e._prepareToUploading()}),e[0].upload())},n.prototype.cancelAll=function(){var e=this.getNotUploadedItems();p(e,function(e){return e.cancel()})},n.prototype.isFile=function(e){return this.constructor.isFile(e)},n.prototype.isFileLikeObject=function(e){return this.constructor.isFileLikeObject(e)},n.prototype.isArrayLikeObject=function(e){return this.constructor.isArrayLikeObject(e)},n.prototype.getIndexOfItem=function(e){return f(e)?e:this.queue.indexOf(e)},n.prototype.getNotUploadedItems=function(){return this.queue.filter(function(e){return!e.isUploaded})},n.prototype.getReadyItems=function(){return this.queue.filter(function(e){return e.isReady&&!e.isUploading}).sort(function(e,t){return e.index-t.index})},n.prototype.destroy=function(){var e=this;p(this._directives,function(t){p(e._directives[t],function(e){e.destroy()})})},n.prototype.onAfterAddingAll=function(e){},n.prototype.onAfterAddingFile=function(e){},n.prototype.onWhenAddingFileFailed=function(e,t,o){},n.prototype.onBeforeUploadItem=function(e){},n.prototype.onProgressItem=function(e,t){},n.prototype.onProgressAll=function(e){},n.prototype.onSuccessItem=function(e,t,o,n){},n.prototype.onErrorItem=function(e,t,o,n){},n.prototype.onCancelItem=function(e,t,o,n){},n.prototype.onCompleteItem=function(e,t,o,n){},n.prototype.onCompleteAll=function(){},n.prototype._getTotalProgress=function(e){if(this.removeAfterUpload)return e||0;var t=this.getNotUploadedItems().length,o=t?this.queue.length-t:this.queue.length,n=100/this.queue.length,r=(e||0)*n/100;return Math.round(o*n+r)},n.prototype._getFilters=function(e){if(!e)return this.filters;if(h(e))return e;var t=e.match(/[^\s,]+/g);return this.filters.filter(function(e){return-1!==t.indexOf(e.name)})},n.prototype._render=function(){t.$$phase||t.$apply()},n.prototype._folderFilter=function(e){return!(!e.size&&!e.type)},n.prototype._queueLimitFilter=function(){return this.queue.length<this.queueLimit},n.prototype._isValidFile=function(e,t,o){var n=this;return this._failFilterIndex=-1,t.length?t.every(function(t){return n._failFilterIndex++,t.fn.call(n,e,o)}):!0},n.prototype._isSuccessCode=function(e){return e>=200&&300>e||304===e},n.prototype._transformResponse=function(e,t){var n=this._headersGetter(t);return p(o.defaults.transformResponse,function(t){e=t(e,n)}),e},n.prototype._parseHeaders=function(e){var t,o,n,r={};return e?(p(e.split("\n"),function(e){n=e.indexOf(":"),t=e.slice(0,n).trim().toLowerCase(),o=e.slice(n+1).trim(),t&&(r[t]=r[t]?r[t]+", "+o:o)}),r):r},n.prototype._headersGetter=function(e){return function(t){return t?e[t.toLowerCase()]||null:e}},n.prototype._xhrTransport=function(e){var t,o=this,n=e._xhr=new XMLHttpRequest;if(e.disableMultipart?t=e._file:(t=new _,p(e.formData,function(e){p(e,function(e,o){t.append(o,e)})}),t.append(e.alias,e._file,e.file.name)),"number"!=typeof e._file.size)throw new TypeError("The file specified is no longer valid");n.upload.onprogress=function(t){var n=Math.round(t.lengthComputable?100*t.loaded/t.total:0);o._onProgressItem(e,n)},n.onload=function(){var t=o._parseHeaders(n.getAllResponseHeaders()),r=o._transformResponse(n.response,t),i=o._isSuccessCode(n.status)?"Success":"Error",s="_on"+i+"Item";o[s](e,r,n.status,t),o._onCompleteItem(e,r,n.status,t)},n.onerror=function(){var t=o._parseHeaders(n.getAllResponseHeaders()),r=o._transformResponse(n.response,t);o._onErrorItem(e,r,n.status,t),o._onCompleteItem(e,r,n.status,t)},n.onabort=function(){var t=o._parseHeaders(n.getAllResponseHeaders()),r=o._transformResponse(n.response,t);o._onCancelItem(e,r,n.status,t),o._onCompleteItem(e,r,n.status,t)},n.open(e.method,e.url,!0),n.withCredentials=e.withCredentials,p(e.headers,function(e,t){n.setRequestHeader(t,e)}),n.send(t)},n.prototype._iframeTransport=function(e){var t=this,o=y('<form style="display: none;" />'),n=y('<iframe name="iframeTransport'+Date.now()+'">'),r=e._input;e._form&&e._form.replaceWith(r),e._form=o,r.prop("name",e.alias),p(e.formData,function(e){p(e,function(e,t){var n=y('<input type="hidden" name="'+t+'" />');n.val(e),o.append(n)})}),o.prop({action:e.url,method:"POST",target:n.prop("name"),enctype:"multipart/form-data",encoding:"multipart/form-data"}),n.bind("load",function(){var o="",r=200;try{o=n[0].contentDocument.body.innerHTML}catch(i){r=500}var s={response:o,status:r,dummy:!0},a={},l=t._transformResponse(s.response,a);t._onSuccessItem(e,l,s.status,a),t._onCompleteItem(e,l,s.status,a)}),o.abort=function(){var i,s={status:0,dummy:!0},a={};n.unbind("load").prop("src","javascript:false;"),o.replaceWith(r),t._onCancelItem(e,i,s.status,a),t._onCompleteItem(e,i,s.status,a)},r.after(o),o.append(r).append(n),o[0].submit()},n.prototype._onWhenAddingFileFailed=function(e,t,o){this.onWhenAddingFileFailed(e,t,o)},n.prototype._onAfterAddingFile=function(e){this.onAfterAddingFile(e)},n.prototype._onAfterAddingAll=function(e){this.onAfterAddingAll(e)},n.prototype._onBeforeUploadItem=function(e){e._onBeforeUpload(),this.onBeforeUploadItem(e)},n.prototype._onProgressItem=function(e,t){var o=this._getTotalProgress(t);this.progress=o,e._onProgress(t),this.onProgressItem(e,t),this.onProgressAll(o),this._render()},n.prototype._onSuccessItem=function(e,t,o,n){e._onSuccess(t,o,n),this.onSuccessItem(e,t,o,n)},n.prototype._onErrorItem=function(e,t,o,n){e._onError(t,o,n),this.onErrorItem(e,t,o,n)},n.prototype._onCancelItem=function(e,t,o,n){e._onCancel(t,o,n),this.onCancelItem(e,t,o,n)},n.prototype._onCompleteItem=function(e,t,o,n){e._onComplete(t,o,n),this.onCompleteItem(e,t,o,n);var r=this.getReadyItems()[0];return this.isUploading=!1,d(r)?void r.upload():(this.onCompleteAll(),this.progress=this._getTotalProgress(),void this._render())},n.isFile=function(e){return m&&e instanceof m},n.isFileLikeObject=function(e){return e instanceof s},n.isArrayLikeObject=function(e){return c(e)&&"length"in e},n.inherit=function(e,t){e.prototype=Object.create(t.prototype),e.prototype.constructor=e,e.super_=t},n}();return v.prototype.isHTML5=!(!m||!_),v.isHTML5=v.prototype.isHTML5,v}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=i;var s=o(1),a=(n(s),angular),l=a.copy,u=a.extend,p=a.forEach,c=a.isObject,f=a.isNumber,d=a.isDefined,h=a.isArray,y=a.element;i.$inject=["fileUploaderOptions","$rootScope","$http","$window","$timeout","FileLikeObject","FileItem"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(){return function(){function e(t){r(this,e);var o=u(t),n=o?t.value:t,i=p(n)?"FakePath":"Object",s="_createFrom"+i;this[s](n)}return e.prototype._createFromFakePath=function(e){this.lastModifiedDate=null,this.size=null,this.type="like/"+e.slice(e.lastIndexOf(".")+1).toLowerCase(),this.name=e.slice(e.lastIndexOf("/")+e.lastIndexOf("\\")+2)},e.prototype._createFromObject=function(e){this.lastModifiedDate=l(e.lastModifiedDate),this.size=e.size,this.type=e.type,this.name=e.name},e}()}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=i;var s=o(1),a=(n(s),angular),l=a.copy,u=a.isElement,p=a.isString},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){return function(){function o(e,n,i){r(this,o);var s=c(n),a=s?p(n):null,f=s?null:n;u(this,{url:e.url,alias:e.alias,headers:l(e.headers),formData:l(e.formData),removeAfterUpload:e.removeAfterUpload,withCredentials:e.withCredentials,disableMultipart:e.disableMultipart,method:e.method},i,{uploader:e,file:new t(n),isReady:!1,isUploading:!1,isUploaded:!1,isSuccess:!1,isCancel:!1,isError:!1,progress:0,index:null,_file:f,_input:a}),a&&this._replaceNode(a)}return o.prototype.upload=function(){try{this.uploader.uploadItem(this)}catch(e){this.uploader._onCompleteItem(this,"",0,[]),this.uploader._onErrorItem(this,"",0,[])}},o.prototype.cancel=function(){this.uploader.cancelItem(this)},o.prototype.remove=function(){this.uploader.removeFromQueue(this)},o.prototype.onBeforeUpload=function(){},o.prototype.onProgress=function(e){},o.prototype.onSuccess=function(e,t,o){},o.prototype.onError=function(e,t,o){},o.prototype.onCancel=function(e,t,o){},o.prototype.onComplete=function(e,t,o){},o.prototype._onBeforeUpload=function(){this.isReady=!0,this.isUploading=!1,this.isUploaded=!1,this.isSuccess=!1,this.isCancel=!1,this.isError=!1,this.progress=0,this.onBeforeUpload()},o.prototype._onProgress=function(e){this.progress=e,this.onProgress(e)},o.prototype._onSuccess=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!0,this.isSuccess=!0,this.isCancel=!1,this.isError=!1,this.progress=100,this.index=null,this.onSuccess(e,t,o)},o.prototype._onError=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!0,this.isSuccess=!1,this.isCancel=!1,this.isError=!0,this.progress=0,this.index=null,this.onError(e,t,o)},o.prototype._onCancel=function(e,t,o){this.isReady=!1,this.isUploading=!1,this.isUploaded=!1,this.isSuccess=!1,this.isCancel=!0,this.isError=!1,this.progress=0,this.index=null,this.onCancel(e,t,o)},o.prototype._onComplete=function(e,t,o){this.onComplete(e,t,o),this.removeAfterUpload&&this.remove()},o.prototype._destroy=function(){this._input&&this._input.remove(),this._form&&this._form.remove(),delete this._form,delete this._input},o.prototype._prepareToUploading=function(){this.index=this.index||++this.uploader._nextIndex,this.isReady=!0},o.prototype._replaceNode=function(t){var o=e(t.clone())(t.scope());o.prop("value",null),t.css("display","none"),t.after(o)},o}()}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=i;var s=o(1),a=(n(s),angular),l=a.copy,u=a.extend,p=a.element,c=a.isElement;i.$inject=["$compile","FileLikeObject"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(){var e=function(){function e(t){r(this,e),l(this,t),this.uploader._directives[this.prop].push(this),this._saveLinks(),this.bind()}return e.prototype.bind=function(){for(var e in this.events){var t=this.events[e];this.element.bind(e,this[t])}},e.prototype.unbind=function(){for(var e in this.events)this.element.unbind(e,this.events[e])},e.prototype.destroy=function(){var e=this.uploader._directives[this.prop].indexOf(this);this.uploader._directives[this.prop].splice(e,1),this.unbind()},e.prototype._saveLinks=function(){for(var e in this.events){var t=this.events[e];this[t]=this[t].bind(this)}},e}();return e.prototype.events={},e}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=i;var s=o(1),a=(n(s),angular),l=a.extend},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e,t){return function(t){function o(e){r(this,o);var n=p(e,{events:{$destroy:"destroy",change:"onChange"},prop:"select"}),s=i(this,t.call(this,n));return s.uploader.isHTML5||s.element.removeAttr("multiple"),s.element.prop("value",null),s}return s(o,t),o.prototype.getOptions=function(){},o.prototype.getFilters=function(){},o.prototype.isEmptyAfterSelection=function(){return!!this.element.attr("multiple")},o.prototype.onChange=function(){var t=this.uploader.isHTML5?this.element[0].files:this.element[0],o=this.getOptions(),n=this.getFilters();this.uploader.isHTML5||this.destroy(),this.uploader.addToQueue(t,o,n),this.isEmptyAfterSelection()&&(this.element.prop("value",null),this.element.replaceWith(e(this.element.clone())(this.scope)))},o}(t)}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=a;var l=o(1),u=(n(l),angular),p=u.extend;a.$inject=["$compile","FileDirective"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e){return function(e){function t(o){r(this,t);var n=p(o,{events:{$destroy:"destroy",drop:"onDrop",dragover:"onDragOver",dragleave:"onDragLeave"},prop:"drop"});return i(this,e.call(this,n))}return s(t,e),t.prototype.getOptions=function(){},t.prototype.getFilters=function(){},t.prototype.onDrop=function(e){var t=this._getTransfer(e);if(t){var o=this.getOptions(),n=this.getFilters();this._preventAndStop(e),c(this.uploader._directives.over,this._removeOverClass,this),this.uploader.addToQueue(t.files,o,n)}},t.prototype.onDragOver=function(e){var t=this._getTransfer(e);this._haveFiles(t.types)&&(t.dropEffect="copy",this._preventAndStop(e),c(this.uploader._directives.over,this._addOverClass,this))},t.prototype.onDragLeave=function(e){e.currentTarget!==this.element[0]&&(this._preventAndStop(e),c(this.uploader._directives.over,this._removeOverClass,this))},t.prototype._getTransfer=function(e){return e.dataTransfer?e.dataTransfer:e.originalEvent.dataTransfer},t.prototype._preventAndStop=function(e){e.preventDefault(),e.stopPropagation()},t.prototype._haveFiles=function(e){return e?e.indexOf?-1!==e.indexOf("Files"):e.contains?e.contains("Files"):!1:!1},t.prototype._addOverClass=function(e){e.addOverClass()},t.prototype._removeOverClass=function(e){e.removeOverClass()},t}(e)}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=a;var l=o(1),u=(n(l),angular),p=u.extend,c=u.forEach;a.$inject=["FileDirective"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}function i(e,t){if(!e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return!t||"object"!=typeof t&&"function"!=typeof t?e:t}function s(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function, not "+typeof t);e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,enumerable:!1,writable:!0,configurable:!0}}),t&&(Object.setPrototypeOf?Object.setPrototypeOf(e,t):e.__proto__=t)}function a(e){return function(e){function t(o){r(this,t);var n=p(o,{events:{$destroy:"destroy"},prop:"over",overClass:"nv-file-over"});return i(this,e.call(this,n))}return s(t,e),t.prototype.addOverClass=function(){this.element.addClass(this.getOverClass())},t.prototype.removeOverClass=function(){this.element.removeClass(this.getOverClass())},t.prototype.getOverClass=function(){return this.overClass},t}(e)}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=a;var l=o(1),u=(n(l),angular),p=u.extend;a.$inject=["FileDirective"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t,o){return{link:function(n,r,i){var s=n.$eval(i.uploader);if(!(s instanceof t))throw new TypeError('"Uploader" must be an instance of FileUploader');var a=new o({uploader:s,element:r,scope:n});a.getOptions=e(i.options).bind(a,n),a.getFilters=function(){return i.filters}}}}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=r;var i=o(1);n(i);r.$inject=["$parse","FileUploader","FileSelect"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t,o){return{link:function(n,r,i){var s=n.$eval(i.uploader);if(!(s instanceof t))throw new TypeError('"Uploader" must be an instance of FileUploader');if(s.isHTML5){var a=new o({uploader:s,element:r});a.getOptions=e(i.options).bind(a,n),a.getFilters=function(){return i.filters}}}}}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=r;var i=o(1);n(i);r.$inject=["$parse","FileUploader","FileDrop"]},function(e,t,o){"use strict";function n(e){return e&&e.__esModule?e:{"default":e}}function r(e,t){return{link:function(o,n,r){var i=o.$eval(r.uploader);if(!(i instanceof e))throw new TypeError('"Uploader" must be an instance of FileUploader');var s=new t({uploader:i,element:n});s.getOverClass=function(){return r.overClass||s.overClass}}}}Object.defineProperty(t,"__esModule",{value:!0}),t["default"]=r;var i=o(1);n(i);r.$inject=["FileUploader","FileOver"]}])});
 //# sourceMappingURL=angular-file-upload.min.js.map
+/* globals define, jQuery, module, require, angular, moment */
+/* jslint vars:true */
+
+/**
+ * @license angular-bootstrap-datetimepicker
+ * Copyright 2016 Knight Rider Consulting, Inc. http://www.knightrider.com
+ * License: MIT
+ *
+ * @author        Dale "Ducky" Lotts
+ * @since        2013-Jul-8
+ */
+
+;(function (root, factory) {
+  'use strict'
+  /* istanbul ignore if */
+  if (typeof module !== 'undefined' && module.exports) {
+    var ng = typeof angular === 'undefined' ? require('angular') : angular
+    var mt = typeof moment === 'undefined' ? require('moment') : moment
+    factory(ng, mt)
+    module.exports = 'ui.bootstrap.datetimepicker'
+    /* istanbul ignore next */
+  } else if (typeof define === 'function' && /* istanbul ignore next */ define.amd) {
+    define(['angular', 'moment'], factory)
+  } else {
+    factory(root.angular, root.moment)
+  }
+}(this, function (angular, moment) {
+  'use strict'
+  angular.module('ui.bootstrap.datetimepicker', [])
+    .service('dateTimePickerConfig', DateTimePickerConfigProvider)
+    .service('dateTimePickerValidator', DateTimePickerValidatorService)
+    .directive('datetimepicker', DatetimepickerDirective)
+
+  DatetimepickerDirective.$inject = ['dateTimePickerConfig', 'dateTimePickerValidator']
+
+  function DatetimepickerDirective (defaultConfig, configurationValidator) {
+    var directiveDefinition = {
+      bindToController: false,
+      controller: DirectiveController,
+      controllerAs: 'dateTimePickerController',
+      replace: true,
+      require: 'ngModel',
+      restrict: 'E',
+      scope: {
+        beforeRender: '&',
+        onSetTime: '&'
+      },
+      templateUrl: 'templates/datetimepicker.html'
+    }
+
+    DirectiveController.$inject = ['$scope', '$element', '$attrs']
+
+    function DirectiveController ($scope, $element, $attrs) {
+      // Configuration
+      var ngModelController = $element.controller('ngModel')
+
+      var configuration = createConfiguration()
+      $scope.screenReader = configuration.screenReader
+
+      // Behavior
+      $scope.changeView = changeView
+      ngModelController.$render = $render
+
+      if (configuration.configureOn) {
+        $scope.$on(configuration.configureOn, function () {
+          configuration = createConfiguration()
+          $scope.screenReader = configuration.screenReader
+          ngModelController.$render()
+        })
+      }
+
+      if (configuration.renderOn) {
+        $scope.$on(configuration.renderOn, ngModelController.$render)
+      }
+
+      // Implementation
+
+      var viewToModelFactory = {
+        year: yearModelFactory,
+
+        month: monthModelFactory,
+
+        day: dayModelFactory,
+
+        hour: hourModelFactory,
+
+        minute: minuteModelFactory,
+
+        setTime: setTime
+      }
+
+      function changeView (viewName, dateObject, event) {
+        if (event) {
+          event.stopPropagation()
+          event.preventDefault()
+        }
+
+        if (viewName && (dateObject.utcDateValue > -Infinity) && dateObject.selectable && viewToModelFactory[viewName]) {
+          var result = viewToModelFactory[viewName](dateObject.utcDateValue)
+
+          var weekDates = []
+          if (result.weeks) {
+            for (var i = 0; i < result.weeks.length; i += 1) {
+              var week = result.weeks[i]
+              for (var j = 0; j < week.dates.length; j += 1) {
+                var weekDate = week.dates[j]
+                weekDates.push(weekDate)
+              }
+            }
+          }
+
+          $scope.beforeRender({
+            $view: result.currentView,
+            $dates: result.dates || weekDates,
+            $leftDate: result.leftDate,
+            $upDate: result.previousViewDate,
+            $rightDate: result.rightDate
+          })
+
+          $scope.data = result
+        }
+      }
+
+      function yearModelFactory (milliseconds) {
+        var selectedDate = moment.utc(milliseconds).startOf('year')
+        // View starts one year before the decade starts and ends one year after the decade ends
+        // i.e. passing in a date of 1/1/2013 will give a range of 2009 to 2020
+        // Truncate the last digit from the current year and subtract 1 to get the start of the decade
+        var startDecade = (parseInt(selectedDate.year() / 10, 10) * 10)
+        var startDate = moment.utc(startOfDecade(milliseconds)).subtract(1, 'year').startOf('year')
+
+        var yearFormat = 'YYYY'
+        var activeFormat = formatValue(ngModelController.$modelValue, yearFormat)
+        var currentFormat = moment().format(yearFormat)
+
+        var result = {
+          'currentView': 'year',
+          'nextView': configuration.minView === 'year' ? 'setTime' : 'month',
+          'previousViewDate': new DateObject({
+            utcDateValue: null,
+            display: startDecade + '-' + (startDecade + 9)
+          }),
+          'leftDate': new DateObject({utcDateValue: moment.utc(startDate).subtract(9, 'year').valueOf()}),
+          'rightDate': new DateObject({utcDateValue: moment.utc(startDate).add(11, 'year').valueOf()}),
+          'dates': []
+        }
+
+        for (var i = 0; i < 12; i += 1) {
+          var yearMoment = moment.utc(startDate).add(i, 'years')
+          var dateValue = {
+            'active': yearMoment.format(yearFormat) === activeFormat,
+            'current': yearMoment.format(yearFormat) === currentFormat,
+            'display': yearMoment.format(yearFormat),
+            'future': yearMoment.year() > startDecade + 9,
+            'past': yearMoment.year() < startDecade,
+            'utcDateValue': yearMoment.valueOf()
+          }
+
+          result.dates.push(new DateObject(dateValue))
+        }
+
+        return result
+      }
+
+      function monthModelFactory (milliseconds) {
+        var startDate = moment.utc(milliseconds).startOf('year')
+        var previousViewDate = startOfDecade(milliseconds)
+
+        var monthFormat = 'YYYY-MMM'
+        var activeFormat = formatValue(ngModelController.$modelValue, monthFormat)
+        var currentFormat = moment().format(monthFormat)
+
+        var result = {
+          'previousView': 'year',
+          'currentView': 'month',
+          'nextView': configuration.minView === 'month' ? 'setTime' : 'day',
+          'previousViewDate': new DateObject({
+            utcDateValue: previousViewDate.valueOf(),
+            display: startDate.format('YYYY')
+          }),
+          'leftDate': new DateObject({utcDateValue: moment.utc(startDate).subtract(1, 'year').valueOf()}),
+          'rightDate': new DateObject({utcDateValue: moment.utc(startDate).add(1, 'year').valueOf()}),
+          'dates': []
+        }
+
+        for (var i = 0; i < 12; i += 1) {
+          var monthMoment = moment.utc(startDate).add(i, 'months')
+          var dateValue = {
+            'active': monthMoment.format(monthFormat) === activeFormat,
+            'current': monthMoment.format(monthFormat) === currentFormat,
+            'display': monthMoment.format('MMM'),
+            'utcDateValue': monthMoment.valueOf()
+          }
+
+          result.dates.push(new DateObject(dateValue))
+        }
+
+        return result
+      }
+
+      function dayModelFactory (milliseconds) {
+        var selectedDate = moment.utc(milliseconds)
+        var startOfMonth = moment.utc(selectedDate).startOf('month')
+        var previousViewDate = moment.utc(selectedDate).startOf('year')
+        var endOfMonth = moment.utc(selectedDate).endOf('month')
+
+        var startDate = moment.utc(startOfMonth).subtract(Math.abs(startOfMonth.weekday()), 'days')
+
+        var dayFormat = 'YYYY-MMM-DD'
+        var activeFormat = formatValue(ngModelController.$modelValue, dayFormat)
+        var currentFormat = moment().format(dayFormat)
+
+        var result = {
+          'previousView': 'month',
+          'currentView': 'day',
+          'nextView': configuration.minView === 'day' ? 'setTime' : 'hour',
+          'previousViewDate': new DateObject({
+            utcDateValue: previousViewDate.valueOf(),
+            display: startOfMonth.format('YYYY-MMM')
+          }),
+          'leftDate': new DateObject({utcDateValue: moment.utc(startOfMonth).subtract(1, 'months').valueOf()}),
+          'rightDate': new DateObject({utcDateValue: moment.utc(startOfMonth).add(1, 'months').valueOf()}),
+          'dayNames': [],
+          'weeks': []
+        }
+
+        for (var dayNumber = 0; dayNumber < 7; dayNumber += 1) {
+          result.dayNames.push(moment.utc().weekday(dayNumber).format('dd'))
+        }
+
+        for (var i = 0; i < 6; i += 1) {
+          var week = {dates: []}
+          for (var j = 0; j < 7; j += 1) {
+            var dayMoment = moment.utc(startDate).add((i * 7) + j, 'days')
+            var dateValue = {
+              'active': dayMoment.format(dayFormat) === activeFormat,
+              'current': dayMoment.format(dayFormat) === currentFormat,
+              'display': dayMoment.format('D'),
+              'future': dayMoment.isAfter(endOfMonth),
+              'past': dayMoment.isBefore(startOfMonth),
+              'utcDateValue': dayMoment.valueOf()
+            }
+            week.dates.push(new DateObject(dateValue))
+          }
+          result.weeks.push(week)
+        }
+
+        return result
+      }
+
+      function hourModelFactory (milliseconds) {
+        var selectedDate = moment.utc(milliseconds).startOf('day')
+        var previousViewDate = moment.utc(selectedDate).startOf('month')
+
+        var hourFormat = 'YYYY-MM-DD H'
+        var activeFormat = formatValue(ngModelController.$modelValue, hourFormat)
+        var currentFormat = moment().format(hourFormat)
+
+        var result = {
+          'previousView': 'day',
+          'currentView': 'hour',
+          'nextView': configuration.minView === 'hour' ? 'setTime' : 'minute',
+          'previousViewDate': new DateObject({
+            utcDateValue: previousViewDate.valueOf(),
+            display: selectedDate.format('ll')
+          }),
+          'leftDate': new DateObject({utcDateValue: moment.utc(selectedDate).subtract(1, 'days').valueOf()}),
+          'rightDate': new DateObject({utcDateValue: moment.utc(selectedDate).add(1, 'days').valueOf()}),
+          'dates': []
+        }
+
+        for (var i = 0; i < 24; i += 1) {
+          var hourMoment = moment.utc(selectedDate).add(i, 'hours')
+          var dateValue = {
+            'active': hourMoment.format(hourFormat) === activeFormat,
+            'current': hourMoment.format(hourFormat) === currentFormat,
+            'display': hourMoment.format('LT'),
+            'utcDateValue': hourMoment.valueOf()
+          }
+
+          result.dates.push(new DateObject(dateValue))
+        }
+
+        return result
+      }
+
+      function minuteModelFactory (milliseconds) {
+        var selectedDate = moment.utc(milliseconds).startOf('hour')
+        var previousViewDate = moment.utc(selectedDate).startOf('day')
+
+        var minuteFormat = 'YYYY-MM-DD H:mm'
+        var activeFormat = formatValue(ngModelController.$modelValue, minuteFormat)
+        var currentFormat = moment().format(minuteFormat)
+
+        var result = {
+          'previousView': 'hour',
+          'currentView': 'minute',
+          'nextView': 'setTime',
+          'previousViewDate': new DateObject({
+            utcDateValue: previousViewDate.valueOf(),
+            display: selectedDate.format('lll')
+          }),
+          'leftDate': new DateObject({utcDateValue: moment.utc(selectedDate).subtract(1, 'hours').valueOf()}),
+          'rightDate': new DateObject({utcDateValue: moment.utc(selectedDate).add(1, 'hours').valueOf()}),
+          'dates': []
+        }
+
+        var limit = 60 / configuration.minuteStep
+
+        for (var i = 0; i < limit; i += 1) {
+          var hourMoment = moment.utc(selectedDate).add(i * configuration.minuteStep, 'minute')
+          var dateValue = {
+            'active': hourMoment.format(minuteFormat) === activeFormat,
+            'current': hourMoment.format(minuteFormat) === currentFormat,
+            'display': hourMoment.format('LT'),
+            'utcDateValue': hourMoment.valueOf()
+          }
+
+          result.dates.push(new DateObject(dateValue))
+        }
+
+        return result
+      }
+
+      function setTime (milliseconds) {
+        var tempDate = new Date(milliseconds)
+        var newDate = new Date(tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate(), tempDate.getUTCHours(), tempDate.getUTCMinutes(), tempDate.getUTCSeconds(), tempDate.getUTCMilliseconds())
+
+        switch (configuration.modelType) {
+          case 'Date':
+            // No additional work needed
+            break
+          case 'moment':
+            newDate = moment([tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate(), tempDate.getUTCHours(), tempDate.getUTCMinutes(), tempDate.getUTCSeconds(), tempDate.getUTCMilliseconds()])
+            break
+          case 'milliseconds':
+            newDate = milliseconds
+            break
+          default: // It is assumed that the modelType is a formatting string.
+            newDate = moment([tempDate.getUTCFullYear(), tempDate.getUTCMonth(), tempDate.getUTCDate(), tempDate.getUTCHours(), tempDate.getUTCMinutes(), tempDate.getUTCSeconds(), tempDate.getUTCMilliseconds()]).format(configuration.modelType)
+        }
+
+        var oldDate = ngModelController.$modelValue
+        ngModelController.$setViewValue(newDate)
+
+        if (configuration.dropdownSelector) {
+          jQuery(configuration.dropdownSelector).dropdown('toggle')
+        }
+
+        $scope.onSetTime({newDate: newDate, oldDate: oldDate})
+
+        return viewToModelFactory[configuration.startView](milliseconds)
+      }
+
+      function $render () {
+        $scope.changeView(configuration.startView, new DateObject({utcDateValue: getUTCTime(ngModelController.$viewValue)}))
+      }
+
+      function startOfDecade (milliseconds) {
+        var startYear = (parseInt(moment.utc(milliseconds).year() / 10, 10) * 10)
+        return moment.utc(milliseconds).year(startYear).startOf('year')
+      }
+
+      function formatValue (timeValue, formatString) {
+        if (timeValue) {
+          return getMoment(timeValue).format(formatString)
+        } else {
+          return ''
+        }
+      }
+
+      /**
+       * Converts a time value into a moment.
+       *
+       * This function is now necessary because moment logs a warning when parsing a string without a format.
+       * @param modelValue
+       *  a time value in any of the supported formats (Date, moment, milliseconds, and string)
+       * @returns {moment}
+       *  representing the specified time value.
+       */
+
+      function getMoment (modelValue) {
+        return moment(modelValue, angular.isString(modelValue) ? configuration.parseFormat : undefined)
+      }
+
+      /**
+       * Converts a time value to UCT/GMT time.
+       * @param modelValue
+       *  a time value in any of the supported formats (Date, moment, milliseconds, and string)
+       * @returns {number}
+       *  number of milliseconds since 1/1/1970
+       */
+
+      function getUTCTime (modelValue) {
+        var tempDate = new Date()
+        if (modelValue) {
+          var tempMoment = getMoment(modelValue)
+          if (tempMoment.isValid()) {
+            tempDate = tempMoment.toDate()
+          } else {
+            throw new Error('Invalid date: ' + modelValue)
+          }
+        }
+        return tempDate.getTime() - (tempDate.getTimezoneOffset() * 60000)
+      }
+
+      function createConfiguration () {
+        var directiveConfig = {}
+
+        if ($attrs.datetimepickerConfig) {
+          directiveConfig = $scope.$parent.$eval($attrs.datetimepickerConfig)
+        }
+
+        var configuration = angular.extend({}, defaultConfig, directiveConfig)
+
+        configurationValidator.validate(configuration)
+
+        return configuration
+      }
+    }
+
+    function DateObject () {
+      var tempDate = new Date()
+      var localOffset = tempDate.getTimezoneOffset() * 60000
+
+      this.utcDateValue = tempDate.getTime()
+      this.selectable = true
+
+      this.localDateValue = function localDateValue () {
+        return this.utcDateValue + localOffset
+      }
+
+      var validProperties = ['active', 'current', 'display', 'future', 'past', 'selectable', 'utcDateValue']
+
+      var constructorObject = arguments[0]
+
+      Object.keys(constructorObject).filter(function (key) {
+        return validProperties.indexOf(key) >= 0
+      }).forEach(function (key) {
+        this[key] = constructorObject[key]
+      }, this)
+    }
+
+    return directiveDefinition
+  }
+
+  function DateTimePickerConfigProvider () {
+    var defaultConfiguration = {
+      configureOn: null,
+      dropdownSelector: null,
+      minuteStep: 5,
+      minView: 'minute',
+      modelType: 'Date',
+      parseFormat: 'YYYY-MM-DDTHH:mm:ss.SSSZZ',
+      renderOn: null,
+      startView: 'day'
+    }
+
+    var defaultLocalization = {
+      'bg': {previous: 'предишна', next: 'следваща'},
+      'ca': {previous: 'anterior', next: 'següent'},
+      'da': {previous: 'forrige', next: 'næste'},
+      'de': {previous: 'vorige', next: 'weiter'},
+      'en-au': {previous: 'previous', next: 'next'},
+      'en-gb': {previous: 'previous', next: 'next'},
+      'en': {previous: 'previous', next: 'next'},
+      'es-us': {previous: 'atrás', next: 'siguiente'},
+      'es': {previous: 'atrás', next: 'siguiente'},
+      'fi': {previous: 'edellinen', next: 'seuraava'},
+      'fr': {previous: 'précédent', next: 'suivant'},
+      'hu': {previous: 'előző', next: 'következő'},
+      'it': {previous: 'precedente', next: 'successivo'},
+      'ja': {previous: '前へ', next: '次へ'},
+      'ml': {previous: 'മുൻപുള്ളത്', next: 'അടുത്തത്'},
+      'nl': {previous: 'vorige', next: 'volgende'},
+      'pl': {previous: 'poprzednia', next: 'następna'},
+      'pt-br': {previous: 'anteriores', next: 'próximos'},
+      'pt': {previous: 'anterior', next: 'próximo'},
+      'ro': {previous: 'anterior', next: 'următor'},
+      'ru': {previous: 'предыдущая', next: 'следующая'},
+      'sk': {previous: 'predošlá', next: 'ďalšia'},
+      'sv': {previous: 'föregående', next: 'nästa'},
+      'tr': {previous: 'önceki', next: 'sonraki'},
+      'uk': {previous: 'назад', next: 'далі'},
+      'zh-cn': {previous: '上一页', next: '下一页'},
+      'zh-tw': {previous: '上一頁', next: '下一頁'}
+    }
+
+    var screenReader = defaultLocalization[moment.locale().toLowerCase()]
+
+    return angular.extend({}, defaultConfiguration, {screenReader: screenReader})
+  }
+
+  DateTimePickerValidatorService.$inject = ['$log']
+
+  function DateTimePickerValidatorService ($log) {
+    return {
+      validate: validator
+    }
+
+    function validator (configuration) {
+      var validOptions = [
+        'configureOn',
+        'dropdownSelector',
+        'minuteStep',
+        'minView',
+        'modelType',
+        'parseFormat',
+        'renderOn',
+        'startView',
+        'screenReader'
+      ]
+
+      var invalidOptions = Object.keys(configuration).filter(function (key) {
+        return (validOptions.indexOf(key) < 0)
+      })
+
+      if (invalidOptions.length) {
+        throw new Error('Invalid options: ' + invalidOptions.join(', '))
+      }
+
+      // Order of the elements in the validViews array is significant.
+      var validViews = ['minute', 'hour', 'day', 'month', 'year']
+
+      if (validViews.indexOf(configuration.startView) < 0) {
+        throw new Error('invalid startView value: ' + configuration.startView)
+      }
+
+      if (validViews.indexOf(configuration.minView) < 0) {
+        throw new Error('invalid minView value: ' + configuration.minView)
+      }
+
+      if (validViews.indexOf(configuration.minView) > validViews.indexOf(configuration.startView)) {
+        throw new Error('startView must be greater than minView')
+      }
+
+      if (!angular.isNumber(configuration.minuteStep)) {
+        throw new Error('minuteStep must be numeric')
+      }
+      if (configuration.minuteStep <= 0 || configuration.minuteStep >= 60) {
+        throw new Error('minuteStep must be greater than zero and less than 60')
+      }
+      if (configuration.configureOn !== null && !angular.isString(configuration.configureOn)) {
+        throw new Error('configureOn must be a string')
+      }
+      if (configuration.configureOn !== null && configuration.configureOn.length < 1) {
+        throw new Error('configureOn must not be an empty string')
+      }
+      if (configuration.renderOn !== null && !angular.isString(configuration.renderOn)) {
+        throw new Error('renderOn must be a string')
+      }
+      if (configuration.renderOn !== null && configuration.renderOn.length < 1) {
+        throw new Error('renderOn must not be an empty string')
+      }
+      if (configuration.modelType !== null && !angular.isString(configuration.modelType)) {
+        throw new Error('modelType must be a string')
+      }
+      if (configuration.modelType !== null && configuration.modelType.length < 1) {
+        throw new Error('modelType must not be an empty string')
+      }
+      if (configuration.modelType !== 'Date' && configuration.modelType !== 'moment' && configuration.modelType !== 'milliseconds') {
+        // modelType contains string format, overriding parseFormat with modelType
+        configuration.parseFormat = configuration.modelType
+      }
+      if (configuration.dropdownSelector !== null && !angular.isString(configuration.dropdownSelector)) {
+        throw new Error('dropdownSelector must be a string')
+      }
+
+      /* istanbul ignore next */
+      if (configuration.dropdownSelector !== null && ((typeof jQuery === 'undefined') || (typeof jQuery().dropdown !== 'function'))) {
+        $log.error('Please DO NOT specify the dropdownSelector option unless you are using jQuery AND Bootstrap.js. ' +
+          'Please include jQuery AND Bootstrap.js, or write code to close the dropdown in the on-set-time callback. \n\n' +
+          'The dropdownSelector configuration option is being removed because it will not function properly.')
+        delete configuration.dropdownSelector
+      }
+    }
+  }
+}))
+
+/* globals define, module, require, angular */
+
+/**
+ * @license angular-bootstrap-datetimepicker
+ * Copyright 2016 Knight Rider Consulting, Inc. http://www.knightrider.com
+ * License: MIT
+ *
+ * @author       Dale "Ducky" Lotts
+ * @since        2016-Jan-31
+ */
+
+;(function (root, factory) {
+  'use strict'
+  /* istanbul ignore if */
+  if (typeof module !== 'undefined' && module.exports) {
+    var ng = typeof angular === 'undefined' ? require('angular') : angular
+    factory(ng)
+    module.exports = 'ui.bootstrap.datetimepicker.templates'
+    /* istanbul ignore next */
+  } else if (typeof define === 'function' && /* istanbul ignore next */ define.amd) {
+    define(['angular'], factory)
+  } else {
+    factory(root.angular, root.moment)
+  }
+}(this, function (angular) {
+  'use strict'
+  angular.module('ui.bootstrap.datetimepicker').run(['$templateCache', function ($templateCache) {
+    $templateCache.put('templates/datetimepicker.html', '<div class="datetimepicker table-responsive">\n    <table class="table table-condensed {{ data.currentView }}-view">\n        <thead>\n        <tr>\n            <th class="left" data-ng-click="changeView(data.currentView, data.leftDate, $event)" data-ng-show="data.leftDate.selectable"><i class="glyphicon glyphicon-arrow-left"><span class="sr-only">{{ screenReader.previous }}</span></i>\n            </th>\n            <th class="switch" colspan="5" data-ng-show="data.previousViewDate.selectable" data-ng-click="changeView(data.previousView, data.previousViewDate, $event)">{{ data.previousViewDate.display }}</th>\n            <th class="right" data-ng-click="changeView(data.currentView, data.rightDate, $event)" data-ng-show="data.rightDate.selectable"><i class="glyphicon glyphicon-arrow-right"><span class="sr-only">{{ screenReader.next }}</span></i>\n            </th>\n        </tr>\n        <tr>\n            <th class="dow" data-ng-repeat="day in data.dayNames">{{ day }}</th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr data-ng-if="data.currentView !== \'day\'">\n            <td colspan="7">\n                          <span class="{{ data.currentView }}" data-ng-repeat="dateObject in data.dates" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}" data-ng-click="changeView(data.nextView, dateObject, $event)">{{ dateObject.display }}</span></td>\n        </tr>\n        <tr data-ng-if="data.currentView === \'day\'" data-ng-repeat="week in data.weeks">\n            <td data-ng-repeat="dateObject in week.dates" data-ng-click="changeView(data.nextView, dateObject, $event)" class="day" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}">{{ dateObject.display }}</td>\n        </tr>\n        </tbody>\n    </table>\n</div>\n')
+  }])
+}))
+
 //# sourceMappingURL=vendor.js.map

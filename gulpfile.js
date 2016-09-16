@@ -28,7 +28,8 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/bootstrap-datepicker/css/datepicker.css',
         '../../../public/assets/plugins/bootstrap-datepicker/css/datepicker3.css',
         '../../../public/assets/plugins/parsley/src/parsley.css',
-        '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css'
+        '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
+        '../../../node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css'
 	],
 	'public/vendor/vendor.css');
 
@@ -51,7 +52,9 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/bootstrap-daterangepicker/moment.js',
 		'../../../public/assets/plugins/parsley/dist/parsley.js',
 		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
-		'../bower_components/angular-file-upload/dist/angular-file-upload.min.js'
+		'../bower_components/angular-file-upload/dist/angular-file-upload.min.js',
+		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
+		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js'
 	],
 	'public/vendor/vendor.js');
 
