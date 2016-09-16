@@ -255,7 +255,7 @@ class UserController extends Controller
     }
 
     public function getUserProfile(User $user, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, UserRole $userRole, Request $req) {
-        $isOauthDefined = false;
+        $isOauthDefined = $this->isOauthDefined();
 
         $userData = $req->get('userData');
         $url = Input::get('seo_url', $userData['seo_url']);

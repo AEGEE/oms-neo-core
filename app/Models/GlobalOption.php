@@ -22,7 +22,7 @@ class GlobalOption extends Model
             $options = $options->where('name', 'LIKE', "%".$search['name']."%");
         }
 
-        if(isset($search['not_editable']) && !empty($search['not_editable'])) {
+        if(isset($search['not_editable'])) {
         	switch ($search['not_editable']) {
         		case '1':
         			$options = $options->whereNotNull('not_editable');
