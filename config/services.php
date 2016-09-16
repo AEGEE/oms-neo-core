@@ -39,4 +39,9 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'google' => [
+        'client_id' => env('OAUTH_ID', ''),
+        'client_secret' => env('OAUTH_SECRET', ''),
+        'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
+    ],
 ];

@@ -108,7 +108,8 @@ class GenericController extends Controller
     		return view('loggedIn', $addToView);
     	}
 
-		return view('notLogged');
+        $addToView['oAuthDefined'] = $this->isOauthDefined();
+		return view('notLogged', $addToView);
     }
 
     public function logout() {

@@ -293,4 +293,47 @@ class User extends Model
             'suspended_reason'  =>  $this->suspended_reason
         );
     }
+
+    // oAuth methods..
+    public function oAuthCreateAccount($provider, $delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        switch ($provider) {
+            case 'google':
+                return $this->createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password);
+                break;
+            
+            default:
+                return false;
+                break;
+        }
+    }
+
+    private function createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        $scopes = array(
+            'https://www.googleapis.com/auth/admin.directory.user'
+        );
+
+        $client = new \Google_Client();
+        $client->setScopes($scopes);
+        $client->setSubject($delegatedAdmin);
+
+        $client->setAuthConfig($oAuthCredentials);
+
+        $dir = new \Google_Service_Directory($client);
+
+        $userInstance = new \Google_Service_Directory_User();
+        $nameInstance = new \Google_Service_Directory_UserName();
+
+        $nameInstance->setGivenName($this->first_name);
+        $nameInstance->setFamilyName($this->last_name);
+
+        $userInstance->setName($nameInstance);
+        $userInstance->setHashFunction("MD5");
+        $userInstance->setPrimaryEmail($seo."@".$domain);
+        $userInstance->setPassword(hash("md5", $password));
+        $userInstance->setChangePasswordAtNextLogin(true);
+
+        $createUserResult = $dir->users->insert($userInstance);
+
+        return true;
+    }
 }

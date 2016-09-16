@@ -14,6 +14,10 @@
 @stop
 
 @section('modulesSrc')
-	<script type="text/javascript" src="modules/notLoggedIn/login/login.js"></script>
+	@if(!$oAuthDefined)
+		<script type="text/javascript" src="modules/notLoggedIn/login/login.js"></script>
+	@else
+		<script type="text/javascript" src="modules/notLoggedIn/oAuthLogin/oAuthLogin.js"></script>
+	@endif
 	<script type="text/javascript" src="modules/notLoggedIn/signup/signup.js"></script>
 @stop

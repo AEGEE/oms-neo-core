@@ -20,6 +20,7 @@ use App\Models\User;
 use Hash;
 use Input;
 use Session;
+use Socialite;
 use Uuid;
 
 class LoginController extends Controller
@@ -86,18 +87,6 @@ class LoginController extends Controller
         }
 
     	// We try to also add it to session..
-    	// $userData = array(
-     //        'id'                =>  $user->id,
-    	// 	'username'			=>	$user->contact_email,
-    	// 	'fullname'			=>	$user->first_name." ".$user->last_name,
-    	// 	'is_superadmin'		=>	$user->is_superadmin,
-    	// 	'department_id'		=>	$user->department_id,
-     //        'logged_in'         =>  true,
-     //        'authToken'         =>  $loginKey,
-     //        'seo_url'           =>  $user->seo_url,
-     //        'is_suspended'      =>  !empty($user->is_suspended) ? true : false,
-     //        'suspended_reason'  =>  $user->suspended_reason
-    	// );
         $userData = $user->getLoginUserArray($loginKey);
 
 		Session::put('userData', $userData);
@@ -192,5 +181,95 @@ class LoginController extends Controller
         );
 
         return response(json_encode($toReturn), 200);
+    }
+
+    public function loginUsingOauth() {
+        if(!$this->isOauthDefined()) {
+            $toReturn = array(
+                'success'   =>  0,
+                'message'   =>  'Please use the credentials login endpoint!'
+            );
+            return response(json_encode($toReturn), 422);
+        }
+        $provider = $this->getOAuthProvider();
+        $allowedDomain = $this->getOAuthAllowedDomain();
+        if($provider == 'google' && !empty($allowedDomain)) { // Google supports single domain
+            return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://www.googleapis.com/auth/admin.directory.user'])->redirect();
+        }
+        return Socialite::driver($provider)->redirect();
+    }
+
+    public function oAuthCallback(User $user, Auth $auth, Fee $fee, Request $req) {
+        if(!$this->isOauthDefined()) {
+            $toReturn = array(
+                'success'   =>  0,
+                'message'   =>  'Please use the credentials login endpoint!'
+            );
+            return response(json_encode($toReturn), 422);
+        }
+
+        // Saving login request..
+        $auth->ip = $req->ip();
+        $auth->user_agent = $req->header('User-Agent');
+        
+        $rawRequestParams = http_build_query($req->all());
+        $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
+
+        $auth->raw_request_params = $rawRequestParams;
+
+        $toReturn = array(
+            'success'   =>  0,
+            'message'   =>  'Account does not exist!'
+        );
+
+        $provider = $this->getOAuthProvider();
+        $oAuthUser = Socialite::driver($provider)->user();
+        $userEmail = $oAuthUser->getEmail();
+
+        try {
+            $user = $user->where('internal_email', $userEmail)
+                            ->whereNotNull('activated_at') // If its null, then the account was not activated..
+                            ->firstOrFail();
+        } catch(ModelNotFoundException $ex) {
+            $auth->save();
+            return response(json_encode($toReturn), 422);
+        }
+
+        // User exists..
+        $user->oauth_token = $oAuthUser->token;
+        $user->save();
+
+        // We found a user..
+        $auth->user_id = $user->id;
+
+        // all good..
+        $loginKey = Uuid::generate(1);
+        $loginKey = $loginKey->string;
+
+        $auth->token_generated = $loginKey;
+        $auth->successful = 1;
+        $auth->save();
+
+        // We check if user has all fees paid, if not, we auto-suspend him..
+        if(empty($user->is_superadmin)) {
+            $fee->checkFeesForSuspention($user);
+        }
+
+        // We try to also add it to session..
+        $userData = $user->getLoginUserArray($loginKey);
+
+        Session::put('userData', $userData);
+        // Mirroring Laravel session data to PHP native session.. For use with angular partials..
+        session_start();
+        $_SESSION['userData'] = Session::get('userData');
+        session_write_close();      
+
+        $toReturn = array(
+            'success'   =>  1,
+            'message'   =>  $loginKey
+        );
+
+        // Login successful.. returning data..
+        return Redirect('/');
     }
 }

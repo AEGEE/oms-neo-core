@@ -359,10 +359,21 @@ class RecrutementController extends Controller
 
         $userPass = $user->generateRandomPassword();
 
-        $oAuthActive = false;
+        $oAuthActive = $this->isOauthDefined();
         if($oAuthActive) {
-            $username = ""; // Todo..
-            // Todo.. activate account with oauth..
+            $domain = $this->getOAuthAllowedDomain();
+            $username = $user->seo_url."@".$domain;
+
+            $success = $user->oAuthCreateAccount(
+                $this->getOAuthProvider(),
+                $this->getDelegatedAdmin(),
+                $this->getOauthCredentials(),
+                $domain,
+                $user->seo_url,
+                $userPass
+            );
+
+            $user->internal_email = $username;
         } else {
             $username = $user->contact_email;
             $user->password = Hash::make($userPass);

@@ -12,6 +12,9 @@
 */
 
 // Login route..
+Route::any('/oauth/login', 'LoginController@loginUsingOauth');
+Route::any('/oauth/callback', 'LoginController@oAuthCallback');
+
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 // Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
