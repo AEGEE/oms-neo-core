@@ -42,4 +42,9 @@ class Controller extends BaseController
         $path = storage_path()."/app/".config('oauth.credentials').".json";
         return json_decode(File::get($path), true);
     }
+
+    protected function getAppVersion() {
+        $path = storage_path()."/../.version";
+        return File::get($path);
+    }
 }

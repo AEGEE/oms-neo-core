@@ -71,6 +71,7 @@ elixir(function(mix) {
 		'../../../public/assets/js/angular-controller.js',
 		'../../../public/assets/js/angular-directive.js',
 		'../../../public/assets/js/apps.js',
+		'../../../node_modules/angular-bootstrap3-typeahead/angular-bootstrap3-typeahead.js'
 
 	],
 	'public/vendor/template.js');

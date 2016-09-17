@@ -26,6 +26,7 @@ class GenericController extends Controller
         }
         session_start();
         $_SESSION['globals'] = $optionsArr;
+        $_SESSION['app_version'] = $this->getAppVersion();
         session_write_close();
 
     	if($userData['logged_in']) {

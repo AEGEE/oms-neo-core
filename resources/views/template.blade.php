@@ -98,7 +98,8 @@ $isProduction = App::environment() == 'production' ? true : false;
 		            'ui.router',
 		            'ui.bootstrap',
 		            'oc.lazyLoad',
-		            'angularFileUpload'
+		            'angularFileUpload',
+		            'bootstrap3-typeahead'
 		            @yield('modules')  
 		        ])
 		        .config(routeConfig)

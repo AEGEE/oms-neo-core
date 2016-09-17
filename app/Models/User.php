@@ -155,7 +155,7 @@ class User extends Model
 
         // Filters here..
         if(isset($search['name']) && !empty($search['name'])) {
-            $users = $users->where(DB::raw('CONCAT (first_name, \' \', last_name)'), 'LIKE', '%'.$search['name'].'%');
+            $users = $users->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
         }
 
         if(isset($search['date_of_birth']) && !empty($search['date_of_birth'])) {

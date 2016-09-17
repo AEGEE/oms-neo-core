@@ -1,6 +1,7 @@
 <?php
 session_start();
 $options = $_SESSION['globals'];
+$appVersion = $_SESSION['app_version'];
 session_write_close();
 ?>
 <!-- begin #header -->
@@ -23,7 +24,8 @@ session_write_close();
 
 <!-- begin #footer -->
 <div id="footer" class="footer">
-	&copy; <?=date('Y')?> <?=$options['app_copyright']?>
+	&copy; <?=date('Y')?> <?=$options['app_copyright']?> - Version <?=$appVersion?><br />
+	Powered by <a target="_blank" href="https://github.com/AEGEE/oms-neo-core">Online membership system</a>
 </div>
 <!-- end #footer -->
 

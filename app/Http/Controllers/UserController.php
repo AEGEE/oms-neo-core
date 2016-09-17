@@ -12,6 +12,7 @@ use App\Http\Requests\AddWorkingGroupRequest;
 use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\ChangePasswordRequest;
 
+use App\Models\Antenna;
 use App\Models\Auth;
 use App\Models\BoardMember;
 use App\Models\Country;
@@ -127,7 +128,7 @@ class UserController extends Controller
 
     public function getUser(User $user) {
         $id = Input::get('id');
-        $user = $user->findOrFail($id);
+        $user = $user->with('antenna')->findOrFail($id);
 
         $toReturn['success'] = 1;
         $toReturn['user'] = $user;
@@ -248,9 +249,11 @@ class UserController extends Controller
                                     ->orWhereNull('expiration');
                         })
                         ->firstOrFail();
+        $antenna = Antenna::find($userData->user->id);
 
         $toReturn['success'] = 1;
         $toReturn['user'] = $userData->user;
+        $toReturn['user']['antenna'] = $antenna->name;
         return response(json_encode($toReturn), 200);
     }
 
