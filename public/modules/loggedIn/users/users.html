@@ -174,7 +174,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="date_of_birth">Date of birth *</label>
-                                <input id="date_of_birth" type="text" name="date_of_birth" placeholder="date of birth" class="form-control" ng-model="vm.user.date_of_birth" required />
+                                <input id="date_of_birth" type="text" name="date_of_birth" placeholder="date of birth" class="form-control" ng-model="vm.user.date_of_birth" />
                             </div>
                         </div>
                         <div class="col-md-12">
@@ -228,7 +228,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <label for="antenna">Antenna *</label>
-                                <select class="form-control" id="antenna" ng-model="vm.user.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id" required>
+                                <select class="form-control" id="antenna" ng-model="vm.user.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id">
                                     <option></option>
                                 </select>
                             </div>
@@ -242,7 +242,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="studies_type">Study type *</label>
-                                <select class="form-control" id="studies_type" ng-model="vm.user.studies_type" ng-options="type.id as type.name for type in vm.registrationFields.study_type track by type.id" required>
+                                <select class="form-control" id="studies_type" ng-model="vm.user.studies_type" ng-options="type.id as type.name for type in vm.registrationFields.study_type track by type.id">
                                     <option></option>
                                 </select>
                             </div>
@@ -250,7 +250,7 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label for="study_field">Study field *</label>
-                                <select class="form-control" id="study_field" ng-model="vm.user.study_field" ng-options="field.id as field.name for field in vm.registrationFields.study_field track by field.id" required>
+                                <select class="form-control" id="study_field" ng-model="vm.user.study_field" ng-options="field.id as field.name for field in vm.registrationFields.study_field track by field.id">
                                     <option></option>
                                 </select>
                             </div>

@@ -86,6 +86,7 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
 		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
 		Route::post('/api/addWorkingGroupToUser', 'UserController@addWorkingGroupToUser');
+		Route::post('/api/createUser', 'LoginController@createUser');
 
 		// Deletes..
 		Route::post('/api/deleteFee', 'UserController@deleteFee');

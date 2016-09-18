@@ -142,7 +142,7 @@ class User extends Model
         return $emailHash;
     }
 
-    public function checkEmailHash($emailHash, $exceptId) {
+    public function checkEmailHash($emailHash, $exceptId = 0) {
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 

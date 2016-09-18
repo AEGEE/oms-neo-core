@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Http\Requests;
+use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
-use App\Http\Requests\SignupRequest;
 
 use App\Models\Auth;
 use App\Models\Antenna;
@@ -138,24 +138,11 @@ class LoginController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function signup(SignupRequest $req, User $usr, Auth $auth) {
-        die("Endpoint not available anymore!");
-        // Checking if user is logged in..
-        $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
-
-        $id = 0;
-        if($auth->isUserLogged($xAuthToken)) {
-            // User logged.. do stuff..
-            $id = Input::get('id');
-            if(!empty($id)) {
-                $usr = $usr->firstOrFail($id);
-            }
-        }
-
+    public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
-        if($usr->checkEmailHash($emailHash, $id)) {
+        if($usr->checkEmailHash($emailHash, 0)) {
             $toReturn['success'] = 0;
             $toReturn['message'] = "Email already exists!";
             return response(json_encode($toReturn), 200);

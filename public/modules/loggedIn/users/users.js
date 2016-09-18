@@ -267,7 +267,7 @@
 
             $http({
                 method: "POST",
-                url: '/api/signup',
+                url: '/api/createUser',
                 data: vm.user,
             })
             .then(function successCallback(response) {
