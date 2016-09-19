@@ -385,7 +385,7 @@ class RecrutementController extends Controller
         $feesCache = $fee->getCache();
 
         // Now for roles..
-        $roles = Input::get('roles');
+        $roles = Input::get('roles', array());
         foreach($roles as $key => $val) {
             if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
                 continue;
@@ -397,7 +397,7 @@ class RecrutementController extends Controller
         }
 
         // Now for fees..
-        $fees = Input::get('fees');
+        $fees = Input::get('fees', array());
         $feesPaid = Input::get('feesPaid');
         foreach($fees as $key => $val) {
             if(!$val || !isset($feesCache[$key])) { // Fee set as false or does not exist..
