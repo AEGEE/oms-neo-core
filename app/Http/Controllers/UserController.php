@@ -249,7 +249,7 @@ class UserController extends Controller
                                     ->orWhereNull('expiration');
                         })
                         ->firstOrFail();
-        $antenna = Antenna::find($userData->user->id);
+        $antenna = Antenna::findOrFail($userData->user->id);
 
         $toReturn['success'] = 1;
         $toReturn['user'] = $userData->user;
