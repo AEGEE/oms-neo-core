@@ -414,7 +414,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>
-                    <button class="btn btn-sm btn-success" ng-click="vm.addBoardMembership()"><i class="fa fa-save"></i> Add membership</button>
+                    <button class="btn btn-sm btn-success" ng-click="vm.addWorkingGroup()"><i class="fa fa-save"></i> Add user to working group</button>
                 </div>
             </form>
         </div>

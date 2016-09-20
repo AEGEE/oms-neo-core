@@ -207,7 +207,7 @@
             });
         }
 
-        vm.addBoardMembership = function() {
+        vm.addWorkingGroup = function() {
             $http({
                 method: "POST",
                 url: '/api/addWorkingGroupToUser',
