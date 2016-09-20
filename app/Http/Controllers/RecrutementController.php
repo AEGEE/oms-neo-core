@@ -108,7 +108,7 @@ class RecrutementController extends Controller
     public function saveCampaign(AddRecrutmentCampaignRequest $req, RecrutementCampaign $campaign) {
     	$campaign->start_date = Input::get('start_date');
     	$campaign->end_date = Input::get('end_date');
-    	$campaign->link = Input::get('link');
+    	$campaign->link = Input::get('link', $campaign->createRandomLink());
 
     	$userData = $req->get('userData');
     	if($userData['is_superadmin'] == 1) {

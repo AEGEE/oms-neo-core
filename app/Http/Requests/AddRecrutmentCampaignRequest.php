@@ -24,7 +24,7 @@ class AddRecrutmentCampaignRequest extends Request
     public function rules()
     {
         return [
-            'link'          =>  'required|unique:recrutement_campaigns,link',
+            // 'link'          =>  'required|unique:recrutement_campaigns,link',
             'start_date'    =>  'required',
             'end_date'      =>  'required'
         ];

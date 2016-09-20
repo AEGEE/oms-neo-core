@@ -67,4 +67,18 @@ class RecrutementCampaign extends Model
 
 		return $campaign->get();
     }
+
+    private function createRandomString($max_chars = 6) {
+        $str = str_shuffle("asdfghjklqwertyuiop1234567890zxcvbnm");
+        return substr($str, 0, $max_chars);
+    }
+
+    public function createRandomLink($max_chars = 6) {
+        do {
+            $string = $this->createRandomString();
+            $alreadyExists = $this->where('link', $string)->count();
+        } while($alreadyExists != 0);
+
+        return $string;
+    }
 }
