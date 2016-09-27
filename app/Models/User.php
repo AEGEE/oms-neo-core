@@ -246,13 +246,13 @@ class User extends Model
     }
 
     public function generateSeoUrl() {
-        $url = preg_replace('/ /', '_', $this->first_name)."_".preg_replace('/ /', '_', $this->last_name);
+        $url = preg_replace('/ /', '.', $this->first_name).".".preg_replace('/ /', '.', $this->last_name);
         $url = strtolower($url);
 
         $url_final = $url;
         $counter = 1;
         while(!$this->checkSeoUrlIsAvailable($url_final)) {
-            $url_final = $url."_".$counter;
+            $url_final = $url.".".$counter;
             $counter++;
         }
 

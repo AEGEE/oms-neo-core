@@ -16,7 +16,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 	<meta content="" name="author" />
 	
 	<!-- ================== BEGIN BASE CSS STYLE ================== -->
-	<link href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
 	<link href="vendor/vendor.css" rel="stylesheet" />
 	<link rel="stylesheet" type="text/css" href="vendor/grid/css/ui.jqgrid-bootstrap.css">
 	<!-- ================== END BASE CSS STYLE ================== -->

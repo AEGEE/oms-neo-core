@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 use App\Models\ModulePage;
+use App\Models\Role;
 
 class CheckSpecialRoles
 {
