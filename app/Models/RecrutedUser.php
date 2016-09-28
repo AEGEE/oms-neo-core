@@ -92,6 +92,8 @@ class RecrutedUser extends Model
         $statusDetails = $this->getStatusStuff($this->status);
         if($isGrid) {
             $statusText = "<span class='label label-".$statusDetails['labelType']."'>".$statusDetails['statusText']."</span>";
+        } else {
+            $statusText = $statusDetails['statusText'];
         }
         return $statusText;
     }

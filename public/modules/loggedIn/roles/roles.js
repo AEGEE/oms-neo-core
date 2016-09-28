@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Roles'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/roles/roles.html',
+                        templateUrl: 'modules/loggedIn/roles/roles.php',
                         controller: 'RoleController as vm'
                     }
                 }
@@ -69,6 +69,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
+                    hidden: moduleAccess.roles == 0,
                     sortable: false,
                     width: 50
                 }, {
@@ -155,21 +156,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -200,40 +186,6 @@
             $('#roleModal').modal('show');
         }
 
-        // vm.exportGrid = function() {
-        //     $http({
-        //         url: 'api/getRoles',
-        //         method: 'GET',
-        //         responseType: 'arraybuffer',
-        //         params: {
-        //             name: vm.filter.name,
-        //             export: 1
-        //         },
-        //         headers: {
-        //             'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        //         }
-        //     }).success(function(data){
-        //         var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        //         var objectUrl = URL.createObjectURL(blob);
-        //         window.open(objectUrl);
-        //         $.gritter.add({
-        //             title: 'Export generated successfully!',
-        //             text: 'If you did not receive it, please make sure that your browser isn\'t blocking pop-ups.',
-        //             sticky: true,
-        //             time: '',
-        //             class_name: 'my-sticky-class'
-        //         });
-        //     }).error(function(){
-        //         $.gritter.add({
-        //             title: 'Error!',
-        //             text: 'An error occoured! Please try again!',
-        //             sticky: true,
-        //             time: '',
-        //             class_name: 'my-sticky-class'
-        //         });
-        //     });
-        // }
-
         vm.getModulePages = function() {
             $http({
                 method: 'GET',
@@ -246,6 +198,14 @@
                     vm.modules = response.data;
                     console.log(vm.modules);
             })
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
         }
 
         ///////

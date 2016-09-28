@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Settings'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/settings/settings.html',
+                        templateUrl: 'modules/loggedIn/settings/settings.php',
                         controller: 'SettingController as vm'
                     }
                 }
@@ -68,6 +68,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
+                    hidden: moduleAccess.settings == 0,
                     sortable: false,
                     width: 25
                 }, {
@@ -155,21 +156,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -313,21 +299,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 

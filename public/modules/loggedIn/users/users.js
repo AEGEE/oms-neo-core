@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Users'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/users/users.html',
+                        templateUrl: 'modules/loggedIn/users/users.php',
                         controller: 'UserController as vm'
                     }
                 }
@@ -72,14 +72,6 @@
             })
             .then(function successCallback(response) {
                 vm.registrationFields = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -90,14 +82,6 @@
             })
             .then(function successCallback(response) {
                 vm.departments = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -290,21 +274,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -364,14 +333,6 @@
                 $.gritter.add({
                     title: 'Export generated successfully!',
                     text: 'If you did not receive it, please make sure that your browser isn\'t blocking pop-ups.',
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
-            }).error(function(){
-                $.gritter.add({
-                    title: 'Error!',
-                    text: 'An error occoured! Please try again!',
                     sticky: true,
                     time: '',
                     class_name: 'my-sticky-class'
@@ -446,21 +407,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -468,6 +414,14 @@
             $state.go('app.profile', {
                     'seo': url
             });
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
         }
 
         ///////

@@ -14,7 +14,8 @@ use Input;
 
 class FeeController extends Controller
 {
-    public function getFees(Fee $fee) {
+    public function getFees(Fee $fee, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          		=>  Input::get('name'),
             'availability_from'     =>  Input::get('availability_from'),
@@ -69,7 +70,9 @@ class FeeController extends Controller
         foreach($fees as $feeX) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeFee' title='Edit' ng-click='vm.editFee(".$feeX->id.")'><i class='fa fa-pencil'></i></button>";
+                if($max_permission == 1) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeFee' title='Edit' ng-click='vm.editFee(".$feeX->id.")'><i class='fa fa-pencil'></i></button>";
+                }
             } else {
                 $actions = $feeX->id;
             }

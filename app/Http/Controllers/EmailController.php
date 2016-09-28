@@ -14,7 +14,8 @@ use Session;
 
 class EmailController extends Controller
 {
-    public function getEmailTemplates(EmailTemplate $tpl) {
+    public function getEmailTemplates(EmailTemplate $tpl, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
     		'sidx'      	=>  Input::get('sidx'),
@@ -48,7 +49,9 @@ class EmailController extends Controller
         foreach($emailTemplates as $template) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeTpl' title='Edit' ng-click='vm.editEmail(".$template->id.")'><i class='fa fa-pencil'></i></button>";
+                if($max_permission == 1) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeTpl' title='Edit' ng-click='vm.editEmail(".$template->id.")'><i class='fa fa-pencil'></i></button>";
+                }
                 $actions .= "<button class='btn btn-default btn-xs m-l-5 clickMeTpl' title='Edit' ng-click='vm.viewEmail(\"".$template->code."\")'><i class='fa fa-search'></i></button>";
             } else {
                 $actions = $template->id;

@@ -183,6 +183,12 @@ class LoginController extends Controller
         if($provider == 'google' && !empty($allowedDomain)) { // Google supports single domain
             return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://www.googleapis.com/auth/admin.directory.user'])->redirect();
         }
+        if($provider == 'live') {
+            return Socialite::with($provider)->redirect();
+        }
+        if ($provider == 'azure') {
+            return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://graph.microsoft.com/Directory.ReadWrite.All'])->redirect();
+        }
         return Socialite::driver($provider)->redirect();
     }
 

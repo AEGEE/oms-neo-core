@@ -17,6 +17,7 @@ class GenericController extends Controller
 {
     public function defaultRoute(GlobalOption $opt) {
     	$userData = Session::get('userData');
+        $addToView = array();
 
         // Options..
         $optionsArr = array();
@@ -29,14 +30,15 @@ class GenericController extends Controller
         $_SESSION['app_version'] = $this->getAppVersion();
         session_write_close();
 
-    	if($userData['logged_in']) {
-            $addToView = array();
-            $addToView['userData'] = $userData;
+        $addToView['appName'] = $optionsArr['app_name'];
+        if($userData['logged_in']) {
 
+            $addToView['userData'] = $userData;
             $addToView['countries'] = "";
             $addToView['modulesSrc'] = "";
             $addToView['baseUrlRepo'] = "";
             $addToView['modulesNames'] = "";
+            $addToView['moduleAccess'] = "";
             $addToView['authToken'] = $userData['authToken'];
 
             // Adding modules to which he has access..
@@ -54,7 +56,7 @@ class GenericController extends Controller
                 $userRolesObj = new UserRole();
                 $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
                 $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                        ->whereIn('module_pages.id', $modulePageIds)
+                                        ->whereIn('module_pages.id', array_keys($modulePageIds))
                                         ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                         ->orderBy('module_pages.name', 'ASC')->get();
             }
@@ -84,7 +86,17 @@ class GenericController extends Controller
 
                 $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
 
-                $moduleAccess[$module->code] = 1; // todo get highest access level..
+                if(strlen($addToView['moduleAccess']) > 0) {
+                    $addToView['moduleAccess'] .= ", ";
+                }
+
+                if($userData['is_superadmin'] == 1) {
+                    $addToView['moduleAccess'] .= $module->code.": 1";
+                    $moduleAccess[$module->code] = 1;
+                } else {
+                    $addToView['moduleAccess'] .= $module->code.": ".$modulePageIds[$module->id];
+                    $moduleAccess[$module->code] = $modulePageIds[$module->id]; // todo get highest access level..
+                }
             }
 
             // Mirroring links accessible to session so they can be accessed in partials..

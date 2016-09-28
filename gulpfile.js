@@ -54,7 +54,9 @@ elixir(function(mix) {
 		'../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
 		'../bower_components/angular-file-upload/dist/angular-file-upload.min.js',
 		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
-		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js'
+		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js',
+		'../bower_components/showdown/compressed/Showdown.min.js',
+		'../bower_components/angular-markdown-directive/markdown.js'
 	],
 	'public/vendor/vendor.js');
 
@@ -70,6 +72,7 @@ elixir(function(mix) {
 		'../../../public/assets/js/angular-setting.js',
 		'../../../public/assets/js/angular-controller.js',
 		'../../../public/assets/js/angular-directive.js',
+		'../bower_components/angular-sanitize/angular-sanitize.min.js',
 		'../../../public/assets/js/apps.js',
 		'../../../node_modules/angular-bootstrap3-typeahead/angular-bootstrap3-typeahead.js'
 

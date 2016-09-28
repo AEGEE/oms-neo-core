@@ -1,8 +1,6 @@
 <?php
-session_start();
-$userData = $_SESSION['userData'];
-$menuMarkup = isset($_SESSION['moduleMarkup']) ? $_SESSION['moduleMarkup'] : "";
-session_write_close();
+require_once('../../scripts/template_scripts.php');
+$omsObj = new omsHelperScript();
 ?>
 <!-- begin #sidebar -->
 <div id="sidebar" class="sidebar" ng-controller="sidebarController" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
@@ -12,11 +10,11 @@ session_write_close();
         <ul class="nav">
             <li class="nav-profile">
                 <div class="image">
-                    <a href="javascript:;"><img src="/api/getUserAvatar/<?=$userData['id']?>" alt="" /></a>
+                    <a href="javascript:;"><img src="/api/getUserAvatar/<?=$omsObj->userData['id']?>" alt="" /></a>
                 </div>
                 <div class="info">
-                    <?=$userData['fullname']?>
-                    <small><?=$userData['is_superadmin'] == 1 ? "Superadmin" : "Member"?></small>
+                    <?=$omsObj->userData['fullname']?>
+                    <small><?=$omsObj->userData['is_superadmin'] == 1 ? "Superadmin" : "Member"?></small>
                 </div>
             </li>
         </ul>
@@ -25,7 +23,7 @@ session_write_close();
         <ul class="nav">
             <li class="nav-header">Navigation</li>
             <li ui-sref-active="active"><a ui-sref="app.dashboard"><i class="fa fa-laptop"></i> <span>Dashboard</span></a></li>
-            <?=$menuMarkup?>
+            <?=$omsObj->menuMarkUp?>
             <!-- begin sidebar minify button -->
             <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
             <!-- end sidebar minify button -->

@@ -8,6 +8,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 
+use App\Models\User;
+
 use File;
 
 class Controller extends BaseController
@@ -38,9 +40,17 @@ class Controller extends BaseController
     	return $oAuthDomain;
     }
 
-    protected function getOauthCredentials() {
-        $path = storage_path()."/app/".config('oauth.credentials').".json";
-        return json_decode(File::get($path), true);
+    protected function getOauthCredentials($adminId = '') {
+        if($this->getOAuthProvider() == 'google') {
+            $path = storage_path()."/app/".config('oauth.credentials').".json";
+            return json_decode(File::get($path), true);
+        } elseif($this->getOAuthProvider() == 'azure') {
+            $user = User::findOrFail($adminId);
+            $toReturn = array(
+                'token' =>  $user->oauth_token
+            );
+            return $toReturn;
+        }
     }
 
     protected function getAppVersion() {

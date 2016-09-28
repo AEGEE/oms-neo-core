@@ -19,9 +19,11 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
 
+use Excel;
 use Hash;
 use Input;
 use Mail;
+use Session;
 
 class RecrutementController extends Controller
 {
@@ -215,7 +217,22 @@ class RecrutementController extends Controller
             $search['antenna_id'] = $userData['antenna_id'];
         }
 
+        $export = Input::get('export', false);
+        if($export) {
+            $search['noLimit'] = true;
+        }
+
         $users = $user->getFiltered($search);
+
+        if($export) {
+            Excel::create('users', function($excel) use ($users) {
+                $excel->sheet('users', function($sheet) use ($users) {
+                    $sheet->loadView('excel_templates.recruted_users')->with("users", $users);
+                });
+            })->export('xlsx');
+            return;
+        }
+
         $usersCount = $user->getFiltered($search, true);
         if($usersCount == 0) {
             $numPages = 0;
@@ -305,7 +322,9 @@ class RecrutementController extends Controller
         $comm->user_id = $userData['id'];
         $comm->comment = Input::get('comment');
         $comm->recruted_user_id = Input::get('user_id');
-        $comm->save();
+        if(!empty($comm->comment)) {
+            $comm->save();
+        }
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);

@@ -15,7 +15,8 @@ use Input;
 
 class AntennaController extends Controller
 {
-    public function getAntennae(Antenna $ant) {
+    public function getAntennae(Antenna $ant, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
             'city'          =>  Input::get('city'),
@@ -65,7 +66,9 @@ class AntennaController extends Controller
         foreach($antennae as $antenna) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editAntenna(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+                if($max_permission == 1) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editAntenna(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+                }
             } else {
                 $actions = $antenna->id;
             }

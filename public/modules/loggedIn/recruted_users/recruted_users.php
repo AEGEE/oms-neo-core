@@ -9,9 +9,10 @@
     <!-- begin page-header -->
     <h1 class="page-header">Recruted users</h1>
     <!-- end page-header -->
-	<div class="row">
+	<div class="row hiddenItem" id="filters">
         <div class="panel panel-inverse" data-sortable-id="ui-general-1">
             <div class="panel-heading">
+                <button type="button" class="close" aria-hidden="true" ng-click="vm.toggleFilters()">×</button>
                 <h4 class="panel-title">Filter</h4>
             </div>
             <div class="panel-body">
@@ -63,6 +64,7 @@
 
     <div class="row">
        	<div class="col-md-12 text-right">
+            <button class="btn btn-success" ng-click="vm.toggleFilters()"><i class="fa fa-search"></i> Toggle filters</button>
             <button class="btn btn-warning" ng-click="vm.exportGrid()"><i class="fa fa-file-excel-o"></i> Export to XLS</button>
         </div>
     </div>
@@ -172,17 +174,20 @@
                                     <img class="img-thumbnail comment-photo" src="/api/getUserAvatar/{{comment.user_id}}"> <span class="comment-name"><b>{{comment.commenter_name}}</b> ({{comment.created_at}})</span>
                                 </div>
                             </div>
-                            <div class="col-md-12 comment-text">
-                                {{comment.comment}}
+                            <div class="col-md-12 comment-text" btf-markdown="comment.comment">
+                                
                             </div>
                         </div>
                         <hr />
                         <div id="commentArea" class="row hiddenItem">
                             <div class="col-md-12 p-b-10">
                                 <label for="newComment">New comment</label>
-                                <textarea id="newComment" ng-model="vm.comment" class="form-control"></textarea>
+                                <textarea id="newComment" ng-model="vm.comment" class="form-control commentField"></textarea>
+                                <div id="previewComment" class="well hiddenItem" btf-markdown="vm.comment"></div>
                             </div>
                             <div class="col-md-12 text-right">
+                                <i>Comments support markdown syntax <a target="_blank" href="https://guides.github.com/features/mastering-markdown/">Help here</a></i><br /><br />
+                                <button ng-click="vm.previewComment()" class="btn btn-warning"><i class="fa fa-search"></i> {{vm.what}} comment</button>
                                 <button ng-click="vm.addComment()" class="btn btn-success"><i class="fa fa-save"></i> Save comment</button>
                             </div>
                         </div>

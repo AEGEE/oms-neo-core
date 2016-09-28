@@ -15,7 +15,8 @@ use Input;
 
 class ModuleController extends Controller
 {
-    public function getModules(Module $mod) {
+    public function getModules(Module $mod, Request $req) {
+        $max_permission = $req->get('max_permission');
         $search = array(
             'name'          =>  Input::get('name'),
             'active'        =>  Input::get('active'),
@@ -63,13 +64,15 @@ class ModuleController extends Controller
         foreach($modules as $module) {
             $actions = "";
             if($isGrid) {
-                $toolTipTitle = "Activate";
-                $toolTip = "fa-check";
-                if(!empty($module->is_active)) {
-                    $toolTipTitle = "Deactivate";
-                    $toolTip = "fa-ban";
+                if($max_permission == 1) {
+                    $toolTipTitle = "Activate";
+                    $toolTip = "fa-check";
+                    if(!empty($module->is_active)) {
+                        $toolTipTitle = "Deactivate";
+                        $toolTip = "fa-ban";
+                    }
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(".$module->id.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                 }
-                $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(".$module->id.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
             } else {
                 $actions = $module->id;
             }
@@ -87,8 +90,9 @@ class ModuleController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getModulePages(ModulePage $page) {
-    	$search = array(
+    public function getModulePages(ModulePage $page, Request $req) {
+    	$max_permission = $req->get('max_permission');
+        $search = array(
             'name'          =>  Input::get('name'),
             'active'		=>	Input::get('active'),
             'module_id'     =>  Input::get('id'),
@@ -124,13 +128,15 @@ class ModuleController extends Controller
         foreach($modulePages as $modulePage) {
             $actions = "";
             if($isGrid) {
-                $toolTipTitle = "Activate";
-                $toolTip = "fa-check";
-                if(!empty($modulePage->is_active)) {
-                    $toolTipTitle = "Deactivate";
-                    $toolTip = "fa-ban";
+                if($max_permission == 1) {
+                    $toolTipTitle = "Activate";
+                    $toolTip = "fa-check";
+                    if(!empty($modulePage->is_active)) {
+                        $toolTipTitle = "Deactivate";
+                        $toolTip = "fa-ban";
+                    }
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(".$modulePage->id.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                 }
-                $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(".$modulePage->id.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
             } else {
                 $actions = $modulePage->id;
             }

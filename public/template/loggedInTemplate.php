@@ -1,8 +1,6 @@
 <?php
-session_start();
-$options = $_SESSION['globals'];
-$appVersion = $_SESSION['app_version'];
-session_write_close();
+require_once('../../scripts/template_scripts.php');
+$omsObj = new omsHelperScript();
 ?>
 <!-- begin #header -->
 <div ui-view="header"></div>
@@ -24,7 +22,7 @@ session_write_close();
 
 <!-- begin #footer -->
 <div id="footer" class="footer">
-	&copy; <?=date('Y')?> <?=$options['app_copyright']?> - Version <?=$appVersion?><br />
+	&copy; <?=date('Y')?> <?=$omsObj->options['app_copyright']?> - Version <?=$omsObj->appVersion?><br />
 	Powered by <a target="_blank" href="https://github.com/AEGEE/oms-neo-core">Online membership system</a>
 </div>
 <!-- end #footer -->

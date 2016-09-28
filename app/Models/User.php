@@ -242,7 +242,8 @@ class User extends Model
     public function generateRandomPassword($max_length = 8) {
         $str = "qwertyuiopasdfghjklzxcvbnm1234567890";
         $shuffled = str_shuffle($str);
-        return substr($shuffled, 0, $max_length);
+        $password = substr($shuffled, 0, $max_length);
+        return $password."#P".$max_length;
     }
 
     public function generateSeoUrl() {
@@ -300,6 +301,9 @@ class User extends Model
             case 'google':
                 return $this->createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password);
                 break;
+            case 'azure':
+                return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
+                break;
             
             default:
                 return false;
@@ -335,5 +339,37 @@ class User extends Model
         $createUserResult = $dir->users->insert($userInstance);
 
         return true;
+    }
+
+    private function createAzureAdAccount($oAuthCredentials, $domain, $seo, $password) {
+        $userData = array(
+            'displayName'           =>  $this->first_name." ".$this->last_name,
+            'userPrincipalName'     =>  $seo."@".$domain,
+            'mailNickname'          =>  $seo,
+            'passwordProfile'       =>  array(
+                                            'password'  =>  $password,
+                                            'forceChangePasswordNextLogin'  =>  true
+                                        ),
+            'accountEnabled'        =>  true
+        );
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('POST', 'https://graph.windows.net/myorganization/users', [
+            'query' => [
+                'api-version' => '1.5'
+            ],
+            'headers'   =>  [
+                'Authorization' =>  'Bearer '.$oAuthCredentials['token'],
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode($userData)
+        ]);
+
+        if($response->getStatusCode() == 201) {
+            return true;
+        }
+
+        return $response->getStatusCode();
     }
 }

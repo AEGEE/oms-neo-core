@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Modules'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/modules/modules.html',
+                        templateUrl: 'modules/loggedIn/modules/modules.php',
                         controller: 'ModuleController as vm'
                     }
                 }
@@ -58,6 +58,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
+                    hidden: moduleAccess.modules == 0,
                     sortable: false,
                     width: 50
                 }, {
@@ -138,6 +139,7 @@
                     {
                         name: 'actions',
                         index: 'actions',
+                        hidden: moduleAccess.modules == 0,
                         sortable: false,
                         width: 25
                     }, {
@@ -213,21 +215,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -261,21 +248,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -317,6 +289,14 @@
                     });
                 }
             })
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
         }
 
         ///////

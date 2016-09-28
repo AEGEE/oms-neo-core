@@ -38,6 +38,7 @@ use Session;
 class UserController extends Controller
 {
     public function getUsers(User $user, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$userData = $req->get('userData');
         $search = array(
             'name'          	=>  Input::get('name'),
@@ -96,7 +97,7 @@ class UserController extends Controller
             $actions = "";
             if($isGrid) {
                 // $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Edit' ng-click='vm.editUser(".$userX->id.", \"userModal\")'><i class='fa fa-pencil'></i></button>"; // Temporary disabled due to some angular bugs
-                if($userX->status == 2) {
+                if($userX->status == 2 && $max_permission == 1) {
                     $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Activate user' ng-click='vm.editUser(".$userX->id.", \"activateUserModal\")'><i class='fa fa-check'></i></button>";
                 } elseif($userX->status != 2 && $userX->id != $userData->id) {
                     $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='View user profile' ng-click='vm.visitProfile(\"".$userX->seo_url."\")'><i class='fa fa-search'></i></button>";
@@ -135,7 +136,8 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function activateUser(User $user, Role $role, Fee $fee, EmailTemplate $tpl) {
+    public function activateUser(User $user, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {
+        $currentUser = $req->get('userData');
         // User..
         $id = Input::get('id');
         $user = $user->findOrFail($id);
@@ -163,13 +165,17 @@ class UserController extends Controller
             $success = $user->oAuthCreateAccount(
                 $this->getOAuthProvider(),
                 $this->getDelegatedAdmin(),
-                $this->getOauthCredentials(),
+                $this->getOauthCredentials($currentUser['id']),
                 $domain,
                 $user->seo_url,
                 $userPass
             );
 
             $user->internal_email = $username;
+
+            if($success !== true) {
+                die("oAuth problem! Error code:".$success);
+            }
         } else {
             $username = $user->contact_email;
             $user->password = Hash::make($userPass);

@@ -10,9 +10,10 @@
     <h1 class="page-header">Recrutement Campaigns</h1>
     <!-- end page-header -->
 	
-	<div class="row">
+	<div class="row hiddenItem" id="filters">
         <div class="panel panel-inverse" data-sortable-id="ui-general-1">
             <div class="panel-heading">
+                <button type="button" class="close" aria-hidden="true" ng-click="vm.toggleFilters()">×</button>
                 <h4 class="panel-title">Filter</h4>
             </div>
             <div class="panel-body">
@@ -51,6 +52,9 @@
     <div class="row">
         <div class="col-md-6">
             <button class="btn btn-primary" data-target="#campaignModal" data-toggle="modal"><i class="fa fa-plus"></i> Add Campaign</button>
+        </div>
+        <div class="col-md-6 text-right">
+            <button class="btn btn-success" ng-click="vm.toggleFilters()"><i class="fa fa-search"></i> Toggle filters</button>
         </div>
     </div>
     <div class="row">

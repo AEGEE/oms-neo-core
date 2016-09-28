@@ -75,15 +75,6 @@
             })
             .then(function successCallback(response) {
                 vm.registrationFields = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
-                $('#loadingOverlay').hide();
             });
         }
 
@@ -150,28 +141,9 @@
                     });
                     $('#loadingOverlay').hide();
                 }
-            }, function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
-                $('#loadingOverlay').hide();
             });
         }
 
-        // FormWizard.init();
-        // setTimeout(
-        //     $("#wizard").bwizard(), 3000
-        // )
         vm.checkCampaignExists();
         vm.getRegistrationFields();
         $("#antenna, #studies_type, #study_field").select2({width: '100%'});

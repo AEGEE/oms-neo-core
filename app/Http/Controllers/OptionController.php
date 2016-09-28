@@ -12,7 +12,8 @@ use Input;
 
 class OptionController extends Controller
 {
-    public function getOptions(GlobalOption $opt) {
+    public function getOptions(GlobalOption $opt, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
             'not_editable'  =>  Input::get('not_editable'),
@@ -47,7 +48,9 @@ class OptionController extends Controller
         foreach($options as $option) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeSett' title='Edit' ng-click='vm.editOption(".$option->id.")'><i class='fa fa-pencil'></i></button>";
+                if($max_permission == 1) {    
+                    $actions .= "<button class='btn btn-default btn-xs clickMeSett' title='Edit' ng-click='vm.editOption(".$option->id.")'><i class='fa fa-pencil'></i></button>";
+                }
             } else {
                 $actions = $option->id;
             }

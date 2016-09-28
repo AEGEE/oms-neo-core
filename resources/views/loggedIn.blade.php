@@ -48,6 +48,10 @@
         var isSuperAdmin = {{$userData['is_superadmin'] == 1 ? 'true' : 'false' }};
         var xAuthToken = '{!!$authToken!!}';
 
+        var moduleAccess = {
+            {!!$moduleAccess!!}
+        };
+
         @if(isset($suspention))
             var suspendedFor = "{{$suspention}}";
             var suspended = true;

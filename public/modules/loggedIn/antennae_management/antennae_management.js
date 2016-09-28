@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Antennae Management'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/antennae_management/antennae_management.html',
+                        templateUrl: 'modules/loggedIn/antennae_management/antennae_management.php',
                         controller: 'AntennaController as vm'
                     }
                 }
@@ -61,6 +61,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
+                    hidden: moduleAccess.antennae_management == 0,
                     sortable: false,
                     width: 50
                 }, {
@@ -154,21 +155,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -225,22 +211,21 @@
                     time: '',
                     class_name: 'my-sticky-class'
                 });
-            }).error(function(){
-                $.gritter.add({
-                    title: 'Error!',
-                    text: 'An error occoured! Please try again!',
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
         }
 
         ///////
         vm.loadAntennaeGrid();
         $("#countries").select2({width: '100%'});
         $("#fCountry").select2({width: '100%'});
-        
     }
 
 })();

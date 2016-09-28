@@ -28,7 +28,10 @@ class UserRole extends Model
     					->where('user_roles.user_id', $userId)
     					->get();
     	foreach($pages as $page) {
-    		$toReturn[] = $page->module_page_id;
+            if(isset($toReturn[$page->module_page_id]) && $toReturn[$page->module_page_id] == 1) { // taking the highest permission..
+                continue;
+            }
+    		$toReturn[$page->module_page_id] = empty($page->permission_level) ? '0' : '1';
     	}
 
     	return $toReturn;

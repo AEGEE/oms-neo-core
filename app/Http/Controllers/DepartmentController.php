@@ -14,7 +14,8 @@ use Input;
 
 class DepartmentController extends Controller
 {
-    public function getDepartments(Department $dep) {
+    public function getDepartments(Department $dep, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
     		'sidx'      	=>  Input::get('sidx'),
@@ -62,7 +63,9 @@ class DepartmentController extends Controller
         foreach($departments as $department) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMeDep' title='Edit' ng-click='vm.editDepartment(".$department->id.")'><i class='fa fa-pencil'></i></button>";
+                if($max_permission == 1) {
+                    $actions .= "<button class='btn btn-default btn-xs clickMeDep' title='Edit' ng-click='vm.editDepartment(".$department->id.")'><i class='fa fa-pencil'></i></button>";
+                }
             } else {
                 $actions = $department->id;
             }

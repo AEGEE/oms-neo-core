@@ -17,7 +17,7 @@
                 data: {'pageTitle': 'Working groups'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/working_groups/working_groups.html',
+                        templateUrl: 'modules/loggedIn/working_groups/working_groups.php',
                         controller: 'WorkGroupController as vm'
                     }
                 }
@@ -58,6 +58,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
+                    hidden: moduleAccess.working_groups == 0,
                     sortable: false,
                     width: 50
                 }, {
@@ -138,21 +139,6 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
-                $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -206,15 +192,15 @@
                     time: '',
                     class_name: 'my-sticky-class'
                 });
-            }).error(function(){
-                $.gritter.add({
-                    title: 'Error!',
-                    text: 'An error occoured! Please try again!',
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
         }
 
         ///////

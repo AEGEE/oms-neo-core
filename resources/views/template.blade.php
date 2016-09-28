@@ -10,7 +10,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 <head>
 	<base href="/">
 	<meta charset="utf-8" />
-	<title data-ng-bind="'OMS | ' + $state.current.data.pageTitle">OMS</title>
+	<title data-ng-bind="'{{$appName}} | ' + $state.current.data.pageTitle">{{$appName}}</title>
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
 	<meta content="OMS" name="description" />
 	<meta content="" name="author" />
@@ -88,35 +88,85 @@ $isProduction = App::environment() == 'production' ? true : false;
 	
 	<!-- ================== BEGIN PAGE LEVEL JS ================== -->
 	<script type="text/javascript">
+	    /**
+	     * Main module
+	     */
+	    
+		var omsApp = angular
+	        .module('omsApp', [
+	            'ui.router',
+	            'ui.bootstrap',
+	            'oc.lazyLoad',
+	            'angularFileUpload',
+	            'bootstrap3-typeahead',
+	            'btford.markdown'
+	            @yield('modules')  
+	        ])
+	        .config(appConfig)
+	        .factory(responseObserver)
+	        .run(appRun);
+	        
 
-		    /**
-		     * Main module
-		     */
-		    
-			var omsApp = angular
-		        .module('omsApp', [
-		            'ui.router',
-		            'ui.bootstrap',
-		            'oc.lazyLoad',
-		            'angularFileUpload',
-		            'bootstrap3-typeahead'
-		            @yield('modules')  
-		        ])
-		        .config(routeConfig)
-		        .run(['$rootScope', '$state', 'setting', '$http', function($rootScope, $state, setting, $http) {
-				    $rootScope.$state = $state;
-				    $rootScope.setting = setting;
-				    @yield('otherConfig')
-				}]);
-		        
+	    /** @ngInject */
+	    function appConfig($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider)
+	    {
+	    	$httpProvider.interceptors.push(responseObserver);
+	        $locationProvider.html5Mode(true);
 
-		    /** @ngInject */
-		    function routeConfig($stateProvider, $urlRouterProvider, $locationProvider)
-		    {
-		        $locationProvider.html5Mode(true);
+	        @yield('routeConfig')
+	    }
 
-		        @yield('routeConfig')
-		    }
+	    /** @ngInject */
+	    function appRun($rootScope, $state, setting, $http) {
+	    	$rootScope.$state = $state;
+		    $rootScope.setting = setting;
+		    @yield('otherConfig')
+	    }
+
+	    /** @ngInject */
+	    function responseObserver($q, $window) {
+		    return {
+		        'responseError': function(errorResponse) {
+	            	$('#loadingOverlay').hide();
+		            switch (errorResponse.status) {
+			            case 403:
+			                $.gritter.add({
+			                    title: 'Permission error!',
+			                    text: "Not enough permissions!",
+			                    sticky: true,
+			                    time: '',
+			                    class_name: 'my-sticky-class'
+			                });
+			                break;
+			            case 422:
+			                var messages = "";
+			                $.each(errorResponse.data, function(key, val) {
+			                    $.each(val, function(key2, val2) {
+			                        messages += "\n"+val2;
+			                    });
+			                });
+			                $.gritter.add({
+			                    title: 'Validation error!',
+			                    text: "The following errors occoured:"+messages,
+			                    sticky: true,
+			                    time: '',
+			                    class_name: 'my-sticky-class'
+			                });
+		            		break;
+		            	case 500:
+		            		$.gritter.add({
+			                    title: 'Error!',
+			                    text: "Please try again later",
+			                    sticky: true,
+			                    time: '',
+			                    class_name: 'testClass'
+			                });
+		            		break;
+		            }
+		            return $q.reject(errorResponse);
+		        }
+		    };
+		}
 	</script>
 
     <script src="vendor/template.js"></script>

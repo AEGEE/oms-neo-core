@@ -44,4 +44,16 @@ return [
         'client_secret' => env('OAUTH_SECRET', ''),
         'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
     ],
+
+    'live' => [
+        'client_id' => env('OAUTH_ID', ''),
+        'client_secret' => env('OAUTH_SECRET', ''),
+        'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
+    ], 
+
+    'azure' => [
+        'client_id' => env('OAUTH_ID', ''),
+        'client_secret' => env('OAUTH_SECRET', ''),
+        'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
+    ], 
 ];

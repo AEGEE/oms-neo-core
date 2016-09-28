@@ -42,12 +42,10 @@
                 method: 'GET',
                 url: "/api/getDashboardData"
             }).then(function successCallback(response) {
-                    vm.users = response.data.userCount;
-                    vm.newestMembers = response.data.newestMembers;
-                    $('#loadingOverlay').hide();
-            }, function errorCallback() {
+                vm.users = response.data.userCount;
+                vm.newestMembers = response.data.newestMembers;
                 $('#loadingOverlay').hide();
-            })
+            });
         }
 
         ///////

@@ -16,7 +16,8 @@ use Input;
 
 class RoleController extends Controller
 {
-    public function getRoles(Role $role, ModulePage $modPage) {
+    public function getRoles(Role $role, ModulePage $modPage, Request $req) {
+        $max_permission = $req->get('max_permission');
     	$modPageCache = $modPage->getModulePagesCache();
 
     	$search = array(
@@ -66,7 +67,7 @@ class RoleController extends Controller
         foreach($roles as $roleX) {
             $actions = "";
             if($isGrid) {
-                if(empty($roleX->system_role)) {
+                if(empty($roleX->system_role) && $max_permission == 1) {
                     $actions .= "<button class='btn btn-default btn-xs clickMeRole' title='Edit' ng-click='vm.editRole(".$roleX->id.")'><i class='fa fa-pencil'></i></button>";
                 }
             } else {

@@ -28,6 +28,7 @@
         // Data
         var vm = this;
         vm.filter = {};
+        vm.what = "Preview";
 
         vm.antennae = {};
         vm.campaigns = {};
@@ -165,14 +166,6 @@
             })
             .then(function successCallback(response) {
                 vm.antennae = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -186,14 +179,6 @@
             })
             .then(function successCallback(response) {
                 vm.campaigns = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -212,14 +197,6 @@
                 if(openModal) {
                     $('#userDetailsModal').modal('show');
                 }
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -255,14 +232,6 @@
                     class_name: 'my-sticky-class'
                 });
                 }
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -292,14 +261,6 @@
                     class_name: 'my-sticky-class'
                 });
                 }
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data.message,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -310,14 +271,6 @@
             })
             .then(function successCallback(response) {
                 vm.departments = response.data;
-            }, function errorCallback(response) {
-                $.gritter.add({
-                    title: 'Error!',
-                    text: response.data,
-                    sticky: true,
-                    time: '',
-                    class_name: 'my-sticky-class'
-                });
             });
         }
 
@@ -386,22 +339,51 @@
                         class_name: 'my-sticky-class'
                     });
                 }
-            },
-            function errorCallback(response) {
-                var messages = "";
-                $.each(response.data, function(key, val) {
-                    $.each(val, function(key2, val2) {
-                        messages += "\n"+val2;
-                    });
-                });
+            });
+        }
+
+        vm.exportGrid = function() {
+            vm.filter.export = 1;
+            $http({
+                url: 'api/getRecrutedUsers',
+                method: 'GET',
+                responseType: 'arraybuffer',
+                params: vm.filter,
+                headers: {
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            }).success(function(data){
+                var blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+                var objectUrl = URL.createObjectURL(blob);
+                window.open(objectUrl);
                 $.gritter.add({
-                    title: 'Error!',
-                    text: "The following errors occoured:"+messages,
+                    title: 'Export generated successfully!',
+                    text: 'If you did not receive it, please make sure that your browser isn\'t blocking pop-ups.',
                     sticky: true,
                     time: '',
                     class_name: 'my-sticky-class'
                 });
             });
+        }
+
+        vm.toggleFilters = function() {
+            if($('#filters').is(':visible')) {
+                $('#filters').hide('slow');
+            } else {
+                $('#filters').show('slow');
+            }
+        }
+
+        vm.previewComment = function() {
+            if($('#previewComment').is(':visible')) {
+                $('#newComment').show();
+                $('#previewComment').hide();
+                vm.what = "Preview";
+            } else {
+                $('#newComment').hide();
+                $('#previewComment').show();
+                vm.what = "Edit";
+            }
         }
 
         ///////
