@@ -23,14 +23,16 @@ class CheckSpecialRoles
             return response('Forbidden', 403);
         }
 
-        try {
-            $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
-        } catch(ModelNotFoundException $ex) {
-            return response('Forbidden', 403);
-        }
+        if($moduleCode != 'null') {
+            try {
+                $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
+            } catch(ModelNotFoundException $ex) {
+                return response('Forbidden', 403);
+            }
 
-        if(!empty($modulePage->module_id) && empty($modulePage->module->is_active)) {
-            return response('Forbidden', 403);
+            if(!empty($modulePage->module_id) && empty($modulePage->module->is_active)) {
+                return response('Forbidden', 403);
+            }
         }
 
         if($userData->is_superadmin == 1) {

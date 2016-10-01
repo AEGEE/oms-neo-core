@@ -30,8 +30,14 @@ Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 Route::group(['middleware' => 'api'], function() {
 	// Routes go in here..
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
+	Route::any('/api/getNotifications', 'GenericController@getNotifications');
+	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
+	
 	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
 	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
+
+	Route::get('/api/getNews', 'NewsController@getNews');
+	Route::get('/api/getNewsById', 'NewsController@getNewsById');
 
 	// Personal routes..
 	Route::post('/api/changeEmail', 'UserController@changeEmail');
@@ -138,6 +144,13 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/addComment', 'RecrutementController@addComment');
 		Route::post('/api/changeStatus', 'RecrutementController@changeStatus');
 		Route::post('/api/activateUserRecruted', 'RecrutementController@activateUserRecruted');
+		
+	});
+
+	// News
+	Route::group(['middleware' => 'checkSpecialRoles:null,announcer'], function() {
+		Route::post('/api/saveNews', 'NewsController@saveNews');
+		Route::post('/api/deleteNews', 'NewsController@deleteNews');
 		
 	});
 });

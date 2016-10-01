@@ -4,7 +4,8 @@
 
 @section('modules')
     , 'app.dashboard'
-	, 'app.profile'
+    , 'app.profile'
+    , 'app.news'
     {!!$modulesNames!!}
     
 @stop
@@ -62,5 +63,6 @@
     <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
     <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
     <script type="text/javascript" src="modules/loggedIn/profile/profile.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/news/news.js"></script>
     {!!$modulesSrc!!}
 @stop

@@ -3,56 +3,46 @@
     'use strict';
 
     angular
-        .module('app.dashboard', [])
+        .module('app.news', [])
         .config(config)
-        .controller('DashboardController', DashboardController);
+        .controller('NewsController', NewsController);
 
     /** @ngInject */
     function config($stateProvider)
     {
         // State
          $stateProvider
-            .state('app.dashboard', {
-                url: '/',
-                data: {'pageTitle': 'Dashboard'},
+            .state('app.news', {
+                url: '/news',
+                data: {'pageTitle': 'News'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/dashboard/dashboard.php',
-                        controller: 'DashboardController as vm'
+                        templateUrl: 'modules/loggedIn/news/news.php',
+                        controller: 'NewsController as vm'
+                    }
+                }
+            })
+            .state('app.newsItem', {
+                url: '/news/:newsId',
+                data: {'pageTitle': 'News'},
+                views   : {
+                    'pageContent@app': {
+                        templateUrl: 'modules/loggedIn/news/singleNews.php',
+                        controller: 'NewsController as vm'
                     }
                 }
             });
     }
 
-    function DashboardController($http, $state) {
+    function NewsController($http, $stateParams, $state) {
         // Data
         var vm = this;
-        vm.users = 0;
-        vm.newestMembers = {};
         vm.latestNews = {};
         vm.news = {};
 
         vm.what = "Preview";
 
-        vm.suspended = suspended;
-        if(vm.suspended) {
-            vm.suspendedFor = suspendedFor;
-        }
-
         // Methods
-        vm.getDashboardData = function() {
-            $('#loadingOverlay').show();
-            $http({
-                method: 'GET',
-                url: "/api/getDashboardData"
-            }).then(function successCallback(response) {
-                vm.users = response.data.userCount;
-                vm.newestMembers = response.data.newestMembers;
-                vm.latestNews = response.data.latestNews;
-                $('#loadingOverlay').hide();
-            });
-        }
-
         vm.getNews = function() {
             $('#loadingOverlay').show();
             $http({
@@ -69,7 +59,31 @@
             });
         }
 
-        vm.closeAndReset = function() {
+        vm.getSingleNews = function(id) {
+            $('#loadingOverlay').show();
+            $http({
+                method: 'GET',
+                url: "/api/getNewsById",
+                params: {
+                    id: id
+                }
+            }).then(function successCallback(response) {
+                if(response.data.success == 0) {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Please try again!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    return;
+                }
+                vm.news = response.data.news;
+                $('#loadingOverlay').hide();
+            });
+        }
+        
+         vm.closeAndReset = function() {
             $('#newsModal').modal('hide');
             $('#newsContent').show();
             $('#previewNews').hide();
@@ -89,7 +103,7 @@
             }
         }
 
-        vm.saveNews = function() {
+        vm.saveNews = function(x) {
             $http({
                 method: 'POST',
                 url: "/api/saveNews",
@@ -103,8 +117,12 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.closeAndReset();
-                    vm.getNews();
+                    if(!x) {
+                        vm.closeAndReset();
+                        vm.getNews();
+                    } else {
+                        $('#newsModal').modal('hide');
+                    }
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -118,6 +136,10 @@
         }
 
         vm.editNews = function(id) {
+            if(!id) {
+                $('#newsModal').modal('show');
+                return;
+            }
             $http({
                 method: 'GET',
                 url: "/api/getNewsById",
@@ -172,6 +194,38 @@
             });
         }
 
+        vm.deleteNewsFromPage = function(id) {
+            if(!confirm("Are you sure you want to delete this news item?")) {
+                return;
+            }
+            $http({
+                method: 'POST',
+                url: "/api/deleteNews",
+                data: {
+                    id: id
+                }
+            }).then(function successCallback(response) {
+                if(response.data.success == 0) {
+                    $.gritter.add({
+                        title: 'Error!',
+                        text: 'Please try again!',
+                        sticky: true,
+                        time: '',
+                        class_name: 'my-sticky-class'
+                    });
+                    return;
+                }
+                $.gritter.add({
+                    title: 'Success!',
+                    text: 'News deleted successfully!',
+                    sticky: true,
+                    time: '',
+                    class_name: 'my-sticky-class'
+                });
+                $state.go('app.news');
+            });
+        }
+
         vm.goToNews = function(id) {
             $state.go('app.newsItem', {
                 'newsId': id
@@ -179,7 +233,11 @@
         }
 
         ///////
-        vm.getDashboardData();
+        if(!$stateParams.newsId) {
+            vm.getNews();
+        } else {
+            vm.getSingleNews($stateParams.newsId);
+        }
     }
 
 })();

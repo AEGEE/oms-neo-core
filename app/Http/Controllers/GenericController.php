@@ -8,6 +8,7 @@ use App\Http\Requests;
 
 use App\Models\Country;
 use App\Models\GlobalOption;
+use App\Models\Notification;
 use App\Models\ModulePage;
 use App\Models\UserRole;
 
@@ -32,6 +33,7 @@ class GenericController extends Controller
 
         $addToView['appName'] = $optionsArr['app_name'];
         if($userData['logged_in']) {
+            $systemRolesAccess = array();
 
             $addToView['userData'] = $userData;
             $addToView['countries'] = "";
@@ -59,6 +61,17 @@ class GenericController extends Controller
                                         ->whereIn('module_pages.id', array_keys($modulePageIds))
                                         ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                         ->orderBy('module_pages.name', 'ASC')->get();
+
+                $systemRoles = UserRole::distinct('code')
+                                        ->join('roles', 'roles.id', '=', 'user_roles.role_id')
+                                        ->where('user_id', $userData['id'])
+                                        ->whereNull('is_disabled')
+                                        ->get();
+
+                foreach($systemRoles as $roleX) {
+                    $systemRolesAccess[] = $roleX->code;
+                }
+
             }
 
             $lastModuleId = 0;
@@ -103,6 +116,7 @@ class GenericController extends Controller
             session_start();
             $_SESSION['moduleMarkup'] = $menuMarkUp;
             $_SESSION['moduleAccess'] = $moduleAccess;
+            $_SESSION['systemRoles'] = $systemRolesAccess;
             session_write_close();
 
             Session::put('moduleAccess', $moduleAccess);
@@ -142,5 +156,51 @@ class GenericController extends Controller
         session_write_close();
 
         return 1;
+    }
+
+    public function getNotifications(Request $req, Notification $not) {
+        $userData = $req->get('userData');
+
+        $unreadNotifications = $not->where('user_id', $userData['id'])
+                                    ->whereNull('is_read')
+                                    ->limit(10)
+                                    ->orderBy('created_at', 'desc')
+                                    ->get();
+
+        $toReturn['notifications'] = array();
+        $toReturn['notificationsCount'] = 0;
+        foreach($unreadNotifications as $unread) {
+            $toReturn['notifications'][] = $unread;
+            $toReturn['notificationsCount']++;
+        }
+
+        if($toReturn['notificationsCount'] == 10) {
+            // We just finish here..
+            return json_encode($toReturn, 200);
+        }
+
+        $limit = 10 - $toReturn['notificationsCount'];
+        $otherNotifications = $not->where('user_id', $userData['id'])
+                                    ->whereNotNull('is_read')
+                                    ->orderBy('created_at', 'desc')
+                                    ->limit($limit)
+                                    ->get();
+        foreach ($otherNotifications as $not) {
+            $toReturn['notifications'][] = $not;
+        }
+
+        return json_encode($toReturn, 200);
+    }
+
+    public function markNotificationsAsRead(Request $req, Notification $not) {
+        $userData = $req->get('userData');
+        $not->where('user_id', $userData['id'])
+            ->whereNull('is_read')
+            ->limit(10)
+            ->orderBy('created_at', 'desc')
+            ->update(['is_read' => 1]);
+
+        $toReturn['success'] = 1;
+        return json_encode($toReturn, 200);
     }
 }

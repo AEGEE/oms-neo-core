@@ -194,12 +194,15 @@ omsApp.controller('rightSidebarController', function($scope, $rootScope, $state)
 /* -------------------------------
    4.0 CONTROLLER - Header
 ------------------------------- */
-omsApp.controller('headerController', function($scope, $rootScope, $state, $http, $q) {
+omsApp.controller('headerController', function($scope, $rootScope, $state, $http, $q, $location) {
     var vm = this;
     vm.users = {};
 
     vm.isSearching = false;
     vm.lastSearch = "";
+
+    vm.unreadCount = 0;
+    vm.notifications = [];
 
     vm.searchUsers = function() {
         if(vm.isSearching) {
@@ -229,14 +232,45 @@ omsApp.controller('headerController', function($scope, $rootScope, $state, $http
         deferred.promise.then(function (result) {
             vm.users = result.rows;
             vm.isSearching = false;
-            console.log(vm.users);
         });
     }
 
-    vm.logout = function() {
-        console.log('here');
-        location.href = '/logout';
+    vm.checkNotifications = function() {
+        $http({
+            method: "GET",
+            url: '/api/getNotifications',
+        })
+        .success(function successCallback(response) {
+            vm.unreadCount = response.notificationsCount;
+            vm.notifications = response.notifications;
+        });
     }
+
+    vm.goToLink = function(link) {
+        $location.path(link);
+    }
+
+    vm.logout = function() {
+        location.href = '/logout';
+    };
+
+    vm.markNotificationsAsRead = function() {
+        if(vm.unreadCount == 0) {
+            return;
+        }
+        vm.unreadCount = 0;
+        $http({
+            method: "GET",
+            url: '/api/markNotificationsAsRead',
+        })
+        .success(function successCallback(response) {
+            // do nothing..
+        });
+    }
+
+    ////
+    vm.checkNotifications(); // Checking once when loaded and afterwards every 2 minutes..
+    setInterval(vm.checkNotifications, 120000); // We execute once every 2 minutes..
 });
 
 

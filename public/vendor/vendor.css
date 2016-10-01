@@ -6886,6 +6886,10 @@ body .bootstrap-datetimepicker-widget table td {
     min-height: 200px !important;
 }
 
+.unreadNotification {
+    background-color: #f0eeee;
+}
+
 /*
 Template Name: Color Admin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
 Version: 2.0.0

@@ -6856,3 +6856,7 @@ body .bootstrap-datetimepicker-widget table td {
 .commentField {
     min-height: 200px !important;
 }
+
+.unreadNotification {
+    background-color: #f0eeee;
+}

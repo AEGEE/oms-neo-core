@@ -20,6 +20,7 @@ use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
 use App\Models\FeeUser;
+use App\Models\News;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
@@ -588,7 +589,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getDashboardData(User $user) {
+    public function getDashboardData(User $user, News $news) {
         $toReturn = array();
         $toReturn['userCount'] = $user->count();
         $newestMembers = $user->with('antenna')->orderBy('activated_at', 'DESC')->take(10)->get();
@@ -600,6 +601,28 @@ class UserController extends Controller
                 'seo_url'   =>  $member->seo_url
             );
             
+        }
+
+        $toReturn['latestNews'] = array(
+            'rows'      =>  array()
+        );
+        $search['sidx'] = 'date';
+        $search['sord'] = 'desc';
+        $search['limit'] = 5;
+        $search['page'] = 1;
+
+        $news = $news->getFiltered($search);
+        foreach($news as $new) {
+            $toReturn['latestNews']['rows'][] = array(
+                'id'    =>  $new->id,
+                'cell'  =>  array(
+                    '',
+                    $new->title,
+                    $new->content,
+                    $new->created_at->format('d/m/Y'),
+                    $new->user->first_name." ".$new->user->last_name
+                )
+            );
         }
 
         return response(json_encode($toReturn), 200);

@@ -28,7 +28,7 @@ omsApp.factory('setting', ['$rootScope', function($rootScope) {
             pageBgWhite: false,
             pageWithoutHeader: false,
             paceTop: false,
-            notifications: false
+            notifications: true
         }
     };
     
