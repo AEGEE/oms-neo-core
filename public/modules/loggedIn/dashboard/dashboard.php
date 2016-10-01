@@ -54,6 +54,9 @@ $omsObj = new omsHelperScript();
                                 </div>
                             </li>
                         </ul>
+                        <div ng-show="!vm.latestNews.rows.length" class="alert alert-danger">
+                            No news yet!
+                        </div>
                     </div>
                 </div>
             </div>
