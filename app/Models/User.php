@@ -214,7 +214,7 @@ class User extends Model
         if(isset($search['sidx'])) {
             switch ($search['sidx']) {
                 case 'name':
-                    $users = $users->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
+                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
                     break;
                 case 'date_of_birth':
                 case 'contact_email':
@@ -224,7 +224,7 @@ class User extends Model
                     break;
 
                 default:
-                    $users = $users->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
+                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
                     break;
             }
         }

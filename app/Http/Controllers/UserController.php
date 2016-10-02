@@ -110,7 +110,7 @@ class UserController extends Controller
         		'id'	=>	$userX->id,
         		'cell'	=> 	array(
         			$actions,
-        			$userX->first_name." ".$userX->last_name,
+        			$userX->last_name." ".$userX->first_name,
         			$userX->date_of_birth->format('d/m/Y'),
         			$userX->contact_email,
         			$userX->gender_text,
@@ -592,7 +592,7 @@ class UserController extends Controller
     public function getDashboardData(User $user, News $news) {
         $toReturn = array();
         $toReturn['userCount'] = $user->count();
-        $newestMembers = $user->with('antenna')->orderBy('activated_at', 'DESC')->take(10)->get();
+        $newestMembers = $user->with('antenna')->whereNotNull('activated_at')->orderBy('activated_at', 'DESC')->take(12)->get();
         foreach($newestMembers as $member) {
             $toReturn['newestMembers'][] = array(
                 'id'        =>  $member->id,
