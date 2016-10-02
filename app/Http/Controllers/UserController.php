@@ -591,7 +591,7 @@ class UserController extends Controller
 
     public function getDashboardData(User $user, News $news) {
         $toReturn = array();
-        $toReturn['userCount'] = $user->count();
+        $toReturn['userCount'] = $user->whereNotNull('activated_at')->count();
         $newestMembers = $user->with('antenna')->whereNotNull('activated_at')->orderBy('activated_at', 'DESC')->take(12)->get();
         foreach($newestMembers as $member) {
             $toReturn['newestMembers'][] = array(
