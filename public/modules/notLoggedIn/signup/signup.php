@@ -97,8 +97,8 @@ session_write_close();
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="phone">Phone Number</label>
-                                                    <input id="phone" type="text" name="phone" placeholder="phone address" class="form-control" ng-model="vm.user.phone" data-parsley-group="wizard-step-1" />
+                                                    <label for="phone">Phone Number *</label>
+                                                    <input id="phone" type="text" name="phone" placeholder="phone address" class="form-control" ng-model="vm.user.phone" data-parsley-group="wizard-step-1" required />
                                                 </div>
                                             </div>
                                             <div class="col-md-12">
