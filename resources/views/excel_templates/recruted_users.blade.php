@@ -58,7 +58,7 @@
 			@foreach($users as $user)
 				<tr>
 					<td class="nrCrtColl">{{++$nrCrt}}</td>
-					<td>{{$user->name." ".$user->last_name}}</td>
+					<td>{{$user->first_name." ".$user->last_name}}</td>
 					<td>{{$user->date_of_birth->format('d/m/Y')}}</td>
 					<td>{{$user->getGenderText()}}</td>
 					<td>{{$user->email}}</td>
