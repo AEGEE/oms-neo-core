@@ -49,6 +49,9 @@
 					University
 				</th>
 				<th>
+					Signed up at
+				</th>
+				<th>
 					Antenna
 				</th>
 				<th>
