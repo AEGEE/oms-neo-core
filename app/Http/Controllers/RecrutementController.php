@@ -269,7 +269,7 @@ class RecrutementController extends Controller
                     $usr->date_of_birth->format('d/m/Y'),
                     $usr->email,
                     $usr->getGenderText(),
-                    $usr->created_at->format('d/m/Y H:i:s')
+                    $usr->created_at->format('d/m/Y H:i:s'),
                     $usr->antenna_name,
                     $usr->getStatus(true)
                 )
