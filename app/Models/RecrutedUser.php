@@ -156,6 +156,8 @@ class RecrutedUser extends Model
             switch ($search['sidx']) {
                 case 'full_name':
                     $user = $user->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
+                case 'created_at':
+                    $user = $user->orderBy('created_at', $search['sord']);
                     break;
 
                 default:

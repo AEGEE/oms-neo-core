@@ -66,6 +66,7 @@
 					<td>{{$user->address}}</td>
 					<td>{{$user->city}}</td>
 					<td>{{$user->university}}</td>
+					<td>{{$user->created_at->format('d/m/Y H:i:s')}}</td>
 					<td>{{$user->antenna_name}}</td>
 					<td>{{$user->getStatus(false)}}</td>
 				</tr>

@@ -81,6 +81,7 @@
                 'Date of birth',
                 'Registration email',
                 'Gender',
+                'Signed up at',
                 'Antenna',
                 'Status'
             ];
@@ -105,6 +106,10 @@
                 }, {
                     name: 'gender',
                     index: 'gender',
+                    width: 100
+                }, {
+                    name: 'created_at',
+                    index: 'created_at',
                     width: 100
                 }, {
                     name: 'antenna',
