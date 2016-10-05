@@ -292,7 +292,8 @@ class UserController extends Controller
             'email'             =>  $user->getEmailAddress(),
             'activated_at'      =>  $user->activated_at->format('Y-m-d'),
             'status'            =>  $user->status_text,
-            'suspended_for'     =>  $user->suspended_reason
+            'suspended_for'     =>  $user->suspended_reason,
+            'is_boardmember'    =>  0
         );
 
         $toReturn['workingGroups'] = array();
@@ -341,8 +342,10 @@ class UserController extends Controller
         // Determining highest rank..
         if(!empty($user->is_superadmin)) {
             $toReturn['user']['rank'] = 'Super Admin';
+            $toReturn['user']['is_boardmember'] = 1;
         } else if($isCurrentBoardMember) {
             $toReturn['user']['rank'] = "Board member";
+            $toReturn['user']['is_boardmember'] = 1;
         }
 
         if(!empty($user->is_suspended)) {
