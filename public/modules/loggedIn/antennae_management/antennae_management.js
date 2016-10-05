@@ -54,6 +54,9 @@
             params.colNames = [
                 'Actions',
                 'Name',
+                'Email',
+                'Address',
+                'Phone',
                 'City',
                 'Country'
             ];
@@ -67,6 +70,18 @@
                 }, {
                     name: 'name',
                     index: 'name',
+                    width: 200
+                }, {
+                    name: 'email',
+                    index: 'email',
+                    width: 200
+                }, {
+                    name: 'address',
+                    index: 'address',
+                    width: 200
+                }, {
+                    name: 'phone',
+                    index: 'phone',
                     width: 200
                 }, {
                     name: 'city',
@@ -132,6 +147,9 @@
                     id: vm.antenna.id,
                     name: vm.antenna.name,
                     city: vm.antenna.city,
+                    email: vm.antenna.email,
+                    address: vm.antenna.address,
+                    phone: vm.antenna.phone,
                     country_id: $('#countries').val()
                 }
             })

@@ -26,6 +26,8 @@ class SaveAntennaRequest extends Request
         return [
             'name'          =>  'required',
             'city'          =>  'required',
+            'email'         =>  'required',
+            'address'       =>  'required',
             'country_id'    =>  'required'
         ];
     }

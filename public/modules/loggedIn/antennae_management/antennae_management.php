@@ -94,6 +94,18 @@ if($omsObj->hasWriteAccess('antennae_management')) { ?>
                             <input type="text" id="name" class="form-control" ng-model="vm.antenna.name" placeholder="Antenna name" required/>
                         </div>
                         <div class="form-group m-b-20">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" class="form-control" ng-model="vm.antenna.email" placeholder="Antenna email" required/>
+                        </div>
+                        <div class="form-group m-b-20">
+                            <label for="address">Address</label>
+                            <textarea id="address" class="form-control" ng-model="vm.antenna.address" placeholder="Antenna address" required></textarea>
+                        </div>
+                        <div class="form-group m-b-20">
+                            <label for="phone">Phone</label>
+                            <input type="text" id="phone" class="form-control" ng-model="vm.antenna.phone" placeholder="Antenna phone"/>
+                        </div>
+                        <div class="form-group m-b-20">
                             <label for="city">City</label>
                             <input type="text" id="city" class="form-control" ng-model="vm.antenna.city" placeholder="Antenna city" required/>
                         </div>

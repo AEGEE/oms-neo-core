@@ -77,6 +77,9 @@ class AntennaController extends Controller
         		'cell'	=> 	array(
         			$actions,
         			$antenna->name,
+                    $antenna->email,
+                    $antenna->address,
+                    $antenna->phone,
         			$antenna->city,
         			$antenna->country->name
         		)
@@ -94,6 +97,9 @@ class AntennaController extends Controller
 
         $ant->name = Input::get('name');
         $ant->city = Input::get('city');
+        $ant->email = Input::get('email');
+        $ant->address = Input::get('address');
+        $ant->phone = Input::get('phone');
 
         $country_id = Input::get('country_id');
         $countryCheck = $country->findOrFail($country_id);

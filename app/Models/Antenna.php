@@ -44,7 +44,10 @@ class Antenna extends Model
     	if(isset($search['sidx'])) {
 			switch ($search['sidx']) {
 				case 'name':
-				case 'city':
+                case 'city':
+                case 'email':
+                case 'address':
+				case 'phone':
 					$antennae = $antennae->orderBy($search['sidx'], $search['sord']);
 					break;
 
