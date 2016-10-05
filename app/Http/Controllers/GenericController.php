@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
+use App\Models\Auth;
 use App\Models\Country;
 use App\Models\GlobalOption;
 use App\Models\Notification;
@@ -16,7 +17,7 @@ use Session;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt) {
+    public function defaultRoute(GlobalOption $opt, Auth $auth) {
     	$userData = Session::get('userData');
         $addToView = array();
 
@@ -32,7 +33,7 @@ class GenericController extends Controller
         session_write_close();
 
         $addToView['appName'] = $optionsArr['app_name'];
-        if($userData['logged_in']) {
+        if($auth->isUserLogged($userData['authToken'])) {
             $systemRolesAccess = array();
 
             $addToView['userData'] = $userData;
@@ -139,7 +140,14 @@ class GenericController extends Controller
 		return view('notLogged', $addToView);
     }
 
-    public function logout() {
+    public function logout(Auth $auth) {
+        $userData = Session::get('userData');
+        // Invalidating api key if exists..
+        if(!empty($userData)) {
+            $auth = $auth->where('token_generated', $userData['authToken'])->firstOrFail();
+            $auth->expiration = date('Y-m-d H:i:s');
+            $auth->save();
+        }
         Session::flush();
         session_start();
         session_destroy();
