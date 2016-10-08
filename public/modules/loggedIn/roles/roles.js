@@ -196,7 +196,6 @@
                 }
             }).then(function successCallback(response) {
                     vm.modules = response.data;
-                    console.log(vm.modules);
             })
         }
 

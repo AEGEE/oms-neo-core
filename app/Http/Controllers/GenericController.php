@@ -10,6 +10,7 @@ use App\Models\Auth;
 use App\Models\Country;
 use App\Models\GlobalOption;
 use App\Models\Notification;
+use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\UserRole;
 
@@ -17,7 +18,7 @@ use Session;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt, Auth $auth) {
+    public function defaultRoute(GlobalOption $opt, Auth $auth, MenuItem $menuItem) {
     	$userData = Session::get('userData');
         $addToView = array();
 
@@ -113,9 +114,16 @@ class GenericController extends Controller
                 }
             }
 
+            $menuMarkUpNew = $menuItem->getMenuMarkup($moduleAccess);
+
             // Mirroring links accessible to session so they can be accessed in partials..
             session_start();
             $_SESSION['moduleMarkup'] = $menuMarkUp;
+
+            if(strlen($menuMarkUpNew) > 0) {
+                $_SESSION['moduleMarkup'] = $menuMarkUpNew;
+            }
+
             $_SESSION['moduleAccess'] = $moduleAccess;
             $_SESSION['systemRoles'] = $systemRolesAccess;
             session_write_close();

@@ -3,7 +3,7 @@ require_once('../../scripts/template_scripts.php');
 $omsObj = new omsHelperScript();
 ?>
 <!-- begin #sidebar -->
-<div id="sidebar" class="sidebar" ng-controller="sidebarController" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
+<div id="sidebar" class="sidebar" ng-controller="sidebarController as vm" ng-class="{ 'sidebar-transparent': setting.layout.pageSidebarTransparent }">
     <!-- begin sidebar scrollbar -->
     <div data-scrollbar="true" data-height="100%">
         <!-- begin sidebar user -->

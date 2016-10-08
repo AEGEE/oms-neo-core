@@ -188,6 +188,10 @@ omsApp.controller('appController', ['$rootScope', '$scope', function($rootScope,
 ------------------------------- */
 omsApp.controller('sidebarController', function($scope, $rootScope, $state) {
     App.initSidebar();
+    var vm = this;
+    vm.goToLink = function(url) {
+        location.href = url;
+    }
 });
 
 

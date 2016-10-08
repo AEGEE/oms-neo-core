@@ -118,6 +118,10 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getEmailTemplates', 'EmailController@getEmailTemplates');
 		Route::get('/api/getEmailTemplate', 'EmailController@getEmailTemplate');
 		Route::post('/api/saveEmailTemplate', 'EmailController@saveEmailTemplate');
+
+		// Menu..
+		Route::post('/api/saveMenu', 'MenuController@saveMenu');
+		Route::get('/api/getMenu', 'MenuController@getMenu');
 	});
 
 	// Modules..

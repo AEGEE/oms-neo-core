@@ -17,8 +17,9 @@ $omsObj = new omsHelperScript();
 
 
 <ul class="nav nav-tabs">
-    <li class="active"><a href="#" data-target="#settings-tab-1" data-toggle="tab">Global settings</a></li>
-    <li class=""><a id="emailTab" href="#" data-target="#settings-tab-2" data-toggle="tab">Email templates</a></li>
+    <li class="active"><a href="#" data-target="#settings-tab-1" data-toggle="tab"><i class="fa fa-cog"></i> Global settings</a></li>
+    <li class=""><a id="emailTab" href="#" data-target="#settings-tab-2" data-toggle="tab"><i class="fa fa-envelope-o"></i> Email templates</a></li>
+    <li class=""><a id="emailTab" href="#" data-target="#settings-tab-3" data-toggle="tab"><i class="fa fa-align-left"></i> Navigation menu</a></li>
 </ul>
 <div class="tab-content">
     <div class="tab-pane fade active in p-10" id="settings-tab-1">
@@ -80,6 +81,104 @@ $omsObj = new omsHelperScript();
                 <div id="emailPager"></div>
             </div>
         </div>
+    </div>
+    <div class="tab-pane fade in p-10" id="settings-tab-3">
+        <h3 class="m-t-10"><i class="fa fa-align-left"></i> Navigation menu</h3>
+        <div class="alert alert-danger">
+            <i class="fa fa-exclamation-triangle"></i> An item with children will have its link removed!
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="dd nestable" id="nestable">
+                    <ol class="dd-list">
+                        <li class="dd-item" ng-repeat="item in vm.menuItems" ng-if="!item.deleted && !item.is_child" data-id="{{item.id}}" data-name="{{item.name}}" data-type="{{item.type}}" data-link="{{item.link}}" data-page="{{item.page}}" data-deleted={{item.deleted}} data-icon="{{item.icon}}" >
+                            <div class="dd-handle"><i class="fa {{item.icon}}"></i> {{item.name}} <span ng-show="item.link || item.page">({{item.link}}{{vm.modules[item.page]}})</span><br />(Type {{vm.itemTypes[item.type]}})</div>
+                            <span class="button-edit btn btn-default btn-xs pull-right" ng-click="vm.editItem(item.internal_id)">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </span>
+                            <span class="button-delete btn btn-default btn-xs pull-right" ng-click="vm.deleteItem(item.internal_id)">
+                                <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                            </span>
+
+
+                            <!-- Item3 children -->
+                            <ol class="dd-list" ng-if="item.children">
+                                <!-- Item4 -->
+                                 <li class="dd-item" ng-repeat="child in item.children" ng-if="!child.deleted" data-id="{{child.id}}" data-name="{{child.name}}" data-type="{{child.type}}" data-link="{{child.link}}" data-page="{{child.page}}" data-deleted={{child.deleted}} data-icon="{{child.icon}}" >
+                                    <div class="dd-handle"><i class="fa {{child.icon}}"></i> {{child.name}} <span ng-show="child.link || child.page">({{child.link}}{{vm.modules[child.page]}})</span><br />(Type {{vm.itemTypes[child.type]}})</div>
+                                    <span class="button-edit btn btn-default btn-xs pull-right" ng-click="vm.editItem(child.internal_id)">
+                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="button-delete btn btn-default btn-xs pull-right" ng-click="vm.deleteItem(child.internal_id)">
+                                        <i class="fa fa-times-circle-o" aria-hidden="true"></i>
+                                    </span>
+                                </li>
+                            </ol>
+
+
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h5 ng-if="!vm.item.internal_id">Add item</h5>
+                <h5 ng-if="vm.item.internal_id">Edit item</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="type">Icon</label>
+                        <select class="form-control" ng-model="vm.item.icon" style="font-family: 'FontAwesome'" ng-options="icon.name as icon.code+' '+icon.name for icon in vm.faIcons">
+
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="menuItemName" class="form-control" ng-model="vm.item.name" placeholder="Menu name" />
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select class="form-control" ng-model="vm.item.type">
+                                <option value="0">No link</option>
+                                <option value="1">External Link</option>
+                                <option value="2">Module page link</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12" ng-show="vm.item.type == 2">
+                        <div class="form-group m-b-20">
+                            <label for="page">Module page</label>
+                            <select class="form-control" ng-model="vm.item.page" ng-options="key as value for (key, value) in vm.modules">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12" ng-show="vm.item.type == 1">
+                        <div class="form-group m-b-20">
+                            <label for="link">Link</label>
+                            <input type="text" id="link" class="form-control" ng-model="vm.item.link" placeholder="Menu link" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <button class="btn btn-success" ng-if="!vm.item.internal_id" ng-click="vm.addMenuItem()"><i class="fa fa-plus"></i> Add menu item</button>
+                        <button class="btn btn-success" ng-if="vm.item.internal_id" ng-click="vm.saveMenuItem()"><i class="fa fa-plus"></i> Save menu item</button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <hr />
+        <button class="btn btn-success" ng-click="vm.saveMenu()"><i class="fa fa-plus"></i> Save menu</button>
+
+
+
+
     </div>
 </div>
 

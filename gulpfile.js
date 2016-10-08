@@ -29,7 +29,8 @@ elixir(function(mix) {
         '../../../public/assets/plugins/bootstrap-datepicker/css/datepicker3.css',
         '../../../public/assets/plugins/parsley/src/parsley.css',
         '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
-        '../../../node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css'
+        '../../../node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
+        '../otherLibs/nestable/style.css'
 	],
 	'public/vendor/vendor.css');
 
@@ -56,7 +57,9 @@ elixir(function(mix) {
 		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
 		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js',
 		'../bower_components/showdown/compressed/Showdown.min.js',
-		'../bower_components/angular-markdown-directive/markdown.js'
+		'../bower_components/angular-markdown-directive/markdown.js',
+		'../otherLibs/nestable/jquery.nestable.js',
+		'../otherLibs/nestable/jquery.nestable++.js'
 	],
 	'public/vendor/vendor.js');
 
