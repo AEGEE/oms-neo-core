@@ -250,6 +250,17 @@ class User extends Model
         $url = preg_replace('/ /', '.', $this->first_name).".".preg_replace('/ /', '.', $this->last_name);
         $url = strtolower($url);
 
+        $specialChars = array(
+            'ă' =>  'a',
+            'â' =>  'a',
+            'ș' =>  's',
+            'ț' =>  't',
+            'Ș' =>  's',
+            '-' =>  '.'
+        );
+
+        $url = strtr($url, $specialChars);
+
         $url_final = $url;
         $counter = 1;
         while(!$this->checkSeoUrlIsAvailable($url_final)) {
