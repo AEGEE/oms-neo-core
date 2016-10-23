@@ -1107,6 +1107,7 @@
                 params: {
                     active: 1,
                     sord: 'module_name',
+                    with_hidden: 1,
                     limit: 10000
                 }
             }).then(function successCallback(response) {
