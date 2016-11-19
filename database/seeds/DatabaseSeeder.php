@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
     		'EmailTemplateSeeder',
     		'AddSuperAdmin',
             'AddRecrutementModuleSeeder',
-            'AddAnnouncementsRole'
+            'AddAnnouncementsRole',
+            'BodiesPatch'
     	);
 
     	$seeders = SeederLog::all();
