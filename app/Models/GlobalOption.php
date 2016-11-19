@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Hash;
 use Uuid;
 
+use Storage;
+
 class GlobalOption extends Model
 {
     protected $table = "global_options";
@@ -77,6 +79,10 @@ class GlobalOption extends Model
         // Algorithm for generating: Hash(UUID + timestamp [+ string])
         $unencrypted = Uuid::generate().strtotime('now').$string;
         $final = Hash::make($unencrypted);
+        $path = storage_path();
+        $file = fopen($path.'/key', 'w');
+        fwrite($file, $final);
+        fclose($file);
         return $final;
     }
 }
