@@ -17,7 +17,7 @@ The language for the Core is PHP (Laravel framework).
 
 ## Architecture
 
-You can read more about the architecture on the [wiki](https://oms-project.atlassian.net/wiki/display/OMSCORE/Home+page)
+You can read more about the architecture on the [Wiki](https://oms-project.atlassian.net/wiki/display/OMSCORE/Home+page)
 
 ## Installing
 
