@@ -165,6 +165,7 @@ Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice'
 // Microservice group..
 Route::group(['middleware' => 'microServiceAuth'], function() {
 	Route::post('/api/getUserByToken', 'UserController@getUserByToken');
+	Route::post('/api/getUserById', 'UserController@getUserById');
 });
 
 // Generic routes.. TODO
