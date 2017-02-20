@@ -14,6 +14,7 @@
 // Login route..
 Route::any('/oauth/login', 'LoginController@loginUsingOauth');
 Route::any('/oauth/callback', 'LoginController@oAuthCallback');
+Route::any('/cacert', 'LoginController@loginUsingTLS');
 
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
@@ -26,8 +27,10 @@ Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
 // UI accessible only!
 Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 
+	Route::any('/api/generateSSLTLS', 'UserController@generateSSLTLS');
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
+
 	// Routes go in here..
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');

@@ -35,6 +35,13 @@ session_write_close();
                     <button type="submit" class="btn btn-success btn-block btn-lg" ng-disabled="loginForm.$pristine || loginForm.$invalid">Sign me in</button>
                 </div>
             </form>
+            <?php
+            if($_SERVER['SERVER_PORT'] == '443') { ?>
+                <div class="clear">
+                    &nbsp;
+                </div>
+                <button class="btn btn-success btn-block btn-lg" ng-click="vm.goToSSL();$event.stopPropagation();">Login using SSL</button>
+            <?php } ?>
         </div>
     </div>
     <!-- end login -->

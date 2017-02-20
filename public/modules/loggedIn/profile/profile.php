@@ -27,6 +27,7 @@
 	                    <input style="display:none" id="uploaderBtn" class="hiddenElement" type="file" nv-file-select="" uploader="vm.uploader" />
 	                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.change_password" data-toggle="modal" data-target="#changePasswordModal"><i class="fa fa-lock"></i> Change password</button>
 	                    <button class="btn btn-success btn-block btn-sm" ng-show="vm.active_fields.change_email" data-toggle="modal" data-target="#changeEmailModal"><i class="fa fa-envelope"></i> Change email</button>
+	                    <button class="btn btn-danger btn-block btn-sm" ng-show="vm.active_fields.get_ssl_tls" ng-click="vm.getSSL()"><i class="fa fa-certificate"></i> Get SSL/TLS certificate for login</button>
 	                    <div ng-show="vm.active_fields.account_info">
 		                    <h5 class="text-center"><b>Account info</b></h5>
 		                    <table class="table">

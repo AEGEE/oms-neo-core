@@ -60,6 +60,10 @@
             });
         }
 
+        vm.goToSSL = function() {
+            location.href = "/cacert";
+        }
+
         ///////
     }
 

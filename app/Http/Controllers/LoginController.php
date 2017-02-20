@@ -15,6 +15,7 @@ use App\Models\Antenna;
 use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
+use App\TlsAuth;
 use App\Models\User;
 
 use Hash;
@@ -247,6 +248,72 @@ class LoginController extends Controller
         if(empty($user->is_superadmin)) {
             $fee->checkFeesForSuspention($user);
         }
+
+        // We try to also add it to session..
+        $userData = $user->getLoginUserArray($loginKey);
+
+        Session::put('userData', $userData);
+        // Mirroring Laravel session data to PHP native session.. For use with angular partials..
+        session_start();
+        $_SESSION['userData'] = Session::get('userData');
+        session_write_close();      
+
+        $toReturn = array(
+            'success'   =>  1,
+            'message'   =>  $loginKey
+        );
+
+        // Login successful.. returning data..
+        return Redirect('/');
+    }
+
+    /* EXPERIMENTAL */
+    public function loginUsingTLS(User $user, Auth $auth, Request $req) {
+        $toReturn['success'] = 0;
+        if($_SERVER['SSL_CLIENT_VERIFY'] != 'SUCCESS') {
+            return json_encode($toReturn);
+        }
+
+        $client = explode('=', $_SERVER['SSL_CLIENT_S_DN']);
+        $client = $client[count($client)-1];
+
+
+        $cert = TlsAuth::where('client_cert', $client)->firstOrFail();
+
+
+        // Saving login request..
+        $auth->ip = $req->ip();
+        $auth->user_agent = $req->header('User-Agent');
+        
+        $rawRequestParams = http_build_query($req->all());
+        $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
+
+        $auth->raw_request_params = $rawRequestParams;
+
+        $toReturn = array(
+            'success'   =>  0,
+            'message'   =>  'Account does not exist!'
+        );
+
+        try {
+            $user = $user->findOrFail($cert->user_id);
+        } catch(ModelNotFoundException $ex) {
+            $auth->save();
+            return response(json_encode($toReturn), 422);
+        }
+
+        // User exists..
+
+        // We found a user..
+        $auth->user_id = $user->id;
+
+        // all good..
+        $loginKey = Uuid::generate(1);
+        $loginKey = $loginKey->string;
+
+        $auth->token_generated = $loginKey;
+        $auth->successful = 1;
+        $auth->save();
 
         // We try to also add it to session..
         $userData = $user->getLoginUserArray($loginKey);

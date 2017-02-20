@@ -26,6 +26,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use App\Models\UserWorkingGroup;
 use App\Models\WorkingGroup;
+use App\TlsAuth;
 
 use Excel;
 use File;
@@ -35,6 +36,7 @@ use Input;
 use Mail;
 use Response;
 use Session;
+use Uuid;
 
 class UserController extends Controller
 {
@@ -368,6 +370,7 @@ class UserController extends Controller
             'work_groups'           =>  (count($toReturn['workingGroups']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
             'board_positions'       =>  (count($toReturn['board_positions']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
             'role'                  =>  (count($toReturn['roles']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'get_ssl_tls'           =>  (($id == $userData->id) && ($_SERVER['SERVER_PORT'] == 443)) ? true : false,
         );
 
 
@@ -690,5 +693,26 @@ class UserController extends Controller
     public function getUserById(User $user) {
         $user = $user->findOrFail(Input::get('id'));
         return json_encode($user);
+    }
+
+    public function generateSSLTLS(Request $req, TlsAuth $tls) {
+        $userData = Session::get('userData');
+
+        $rand = rand(10, 1000000);
+
+        $path = "../scripts/ssl.sh ".$userData['seo_url'].$rand;
+        shell_exec($path);
+
+        $data = openssl_x509_parse(file_get_contents("../scripts/".$userData['seo_url'].$rand.".crt"));
+        $tls->serial = $data['serialNumber'];
+        $tls->user_id = $userData['id'];
+        $tls->client_cert = $userData['seo_url'].$rand;
+        $tls->save();
+
+        header('Last-Modified: '.date('r+b'));
+        header('Accept-Ranges: bytes');
+        header('Content-Type: application/x-x509-user-cert');
+        header('Content-Disposition: attachment; filename=cert.p12'); 
+        readfile("../scripts/".$userData['seo_url'].$rand.".P12");
     }
 }

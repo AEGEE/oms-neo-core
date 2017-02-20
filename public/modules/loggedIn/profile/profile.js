@@ -623,6 +623,10 @@
 
             $('#loadingOverlay').hide();
         }
+
+        vm.getSSL = function() {
+            window.open('/api/generateSSLTLS', '', 'width=1000');
+        }
         ///////
         vm.getUserProfile();
         vm.getRoles();
