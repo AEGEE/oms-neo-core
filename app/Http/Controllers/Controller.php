@@ -57,4 +57,14 @@ class Controller extends BaseController
         $path = storage_path()."/../.version";
         return File::get($path);
     }
+
+    protected function isMapsDefined() {
+        $mapsKey = config('services.google_maps');
+
+        if(!empty($mapsKey)) {
+            return $mapsKey;
+        }
+
+        return false;
+    }
 }

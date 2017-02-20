@@ -10,6 +10,7 @@
     "bootstrap-sass": "^3.3.0"
   },
   "dependencies": {
-    "angular-bootstrap-datetimepicker": "^1.1.2"
+    "angular-bootstrap-datetimepicker": "^1.1.2",
+    "angular-bootstrap3-typeahead": "0.0.1"
   }
 }

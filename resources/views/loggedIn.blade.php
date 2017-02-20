@@ -36,6 +36,12 @@
 @stop
 
 @section('modulesSrc')
+    @if(isset($maps_key) && $maps_key !== false)
+        <!-- ================== GOOGLE MAPS KEY ================== -->
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{$maps_key}}" type="text/javascript"></script>
+        <!-- ================== END GOOGLE MAPS KEY ================== -->
+    @endif
+
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {'X-Auth-Token': '{!!$authToken!!}'}

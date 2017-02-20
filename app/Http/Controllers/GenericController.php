@@ -37,6 +37,8 @@ class GenericController extends Controller
         if($auth->isUserLogged($userData['authToken'])) {
             $systemRolesAccess = array();
 
+            $addToView['maps_key'] = $this->isMapsDefined();
+
             $addToView['userData'] = $userData;
             $addToView['countries'] = "";
             $addToView['modulesSrc'] = "";

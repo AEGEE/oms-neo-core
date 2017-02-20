@@ -99,7 +99,8 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            'oc.lazyLoad',
 	            'angularFileUpload',
 	            'bootstrap3-typeahead',
-	            'btford.markdown'
+	            'btford.markdown',
+	            'angucomplete-alt'
 	            @yield('modules')  
 	        ])
 	        .config(appConfig)
@@ -175,6 +176,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 	<script type="text/javascript" src="vendor/grid/js/jquery.jqGrid.min.js"></script>
 	<script type="text/javascript" src="vendor/grid/plugins/grid.postext.js"></script>
 	<script type="text/javascript" src="vendor/tinymce/tinymce.min.js"></script>
+
 	<!-- ================== END PAGE LEVEL JS ================== -->
 	@yield('modulesSrc')
 </body>
