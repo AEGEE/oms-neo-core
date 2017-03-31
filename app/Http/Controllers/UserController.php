@@ -27,6 +27,8 @@ use App\Models\UserRole;
 use App\Models\UserWorkingGroup;
 use App\Models\WorkingGroup;
 
+use App\Repositories\RolesRepository;
+
 use Excel;
 use File;
 use Hash;
@@ -128,10 +130,9 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUser(User $user) {
-        $id = Input::get('id');
-        $user = $user->with('antenna')->findOrFail($id);
+    public function getUser(Request $req, User $user, RolesRepository $repo) {
 
+        dd($repo->getRoles($req, $user));
         $toReturn['success'] = 1;
         $toReturn['user'] = $user;
         return response(json_encode($toReturn), 200);
@@ -492,7 +493,7 @@ class UserController extends Controller
     public function changePassword(User $user, ChangePasswordRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
-        
+
         $newPassword = Input::get('password');
         $user->password = Hash::make($newPassword);
         $user->save();
@@ -518,7 +519,7 @@ class UserController extends Controller
 
         $id = Input::get('id');
         $user = $user->findOrFail($id);
-        
+
         $suspensionReason = Input::get('reason');
         $user->suspendAccount($suspensionReason, $userData->first_name." ".$userData->last_name);
 
@@ -531,7 +532,7 @@ class UserController extends Controller
 
         $id = Input::get('id');
         $user = $user->findOrFail($id);
-        
+
         $user->unsuspendAccount();
 
         $toReturn['success'] = 1;
@@ -555,7 +556,7 @@ class UserController extends Controller
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..
         session_start();
         $_SESSION['userData'] = Session::get('userData');
-        session_write_close();      
+        session_write_close();
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
@@ -603,7 +604,7 @@ class UserController extends Controller
                 'local'     =>  $member->antenna->name,
                 'seo_url'   =>  $member->seo_url
             );
-            
+
         }
 
         $toReturn['latestNews'] = array(

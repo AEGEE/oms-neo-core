@@ -45,7 +45,7 @@ class User extends Model
     }
 
     public function roles() {
-        return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
+        return $this->belongsToMany('App\Models\Role', 'user_roles', 'user_id', 'role_id');
     }
 
     public function studyField() {
@@ -318,7 +318,7 @@ class User extends Model
             case 'azure':
                 return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
                 break;
-            
+
             default:
                 return false;
                 break;

@@ -8,11 +8,21 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Models\ModulePage;
 use App\Models\RoleModulePage;
+use App\Models\User;
+
+use App\Repositories\RolesRepository;
 
 use DB;
 
 class CheckModuleAccess
 {
+
+    public $repo;
+
+    public function __construct(RolesRepository $rolerepo) {
+      $this->repo = $rolerepo;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -22,7 +32,24 @@ class CheckModuleAccess
      */
     public function handle($request, Closure $next, $moduleCode)
     {
+        //Get source user
         $userData = $request->get('userData');
+        $user = User::find($userData->id);
+        $request->attributes->add(['roles_source' => $user]);
+
+
+        //Get user global roles
+        $repo = $this->repo;
+        $globalRoles = $repo->getGlobalRoles($user);
+        $request->attributes->add(['roles_global' => $globalRoles]);
+
+        //Get context
+        //dd($moduleCode);
+        //$context = null;
+
+        //Derive scoped roles
+        //$scopedRoles = $repo->getScopedRoles($context, $globalRoles);
+
         if(!empty($userData->is_suspended)) {
             return response('Forbidden', 403);
         }
@@ -51,7 +78,7 @@ class CheckModuleAccess
                                     ->where('user_roles.user_id', $userData->id)
                                     ->whereNull('roles.is_disabled')
                                     ->where('role_module_pages.module_page_id', $modulePage->id);
-        
+
         if($request->isMethod('post')) {
             $canAccess = $canAccess->where('permission_level', 1);
         }

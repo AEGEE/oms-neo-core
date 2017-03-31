@@ -32,7 +32,7 @@ Route::group(['middleware' => 'api'], function() {
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');
 	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
-	
+
 	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
 	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
 
@@ -84,9 +84,9 @@ Route::group(['middleware' => 'api'], function() {
 	// Users..
 	Route::group(['middleware' => 'checkAccess:users'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
-		Route::get('/api/getUser', 'UserController@getUser');
+		Route::get('/api/getUser/{user}', 'UserController@getUser');
 		Route::post('/api/activateUser', 'UserController@activateUser');
-		
+
 		// Creates..
 		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
 		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
@@ -148,14 +148,14 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/addComment', 'RecrutementController@addComment');
 		Route::post('/api/changeStatus', 'RecrutementController@changeStatus');
 		Route::post('/api/activateUserRecruted', 'RecrutementController@activateUserRecruted');
-		
+
 	});
 
 	// News
 	Route::group(['middleware' => 'checkSpecialRoles:null,announcer'], function() {
 		Route::post('/api/saveNews', 'NewsController@saveNews');
 		Route::post('/api/deleteNews', 'NewsController@deleteNews');
-		
+
 	});
 });
 
