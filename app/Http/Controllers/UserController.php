@@ -131,11 +131,8 @@ class UserController extends Controller
     }
 
     public function getUser(Request $req, User $user, RolesRepository $repo) {
-
-        dd($repo->getRoles($req, $user));
-        $toReturn['success'] = 1;
-        $toReturn['user'] = $user;
-        return response(json_encode($toReturn), 200);
+        $user->setRoles($repo->getRoles($req, $user));
+        return response($user, 200);
     }
 
     public function activateUser(User $user, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {

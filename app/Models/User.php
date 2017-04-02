@@ -8,6 +8,8 @@ use DB;
 
 class User extends Model
 {
+    private $roles = array();
+
     protected $table = "users";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
@@ -386,4 +388,19 @@ class User extends Model
 
         return $response->getStatusCode();
     }
+
+
+    public function setRoles($roles) {
+      $this->roles = $roles;
+    }
+
+    public function requireRole($role, $value) {
+      return in_array($role, $this->roles) ? $value : null;
+    }
+
+    public function getFirstNameAttribute($value) {
+      return $this->requireRole('board', $value);
+    }
+
+
 }

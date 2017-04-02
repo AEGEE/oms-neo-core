@@ -4,13 +4,14 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\SimpleRole;
 
 class RolesRepository {
 
   public function getRoles($request, $target) {
     $globalRoles = $request->get('roles_global');
     $scopedRoles = $this->getScopedRoles($request->get('roles_source'), $globalRoles, $target);
-    return array_merge($globalRoles->toArray(), $scopedRoles);
+    return $this->getSimpleRoles(array_merge($globalRoles->toArray(), $scopedRoles->toArray()));
   }
 
   public function getGlobalRoles($user) {
@@ -35,13 +36,21 @@ class RolesRepository {
 
   public function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
     if ($this->hasRole('recruter', $globalRoles)) {
-      //dump($source);
-      //dump($target);
-      return array("<A scoped role>");
+      return collect(array(array("name" => "board")));
     } else {
       //Not a member of aegee means no special relations to any Member.
       return array();
     }
+  }
+
+  public function getSimpleRoles($array) {
+    $return = array();
+
+    foreach($array as $value) {
+      array_push($return, $value['name']);
+    }
+
+    return $return;
   }
 }
  ?>
