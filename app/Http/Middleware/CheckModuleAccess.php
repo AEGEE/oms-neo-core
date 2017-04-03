@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Models\ModulePage;
 use App\Models\RoleModulePage;
-use App\Models\User;
+use App\Models\Member;
 
 use DB;
 

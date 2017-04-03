@@ -4,16 +4,10 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-use App\Repositories\RolesRepository;
+use App\Repositories\RolesRepository as Repo;
 
 class SetRolesMiddleware
 {
-    public $repo;
-
-    public function __construct(RolesRepository $rolerepo) {
-      $this->repo = $rolerepo;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -23,14 +17,8 @@ class SetRolesMiddleware
      */
     public function handle($request, Closure $next)
     {
-        //Get source user
-        $user = $request->get('userData');
-        $request->attributes->add(['roles_source' => $user]);
-
-        //Get user global roles
-        $repo = $this->repo;
-        $globalRoles = $repo->getGlobalRoles($user);
-        $user->setRoles($globalRoles);
+        //Set the global roles for the user.
+        $request->get('userData')->syncRoles();
 
         return $next($request);
     }

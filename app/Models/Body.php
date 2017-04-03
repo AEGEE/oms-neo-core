@@ -4,17 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Antenna extends Model
+use App\Models\AccessControlledModel;
+
+class Body extends AccessControlledModel
 {
-    protected $table = "antennas";
+    protected $table = "bodies";
 
     // Relationships..
     public function country() {
     	return $this->belongsTo('App\Models\Country');
     }
 
-    public function user() {
-    	return $this->hasMany('App\Models\User');
+    public function member() {
+    	return $this->hasMany('App\Models\Member');
     }
 
     // Model methods go down here..

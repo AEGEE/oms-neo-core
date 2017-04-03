@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\User;
+use App\Models\Member;
 use App\Models\Role;
 use App\Models\SimpleRole;
 
@@ -28,7 +28,7 @@ class RolesRepository {
   }
 
   public static function getScopedRoles($source, $globalRoles, $target) {
-    if (get_class($source) == "App\Models\User") {
+    if (get_class($source) == "App\Models\Member") {
       return self::resolveRelationFromUser($source, $globalRoles, $target);
     } else {
 
@@ -57,7 +57,7 @@ class RolesRepository {
   }
 
   public static function resolveRelationFromUser(User $source, $globalRoles, $target) {
-    if (get_class($target) == "App\Models\User") {
+    if (get_class($target) == "App\Models\Member") {
       return self::resolveRelationUserToUser($source, $globalRoles, $target);
     } else {
 

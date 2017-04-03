@@ -15,7 +15,7 @@ class Role extends Model
     }
 
     public function user() {
-        return $this->belongsToMany('App\Models\User', 'user_roles', 'role_id', 'user_id');
+        return $this->belongsToMany('App\Models\Member', 'user_roles', 'role_id', 'user_id');
     }
 
     public function roleModulePages() {
@@ -23,7 +23,7 @@ class Role extends Model
     }
 
     public function userRole() {
-    	return $this->hasMany('App\Models\UserRole');
+    	return $this->hasMany('App\Models\MemberRole');
     }
 
     // Model methods go down here..

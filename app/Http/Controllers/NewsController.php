@@ -9,7 +9,7 @@ use App\Http\Requests\AddNewsRequest;
 
 use App\Models\News;
 use App\Models\Notification;
-use App\Models\User;
+use App\Models\Member;
 
 use Input;
 

@@ -12,7 +12,7 @@ class UserWorkingGroup extends Model
 
     // Relationships..
     public function user() {
-    	return $this->belongsTo('App\Models\User');
+    	return $this->belongsTo('App\Models\Member');
     }
 
     public function workingGroup() {

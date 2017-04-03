@@ -12,11 +12,11 @@ class WorkingGroup extends Model
 
     // Relationships..
     public function userWorkingGroup() {
-    	return $this->hasMany('App\Models\UserWorkingGroup');
+    	return $this->hasMany('App\Models\MemberWorkingGroup');
     }
 
     public function users() {
-        return $this->belongsToMany('App\Models\User', 'user_working_groups', 'work_group_id', 'user_id')
+        return $this->belongsToMany('App\Models\Member', 'user_working_groups', 'work_group_id', 'user_id')
                     ->withPivot('start_date', 'end_date');
     }
 

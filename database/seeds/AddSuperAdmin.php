@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Models\Antenna;
-use App\Models\User;
+use App\Models\Body;
+use App\Models\Member;
 
 class AddSuperAdmin extends Seeder
 {

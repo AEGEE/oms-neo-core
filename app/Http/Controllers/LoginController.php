@@ -11,11 +11,11 @@ use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
 use App\Models\Auth;
-use App\Models\Antenna;
+use App\Models\Body;
 use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
-use App\Models\User;
+use App\Models\Member;
 
 use Hash;
 use Input;

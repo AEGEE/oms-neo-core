@@ -44,7 +44,7 @@ class RecrutedUser extends Model
     }
 
     public function user() {
-    	return $this->belongsTo('App\Models\User', 'user_id_created');
+    	return $this->belongsTo('App\Models\Member', 'user_id_created');
     }
 
     // Model methods go down here..

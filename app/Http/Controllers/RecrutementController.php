@@ -16,8 +16,8 @@ use App\Models\RecrutedComment;
 use App\Models\RecrutedUser;
 use App\Models\RecrutementCampaign;
 use App\Models\Role;
-use App\Models\User;
-use App\Models\UserRole;
+use App\Models\Member;
+use App\Models\MemberRole;
 
 use Excel;
 use Hash;

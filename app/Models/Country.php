@@ -10,7 +10,7 @@ class Country extends Model
 
     // Relationships..
     public function antenna() {
-    	return $this->hasMany('App\Models\Antenna');
+    	return $this->hasMany('App\Models\Body');
     }
 
     // Model methods go down here..

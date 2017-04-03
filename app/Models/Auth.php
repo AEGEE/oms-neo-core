@@ -11,7 +11,7 @@ class Auth extends Model
 
     // Relationships..
     public function user() {
-    	return $this->belongsTo('App\Models\User');
+    	return $this->belongsTo('App\Models\Member');
     }
 
     // Model methods go down here..

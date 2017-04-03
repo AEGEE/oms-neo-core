@@ -12,7 +12,7 @@ use App\Http\Requests\AddWorkingGroupRequest;
 use App\Http\Requests\ChangeEmailRequest;
 use App\Http\Requests\ChangePasswordRequest;
 
-use App\Models\Antenna;
+use App\Models\Body;
 use App\Models\Auth;
 use App\Models\BoardMember;
 use App\Models\Country;
@@ -22,9 +22,9 @@ use App\Models\Fee;
 use App\Models\FeeUser;
 use App\Models\News;
 use App\Models\Role;
-use App\Models\User;
-use App\Models\UserRole;
-use App\Models\UserWorkingGroup;
+use App\Models\Member;
+use App\Models\MemberRole;
+use App\Models\MemberWorkingGroup;
 use App\Models\WorkingGroup;
 
 use App\Repositories\RolesRepository as Repo;

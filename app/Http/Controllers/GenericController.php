@@ -12,7 +12,7 @@ use App\Models\GlobalOption;
 use App\Models\Notification;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
-use App\Models\UserRole;
+use App\Models\MemberRole;
 
 use Session;
 

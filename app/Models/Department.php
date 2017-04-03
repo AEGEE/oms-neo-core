@@ -14,7 +14,7 @@ class Department extends Model
 
     // Relationships..
     public function user() {
-    	return $this->hasMany('App\Models\User');
+    	return $this->hasMany('App\Models\Member');
     }
 
     public function boardMembers() {

@@ -12,7 +12,7 @@ class RecrutementCampaign extends Model
 
     // Relationships..
     public function antenna() {
-        return $this->belongsTo('App\Models\Antenna');
+        return $this->belongsTo('App\Models\Body');
     }
 
     public function recrutedUser() {

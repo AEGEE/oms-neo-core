@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Requests\SaveAntennaRequest;
 
-use App\Models\Antenna;
+use App\Models\Body;
 use App\Models\Country;
 
 use Excel;

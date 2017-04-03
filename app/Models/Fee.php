@@ -18,7 +18,7 @@ class Fee extends Model
     }
 
     public function users() {
-        return $this->belongsToMany('App\Models\User', 'fee_users', 'fee_id', 'user_id')
+        return $this->belongsToMany('App\Models\Member', 'fee_users', 'fee_id', 'user_id')
                     ->withPivot('date_paid', 'expiration_date');
     }
 

@@ -7,7 +7,7 @@ use App\Models\AccessControlledModel;
 
 use DB;
 
-class User extends AccessControlledModel
+class Member extends AccessControlledModel
 {
 
     protected $permissions = array(
@@ -29,7 +29,7 @@ class User extends AccessControlledModel
       ),
     );
 
-    protected $table = "users";
+    protected $table = "members";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
 
@@ -37,7 +37,7 @@ class User extends AccessControlledModel
 
     // Relationships..
     public function antenna() {
-    	return $this->belongsTo('App\Models\Antenna');
+    	return $this->belongsTo('App\Models\Body');
     }
 
     public function auth() {
@@ -78,11 +78,11 @@ class User extends AccessControlledModel
     }
 
     public function userRole() {
-    	return $this->hasMany('App\Models\UserRole');
+    	return $this->hasMany('App\Models\MemberRole');
     }
 
     public function userWorkingGroup() {
-    	return $this->hasMany('App\Models\UserWorkingGroup');
+    	return $this->hasMany('App\Models\MemberWorkingGroup');
     }
 
     public function workingGroups() {
