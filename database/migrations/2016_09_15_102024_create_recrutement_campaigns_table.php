@@ -14,14 +14,14 @@ class CreateRecrutementCampaignsTable extends Migration
     {
         Schema::create('recrutement_campaigns', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('antenna_id');
+            $table->integer('body_id');
             $table->timestamp('start_date');
             $table->timestamp('end_date');
             $table->string('link');
             $table->text('custom_fields')->nullable();
             $table->timestamps();
 
-            $table->foreign('antenna_id')->references('id')->on('antennas')->onDelete('cascade');
+            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
         });
     }
 

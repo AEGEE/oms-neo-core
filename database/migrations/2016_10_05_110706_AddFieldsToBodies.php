@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddFieldsToAntennae extends Migration
+class AddFieldsToBodies extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class AddFieldsToAntennae extends Migration
      */
     public function up()
     {
-        Schema::table('antennas', function (Blueprint $table) {
+        Schema::table('bodies', function (Blueprint $table) {
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
@@ -26,7 +26,7 @@ class AddFieldsToAntennae extends Migration
      */
     public function down()
     {
-        Schema::table('antennas', function (Blueprint $table) {
+        Schema::table('bodies', function (Blueprint $table) {
             $table->dropColumn('email');
             $table->dropColumn('address');
             $table->dropColumn('phone');

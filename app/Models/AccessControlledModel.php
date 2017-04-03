@@ -68,8 +68,8 @@ class AccessControlledModel extends Model
     }
 
     public function updateRoles() {
-      $this->updateReadRoles();
-      $this->updateWriteRoles();
+      //$this->updateReadRoles();
+      //$this->updateWriteRoles();
     }
 
     public function updateReadRoles() {

@@ -13,9 +13,9 @@ class AddCommenterId extends Migration
     public function up()
     {
         Schema::table('recruted_comments', function (Blueprint $table) {
-            $table->integer('user_id')->nullable();
+            $table->integer('member_id')->nullable();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
         });
     }
 
@@ -27,7 +27,7 @@ class AddCommenterId extends Migration
     public function down()
     {
         Schema::table('recruted_comments', function (Blueprint $table) {
-            $table->dropColumn('user_id');
+            $table->dropColumn('member_id');
         });
     }
 }

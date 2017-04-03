@@ -59,14 +59,14 @@ class GenericController extends Controller
                     return view('loggedIn', $addToView);
                 }
                 // Getting module pages ids to which it has access to..
-                $userRolesObj = new UserRole();
+                $userRolesObj = new MemberRole();
                 $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
                 $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
                                         ->whereIn('module_pages.id', array_keys($modulePageIds))
                                         ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                         ->orderBy('module_pages.name', 'ASC')->get();
 
-                $systemRoles = UserRole::distinct('code')
+                $systemRoles = MemberRole::distinct('code')
                                         ->join('roles', 'roles.id', '=', 'user_roles.role_id')
                                         ->where('user_id', $userData['id'])
                                         ->whereNull('is_disabled')

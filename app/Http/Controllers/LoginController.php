@@ -25,7 +25,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth, Fee $fee) {
+    public function loginUsingCredentials(LoginRequest $req, Member $member, Auth $auth, Fee $fee) {
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -138,7 +138,7 @@ class LoginController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
+    public function createUser(AddUserRequest $req, Member $usr, Auth $auth) {
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
@@ -192,7 +192,7 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Fee $fee, Request $req) {
+    public function oAuthCallback(Member $member, Auth $auth, Fee $fee, Request $req) {
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
@@ -228,7 +228,7 @@ class LoginController extends Controller
             return response(json_encode($toReturn), 422);
         }
 
-        // User exists..
+        // Member exists..
         $user->oauth_token = $oAuthUser->token;
         $user->save();
 

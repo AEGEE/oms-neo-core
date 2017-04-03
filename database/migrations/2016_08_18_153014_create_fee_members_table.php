@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFeeUsersTable extends Migration
+class CreateFeeMembersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,16 @@ class CreateFeeUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('fee_users', function (Blueprint $table) {
+        Schema::create('fee_members', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('fee_id');
-            $table->integer('user_id');
+            $table->integer('member_id');
             $table->timestamp('date_paid');
             $table->timestamp('expiration_date')->nullable();
             $table->timestamps();
 
             $table->foreign('fee_id')->references('id')->on('fees')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateFeeUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('fee_users');
+        Schema::drop('fee_members');
     }
 }

@@ -57,8 +57,8 @@ class Member extends AccessControlledModel
                     ->withPivot('date_paid', 'expiration_date');
     }
 
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
+    public function FeeMember() {
+    	return $this->hasMany('App\Models\FeeMember');
     }
 
     public function recrutedUser() {

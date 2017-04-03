@@ -213,7 +213,7 @@
         vm.addRoles = function() {
             $http({
                 method: "POST",
-                url: '/api/addUserRoles',
+                url: '/api/addMemberRoles',
                 data: {
                     user_id: vm.user.id,
                     roles: vm.roleChecked

@@ -59,7 +59,7 @@ class WorkingGroup extends Model
         return $workGroups->get();
     }
 
-    public function getUserWorkingGroups($userId) {
+    public function getMemberWorkingGroups($userId) {
         $wg = $this->select('working_groups.name', 'user_working_groups.id', 'user_working_groups.start_date', 'user_working_groups.end_date')
                     ->join('user_working_groups', 'user_working_groups.work_group_id', '=', 'working_groups.id')
                     ->where('user_id', $userId)

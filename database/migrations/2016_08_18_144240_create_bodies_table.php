@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAntennasTable extends Migration
+class CreateBodiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateAntennasTable extends Migration
      */
     public function up()
     {
-        Schema::create('antennas', function (Blueprint $table) {
+        Schema::create('bodies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->string('city');
@@ -30,6 +30,6 @@ class CreateAntennasTable extends Migration
      */
     public function down()
     {
-        Schema::drop('antennas');
+        Schema::drop('bodies');
     }
 }

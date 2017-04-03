@@ -22,7 +22,7 @@ Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields'
 Route::post('/api/recruitUser', 'RecrutementController@recruitUser');
 Route::get('/api/checkCampaignExists', 'RecrutementController@checkCampaignExists');
 
-Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
+Route::get('/api/getUserAvatar/{avatarId}', 'MemberController@getUserAvatar');
 // UI accessible only!
 Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 
@@ -33,17 +33,17 @@ Route::group(['middleware' => 'api'], function() {
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');
 	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
 
-	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
-	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
+	Route::get('/api/getUserProfile', 'MemberController@getUserProfile');
+	Route::get('/api/getDashboardData', 'MemberController@getDashboardData');
 
 	Route::get('/api/getNews', 'NewsController@getNews');
 	Route::get('/api/getNewsById', 'NewsController@getNewsById');
 
 	// Personal routes..
-	Route::post('/api/changeEmail', 'UserController@changeEmail');
-	Route::post('/api/changePassword', 'UserController@changePassword');
-	Route::post('/api/editBio', 'UserController@editBio');
-	Route::post('/api/uploadUserAvatar', 'UserController@uploadUserAvatar');
+	Route::post('/api/changeEmail', 'MemberController@changeEmail');
+	Route::post('/api/changePassword', 'MemberController@changePassword');
+	Route::post('/api/editBio', 'MemberController@editBio');
+	Route::post('/api/uploadUserAvatar', 'MemberController@uploadUserAvatar');
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
@@ -83,27 +83,27 @@ Route::group(['middleware' => 'api'], function() {
 
 	// Users..
 	Route::group(['middleware' => 'checkAccess:users'], function() {
-		Route::get('/api/getUsers', 'UserController@getUsers');
-		Route::get('/api/getUser/{user}', 'UserController@getUser');
-		Route::post('/api/activateUser', 'UserController@activateUser');
+		Route::get('/api/getUsers', 'MemberController@getUsers');
+		Route::get('/api/getUser/{user}', 'MemberController@getUser');
+		Route::post('/api/activateUser', 'MemberController@activateUser');
 
 		// Creates..
-		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
-		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
-		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
-		Route::post('/api/addWorkingGroupToUser', 'UserController@addWorkingGroupToUser');
+		Route::post('/api/setBoardPosition', 'MemberController@setBoardPosition');
+		Route::post('/api/addMemberRoles', 'MemberController@addMemberRoles');
+		Route::post('/api/addFeesToUser', 'MemberController@addFeesToUser');
+		Route::post('/api/addWorkingGroupToUser', 'MemberController@addWorkingGroupToUser');
 		Route::post('/api/createUser', 'LoginController@createUser');
 
 		// Deletes..
-		Route::post('/api/deleteFee', 'UserController@deleteFee');
-		Route::post('/api/deleteRole', 'UserController@deleteRole');
-		Route::post('/api/deleteMembership', 'UserController@deleteMembership');
-		Route::post('/api/deleteWorkGroup', 'UserController@deleteWorkGroup');
+		Route::post('/api/deleteFee', 'MemberController@deleteFee');
+		Route::post('/api/deleteRole', 'MemberController@deleteRole');
+		Route::post('/api/deleteMembership', 'MemberController@deleteMembership');
+		Route::post('/api/deleteWorkGroup', 'MemberController@deleteWorkGroup');
 
 		// Suspensions and others..
-		Route::post('/api/suspendAccount', 'UserController@suspendAccount');
-		Route::post('/api/unsuspendAccount', 'UserController@unsuspendAccount');
-		Route::post('/api/impersonateUser', 'UserController@impersonateUser');
+		Route::post('/api/suspendAccount', 'MemberController@suspendAccount');
+		Route::post('/api/unsuspendAccount', 'MemberController@unsuspendAccount');
+		Route::post('/api/impersonateUser', 'MemberController@impersonateUser');
 
 	});
 
@@ -164,8 +164,8 @@ Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice'
 
 // Microservice group..
 Route::group(['middleware' => 'microServiceAuth'], function() {
-	Route::post('/api/getUserByToken', 'UserController@getUserByToken');
-	Route::post('/api/getUserById', 'UserController@getUserById');
+	Route::post('/api/getUserByToken', 'MemberController@getUserByToken');
+	Route::post('/api/getUserById', 'MemberController@getUserById');
 });
 
 // Generic routes.. TODO

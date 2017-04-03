@@ -15,15 +15,15 @@ class CreateAuthsTable extends Migration
         Schema::create('auths', function (Blueprint $table) {
             $table->increments('id');
             $table->string('ip');
-            $table->string('user_agent');
+            $table->string('member_agent');
             $table->text('raw_request_params');
             $table->string('token_generated')->nullable();
-            $table->integer('user_id')->nullable();
+            $table->integer('member_id')->nullable();
             $table->integer('successful')->nullable();
             $table->timestamp('expiration')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
         });
     }
 

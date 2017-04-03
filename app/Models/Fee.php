@@ -13,8 +13,8 @@ class Fee extends Model
     protected $dates = ['created_at', 'updated_at', 'date_paid', 'expiration_date'];
 
     // Relationships..
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
+    public function FeeMember() {
+    	return $this->hasMany('App\Models\FeeMember');
     }
 
     public function users() {
@@ -154,8 +154,8 @@ class Fee extends Model
         $existingFeesCache = $this->getCache();
 
         $now = date('Y-m-d');
-        $feeUser = new FeeUser();
-        $feesPaid = $feeUser->getPaidUserFees($user->id, $now);
+        $FeeMember = new FeeMember();
+        $feesPaid = $FeeMember->getPaidUserFees($user->id, $now);
 
         $hasFeesPaid = true;
         foreach($existingFeesCache as $key => $fee) {

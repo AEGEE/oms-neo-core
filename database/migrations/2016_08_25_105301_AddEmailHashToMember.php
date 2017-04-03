@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEmailHashToUser extends Migration
+class AddEmailHashToMember extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class AddEmailHashToUser extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('members', function (Blueprint $table) {
             $table->string('email_hash')->nullable();
         });
     }
@@ -24,7 +24,7 @@ class AddEmailHashToUser extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('members', function (Blueprint $table) {
             $table->dropColumn('email_hash');
         });
     }

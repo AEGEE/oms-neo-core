@@ -36,7 +36,7 @@ class CheckSpecialRoles
         }
 
         if($userData->is_superadmin == 1) {
-            // User is superadmin.. can access any module..
+            // Member is superadmin.. can access any module..
             return $next($request);
         }
 

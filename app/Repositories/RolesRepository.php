@@ -67,7 +67,7 @@ class RolesRepository {
   }
 
 
-  public static function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
+  public static function resolveRelationUserToUser(User $source, $globalRoles, Member $target) {
     $roles = array();
     if ($source->id == $target->id) {
       array_push($roles, "self");

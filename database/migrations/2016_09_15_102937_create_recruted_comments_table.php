@@ -14,7 +14,7 @@ class CreateRecrutedCommentsTable extends Migration
     {
         Schema::create('recruted_comments', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('recruted_user_id');
+            $table->integer('recruted_member_id');
             $table->text('comment');
             $table->timestamps();
         });

@@ -12,7 +12,7 @@ class ChangeoAuthTokenType extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('members', function (Blueprint $table) {
             $table->text('oauth_token')->change();
         });
     }
@@ -24,7 +24,7 @@ class ChangeoAuthTokenType extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('members', function (Blueprint $table) {
             $table->string('oauth_token')->change();
         });
     }

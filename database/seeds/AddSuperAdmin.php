@@ -14,13 +14,13 @@ class AddSuperAdmin extends Seeder
      */
     public function run()
     {
-    	Antenna::create([
+    	Body::create([
     		'name'			=>	'Global antenna',
     		'city'			=>	'Cluj-Napoca',
     		'country_id' 	=>	1
     	]);
 
-        User::create([
+        Member::create([
 			'contact_email' 	=> 	'flaviu@glitch.ro',
 			'first_name'		=>	'Flaviu',
 			'last_name'			=>	'Porutiu',

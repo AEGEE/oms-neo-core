@@ -36,7 +36,9 @@ class DatabaseSeeder extends Seeder
     			continue;
     		}
 
-    		eval('$this->call('.$seeder.'::class);');
+
+        //echo('$this->call(' . $seeder . '::class);');
+    		//eval('$this->call('.$seeder.'::class);');
     		SeederLog::create([
     			'code'	=>	$seeder
     		]);
@@ -50,9 +52,9 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-class userSeeder extends Seeder {
+class memberSeeder extends Seeder {
 	public function run() {
-		User::create([
+		Member::create([
 			'contact_email' 	=> 	'flaviu@glitch.ro',
 			'first_name'		=>	'Flaviu',
 			'last_name'			=>	'Porutiu',

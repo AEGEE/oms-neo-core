@@ -19,7 +19,7 @@ use App\Models\Country;
 use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
-use App\Models\FeeUser;
+use App\Models\FeeMember;
 use App\Models\News;
 use App\Models\Role;
 use App\Models\Member;
@@ -38,9 +38,9 @@ use Mail;
 use Response;
 use Session;
 
-class UserController extends Controller
+class MemberController extends Controller
 {
-    public function getUsers(User $user, Request $req, Repo $repo) {
+    public function getUsers(Member $member, Request $req, Repo $repo) {
         $max_permission = $req->get('max_permission');
     	$user = $req->get('userData');
         $search = array(
@@ -65,7 +65,7 @@ class UserController extends Controller
             $search['noLimit'] = true;
         }
 
-        $members = User::all();
+        $members = Member::all();
         Repo::syncRolesForAll($members, $user);
 
         return $members;
@@ -133,12 +133,12 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUser(Request $req, User $user, RolesRepository $repo) {
+    public function getUser(Request $req, Member $member, RolesRepository $repo) {
         $user->setRoles($repo->getRoles($req, $user));
         return response($user, 200);
     }
 
-    public function activateUser(User $user, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {
+    public function activateUser(Member $member, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {
         $currentUser = $req->get('userData');
         // User..
         $id = Input::get('id');
@@ -194,7 +194,7 @@ class UserController extends Controller
             if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
                 continue;
             }
-            $tmpRole = new UserRole();
+            $tmpRole = new MemberRole();
             $tmpRole->user_id = $user->id;
             $tmpRole->role_id = $key;
             $tmpRole->save();
@@ -208,7 +208,7 @@ class UserController extends Controller
                 continue;
             }
 
-            $tmpFee = new FeeUser();
+            $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
             $tmpFee->user_id = $user->id;
             if(isset($feesPaid[$key])) {
@@ -265,7 +265,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserProfile(User $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, UserRole $userRole, Request $req) {
+    public function getUserProfile(Member $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, MemberRole $userRole, Request $req) {
         $isOauthDefined = $this->isOauthDefined();
         $user = $req->get('userData');
 
@@ -300,7 +300,7 @@ class UserController extends Controller
         );
 
         $toReturn['workingGroups'] = array();
-        $wgs = $wg->getUserWorkingGroups($id);
+        $wgs = $wg->getMemberWorkingGroups($id);
         foreach ($wgs as $work) {
             $toReturn['workingGroups'][] = array(
                 'id'        =>  $work->id,
@@ -324,7 +324,7 @@ class UserController extends Controller
         }
 
         $toReturn['roles'] = array();
-        $roles = $role->getUserRoles($id);
+        $roles = $role->getMemberRoles($id);
         foreach ($roles as $roleX) {
             $toReturn['roles'][] = array(
                 'id'        =>  $roleX->id,
@@ -388,7 +388,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function addUserRoles(Role $role, AddRoleRequest $req) {
+    public function addMemberRoles(Role $role, AddRoleRequest $req) {
         $id = Input::get('user_id');
         $rolesCache = $role->getCache();
 
@@ -398,7 +398,7 @@ class UserController extends Controller
                 continue;
             }
 
-            UserRole::firstOrCreate([
+            MemberRole::firstOrCreate([
                 'user_id'   =>  $id,
                 'role_id'   =>  $key
             ]);
@@ -420,7 +420,7 @@ class UserController extends Controller
                 continue;
             }
 
-            $tmpFee = new FeeUser();
+            $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
             $tmpFee->user_id = $id;
             if(isset($feesPaid[$key])) {
@@ -438,7 +438,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function deleteFee(FeeUser $obj) {
+    public function deleteFee(FeeMember $obj) {
         $id = Input::get('id');
         $obj = $obj->findOrFail($id);
         $obj->delete();
@@ -447,7 +447,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function deleteRole(UserRole $obj) {
+    public function deleteRole(MemberRole $obj) {
         $id = Input::get('id');
         $obj = $obj->findOrFail($id);
         $obj->delete();
@@ -465,7 +465,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function deleteWorkGroup(UserWorkingGroup $obj) {
+    public function deleteWorkGroup(MemberWorkingGroup $obj) {
         $id = Input::get('id');
         $obj = $obj->findOrFail($id);
         $obj->delete();
@@ -474,7 +474,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function changeEmail(User $user, ChangeEmailRequest $req) {
+    public function changeEmail(Member $member, ChangeEmailRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
         $user->contact_email = Input::get('email');
@@ -492,7 +492,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function changePassword(User $user, ChangePasswordRequest $req) {
+    public function changePassword(Member $member, ChangePasswordRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
 
@@ -504,7 +504,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function editBio(User $user, Request $req) {
+    public function editBio(Member $member, Request $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
 
@@ -516,7 +516,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function suspendAccount(User $user, Request $req) {
+    public function suspendAccount(Member $member, Request $req) {
         $userData = $req->get('userData');
 
         $id = Input::get('id');
@@ -529,7 +529,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function unsuspendAccount(User $user, Request $req) {
+    public function unsuspendAccount(Member $member, Request $req) {
         $userData = $req->get('userData');
 
         $id = Input::get('id');
@@ -541,7 +541,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function impersonateUser(User $user, Request $req, Auth $auth) {
+    public function impersonateUser(Member $member, Request $req, Auth $auth) {
         $userData = $req->get('userData');
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
@@ -564,7 +564,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function addWorkingGroupToUser(User $user, UserWorkingGroup $uWg, AddWorkingGroupRequest $req) {
+    public function addWorkingGroupToUser(Member $member, MemberWorkingGroup $uWg, AddWorkingGroupRequest $req) {
         $id = Input::get('user_id');
         $wgId = Input::get('work_group_id');
 
@@ -595,7 +595,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getDashboardData(User $user, News $news) {
+    public function getDashboardData(Member $member, News $news) {
         $toReturn = array();
         $toReturn['userCount'] = $user->whereNotNull('activated_at')->count();
         $newestMembers = $user->with('antenna')->whereNotNull('activated_at')->orderBy('activated_at', 'DESC')->take(12)->get();
@@ -690,7 +690,7 @@ class UserController extends Controller
         return $response;
     }
 
-    public function getUserById(User $user) {
+    public function getUserById(Member $member) {
         $user = $user->findOrFail(Input::get('id'));
         return json_encode($user);
     }

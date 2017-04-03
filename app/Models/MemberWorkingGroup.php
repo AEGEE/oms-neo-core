@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserWorkingGroup extends Model
+class MemberWorkingGroup extends Model
 {
     protected $table = "user_working_groups";
 

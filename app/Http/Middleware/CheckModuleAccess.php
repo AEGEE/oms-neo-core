@@ -41,7 +41,7 @@ class CheckModuleAccess
 
         $max_permission = 1;
         if($user->is_superadmin == 1) {
-            // User is superadmin.. can access any module..
+            // Member is superadmin.. can access any module..
             $request->attributes->add(['max_permission' => $max_permission]);
             return $next($request);
         }

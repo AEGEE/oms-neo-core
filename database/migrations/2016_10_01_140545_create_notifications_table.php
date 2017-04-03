@@ -16,13 +16,13 @@ class CreateNotificationsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('text');
-            $table->integer('user_id');
+            $table->integer('member_id');
             $table->text('link')->nullable();
             $table->text('picture_link')->nullable();
             $table->integer('is_read')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
         });
     }
 

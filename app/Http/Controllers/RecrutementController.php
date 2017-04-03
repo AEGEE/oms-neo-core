@@ -11,7 +11,7 @@ use App\Http\Requests\SignupRequest;
 use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
-use App\Models\FeeUser;
+use App\Models\FeeMember;
 use App\Models\RecrutedComment;
 use App\Models\RecrutedUser;
 use App\Models\RecrutementCampaign;
@@ -151,7 +151,7 @@ class RecrutementController extends Controller
         return json_encode($toReturn);
     }
 
-    public function recruitUser(RecrutementCampaign $campaign, RecrutedUser $usr, User $userObj, SignupRequest $req) {
+    public function recruitUser(RecrutementCampaign $campaign, RecrutedUser $usr, Member $memberObj, SignupRequest $req) {
         $now = date('Y-m-d');
         $link = Input::get('link');
         $campaignExists = $campaign->whereLink($link)->where('start_date', '<=', $now)->where('end_date', '>=', $now)->firstOrFail();
@@ -198,7 +198,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getRecrutedUsers(RecrutedUser $user, Request $req) {
+    public function getRecrutedUsers(RecrutedMember $member, Request $req) {
         $userData = $req->get('userData');
 
         $search = array(
@@ -279,7 +279,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserDetails(RecrutedUser $user, RecrutedComment $comm) {
+    public function getUserDetails(RecrutedMember $member, RecrutedComment $comm) {
         $id = Input::get('id');
 
         $user = $user->with('studyType')->with('studyField')->with('recrutement_campaigns')->findOrFail($id);
@@ -331,7 +331,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function changeStatus(RecrutedUser $user) {
+    public function changeStatus(RecrutedMember $member) {
         $id = Input::get('user_id');
         $newStatus = Input::get('newStatus');
         $user = $user->findOrFail($id);
@@ -350,7 +350,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function activateUserRecruted(RecrutedUser $rUser, User $user, Role $role, Fee $fee, EmailTemplate $tpl) {
+    public function activateUserRecruted(RecrutedUser $rUser, Member $member, Role $role, Fee $fee, EmailTemplate $tpl) {
         // User..
         $id = Input::get('id');
         $rUser = $rUser->with('recrutement_campaigns')->findOrFail($id);
@@ -410,7 +410,7 @@ class RecrutementController extends Controller
             if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
                 continue;
             }
-            $tmpRole = new UserRole();
+            $tmpRole = new MemberRole();
             $tmpRole->user_id = $user->id;
             $tmpRole->role_id = $key;
             $tmpRole->save();
@@ -424,7 +424,7 @@ class RecrutementController extends Controller
                 continue;
             }
 
-            $tmpFee = new FeeUser();
+            $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
             $tmpFee->user_id = $user->id;
             if(isset($feesPaid[$key])) {

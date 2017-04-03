@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateRecrutedMembersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,17 +12,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('recruted_members', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('internal_email')->nullable();
-            $table->string('oauth_token')->nullable();
-            $table->timestamp('oauth_expiration')->nullable();
-            $table->string('contact_email');
+            $table->integer('campaign_id');
             $table->string('first_name');
             $table->string('last_name');
             $table->timestamp('date_of_birth');
             $table->integer('gender');
-            $table->integer('antenna_id');
             $table->string('university');
             $table->integer('studies_type_id');
             $table->integer('studies_field_id');
@@ -30,17 +26,15 @@ class CreateUsersTable extends Migration
             $table->string('address')->nullable();
             $table->string('city')->nullable();
             $table->string('zipcode')->nullable();
-            $table->text('other')->nullable();
-            $table->integer('is_superadmin')->nullable();
-            $table->integer('is_suspended')->nullable();
-            $table->string('password')->nullable();
-            $table->integer('department_id')->nullable();
+            $table->integer('status')->nullable();
+            $table->integer('member_id_created')->nullable();
+            $table->text('custom_responses')->nullable();
             $table->timestamps();
 
-            $table->foreign('antenna_id')->references('id')->on('antennas')->onDelete('cascade');
+            $table->foreign('campaign_id')->references('id')->on('recrutement_campaigns')->onDelete('cascade');
             $table->foreign('studies_type_id')->references('id')->on('study_types')->onDelete('cascade');
             $table->foreign('studies_field_id')->references('id')->on('study_fields')->onDelete('cascade');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('member_id_created')->references('id')->on('members')->onDelete('cascade');
         });
     }
 
@@ -51,6 +45,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('users');
+        Schema::drop('recruted_members');
     }
 }

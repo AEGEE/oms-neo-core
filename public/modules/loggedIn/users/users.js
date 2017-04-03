@@ -5,7 +5,7 @@
     angular
         .module('app.users', [])
         .config(config)
-        .controller('UserController', UserController);
+        .controller('MemberController', MemberController);
 
     /** @ngInject */
     function config($stateProvider)
@@ -18,13 +18,13 @@
                 views   : {
                     'pageContent@app': {
                         templateUrl: 'modules/loggedIn/users/users.php',
-                        controller: 'UserController as vm'
+                        controller: 'MemberController as vm'
                     }
                 }
             });
     }
 
-    function UserController($http, $compile, $scope, $state) {
+    function MemberController($http, $compile, $scope, $state) {
         // Data
         var vm = this;
         vm.user = {};
