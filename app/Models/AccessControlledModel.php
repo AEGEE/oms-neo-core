@@ -16,7 +16,7 @@ class AccessControlledModel extends Model
     }
 
     public function updateRoles() {
-      //$this->makeHidden(array_keys($this->getAttributes()));
+      $this->makeHidden(array_keys($this->getAttributes()));
 
       $visible = $this->permissions['default'];
       foreach($this->roles as $role) {
