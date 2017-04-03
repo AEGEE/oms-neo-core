@@ -33,8 +33,7 @@ class CheckModuleAccess
     public function handle($request, Closure $next, $moduleCode)
     {
         //Get source user
-        $userData = $request->get('userData');
-        $user = User::find($userData->id);
+        $user = $request->get('userData');
         $request->attributes->add(['roles_source' => $user]);
 
 
@@ -43,14 +42,7 @@ class CheckModuleAccess
         $globalRoles = $repo->getGlobalRoles($user);
         $request->attributes->add(['roles_global' => $globalRoles]);
 
-        //Get context
-        //dd($moduleCode);
-        //$context = null;
-
-        //Derive scoped roles
-        //$scopedRoles = $repo->getScopedRoles($context, $globalRoles);
-
-        if(!empty($userData->is_suspended)) {
+        if(!empty($user->forceGetAttribute("is_suspended"))) {
             return response('Forbidden', 403);
         }
 
@@ -65,7 +57,7 @@ class CheckModuleAccess
         }
 
         $max_permission = 1;
-        if($userData->is_superadmin == 1) {
+        if($user->is_superadmin == 1) {
             // User is superadmin.. can access any module..
             $request->attributes->add(['max_permission' => $max_permission]);
             return $next($request);

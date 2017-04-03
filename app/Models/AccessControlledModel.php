@@ -28,14 +28,22 @@ class AccessControlledModel extends Model
 
     public function getAttribute($key)
     {
-      return $this->canRead($key) ? parent::getAttribute($key) : null;
+      if ($this->canRead($key)) {
+        return parent::getAttribute($key);
+      } else {
+        error_log("Permission denied to: " . $key . "\nRoles: " . json_encode($this->roles));
+        dd(debug_backtrace());
+        return null;
+      }
+    }
+
+    public function forceGetAttribute($key)
+    {
+      return parent::getAttribute($key);
     }
 
     public function setAttribute($key, $value)
     {
-      dump("Check write rights");
-      dump($key);
-      dump($this->canWrite($key));
       return $this->canWrite($key) ? parent::setAttribute($key, $value) : null;
     }
 
@@ -50,34 +58,56 @@ class AccessControlledModel extends Model
     }
 
     public function updateReadRoles() {
-      $visible = $this->permissions['read']['default'];
-      foreach($this->roles as $role) {
-        if (isset($this->permissions['read'][$role])) {
-          $visible = array_merge($visible, $this->permissions['read'][$role]);
-        }
-      }
-
       $attributes = array_keys($this->getAttributes());
-      $this->setVisible($visible);
-      $this->setHidden(array_diff($attributes, $visible));
+
+      if (!in_array('superadmin', $this->roles)) {
+        $visible = $this->permissions['read']['default'];
+        foreach($this->roles as $role) {
+          if (isset($this->permissions['read'][$role])) {
+            $visible = array_merge($visible, $this->permissions['read'][$role]);
+          }
+        }
+
+        $this->setVisible($visible);
+        $this->setHidden(array_diff($attributes, $visible));
+      } else {
+        //Superadmin
+        $this->setVisible($attributes);
+        $this->setHidden(array());
+      }
     }
 
     public function updateWriteRoles() {
-      $visible = $this->permissions['write']['default'];
-      foreach($this->roles as $role) {
-        if (isset($this->permissions['write'][$role])) {
-          $visible = array_merge($visible, $this->permissions['write'][$role]);
+      if (!in_array('superadmin', $this->roles)) {
+        $visible = $this->permissions['write']['default'];
+        foreach($this->roles as $role) {
+          if (isset($this->permissions['write'][$role])) {
+            $visible = array_merge($visible, $this->permissions['write'][$role]);
+          }
         }
-      }
 
-      $this->visible_write = $visible;
+        $this->visible_write = $visible;
+      } else {
+        //Superadmin
+        $this->visible_write = array_keys($this->getAttributes());
+      }
     }
 
     public function canRead($attribute) {
-      return in_array($attribute, $this->getVisible());
+      if (!in_array('superadmin', $this->roles)) {
+        return in_array($attribute, $this->getVisible());
+      } else {
+        //Superadmin
+        return true;
+      }
     }
 
     public function canWrite($attribute) {
-      return in_array($attribute, $this->visible_write);
+      if (!in_array('superadmin', $this->roles)) {
+        return in_array($attribute, $this->visible_write);
+      } else {
+        //Superadmin
+        return true;
+      }
     }
 }

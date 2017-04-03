@@ -71,13 +71,7 @@ class UserController extends Controller
           return $item;
         });
 
-        dump($users[0]->first_name = "bob");
-        dump($users[0]->last_name = "bob");
         return $users;
-        //dump(json_encode($users));
-        //dump($users[0]->first_name);
-        //dump($users[0]->last_name);
-        //dump($users[0]->id);
 
         if($export) {
             Excel::create('users', function($excel) use ($users) {

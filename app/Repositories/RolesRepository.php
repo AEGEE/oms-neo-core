@@ -9,6 +9,7 @@ use App\Models\SimpleRole;
 class RolesRepository {
 
   public function getRoles($request, $target) {
+    //return array("superadmin");
     $globalRoles = $request->get('roles_global');
     $scopedRoles = $this->getScopedRoles($request->get('roles_source'), $globalRoles, $target);
     return $this->getSimpleRoles(array_merge($globalRoles->toArray(), $scopedRoles->toArray()));
@@ -19,8 +20,13 @@ class RolesRepository {
   }
 
   public function getScopedRoles($source, $globalRoles, $target) {
-    //TODO: Decide which function to call based on source and target types.
-    return $this->resolveRelationUserToUser($source, $globalRoles, $target);
+    if (get_class($source) == "App\Models\User") {
+      return $this->resolveRelationFromUser($source, $globalRoles, $target);
+    } else {
+
+    }
+
+    return collect();
   }
 
   public function hasRole($needle, $haystack) {
@@ -33,16 +39,6 @@ class RolesRepository {
     return false;
   }
 
-
-  public function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
-    if ($this->hasRole('recruter', $globalRoles)) {
-      return collect(array(array("name" => "board")));
-    } else {
-      //Not a member of aegee means no special relations to any Member.
-      return array();
-    }
-  }
-
   public function getSimpleRoles($array) {
     $return = array();
 
@@ -51,6 +47,32 @@ class RolesRepository {
     }
 
     return $return;
+  }
+
+  public function resolveRelationFromUser(User $source, $globalRoles, $target) {
+    if (get_class($target) == "App\Models\User") {
+      return $this->resolveRelationUserToUser($source, $globalRoles, $target);
+    } else {
+
+    }
+
+    return collect();
+  }
+
+
+  public function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
+    $roles = array();
+    if ($source == $target) {
+      array_push($roles, array("name" => "self"));
+    }
+    if ($source->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {
+      array_push($roles, array("name" => "samebody"));
+    }
+    if (true == false) { //No idea how to determine board members currently
+      array_push($roles, array("name" => "board"));
+    }
+
+    return collect($roles);
   }
 }
  ?>

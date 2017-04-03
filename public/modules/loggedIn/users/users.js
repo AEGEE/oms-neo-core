@@ -135,8 +135,8 @@
                     index: 'gender',
                     width: 100
                 }, {
-                    name: 'antenna',
-                    index: 'antenna',
+                    name: 'antenna_id',
+                    index: 'antenna_id',
                     sortable: false,
                     width: 100
                 }, {
@@ -379,7 +379,7 @@
         vm.activateUser = function() {
             vm.user.department_id = $('#activateDepartment').val();
             vm.user.feesPaid = {};
-            $.each(vm.fees, function(key, val) {   
+            $.each(vm.fees, function(key, val) {
                 vm.user.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
             });
             $http({

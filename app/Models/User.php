@@ -9,14 +9,23 @@ use DB;
 
 class User extends AccessControlledModel
 {
+
     protected $permissions = array(
       'read' => array(
-        'default' => array("id"),
-        'board' => array("first_name", "last_name", "internal_email"),
+        'default' => array("id", "is_superadmin", "department_id"),
+        'aegee' => array("first_name", "last_name", "gender", "gender_text", "antenna_id"),
+        'samebody' => array("contact_email", "university", "studies_type_id", "studies_field_id", "phone", "address", "city", "zipcode", "is_suspended", "internal_email", "date_of_birth"),
+        'self' => array("password"),
+        'board' => array("internal_email", "contact_email"),
+        'cd' => array(),
       ),
       'write' => array(
         'default' => array(),
-        'board' => array("first_name"),
+        'aegee' => array(),
+        'samebody' => array(),
+        'self' => array("contact_email", "first_name", "last_name", "gender", "contact_email", "university", "studies_type_id", "studies_field_id", "phone", "address", "city", "zipcode"),
+        'board' => array("internal_email", "is_suspended"),
+        'cd' => array("antenna_id"),
       ),
     );
 
