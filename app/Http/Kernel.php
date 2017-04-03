@@ -33,6 +33,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             'checkKey',
+            'setGlobalRoles'
         ],
     ];
 
@@ -53,5 +54,6 @@ class Kernel extends HttpKernel
         'checkAccess' => \App\Http\Middleware\CheckModuleAccess::class,
         'microServiceAuth' => \App\Http\Middleware\MicroServiceAuth::class,
         'checkSpecialRoles' => \App\Http\Middleware\CheckSpecialRoles::class,
+        'setGlobalRoles' => \App\Http\Middleware\SetRolesMiddleware::class,
     ];
 }

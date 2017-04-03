@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Repositories\RolesRepository as Repo;
+
 class AccessControlledModel extends Model
 {
     private $roles = array();
@@ -31,8 +33,7 @@ class AccessControlledModel extends Model
       if ($this->canRead($key)) {
         return parent::getAttribute($key);
       } else {
-        error_log("Permission denied to: " . $key . "\nRoles: " . json_encode($this->roles));
-        dd(debug_backtrace());
+        error_log("Permission denied to: " . $key . "; Roles: " . json_encode($this->roles));
         return null;
       }
     }
@@ -45,6 +46,20 @@ class AccessControlledModel extends Model
     public function setAttribute($key, $value)
     {
       return $this->canWrite($key) ? parent::setAttribute($key, $value) : null;
+    }
+
+    public function syncRoles($source = null) {
+      $roles = array();
+
+      if ($source) {
+        //Get global roles of the user (source)
+        $roles = Repo::getGlobalRoles($source);
+        //Get scoped roles of the user (source) on this object.
+        $roles = Repo::getRoles($source, $roles, $this);
+      }
+
+      //Set roles of this object.
+      $this->setRoles($roles);
     }
 
     public function setRoles($roles) {

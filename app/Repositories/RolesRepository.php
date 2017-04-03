@@ -8,28 +8,36 @@ use App\Models\SimpleRole;
 
 class RolesRepository {
 
-  public function getRoles($request, $target) {
-    return array("super_admin");
-    $globalRoles = $request->get('roles_global');
-    $scopedRoles = $this->getScopedRoles($request->get('roles_source'), $globalRoles, $target);
+  public static function syncRolesForAll($models, $source) {
+    $models->map(function($model, $key) use ($source) { $model->syncRoles($source); });
+  }
+
+  public static function getRoles($source, $globalRoles, $target) {
+    //return array("super_admin");
+    $scopedRoles = self::getScopedRoles($source, $globalRoles, $target);
     return array_merge($globalRoles, $scopedRoles);
   }
 
-  public function getGlobalRoles($user) {
-    return $this->getSimpleRoles($user->roles()->get());
+  public static function getGlobalRoles($user) {
+    if (!$user) {
+      return array();
+    } else {
+      $roles = $user->roles()->get();
+      return self::getSimpleRoles($roles);
+    }
   }
 
-  public function getScopedRoles($source, $globalRoles, $target) {
+  public static function getScopedRoles($source, $globalRoles, $target) {
     if (get_class($source) == "App\Models\User") {
-      return $this->resolveRelationFromUser($source, $globalRoles, $target);
+      return self::resolveRelationFromUser($source, $globalRoles, $target);
     } else {
 
     }
 
-    return collect();
+    return array();
   }
 
-  public function hasRole($needle, $haystack) {
+  public static function hasRole($needle, $haystack) {
     foreach ($haystack as $role) {
       if ($role->code == $needle) {
         return true;
@@ -39,7 +47,7 @@ class RolesRepository {
     return false;
   }
 
-  public function getSimpleRoles($collection) {
+  public static function getSimpleRoles($collection) {
     $return = array();
 
     foreach($collection as $role) {
@@ -48,9 +56,9 @@ class RolesRepository {
     return $return;
   }
 
-  public function resolveRelationFromUser(User $source, $globalRoles, $target) {
+  public static function resolveRelationFromUser(User $source, $globalRoles, $target) {
     if (get_class($target) == "App\Models\User") {
-      return $this->resolveRelationUserToUser($source, $globalRoles, $target);
+      return self::resolveRelationUserToUser($source, $globalRoles, $target);
     } else {
 
     }
@@ -59,9 +67,9 @@ class RolesRepository {
   }
 
 
-  public function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
+  public static function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
     $roles = array();
-    if ($source == $target) {
+    if ($source->id == $target->id) {
       array_push($roles, "self");
     }
     if ($source->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {

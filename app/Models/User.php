@@ -13,7 +13,7 @@ class User extends AccessControlledModel
     protected $permissions = array(
       'read' => array(
         'default' => array("id", "is_superadmin", "department_id"),
-        'aegee' => array("first_name", "last_name", "gender", "gender_text", "antenna_id"),
+        'aegee' => array("first_name", "last_name", "gender", "gender_text", "antenna_id", "seo_url"),
         'samebody' => array("contact_email", "university", "studies_type_id", "studies_field_id", "phone", "address", "city", "zipcode", "is_suspended", "internal_email", "date_of_birth"),
         'self' => array("password"),
         'board' => array("internal_email", "contact_email"),

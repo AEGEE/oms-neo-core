@@ -27,7 +27,7 @@ use App\Models\UserRole;
 use App\Models\UserWorkingGroup;
 use App\Models\WorkingGroup;
 
-use App\Repositories\RolesRepository;
+use App\Repositories\RolesRepository as Repo;
 
 use Excel;
 use File;
@@ -40,9 +40,9 @@ use Session;
 
 class UserController extends Controller
 {
-    public function getUsers(User $user, Request $req, RolesRepository $repo) {
+    public function getUsers(User $user, Request $req, Repo $repo) {
         $max_permission = $req->get('max_permission');
-    	$userData = $req->get('userData');
+    	$user = $req->get('userData');
         $search = array(
             'name'          	=>  Input::get('name'),
             'date_of_birth'		=>	Input::get('date_of_birth'),
@@ -65,13 +65,10 @@ class UserController extends Controller
             $search['noLimit'] = true;
         }
 
-        $users = User::all();
-        $users->transform(function($item, $key) use ($repo, $req) {
-          $item->setRoles($repo->getRoles($req, $item));
-          return $item;
-        });
+        $members = User::all();
+        Repo::syncRolesForAll($members, $user);
 
-        return $users;
+        return $members;
 
         if($export) {
             Excel::create('users', function($excel) use ($users) {
@@ -268,15 +265,17 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserProfile(User $user, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, UserRole $userRole, Request $req) {
+    public function getUserProfile(User $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, UserRole $userRole, Request $req) {
         $isOauthDefined = $this->isOauthDefined();
+        $user = $req->get('userData');
 
-        $userData = $req->get('userData');
-        $url = Input::get('seo_url', $userData['seo_url']);
+        $url = Input::get('seo_url', $user->seo_url);
         $isUi = Input::get('is_ui', false);
-        $user = $user->with('antenna', 'department', 'studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        $member = $member->with('antenna', 'department', 'studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        $member->syncRoles($user);
         $id = $user->id;
-
+        //dump($user);
+        //dump($member);
         $toReturn['success'] = 1;
         $country = Country::find($user->antenna->country_id);
         $toReturn['user'] = array(
@@ -356,22 +355,22 @@ class UserController extends Controller
             $toReturn['user']['rank'] = 'Suspended';
         }
 
-        $userMaxLevelOfEditing = $userRole->getMaxPermissionLevelForRole('users', $userData->id);
+        $userMaxLevelOfEditing = $userRole->getMaxPermissionLevelForRole('users', $user->id);
 
         $toReturn['active_fields'] = array(
-            'change_avatar'         =>  ($id == $userData->id) ? true : false,
-            'change_password'       =>  ($id == $userData->id && !$isOauthDefined) ? true : false,
-            'change_email'          =>  ($id == $userData->id && !$isOauthDefined) ? true : false,
-            'change_bio'            =>  ($id == $userData->id) ? true : false,
-            'addEditStuff'          =>  ($userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
-            'account_info'          =>  ($userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
-            'suspend_account'       =>  ($user->status == 1 && $id != $userData->id) ? true : false,
-            'unsuspend_account'     =>  ($user->status == 3 && $id != $userData->id) ? true : false,
-            'impersonate'           =>  ($id != $userData->id) ? true : false,
+            'change_avatar'         =>  ($id == $user->id) ? true : false,
+            'change_password'       =>  ($id == $user->id && !$isOauthDefined) ? true : false,
+            'change_email'          =>  ($id == $user->id && !$isOauthDefined) ? true : false,
+            'change_bio'            =>  ($id == $user->id) ? true : false,
+            'addEditStuff'          =>  ($user->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'account_info'          =>  ($user->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'suspend_account'       =>  ($user->status == 1 && $id != $user->id) ? true : false,
+            'unsuspend_account'     =>  ($user->status == 3 && $id != $user->id) ? true : false,
+            'impersonate'           =>  ($id != $user->id) ? true : false,
             'suspended'             =>  empty($user->suspended_reason) ? false : true,
-            'work_groups'           =>  (count($toReturn['workingGroups']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
-            'board_positions'       =>  (count($toReturn['board_positions']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
-            'role'                  =>  (count($toReturn['roles']) > 0 || $userData->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'work_groups'           =>  (count($toReturn['workingGroups']) > 0 || $user->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'board_positions'       =>  (count($toReturn['board_positions']) > 0 || $user->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
+            'role'                  =>  (count($toReturn['roles']) > 0 || $user->is_superadmin || $userMaxLevelOfEditing == 1) ? true : false,
         );
 
 

@@ -10,19 +10,10 @@ use App\Models\ModulePage;
 use App\Models\RoleModulePage;
 use App\Models\User;
 
-use App\Repositories\RolesRepository;
-
 use DB;
 
 class CheckModuleAccess
 {
-
-    public $repo;
-
-    public function __construct(RolesRepository $rolerepo) {
-      $this->repo = $rolerepo;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -32,16 +23,8 @@ class CheckModuleAccess
      */
     public function handle($request, Closure $next, $moduleCode)
     {
-        //Get source user
         $user = $request->get('userData');
-        $request->attributes->add(['roles_source' => $user]);
-
-
-        //Get user global roles
-        $repo = $this->repo;
-        $globalRoles = $repo->getGlobalRoles($user);
-        $request->attributes->add(['roles_global' => $globalRoles]);
-
+        
         if(!empty($user->forceGetAttribute("is_suspended"))) {
             return response('Forbidden', 403);
         }
