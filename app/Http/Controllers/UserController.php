@@ -40,7 +40,7 @@ use Session;
 
 class UserController extends Controller
 {
-    public function getUsers(User $user, Request $req) {
+    public function getUsers(User $user, Request $req, RolesRepository $repo) {
         $max_permission = $req->get('max_permission');
     	$userData = $req->get('userData');
         $search = array(
@@ -65,7 +65,19 @@ class UserController extends Controller
             $search['noLimit'] = true;
         }
 
-        $users = $user->getFiltered($search);
+        $users = User::all();
+        $users->transform(function($item, $key) use ($repo, $req) {
+          $item->setRoles($repo->getRoles($req, $item));
+          return $item;
+        });
+
+        dump($users[0]->first_name = "bob");
+        dump($users[0]->last_name = "bob");
+        return $users;
+        //dump(json_encode($users));
+        //dump($users[0]->first_name);
+        //dump($users[0]->last_name);
+        //dump($users[0]->id);
 
         if($export) {
             Excel::create('users', function($excel) use ($users) {

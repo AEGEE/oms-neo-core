@@ -10,8 +10,14 @@ use DB;
 class User extends AccessControlledModel
 {
     protected $permissions = array(
-      'default' => array("id"),
-      'board' => array("first_name", "internal_email"),
+      'read' => array(
+        'default' => array("id"),
+        'board' => array("first_name", "last_name", "internal_email"),
+      ),
+      'write' => array(
+        'default' => array(),
+        'board' => array("first_name"),
+      ),
     );
 
     protected $table = "users";
