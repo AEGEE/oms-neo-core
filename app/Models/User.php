@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\AccessControlledModel;
 
 use DB;
 
-class User extends Model
+class User extends AccessControlledModel
 {
-    private $roles = array();
+    protected $permissions = array(
+      'default' => array("id"),
+      'board' => array("first_name", "internal_email"),
+    );
 
     protected $table = "users";
 
@@ -388,19 +392,4 @@ class User extends Model
 
         return $response->getStatusCode();
     }
-
-
-    public function setRoles($roles) {
-      $this->roles = $roles;
-    }
-
-    public function requireRole($role, $value) {
-      return in_array($role, $this->roles) ? $value : null;
-    }
-
-    public function getFirstNameAttribute($value) {
-      return $this->requireRole('board', $value);
-    }
-
-
 }
