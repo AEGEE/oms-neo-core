@@ -20,13 +20,13 @@ class AddSystemRoles extends Seeder
      		]);
 
         $role = Role::create([
-     			'name'			=>	'Comité Directeur',
+     			'name'			=>	'Comite-Directeur',
      			'code'			=>	'comite_directeur',
      			'system_role'	=>	1
      		]);
 
         $role = Role::create([
-     			'name'			=>	'Super Admin',
+     			'name'			=>	'Super-Admin',
      			'code'			=>	'super_admin',
      			'system_role'	=>	1
      		]);

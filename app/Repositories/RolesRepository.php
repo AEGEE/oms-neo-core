@@ -9,14 +9,14 @@ use App\Models\SimpleRole;
 class RolesRepository {
 
   public function getRoles($request, $target) {
-    //return array("superadmin");
+    return array("super_admin");
     $globalRoles = $request->get('roles_global');
     $scopedRoles = $this->getScopedRoles($request->get('roles_source'), $globalRoles, $target);
-    return $this->getSimpleRoles(array_merge($globalRoles->toArray(), $scopedRoles->toArray()));
+    return array_merge($globalRoles, $scopedRoles);
   }
 
   public function getGlobalRoles($user) {
-    return $user->roles()->get();
+    return $this->getSimpleRoles($user->roles()->get());
   }
 
   public function getScopedRoles($source, $globalRoles, $target) {
@@ -39,13 +39,12 @@ class RolesRepository {
     return false;
   }
 
-  public function getSimpleRoles($array) {
+  public function getSimpleRoles($collection) {
     $return = array();
 
-    foreach($array as $value) {
-      array_push($return, $value['name']);
+    foreach($collection as $role) {
+      array_push($return, $role->getAttribute('code'));
     }
-
     return $return;
   }
 
@@ -56,23 +55,23 @@ class RolesRepository {
 
     }
 
-    return collect();
+    return array();
   }
 
 
   public function resolveRelationUserToUser(User $source, $globalRoles, User $target) {
     $roles = array();
     if ($source == $target) {
-      array_push($roles, array("name" => "self"));
+      array_push($roles, "self");
     }
     if ($source->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {
-      array_push($roles, array("name" => "samebody"));
+      array_push($roles, "samebody");
     }
     if (true == false) { //No idea how to determine board members currently
-      array_push($roles, array("name" => "board"));
+      array_push($roles, "board");
     }
 
-    return collect($roles);
+    return $roles;
   }
 }
  ?>

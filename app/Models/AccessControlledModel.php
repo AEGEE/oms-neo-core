@@ -60,7 +60,7 @@ class AccessControlledModel extends Model
     public function updateReadRoles() {
       $attributes = array_keys($this->getAttributes());
 
-      if (!in_array('superadmin', $this->roles)) {
+      if (!in_array('super_admin', $this->roles)) {
         $visible = $this->permissions['read']['default'];
         foreach($this->roles as $role) {
           if (isset($this->permissions['read'][$role])) {
@@ -78,7 +78,7 @@ class AccessControlledModel extends Model
     }
 
     public function updateWriteRoles() {
-      if (!in_array('superadmin', $this->roles)) {
+      if (!in_array('super_admin', $this->roles)) {
         $visible = $this->permissions['write']['default'];
         foreach($this->roles as $role) {
           if (isset($this->permissions['write'][$role])) {
@@ -94,7 +94,7 @@ class AccessControlledModel extends Model
     }
 
     public function canRead($attribute) {
-      if (!in_array('superadmin', $this->roles)) {
+      if (!in_array('super_admin', $this->roles)) {
         return in_array($attribute, $this->getVisible());
       } else {
         //Superadmin
@@ -103,7 +103,7 @@ class AccessControlledModel extends Model
     }
 
     public function canWrite($attribute) {
-      if (!in_array('superadmin', $this->roles)) {
+      if (!in_array('super_admin', $this->roles)) {
         return in_array($attribute, $this->visible_write);
       } else {
         //Superadmin
