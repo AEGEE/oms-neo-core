@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Database\QueryException;
 
 use App\Models\SeederLog;
 
@@ -20,8 +21,8 @@ class DatabaseSeeder extends Seeder
     		'OptionsSeeder',
     		'EmailTemplateSeeder',
     		'AddSuperAdmin',
-            'AddRecrutementModuleSeeder',
-            'AddSystemRoles'
+        'AddRecrutementModuleSeeder',
+        'AddSystemRoles'
     	);
 
     	$seeders = SeederLog::all();
@@ -37,11 +38,16 @@ class DatabaseSeeder extends Seeder
     		}
 
 
-        //echo('$this->call(' . $seeder . '::class);');
-    		//eval('$this->call('.$seeder.'::class);');
-    		SeederLog::create([
-    			'code'	=>	$seeder
-    		]);
+        echo('$this->call(' . $seeder . '::class);' . PHP_EOL);
+        try {
+    		    eval('$this->call('.$seeder.'::class);');
+        		SeederLog::create([
+        			'code'	=>	$seeder
+        		]);
+        } catch (Exception $e) {
+          echo $e . PHP_EOL;
+          echo $e->getSql() . PHP_EOL;
+        }
 
     		$seededSomething = true;
     	}
@@ -60,7 +66,7 @@ class memberSeeder extends Seeder {
 			'last_name'			=>	'Porutiu',
 			'date_of_birth'		=>	'1994-01-24',
 			'gender'			=>	1,
-			'antenna_id'		=>	$antenna->id,
+			'body_id'		=>	$body->id,
 			'university'		=>	'UBB Cluj',
 			'studies_type_id'	=>	1,
 			'studies_field_id'	=>	1,

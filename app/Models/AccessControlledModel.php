@@ -8,11 +8,13 @@ use App\Repositories\RolesRepository as Repo;
 
 class AccessControlledModel extends Model
 {
+
     private $roles = array();
 
     private $visible_write = array();
 
     protected $permissions = array();
+
 
     //TODO more methods that add attributes?
     public function fill(array $attributes) {
@@ -20,7 +22,6 @@ class AccessControlledModel extends Model
       $this->updateRoles();
       return $result;
     }
-
     public function setRawAttributes(array $attributes, $sync = false)
     {
       $result = parent::setRawAttributes($attributes, $sync);

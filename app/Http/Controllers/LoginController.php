@@ -37,7 +37,7 @@ class LoginController extends Controller
     	}
 
     	$auth->ip = $req->ip();
-    	$auth->user_agent = $req->header('User-Agent');
+    	$auth->member_agent = $req->header('User-Agent');
 
     	$rawRequestParams = http_build_query($req->all());
     	$rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
@@ -55,7 +55,7 @@ class LoginController extends Controller
     	// Trying to find a user..
     	// Non oAuth logins are handled by contact_email field..
     	try {
-    		$user = $user->where('contact_email', $username)
+    		$member = $member->where('contact_email', $username)
     					->whereNotNull('password')
     					->whereNotNull('activated_at') // If its null, then the account was not activated..
     					->firstOrFail(); // If password is null, then account should be used with oAuth..
@@ -65,10 +65,10 @@ class LoginController extends Controller
     	}
 
     	// We found a user..
-    	$auth->user_id = $user->id;
+    	$auth->user_id = $member->id;
 
     	// Invalid password..
-    	if(!Hash::check($password, $user->forceGetAttribute("password"))) {
+    	if(!Hash::check($password, $member->forceGetAttribute("password"))) {
     		$auth->save();
     		return response(json_encode($toReturn), 422);
     	}
@@ -82,12 +82,12 @@ class LoginController extends Controller
     	$auth->save();
 
         // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
+        if(empty($member->is_superadmin)) {
+            $fee->checkFeesForSuspention($member);
         }
 
     	// We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
+        $userData = $member->getLoginUserArray($loginKey);
 
 		Session::put('userData', $userData);
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..

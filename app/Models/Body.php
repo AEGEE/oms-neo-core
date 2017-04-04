@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\AccessControlledModel;
 
-class Body extends AccessControlledModel
+class Body extends Model
 {
     protected $table = "bodies";
 
