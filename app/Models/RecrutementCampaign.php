@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RecrutementCampaign extends Model
+class RecruitementCampaign extends Model
 {
     protected $table = "recrutement_campaigns";
 
@@ -16,7 +16,7 @@ class RecrutementCampaign extends Model
     }
 
     public function recrutedMember() {
-        return $this->hasMany('App\Models\RecrutedMember');
+        return $this->hasMany('App\Models\RecruitedMember');
     }
 
     // Model methods go down here..

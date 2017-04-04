@@ -5,7 +5,7 @@
     angular
         .module('app.recrutement_campaigns', [])
         .config(config)
-        .controller('RecrutementCampaignsController', RecrutementCampaignsController);
+        .controller('RecruitementCampaignsController', RecruitementCampaignsController);
 
     /** @ngInject */
     function config($stateProvider)
@@ -14,17 +14,17 @@
          $stateProvider
             .state('app.recrutement_campaigns', {
                 url: '/recrutement_campaigns',
-                data: {'pageTitle': 'Recrutement campaigns'},
+                data: {'pageTitle': 'Recruitement campaigns'},
                 views   : {
                     'pageContent@app': {
                         templateUrl: 'modules/loggedIn/recrutement_campaigns/recrutement_campaigns.php',
-                        controller: 'RecrutementCampaignsController as vm'
+                        controller: 'RecruitementCampaignsController as vm'
                     }
                 }
             });
     }
 
-    function RecrutementCampaignsController($http, $q, $compile, $scope) {
+    function RecruitementCampaignsController($http, $q, $compile, $scope) {
         // Data
         var vm = this;
         vm.campaign = {};
@@ -58,7 +58,7 @@
                 is_grid: 1
             };
 
-            params.url = "/api/getRecrutementCampaigns";
+            params.url = "/api/getRecruitementCampaigns";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';

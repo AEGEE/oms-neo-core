@@ -6,7 +6,7 @@ use App\Models\ModulePage;
 use App\Models\Role;
 use App\Models\RoleModulePage;
 
-class AddRecrutementModuleSeeder extends Seeder
+class AddRecruitementModuleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,7 @@ class AddRecrutementModuleSeeder extends Seeder
     public function run()
     {
         $campaigns = ModulePage::create([
-        	'name'			=>	'Recrutement campaigns',
+        	'name'			=>	'Recruitement campaigns',
         	'code'			=>	'recrutement_campaigns',
         	'module_link'	=>	'modules/loggedIn/recrutement_campaigns/recrutement_campaigns.js',
             'icon'          =>  'fa fa-plus-square',
@@ -25,7 +25,7 @@ class AddRecrutementModuleSeeder extends Seeder
         ]);
 
         $members = ModulePage::create([
-        	'name'			=>	'Recruted members',
+        	'name'			=>	'Recruited members',
         	'code'			=>	'members',
         	'module_link'	=>	'modules/loggedIn/recruted_members/recruted_members.js',
             'icon'          =>  'fa fa-check-square',
@@ -34,7 +34,7 @@ class AddRecrutementModuleSeeder extends Seeder
         ]);
 
         $role = Role::create([
- 			'name'			=>	'Recruter',
+ 			'name'			=>	'Recruiter',
  			'code'			=>	'recruter',
  			'system_role'	=>	1
  		]);

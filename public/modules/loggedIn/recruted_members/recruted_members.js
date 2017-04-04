@@ -5,7 +5,7 @@
     angular
         .module('app.recruted_members', [])
         .config(config)
-        .controller('RecrutedUsersController', RecrutedUsersController);
+        .controller('RecruitedUsersController', RecruitedUsersController);
 
     /** @ngInject */
     function config($stateProvider)
@@ -14,17 +14,17 @@
          $stateProvider
             .state('app.recruted_members', {
                 url: '/recruted_members',
-                data: {'pageTitle': 'Recruted members'},
+                data: {'pageTitle': 'Recruited members'},
                 views   : {
                     'pageContent@app': {
                         templateUrl: 'modules/loggedIn/recruted_members/recruted_members.php',
-                        controller: 'RecrutedUsersController as vm'
+                        controller: 'RecruitedUsersController as vm'
                     }
                 }
             });
     }
 
-    function RecrutedUsersController($http, $compile, $scope, $sce) {
+    function RecruitedUsersController($http, $compile, $scope, $sce) {
         // Data
         var vm = this;
         vm.filter = {};
@@ -67,7 +67,7 @@
                 is_grid: 1
             };
 
-            params.url = "/api/getRecrutedUsers";
+            params.url = "/api/getRecruitedUsers";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -177,7 +177,7 @@
         vm.getCampaigns = function() {
             $http({
                 method: 'GET',
-                url: '/api/getRecrutementCampaigns',
+                url: '/api/getRecruitementCampaigns',
                 params: {
                     limit: 100000
                 }
@@ -321,7 +321,7 @@
             });
             $http({
                 method: "POST",
-                url: '/api/activateUserRecruted',
+                url: '/api/activateUserRecruited',
                 data: vm.currentUser,
             })
             .then(function successCallback(response) {
@@ -350,7 +350,7 @@
         vm.exportGrid = function() {
             vm.filter.export = 1;
             $http({
-                url: 'api/getRecrutedUsers',
+                url: 'api/getRecruitedUsers',
                 method: 'GET',
                 responseType: 'arraybuffer',
                 params: vm.filter,

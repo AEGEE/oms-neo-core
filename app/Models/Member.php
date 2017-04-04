@@ -62,7 +62,7 @@ class Member extends AccessControlledModel
     }
 
     public function recrutedMember() {
-        return $this->belongsTo('App\Models\RecrutedMember');
+        return $this->belongsTo('App\Models\RecruitedMember');
     }
 
     public function roles() {

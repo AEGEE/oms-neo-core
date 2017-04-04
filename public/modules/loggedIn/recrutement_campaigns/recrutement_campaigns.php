@@ -2,12 +2,12 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
         <li><a ui-sref="app.dashboard">Dashboard</a></li>
-        <li class="active">Recrutement Campaigns</li>
+        <li class="active">Recruitement Campaigns</li>
     </ol>
     <!-- end breadcrumb -->
 
     <!-- begin page-header -->
-    <h1 class="page-header">Recrutement Campaigns</h1>
+    <h1 class="page-header">Recruitement Campaigns</h1>
     <!-- end page-header -->
 	
 	<div class="row hiddenItem" id="filters">

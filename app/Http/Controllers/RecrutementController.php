@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\AddRecrutmentCampaignRequest;
+use App\Http\Requests\AddRecruitmentCampaignRequest;
 use App\Http\Requests\SignupRequest;
 
 use App\Models\Department;
 use App\Models\EmailTemplate;
 use App\Models\Fee;
 use App\Models\FeeMember;
-use App\Models\RecrutedComment;
-use App\Models\RecrutedUser;
-use App\Models\RecrutementCampaign;
+use App\Models\RecruitedComment;
+use App\Models\RecruitedUser;
+use App\Models\RecruitementCampaign;
 use App\Models\Role;
 use App\Models\Member;
 use App\Models\MemberRole;
@@ -25,9 +25,9 @@ use Input;
 use Mail;
 use Session;
 
-class RecrutementController extends Controller
+class RecruitementController extends Controller
 {
-    public function getRecrutementCampaigns(RecrutementCampaign $campaign, Request $req) {
+    public function getRecruitementCampaigns(RecruitementCampaign $campaign, Request $req) {
         $userData = $req->get('userData');
 
         $search = array(
@@ -99,7 +99,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function checkLinkAvailability(RecrutementCampaign $campaign) {
+    public function checkLinkAvailability(RecruitementCampaign $campaign) {
     	$link = Input::get('link');
     	$exists = $campaign->whereLink($link)->count();
 		
@@ -107,7 +107,7 @@ class RecrutementController extends Controller
 		return json_encode($toReturn);
     }
 
-    public function saveCampaign(AddRecrutmentCampaignRequest $req, RecrutementCampaign $campaign) {
+    public function saveCampaign(AddRecruitmentCampaignRequest $req, RecruitementCampaign $campaign) {
     	$campaign->start_date = Input::get('start_date');
     	$campaign->end_date = Input::get('end_date');
     	$campaign->link = Input::get('link', $campaign->createRandomLink());
@@ -140,7 +140,7 @@ class RecrutementController extends Controller
 		return json_encode($toReturn);
     }
 
-    public function checkCampaignExists(RecrutementCampaign $campaign) {
+    public function checkCampaignExists(RecruitementCampaign $campaign) {
         $now = date('Y-m-d');
         $link = Input::get('link');
         $campaignExists = $campaign->whereLink($link)->where('start_date', '<=', $now)->where('end_date', '>=', $now)->firstOrFail();
@@ -151,7 +151,7 @@ class RecrutementController extends Controller
         return json_encode($toReturn);
     }
 
-    public function recruitUser(RecrutementCampaign $campaign, RecrutedUser $usr, Member $memberObj, SignupRequest $req) {
+    public function recruitUser(RecruitementCampaign $campaign, RecruitedUser $usr, Member $memberObj, SignupRequest $req) {
         $now = date('Y-m-d');
         $link = Input::get('link');
         $campaignExists = $campaign->whereLink($link)->where('start_date', '<=', $now)->where('end_date', '>=', $now)->firstOrFail();
@@ -198,7 +198,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getRecrutedUsers(RecrutedMember $member, Request $req) {
+    public function getRecruitedUsers(RecruitedMember $member, Request $req) {
         $userData = $req->get('userData');
 
         $search = array(
@@ -279,7 +279,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getMemberDetails(RecrutedMember $member, RecrutedComment $comm) {
+    public function getMemberDetails(RecruitedMember $member, RecruitedComment $comm) {
         $id = Input::get('id');
 
         $user = $user->with('studyType')->with('studyField')->with('recrutement_campaigns')->findOrFail($id);
@@ -317,7 +317,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function addComment(RecrutedComment $comm, Request $req) {
+    public function addComment(RecruitedComment $comm, Request $req) {
         $userData = $req->get('userData');
 
         $comm->member_id = $userData['id'];
@@ -331,7 +331,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function changeStatus(RecrutedMember $member) {
+    public function changeStatus(RecruitedMember $member) {
         $id = Input::get('member_id');
         $newStatus = Input::get('newStatus');
         $user = $user->findOrFail($id);
@@ -350,7 +350,7 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function activateUserRecruted(RecrutedUser $rUser, Member $member, Role $role, Fee $fee, EmailTemplate $tpl) {
+    public function activateUserRecruited(RecruitedUser $rUser, Member $member, Role $role, Fee $fee, EmailTemplate $tpl) {
         // User..
         $id = Input::get('id');
         $rUser = $rUser->with('recrutement_campaigns')->findOrFail($id);

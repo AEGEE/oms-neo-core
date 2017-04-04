@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use DB;
 
-class RecrutedMember extends Model
+class RecruitedMember extends Model
 {
     protected $table = "recruted_members";
 
@@ -28,11 +28,11 @@ class RecrutedMember extends Model
 
     // Relationships..
     public function recruted_comment() {
-        return $this->hasMany('App\Models\RecrutedComment');
+        return $this->hasMany('App\Models\RecruitedComment');
     }
 
     public function recrutement_campaigns() {
-        return $this->belongsTo('App\Models\RecrutementCampaign', 'campaign_id');
+        return $this->belongsTo('App\Models\RecruitementCampaign', 'campaign_id');
     }
 
     public function studyField() {

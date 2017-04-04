@@ -2,12 +2,12 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
         <li><a ui-sref="app.dashboard">Dashboard</a></li>
-        <li class="active">Recruted users</li>
+        <li class="active">Recruited users</li>
     </ol>
     <!-- end breadcrumb -->
 
     <!-- begin page-header -->
-    <h1 class="page-header">Recruted users</h1>
+    <h1 class="page-header">Recruited users</h1>
     <!-- end page-header -->
 	<div class="row hiddenItem" id="filters">
         <div class="panel panel-inverse" data-sortable-id="ui-general-1">
@@ -166,7 +166,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h4>Recruter comments</h4>
+                        <h4>Recruiter comments</h4>
                         <div class="row" ng-repeat="comment in vm.currentUser.comments">
                             <hr />
                             <div class="col-md-12">

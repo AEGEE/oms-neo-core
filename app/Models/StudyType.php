@@ -10,7 +10,7 @@ class StudyType extends Model
 
     // Relationships..
     public function recrutedMember() {
-        return $this->hasMany('App\Models\RecrutedMember');
+        return $this->hasMany('App\Models\RecruitedMember');
     }
     
     public function member() {
