@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use DB;
 
-class RecrutedUser extends Model
+class RecrutedMember extends Model
 {
-    protected $table = "recruted_users";
+    protected $table = "recruted_members";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth'];
 
@@ -43,8 +43,8 @@ class RecrutedUser extends Model
         return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
     }
 
-    public function user() {
-    	return $this->belongsTo('App\Models\Member', 'user_id_created');
+    public function member() {
+    	return $this->belongsTo('App\Models\Member', 'member_id_created');
     }
 
     // Model methods go down here..
@@ -116,38 +116,38 @@ class RecrutedUser extends Model
     }
 
     public function getFiltered($search = array(), $onlyTotal = false) {
-        $user = $this->select('antennas.name as antenna_name', 'recruted_users.*')
-                    ->join('recrutement_campaigns', 'recrutement_campaigns.id', '=', 'recruted_users.campaign_id')
+        $member = $this->select('antennas.name as antenna_name', 'recruted_members.*')
+                    ->join('recrutement_campaigns', 'recrutement_campaigns.id', '=', 'recruted_members.campaign_id')
                     ->join('antennas', 'antennas.id', '=', 'recrutement_campaigns.antenna_id');
 
         // Filters here..
         if(isset($search['name']) && !empty($search['name'])) {
-            $user = $user->where(DB::raw('CONCAT (first_name, \' \', last_name)'), 'LIKE', '%'.$search['name'].'%');
+            $member = $member->where(DB::raw('CONCAT (first_name, \' \', last_name)'), 'LIKE', '%'.$search['name'].'%');
         }
 
         if(isset($search['email']) && !empty($search['email'])) {
-            $user = $user->where('email', $search['email']);
+            $member = $member->where('email', $search['email']);
         }
 
         if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $user = $user->where('antenna_id', $search['antenna_id']);
+            $member = $member->where('antenna_id', $search['antenna_id']);
         }
 
         if(isset($search['status'])) {
             if($search['status'] == 0) {
-                $user = $user->whereNull('status');
+                $member = $member->whereNull('status');
             } else {
-                $user = $user->where('status', $search['status']);
+                $member = $member->where('status', $search['status']);
             }
         }
 
         if(isset($search['campaign_id']) && !empty($search['campaign_id'])) {
-            $user = $user->where('campaign_id', $search['campaign_id']);
+            $member = $member->where('campaign_id', $search['campaign_id']);
         }
         // END filters..
 
         if($onlyTotal) {
-            return $user->count();
+            return $member->count();
         }
 
         // Ordering..
@@ -155,13 +155,13 @@ class RecrutedUser extends Model
         if(isset($search['sidx'])) {
             switch ($search['sidx']) {
                 case 'full_name':
-                    $user = $user->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
+                    $member = $member->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
                 case 'created_at':
-                    $user = $user->orderBy('created_at', $search['sord']);
+                    $member = $member->orderBy('created_at', $search['sord']);
                     break;
 
                 default:
-                    $user = $user->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
+                    $member = $member->orderBy('first_name', $search['sord'])->orderBy('last_name', $search['sord']);
                     break;
             }
         }
@@ -170,9 +170,9 @@ class RecrutedUser extends Model
             $limit  = !isset($search['limit']) || empty($search['limit']) ? 10 : $search['limit'];
             $page   = !isset($search['page']) || empty($search['page']) ? 1 : $search['page'];
             $from   = ($page - 1)*$limit;
-            $user = $user->take($limit)->skip($from);
+            $member = $member->take($limit)->skip($from);
         }
 
-        return $user->get();
+        return $member->get();
     }
 }

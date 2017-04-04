@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class FeeMember extends Model
 {
-    protected $table = "fee_users";
+    protected $table = "fee_members";
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->belongsTo('App\Models\Member');
     }
 
@@ -18,8 +18,8 @@ class FeeMember extends Model
     }
 
     // Model methods go down here..
-    public function getPaidUserFees($userId, $date) {
-        $feesPaid = $this->where('user_id', $userId)
+    public function getPaidMemberFees($memberId, $date) {
+        $feesPaid = $this->where('member_id', $memberId)
         					->where('date_paid', '<=', $date)
         					->where(function($query) use ($date) {
         							$query->where('expiration_date', '>=', $date)

@@ -29,7 +29,7 @@ class RolesRepository {
 
   public static function getScopedRoles($source, $globalRoles, $target) {
     if (get_class($source) == "App\Models\Member") {
-      return self::resolveRelationFromUser($source, $globalRoles, $target);
+      return self::resolveRelationFromMember($source, $globalRoles, $target);
     } else {
 
     }
@@ -56,9 +56,9 @@ class RolesRepository {
     return $return;
   }
 
-  public static function resolveRelationFromUser(User $source, $globalRoles, $target) {
+  public static function resolveRelationFromMember(Member $source, $globalRoles, $target) {
     if (get_class($target) == "App\Models\Member") {
-      return self::resolveRelationUserToUser($source, $globalRoles, $target);
+      return self::resolveRelationMemberToMember($source, $globalRoles, $target);
     } else {
 
     }
@@ -67,7 +67,7 @@ class RolesRepository {
   }
 
 
-  public static function resolveRelationUserToUser(User $source, $globalRoles, Member $target) {
+  public static function resolveRelationMemberToMember(Member $source, $globalRoles, Member $target) {
     $roles = array();
     if ($source->id == $target->id) {
       array_push($roles, "self");

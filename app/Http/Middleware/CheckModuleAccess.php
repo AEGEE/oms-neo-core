@@ -24,14 +24,15 @@ class CheckModuleAccess
     public function handle($request, Closure $next, $moduleCode)
     {
         $user = $request->get('userData');
-        
-        if(!empty($user->forceGetAttribute("is_suspended"))) {
+
+        if(!empty($user->forceGetAttribute('is_suspended'))) {
             return response('Forbidden', 403);
         }
 
         try {
             $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
         } catch(ModelNotFoundException $ex) {
+            dd($user);
             return response('Forbidden', 403);
         }
 
@@ -50,7 +51,7 @@ class CheckModuleAccess
         $canAccess = RoleModulePage::select(DB::raw('max(permission_level) as max_permission, count(role_module_pages.id) as role_exists'))
                                     ->join('roles', 'roles.id', '=', 'role_module_pages.role_id')
                                     ->join('user_roles', 'roles.id', '=', 'user_roles.role_id')
-                                    ->where('user_roles.user_id', $userData->id)
+                                    ->where('user_roles.member_id', $userData->id)
                                     ->whereNull('roles.is_disabled')
                                     ->where('role_module_pages.module_page_id', $modulePage->id);
 

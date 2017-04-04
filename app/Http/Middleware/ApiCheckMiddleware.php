@@ -36,10 +36,10 @@ class ApiCheckMiddleware
                         })
                         ->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            return response('Forbidden', 403); 
+            return response('Forbidden', 403);
         }
-        
-        $request->attributes->add(['userData' => $auth->user]);
+
+        $request->attributes->add(['userData' => $auth->member]);
 
         return $next($request);
     }

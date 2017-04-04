@@ -15,8 +15,8 @@ class RecrutementCampaign extends Model
         return $this->belongsTo('App\Models\Body');
     }
 
-    public function recrutedUser() {
-        return $this->hasMany('App\Models\RecrutedUser');
+    public function recrutedMember() {
+        return $this->hasMany('App\Models\RecrutedMember');
     }
 
     // Model methods go down here..

@@ -9,13 +9,13 @@ class News extends Model
 	protected $table = "news";
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->belongsTo('App\Models\Member');
     }
 
     // Model methods go down here..
     public function getFiltered($search = array(), $onlyTotal = false) {
-        $news = $this->with('user');
+        $news = $this->with('member');
 
         // Filters here..
 

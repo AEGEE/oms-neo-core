@@ -53,7 +53,7 @@ class Member extends AccessControlledModel
     }
 
     public function fees() {
-        return $this->belongsToMany('App\Models\Fee', 'fee_users', 'user_id', 'fee_id')
+        return $this->belongsToMany('App\Models\Fee', 'fee_members', 'member_id', 'fee_id')
                     ->withPivot('date_paid', 'expiration_date');
     }
 
@@ -61,12 +61,12 @@ class Member extends AccessControlledModel
     	return $this->hasMany('App\Models\FeeMember');
     }
 
-    public function recrutedUser() {
-        return $this->belongsTo('App\Models\RecrutedUser');
+    public function recrutedMember() {
+        return $this->belongsTo('App\Models\RecrutedMember');
     }
 
     public function roles() {
-        return $this->belongsToMany('App\Models\Role', 'user_roles', 'user_id', 'role_id');
+        return $this->belongsToMany('App\Models\Role', 'member_roles', 'member_id', 'role_id');
     }
 
     public function studyField() {
@@ -77,16 +77,16 @@ class Member extends AccessControlledModel
     	return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
     }
 
-    public function userRole() {
+    public function memberRole() {
     	return $this->hasMany('App\Models\MemberRole');
     }
 
-    public function userWorkingGroup() {
+    public function memberWorkingGroup() {
     	return $this->hasMany('App\Models\MemberWorkingGroup');
     }
 
     public function workingGroups() {
-        return $this->belongsToMany('App\Models\WorkingGroup', 'user_working_groups', 'user_id', 'work_group_id')
+        return $this->belongsToMany('App\Models\WorkingGroup', 'member_working_groups', 'member_id', 'work_group_id')
                     ->withPivot('start_date', 'end_date');
     }
 
@@ -147,19 +147,19 @@ class Member extends AccessControlledModel
         $emailHash = strtolower($email);
 
         $emailSplit = explode('@', $emailHash);
-        $emailUsername = $emailSplit[0];
+        $emailMembername = $emailSplit[0];
         $emailTld = $emailSplit[1];
 
         // We remove any labels we have in the email name (everything that's after +)
-        $emailUsername = preg_replace('/\+.*/', "", $emailUsername);
+        $emailMembername = preg_replace('/\+.*/', "", $emailMembername);
 
         // Special check for gmail accounts..
         if(preg_match('/gmail/', $emailTld)) {
-            // If it's gmail, then dots (.) don't represent anything in the email username, so we just remove them..
-            $emailUsername = preg_replace('/\./', '', $emailUsername);
+            // If it's gmail, then dots (.) don't represent anything in the email membername, so we just remove them..
+            $emailMembername = preg_replace('/\./', '', $emailMembername);
         }
 
-        $emailHash = $emailUsername."@".$emailTld;
+        $emailHash = $emailMembername."@".$emailTld;
         return $emailHash;
     }
 
@@ -168,7 +168,7 @@ class Member extends AccessControlledModel
     }
 
     public function getFiltered($search = array(), $onlyTotal = false) {
-        $users = $this
+        $members = $this
                         ->with('antenna')
                         ->with('department')
                         ->with('studyField')
@@ -176,58 +176,58 @@ class Member extends AccessControlledModel
 
         // Filters here..
         if(isset($search['name']) && !empty($search['name'])) {
-            $users = $users->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
+            $members = $members->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
         }
 
         if(isset($search['date_of_birth']) && !empty($search['date_of_birth'])) {
-            $users = $users->where('date_of_birth', $search['date_of_birth']);
+            $members = $members->where('date_of_birth', $search['date_of_birth']);
         }
 
         if(isset($search['contact_email']) && !empty($search['contact_email'])) {
-            $users = $users->where('contact_email', $search['contact_email']);
+            $members = $members->where('contact_email', $search['contact_email']);
         }
 
         if(isset($search['gender']) && !empty($search['gender'])) {
-            $users = $users->where('gender', $search['gender']);
+            $members = $members->where('gender', $search['gender']);
         }
 
         if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $users = $users->where('antenna_id', $search['antenna_id']);
+            $members = $members->where('antenna_id', $search['antenna_id']);
         }
 
         if(isset($search['department_id']) && !empty($search['department_id'])) {
-            $users = $users->where('department_id', $search['department_id']);
+            $members = $members->where('department_id', $search['department_id']);
         }
 
         if(isset($search['internal_email']) && !empty($search['internal_email'])) {
-            $users = $users->where('internal_email', $search['internal_email']);
+            $members = $members->where('internal_email', $search['internal_email']);
         }
 
         if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
-            $users = $users->where('studies_type_id', $search['studies_type_id']);
+            $members = $members->where('studies_type_id', $search['studies_type_id']);
         }
 
         if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
-            $users = $users->where('studies_field_id', $search['studies_field_id']);
+            $members = $members->where('studies_field_id', $search['studies_field_id']);
         }
 
         if(isset($search['status']) && !empty($search['status'])) {
             switch ($search['status']) {
                 case '1':
-                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
+                    $members = $members->whereNull('is_suspended')->whereNotNull('activated_at');
                     break;
                 case '2':
-                    $users = $users->whereNull('activated_at');
+                    $members = $members->whereNull('activated_at');
                     break;
                 case '3':
-                    $users = $users->whereNotNull('is_suspended');
+                    $members = $members->whereNotNull('is_suspended');
                     break;
             }
         }
         // END filters..
 
         if($onlyTotal) {
-            return $users->count();
+            return $members->count();
         }
 
         // Ordering..
@@ -235,17 +235,17 @@ class Member extends AccessControlledModel
         if(isset($search['sidx'])) {
             switch ($search['sidx']) {
                 case 'name':
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
+                    $members = $members->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
                     break;
                 case 'date_of_birth':
                 case 'contact_email':
                 case 'gender':
                 case 'internal_email':
-                    $users = $users->orderBy($search['sidx'], $search['sord']);
+                    $members = $members->orderBy($search['sidx'], $search['sord']);
                     break;
 
                 default:
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
+                    $members = $members->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
                     break;
             }
         }
@@ -254,10 +254,10 @@ class Member extends AccessControlledModel
             $limit  = !isset($search['limit']) || empty($search['limit']) ? 10 : $search['limit'];
             $page   = !isset($search['page']) || empty($search['page']) ? 1 : $search['page'];
             $from   = ($page - 1)*$limit;
-            $users = $users->take($limit)->skip($from);
+            $members = $members->take($limit)->skip($from);
         }
 
-        return $users->get();
+        return $members->get();
     }
 
     public function generateRandomPassword($max_length = 8) {
@@ -315,18 +315,18 @@ class Member extends AccessControlledModel
         // Todo send email..
     }
 
-    public function getLoginUserArray($authToken) {
+    public function getLoginMemberArray($authToken) {
         return array(
             'id'                =>  $this->id,
-            'username'          =>  empty($this->internal_email) ? $this->contact_email : $this->internal_email,
-            'fullname'          =>  $this->first_name." ".$this->last_name,
-            'is_superadmin'     =>  $this->is_superadmin,
-            'department_id'     =>  $this->department_id,
+            'membername'        =>  empty($this->tryGet('internal_email',"error, no internal email")) ? $this->tryGet('trycontact_email') : $this->tryGet('internal_email'),
+            'fullname'          =>  $this->tryGet('first_name')." ".$this->tryGet('last_name'),
+            'is_superadmin'     =>  $this->tryGet('is_superadmin'),
+            'department_id'     =>  $this->tryGet('department_id'),
             'logged_in'         =>  true,
             'authToken'         =>  $authToken,
-            'seo_url'           =>  $this->seo_url,
-            'is_suspended'      =>  !empty($this->is_suspended) ? true : false,
-            'suspended_reason'  =>  $this->suspended_reason
+            'seo_url'           =>  $this->tryGet('seo_url'),
+            'is_suspended'      =>  !empty($this->tryGet('is_suspended')) ? true : false,
+            'suspended_reason'  =>  $this->tryGet('suspended_reason'),
         );
     }
 
@@ -348,7 +348,7 @@ class Member extends AccessControlledModel
 
     private function createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
         $scopes = array(
-            'https://www.googleapis.com/auth/admin.directory.user'
+            'https://www.googleapis.com/auth/admin.directory.member'
         );
 
         $client = new \Google_Client();
@@ -359,27 +359,27 @@ class Member extends AccessControlledModel
 
         $dir = new \Google_Service_Directory($client);
 
-        $userInstance = new \Google_Service_Directory_User();
-        $nameInstance = new \Google_Service_Directory_UserName();
+        $memberInstance = new \Google_Service_Directory_Member();
+        $nameInstance = new \Google_Service_Directory_MemberName();
 
         $nameInstance->setGivenName($this->first_name);
         $nameInstance->setFamilyName($this->last_name);
 
-        $userInstance->setName($nameInstance);
-        $userInstance->setHashFunction("MD5");
-        $userInstance->setPrimaryEmail($seo."@".$domain);
-        $userInstance->setPassword(hash("md5", $password));
-        $userInstance->setChangePasswordAtNextLogin(true);
+        $memberInstance->setName($nameInstance);
+        $memberInstance->setHashFunction("MD5");
+        $memberInstance->setPrimaryEmail($seo."@".$domain);
+        $memberInstance->setPassword(hash("md5", $password));
+        $memberInstance->setChangePasswordAtNextLogin(true);
 
-        $createUserResult = $dir->users->insert($userInstance);
+        $createMemberResult = $dir->members->insert($memberInstance);
 
         return true;
     }
 
     private function createAzureAdAccount($oAuthCredentials, $domain, $seo, $password) {
-        $userData = array(
+        $memberData = array(
             'displayName'           =>  $this->first_name." ".$this->last_name,
-            'userPrincipalName'     =>  $seo."@".$domain,
+            'memberPrincipalName'     =>  $seo."@".$domain,
             'mailNickname'          =>  $seo,
             'passwordProfile'       =>  array(
                                             'password'  =>  $password,
@@ -390,7 +390,7 @@ class Member extends AccessControlledModel
 
         $client = new \GuzzleHttp\Client();
 
-        $response = $client->request('POST', 'https://graph.windows.net/myorganization/users', [
+        $response = $client->request('POST', 'https://graph.windows.net/myorganization/members', [
             'query' => [
                 'api-version' => '1.5'
             ],
@@ -398,7 +398,7 @@ class Member extends AccessControlledModel
                 'Authorization' =>  'Bearer '.$oAuthCredentials['token'],
                 'Content-Type' => 'application/json'
             ],
-            'body' => json_encode($userData)
+            'body' => json_encode($memberData)
         ]);
 
         if($response->getStatusCode() == 201) {

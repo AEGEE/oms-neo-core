@@ -11,12 +11,12 @@ class WorkingGroup extends Model
     protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
     // Relationships..
-    public function userWorkingGroup() {
+    public function memberWorkingGroup() {
     	return $this->hasMany('App\Models\MemberWorkingGroup');
     }
 
-    public function users() {
-        return $this->belongsToMany('App\Models\Member', 'user_working_groups', 'work_group_id', 'user_id')
+    public function members() {
+        return $this->belongsToMany('App\Models\Member', 'member_working_groups', 'work_group_id', 'member_id')
                     ->withPivot('start_date', 'end_date');
     }
 
@@ -59,10 +59,10 @@ class WorkingGroup extends Model
         return $workGroups->get();
     }
 
-    public function getMemberWorkingGroups($userId) {
-        $wg = $this->select('working_groups.name', 'user_working_groups.id', 'user_working_groups.start_date', 'user_working_groups.end_date')
-                    ->join('user_working_groups', 'user_working_groups.work_group_id', '=', 'working_groups.id')
-                    ->where('user_id', $userId)
+    public function getMemberWorkingGroups($memberId) {
+        $wg = $this->select('working_groups.name', 'member_working_groups.id', 'member_working_groups.start_date', 'member_working_groups.end_date')
+                    ->join('member_working_groups', 'member_working_groups.work_group_id', '=', 'working_groups.id')
+                    ->where('member_id', $memberId)
                     ->get();
         return $wg;
     }

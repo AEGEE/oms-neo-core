@@ -29,14 +29,25 @@ class AccessControlledModel extends Model
       return $result;
     }
 
+    //Gives error when permission is denied.
     public function getAttribute($key)
     {
       if ($this->canRead($key)) {
         return parent::getAttribute($key);
       } else {
         error_log("Permission denied to: " . $key . "; Roles: " . json_encode($this->roles));
+        //dd(debug_backtrace());
         return null;
       }
+    }
+
+    //Returns default error when permission is denied, does not give an error.
+    public function tryGet($key, $default = null) {
+        if ($this->canRead($key)) {
+          return parent::getAttribute($key);
+        } else {
+          return $default;
+        }
     }
 
     public function forceGetAttribute($key)
@@ -53,9 +64,9 @@ class AccessControlledModel extends Model
       $roles = array();
 
       if ($source) {
-        //Get global roles of the user (source)
+        //Get global roles of the member (source)
         $roles = Repo::getGlobalRoles($source);
-        //Get scoped roles of the user (source) on this object.
+        //Get scoped roles of the member (source) on this object.
         $roles = Repo::getRoles($source, $roles, $this);
       }
 
@@ -69,8 +80,8 @@ class AccessControlledModel extends Model
     }
 
     public function updateRoles() {
-      //$this->updateReadRoles();
-      //$this->updateWriteRoles();
+      $this->updateReadRoles();
+      $this->updateWriteRoles();
     }
 
     public function updateReadRoles() {

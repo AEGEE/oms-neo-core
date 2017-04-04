@@ -9,7 +9,7 @@ class BoardMember extends Model
     protected $table = "board_members";
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->belongsTo('App\Models\Member');
     }
 

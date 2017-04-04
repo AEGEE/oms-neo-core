@@ -13,7 +13,7 @@ class Department extends Model
     protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->hasMany('App\Models\Member');
     }
 
@@ -60,10 +60,10 @@ class Department extends Model
         return $departments->get();
     }
 
-    public function getUserBoardMemberships($userId) {
+    public function getMemberBoardMemberships($memberId) {
         $memberships = $this->select('departments.name', 'board_members.id', 'board_members.start_date', 'board_members.end_date')
                             ->join('board_members', 'board_members.department_id', '=', 'departments.id')
-                            ->where('user_id', $userId)
+                            ->where('member_id', $memberId)
                             ->get();
         return $memberships;
     }

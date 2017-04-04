@@ -79,7 +79,7 @@ class NewsController extends Controller
 
     	$news->title = Input::get('title');
     	$news->content = Input::get('content');
-    	$news->user_id = $userData['id'];
+    	$news->member_id = $userData['id'];
     	$news->save();
 
         if($toSendNotification) {
@@ -88,7 +88,7 @@ class NewsController extends Controller
                 $not = new Notification();
                 $not->title = "New news item";
                 $not->text = "A new news item was posted!";
-                $not->user_id = $user->id;
+                $not->member_id = $user->id;
                 $not->link = "/news/".$news->id;
                 $not->save();
             }

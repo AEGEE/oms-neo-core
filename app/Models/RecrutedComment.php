@@ -10,11 +10,11 @@ class RecrutedComment extends Model
 
     // Relationships..
     public function recrutement_campaigns() {
-        return $this->belongsTo('App\Models\RecrutedUser');
+        return $this->belongsTo('App\Models\RecrutedMember');
     }
 
-    public function user() {
-        return $this->belongsTo('App\Models\Member', 'user_id');
+    public function member() {
+        return $this->belongsTo('App\Models\Member', 'member_id');
     }
 
     // Model methods go down here..

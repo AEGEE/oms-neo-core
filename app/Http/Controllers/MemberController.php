@@ -40,7 +40,7 @@ use Session;
 
 class MemberController extends Controller
 {
-    public function getUsers(Member $member, Request $req, Repo $repo) {
+    public function getMembers(Member $member, Request $req, Repo $repo) {
         $max_permission = $req->get('max_permission');
     	$user = $req->get('userData');
         $search = array(
@@ -133,9 +133,9 @@ class MemberController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUser(Request $req, Member $member, RolesRepository $repo) {
-        $user->setRoles($repo->getRoles($req, $user));
-        return response($user, 200);
+    public function getMember(Request $req, Member $member) {
+        $member->syncRoles($req->get('userData'));
+        return response($member, 200);
     }
 
     public function activateUser(Member $member, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {
@@ -195,7 +195,7 @@ class MemberController extends Controller
                 continue;
             }
             $tmpRole = new MemberRole();
-            $tmpRole->user_id = $user->id;
+            $tmpRole->member_id = $user->id;
             $tmpRole->role_id = $key;
             $tmpRole->save();
         }
@@ -210,7 +210,7 @@ class MemberController extends Controller
 
             $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
-            $tmpFee->user_id = $user->id;
+            $tmpFee->member_id = $user->id;
             if(isset($feesPaid[$key])) {
                 $tmpFee->date_paid = $feesPaid[$key];
             } else {
@@ -243,7 +243,7 @@ class MemberController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserByToken(Auth $auth) {
+    public function getMemberByToken(Auth $auth) {
         $token = Input::get('token');
         if(empty($token)) {
             $toReturn['success'] = 0;
@@ -265,7 +265,7 @@ class MemberController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserProfile(Member $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, MemberRole $userRole, Request $req) {
+    public function getMemberProfile(Member $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, MemberRole $userRole, Request $req) {
         $isOauthDefined = $this->isOauthDefined();
         $user = $req->get('userData');
 
@@ -311,7 +311,7 @@ class MemberController extends Controller
 
         $toReturn['board_positions'] = array();
         $isCurrentBoardMember = false;
-        $boards = $dep->getUserBoardMemberships($id);
+        $boards = $dep->getMemberBoardMemberships($id);
         foreach ($boards as $membership) {
             $toReturn['board_positions'][] = array(
                 'id'        =>  $membership->id,
@@ -333,7 +333,7 @@ class MemberController extends Controller
         }
 
         $toReturn['fees_paid'] = array();
-        $fees = $fee->getUserFees($id);
+        $fees = $fee->getMemberFees($id);
         foreach ($fees as $userFee) {
             $toReturn['fees_paid'][] = array(
                 'id'        =>  $userFee->id,
@@ -378,7 +378,7 @@ class MemberController extends Controller
     }
 
     public function setBoardPosition(BoardMember $bm, AddBoardPositionRequest $req) {
-        $bm->user_id = Input::get('user_id');
+        $bm->member_id = Input::get('member_id');
         $bm->department_id = Input::get('department_id');
         $bm->start_date = Input::get('start_date');
         $bm->end_date = Input::get('end_date');
@@ -389,7 +389,7 @@ class MemberController extends Controller
     }
 
     public function addMemberRoles(Role $role, AddRoleRequest $req) {
-        $id = Input::get('user_id');
+        $id = Input::get('member_id');
         $rolesCache = $role->getCache();
 
         $roles = Input::get('roles');
@@ -399,7 +399,7 @@ class MemberController extends Controller
             }
 
             MemberRole::firstOrCreate([
-                'user_id'   =>  $id,
+                'member_id'   =>  $id,
                 'role_id'   =>  $key
             ]);
         }
@@ -409,7 +409,7 @@ class MemberController extends Controller
     }
 
     public function addFeesToUser(Fee $fee, AddFeesRequest $req) {
-        $id = Input::get('user_id');
+        $id = Input::get('member_id');
 
         $feesCache = $fee->getCache();
 
@@ -422,7 +422,7 @@ class MemberController extends Controller
 
             $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
-            $tmpFee->user_id = $id;
+            $tmpFee->member_id = $id;
             if(isset($feesPaid[$key])) {
                 $tmpFee->date_paid = $feesPaid[$key];
             } else {
@@ -549,10 +549,10 @@ class MemberController extends Controller
         $user = $user->findOrFail($id);
 
         $auth = $auth->where('token_generated', $xAuthToken)->firstOrFail();
-        $auth->user_id = $id; // Switching token to new user..
+        $auth->member_id = $id; // Switching token to new user..
         $auth->save();
 
-        $userData = $user->getLoginUserArray($xAuthToken);
+        $userData = $user->getLoginMemberArray($xAuthToken);
 
         Session::put('userData', $userData);
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..
@@ -565,11 +565,11 @@ class MemberController extends Controller
     }
 
     public function addWorkingGroupToUser(Member $member, MemberWorkingGroup $uWg, AddWorkingGroupRequest $req) {
-        $id = Input::get('user_id');
+        $id = Input::get('member_id');
         $wgId = Input::get('work_group_id');
 
         $uWg = $uWg->firstOrCreate([
-            'user_id'       =>  $id,
+            'member_id'       =>  $id,
             'work_group_id' =>  $wgId
         ]);
 
@@ -673,7 +673,7 @@ class MemberController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserAvatar($avatarId) {
+    public function getMemberAvatar($avatarId) {
         $fallbackAvatar = storage_path()."/baseFiles/defaultAvatar.jpg";
         $path = storage_path()."/userAvatars/".$avatarId.".jpg";
 
@@ -690,7 +690,7 @@ class MemberController extends Controller
         return $response;
     }
 
-    public function getUserById(Member $member) {
+    public function getMemberById(Member $member) {
         $user = $user->findOrFail(Input::get('id'));
         return json_encode($user);
     }

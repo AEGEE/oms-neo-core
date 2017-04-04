@@ -10,12 +10,12 @@ class Auth extends Model
     protected $table = "auths";
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->belongsTo('App\Models\Member');
     }
 
     // Model methods go down here..
-    public function isUserLogged($xApiKey = '') {
+    public function isMemberLogged($xApiKey = '') {
     	if(empty($xApiKey)) {
     		return false;
     	}

@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
     	$seededSomething = false;
     	foreach($seedersToRun as $seeder) {
     		if(in_array($seeder, $seedersArr)) {
-    			continue;
+    			//continue;
     		}
 
 

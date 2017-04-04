@@ -68,7 +68,7 @@ class GenericController extends Controller
 
                 $systemRoles = MemberRole::distinct('code')
                                         ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-                                        ->where('user_id', $userData['id'])
+                                        ->where('member_id', $userData['id'])
                                         ->whereNull('is_disabled')
                                         ->get();
 
@@ -179,7 +179,7 @@ class GenericController extends Controller
     public function getNotifications(Request $req, Notification $not) {
         $userData = $req->get('userData');
 
-        $unreadNotifications = $not->where('user_id', $userData['id'])
+        $unreadNotifications = $not->where('member_id', $userData['id'])
                                     ->whereNull('is_read')
                                     ->limit(10)
                                     ->orderBy('created_at', 'desc')
@@ -198,7 +198,7 @@ class GenericController extends Controller
         }
 
         $limit = 10 - $toReturn['notificationsCount'];
-        $otherNotifications = $not->where('user_id', $userData['id'])
+        $otherNotifications = $not->where('member_id', $userData['id'])
                                     ->whereNotNull('is_read')
                                     ->orderBy('created_at', 'desc')
                                     ->limit($limit)
@@ -212,7 +212,7 @@ class GenericController extends Controller
 
     public function markNotificationsAsRead(Request $req, Notification $not) {
         $userData = $req->get('userData');
-        $not->where('user_id', $userData['id'])
+        $not->where('member_id', $userData['id'])
             ->whereNull('is_read')
             ->limit(10)
             ->orderBy('created_at', 'desc')

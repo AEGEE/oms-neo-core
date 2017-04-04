@@ -256,7 +256,7 @@ class RecrutementController extends Controller
         foreach($users as $usr) {
             $actions = "";
             if($isGrid) {
-                $actions .= "<button class='btn btn-default btn-xs clickMe' title='View details' ng-click='vm.getUserDetails(".$usr->id.", true)'><i class='fa fa-search'></i></button>";
+                $actions .= "<button class='btn btn-default btn-xs clickMe' title='View details' ng-click='vm.getMemberDetails(".$usr->id.", true)'><i class='fa fa-search'></i></button>";
             } else {
                 $actions = $usr->id;
             }
@@ -279,18 +279,18 @@ class RecrutementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserDetails(RecrutedMember $member, RecrutedComment $comm) {
+    public function getMemberDetails(RecrutedMember $member, RecrutedComment $comm) {
         $id = Input::get('id');
 
         $user = $user->with('studyType')->with('studyField')->with('recrutement_campaigns')->findOrFail($id);
 
         $comments = array();
-        $comm = $comm->with('user')->where('recruted_user_id', $user->id)->orderBy('created_at', 'ASC')->get();
+        $comm = $comm->with('user')->where('recruted_member_id', $user->id)->orderBy('created_at', 'ASC')->get();
         foreach ($comm as $comment) {
             $comments[] = array(
                 'comment'           =>  $comment->comment,
                 'created_at'        =>  $comment->created_at->format('d/m/Y H:i:s'),
-                'user_id'           =>  $comment->user_id,
+                'member_id'           =>  $comment->member_id,
                 'commenter_name'    =>  $comment->user->first_name." ".$comment->user->last_name
             );
         }
@@ -320,9 +320,9 @@ class RecrutementController extends Controller
     public function addComment(RecrutedComment $comm, Request $req) {
         $userData = $req->get('userData');
 
-        $comm->user_id = $userData['id'];
+        $comm->member_id = $userData['id'];
         $comm->comment = Input::get('comment');
-        $comm->recruted_user_id = Input::get('user_id');
+        $comm->recruted_member_id = Input::get('member_id');
         if(!empty($comm->comment)) {
             $comm->save();
         }
@@ -332,7 +332,7 @@ class RecrutementController extends Controller
     }
 
     public function changeStatus(RecrutedMember $member) {
-        $id = Input::get('user_id');
+        $id = Input::get('member_id');
         $newStatus = Input::get('newStatus');
         $user = $user->findOrFail($id);
         $status_transitions = $user->getWorkflowTransitions();
@@ -411,7 +411,7 @@ class RecrutementController extends Controller
                 continue;
             }
             $tmpRole = new MemberRole();
-            $tmpRole->user_id = $user->id;
+            $tmpRole->member_id = $user->id;
             $tmpRole->role_id = $key;
             $tmpRole->save();
         }
@@ -426,7 +426,7 @@ class RecrutementController extends Controller
 
             $tmpFee = new FeeMember();
             $tmpFee->fee_id = $key;
-            $tmpFee->user_id = $user->id;
+            $tmpFee->member_id = $user->id;
             if(isset($feesPaid[$key])) {
                 $tmpFee->date_paid = $feesPaid[$key];
             } else {
@@ -457,7 +457,7 @@ class RecrutementController extends Controller
 
         // Marking signup as accepted..
         $rUser->status = 2;
-        $rUser->user_id_created = $user->id;
+        $rUser->member_id_created = $user->id;
         $rUser->save();
 
         $toReturn['success'] = 1;

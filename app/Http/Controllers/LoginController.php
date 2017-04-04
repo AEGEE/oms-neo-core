@@ -65,7 +65,7 @@ class LoginController extends Controller
     	}
 
     	// We found a user..
-    	$auth->user_id = $member->id;
+    	$auth->member_id = $member->id;
 
     	// Invalid password..
     	if(!Hash::check($password, $member->forceGetAttribute("password"))) {
@@ -87,7 +87,7 @@ class LoginController extends Controller
         }
 
     	// We try to also add it to session..
-        $userData = $member->getLoginUserArray($loginKey);
+        $userData = $member->getLoginMemberArray($loginKey);
 
 		Session::put('userData', $userData);
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
@@ -233,7 +233,7 @@ class LoginController extends Controller
         $user->save();
 
         // We found a user..
-        $auth->user_id = $user->id;
+        $auth->member_id = $user->id;
 
         // all good..
         $loginKey = Uuid::generate(1);
@@ -249,7 +249,7 @@ class LoginController extends Controller
         }
 
         // We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
+        $userData = $user->getLoginMemberArray($loginKey);
 
         Session::put('userData', $userData);
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..

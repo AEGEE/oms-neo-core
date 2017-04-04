@@ -22,7 +22,7 @@ Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields'
 Route::post('/api/recruitUser', 'RecrutementController@recruitUser');
 Route::get('/api/checkCampaignExists', 'RecrutementController@checkCampaignExists');
 
-Route::get('/api/getUserAvatar/{avatarId}', 'MemberController@getUserAvatar');
+Route::get('/api/getMemberAvatar/{avatarId}', 'MemberController@getMemberAvatar');
 // UI accessible only!
 Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 
@@ -33,7 +33,7 @@ Route::group(['middleware' => 'api'], function() {
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');
 	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
 
-	Route::get('/api/getUserProfile', 'MemberController@getUserProfile');
+	Route::get('/api/getMemberProfile', 'MemberController@getMemberProfile');
 	Route::get('/api/getDashboardData', 'MemberController@getDashboardData');
 
 	Route::get('/api/getNews', 'NewsController@getNews');
@@ -82,9 +82,9 @@ Route::group(['middleware' => 'api'], function() {
 	});
 
 	// Users..
-	Route::group(['middleware' => 'checkAccess:users'], function() {
-		Route::get('/api/getUsers', 'MemberController@getUsers');
-		Route::get('/api/getUser/{user}', 'MemberController@getUser');
+	Route::group(['middleware' => 'checkAccess:members'], function() {
+		Route::get('/api/getMembers', 'MemberController@getMembers');
+		Route::get('/api/getMember/{member}', 'MemberController@getMember');
 		Route::post('/api/activateUser', 'MemberController@activateUser');
 
 		// Creates..
@@ -144,7 +144,7 @@ Route::group(['middleware' => 'api'], function() {
 	// Recruted users
 	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
 		Route::get('/api/getRecrutedUsers', 'RecrutementController@getRecrutedUsers');
-		Route::get('/api/getUserDetails', 'RecrutementController@getUserDetails');
+		Route::get('/api/getMemberDetails', 'RecrutementController@getMemberDetails');
 		Route::post('/api/addComment', 'RecrutementController@addComment');
 		Route::post('/api/changeStatus', 'RecrutementController@changeStatus');
 		Route::post('/api/activateUserRecruted', 'RecrutementController@activateUserRecruted');
@@ -164,8 +164,8 @@ Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice'
 
 // Microservice group..
 Route::group(['middleware' => 'microServiceAuth'], function() {
-	Route::post('/api/getUserByToken', 'MemberController@getUserByToken');
-	Route::post('/api/getUserById', 'MemberController@getUserById');
+	Route::post('/api/getMemberByToken', 'MemberController@getMemberByToken');
+	Route::post('/api/getMemberById', 'MemberController@getMemberById');
 });
 
 // Generic routes.. TODO

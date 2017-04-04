@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberWorkingGroup extends Model
 {
-    protected $table = "user_working_groups";
+    protected $table = "member_working_groups";
 
-    protected $fillable = ['user_id', 'work_group_id'];
+    protected $fillable = ['member_id', 'work_group_id'];
 
     // Relationships..
-    public function user() {
+    public function member() {
     	return $this->belongsTo('App\Models\Member');
     }
 
