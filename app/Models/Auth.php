@@ -10,8 +10,8 @@ class Auth extends Model
     protected $table = "auths";
 
     // Relationships..
-    public function member() {
-    	return $this->belongsTo('App\Models\Member');
+    public function user() {
+    	return $this->belongsTo('App\Models\UserModel');
     }
 
     // Model methods go down here..

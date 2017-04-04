@@ -17,6 +17,9 @@ use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\Member;
 
+use App\Repositories\UserRepository;
+
+
 use Hash;
 use Input;
 use Session;
@@ -25,7 +28,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, Member $member, Auth $auth, Fee $fee) {
+    public function loginUsingCredentials(LoginRequest $req, Auth $auth, Fee $fee) {
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -48,30 +51,21 @@ class LoginController extends Controller
     	$password = Input::get('password');
 
     	$toReturn = array(
-			'success'	=>	0,
-			'message'	=>	'Username / password invalid!'
-		);
+  			'success'	=>	0,
+  			'message'	=>	'Username / password invalid!'
+  	    );
 
-    	// Trying to find a user..
-    	// Non oAuth logins are handled by contact_email field..
-    	try {
-    		$member = $member->where('contact_email', $username)
-    					->whereNotNull('password')
-    					->whereNotNull('activated_at') // If its null, then the account was not activated..
-    					->firstOrFail(); // If password is null, then account should be used with oAuth..
-    	} catch(ModelNotFoundException $ex) {
+      $user = UserRepository::getFromCredentials($username, $password);
+
+    	if(!$user) {
+    	   // No user found for credentials..
     		$auth->save();
     		return response(json_encode($toReturn), 422);
     	}
+
 
     	// We found a user..
-    	$auth->member_id = $member->id;
-
-    	// Invalid password..
-    	if(!Hash::check($password, $member->forceGetAttribute("password"))) {
-    		$auth->save();
-    		return response(json_encode($toReturn), 422);
-    	}
+    	$auth->user_id = $user->id;
 
     	// all good..
     	$loginKey = Uuid::generate(1);
@@ -81,13 +75,10 @@ class LoginController extends Controller
     	$auth->successful = 1;
     	$auth->save();
 
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($member->is_superadmin)) {
-            $fee->checkFeesForSuspention($member);
-        }
+      // We check if user has all fees paid, if not, we auto-suspend him..
 
     	// We try to also add it to session..
-        $userData = $member->getLoginMemberArray($loginKey);
+      $userData = $user->getLoginMemberArray($loginKey);
 
       Session::put('userData', $userData);
       Session::save();

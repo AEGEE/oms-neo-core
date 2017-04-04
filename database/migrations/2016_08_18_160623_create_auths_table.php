@@ -18,12 +18,12 @@ class CreateAuthsTable extends Migration
             $table->string('user_agent');
             $table->text('raw_request_params');
             $table->string('token_generated')->nullable();
-            $table->integer('member_id')->nullable();
+            $table->integer('user_id')->nullable();
             $table->integer('successful')->nullable();
             $table->timestamp('expiration')->nullable();
             $table->timestamps();
 
-            $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
+            $table->foreign('member_id')->references('id')->on('user_models')->onDelete('cascade');
         });
     }
 

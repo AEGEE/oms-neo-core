@@ -40,10 +40,6 @@ class Member extends AccessControlledModel
     	return $this->belongsTo('App\Models\Body');
     }
 
-    public function auth() {
-    	return $this->hasMany('App\Models\Auth');
-    }
-
     public function boardMember() {
     	return $this->hasMany('App\Models\BoardMember');
     }
