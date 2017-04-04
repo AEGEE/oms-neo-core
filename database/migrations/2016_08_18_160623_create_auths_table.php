@@ -15,7 +15,7 @@ class CreateAuthsTable extends Migration
         Schema::create('auths', function (Blueprint $table) {
             $table->increments('id');
             $table->string('ip');
-            $table->string('member_agent');
+            $table->string('user_agent');
             $table->text('raw_request_params');
             $table->string('token_generated')->nullable();
             $table->integer('member_id')->nullable();

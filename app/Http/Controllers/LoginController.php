@@ -37,7 +37,7 @@ class LoginController extends Controller
     	}
 
     	$auth->ip = $req->ip();
-    	$auth->member_agent = $req->header('User-Agent');
+    	$auth->user_agent = $req->header('User-Agent');
 
     	$rawRequestParams = http_build_query($req->all());
     	$rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
