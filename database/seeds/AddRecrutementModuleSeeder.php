@@ -24,10 +24,10 @@ class AddRecrutementModuleSeeder extends Seeder
         	'is_hidden'		=>	1
         ]);
 
-        $users = ModulePage::create([
-        	'name'			=>	'Recruted users',
-        	'code'			=>	'recruted_users',
-        	'module_link'	=>	'modules/loggedIn/recruted_users/recruted_users.js',
+        $members = ModulePage::create([
+        	'name'			=>	'Recruted members',
+        	'code'			=>	'members',
+        	'module_link'	=>	'modules/loggedIn/recruted_members/recruted_members.js',
             'icon'          =>  'fa fa-check-square',
         	'is_active'		=>	1,
         	'is_hidden'		=>	1
@@ -46,7 +46,7 @@ class AddRecrutementModuleSeeder extends Seeder
  		]);
 
  		RoleModulePage::create([
- 			'module_page_id'	=>	$users->id,
+ 			'module_page_id'	=>	$members->id,
  			'role_id'			=>	$role->id,
  			'permission_level'	=>	1
  		]);

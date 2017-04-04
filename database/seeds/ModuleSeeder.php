@@ -14,9 +14,9 @@ class ModuleSeeder extends Seeder
     public function run()
     {
         ModulePage::create([
-        	'name'			=>	'Antennae management',
-        	'code'			=>	'antennae_management',
-        	'module_link'	=>	'modules/loggedIn/antennae_management/antennae_management.js',
+        	'name'			=>	'Bodies management',
+        	'code'			=>	'bodies_management',
+        	'module_link'	=>	'modules/loggedIn/bodies_management/bodies_management.js',
             'icon'          =>  'ion-android-wifi',
         	'is_active'		=>	1
         ]);
@@ -28,7 +28,7 @@ class ModuleSeeder extends Seeder
             'icon'          =>  'fa fa-group',
             'is_active'     =>  1
         ]);
-        
+
         ModulePage::create([
             'name'          =>  'Departments',
             'code'          =>  'departments',
@@ -54,9 +54,9 @@ class ModuleSeeder extends Seeder
         ]);
 
         ModulePage::create([
-            'name'          =>  'Users',
-            'code'          =>  'users',
-            'module_link'   =>  'modules/loggedIn/users/users.js',
+            'name'          =>  'Members',
+            'code'          =>  'members',
+            'module_link'   =>  'modules/loggedIn/members/members.js',
             'icon'          =>  'fa fa-user',
             'is_active'     =>  1
         ]);
