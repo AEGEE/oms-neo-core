@@ -39,8 +39,8 @@
                     </div>
                     <div class="col-md-2" ng-show="vm.is_superadmin">
                         <div class="form-group">
-                            <label for="fAntenna">Antenna</label>
-                            <select class="form-control" id="fAntenna" ng-model="vm.filter.antenna_id" ng-options="antenna.cell[0] as antenna.cell[1] for antenna in vm.antennae.rows track by antenna.cell[0]" required>
+                            <label for="fBody">Body</label>
+                            <select class="form-control" id="fBody" ng-model="vm.filter.antenna_id" ng-options="antenna.cell[0] as antenna.cell[1] for antenna in vm.antennae.rows track by antenna.cell[0]" required>
                             	<option></option>
                             </select>
                         </div>

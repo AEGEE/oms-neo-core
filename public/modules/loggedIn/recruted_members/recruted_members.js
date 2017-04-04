@@ -82,7 +82,7 @@
                 'Registration email',
                 'Gender',
                 'Signed up at',
-                'Antenna',
+                'Body',
                 'Status'
             ];
             params.colModel = [
@@ -161,10 +161,10 @@
             vm.searchGrid();
         }
 
-        vm.getAntennae = function() {
+        vm.getBodies = function() {
             $http({
                 method: 'GET',
-                url: '/api/getAntennae',
+                url: '/api/getBodies',
                 params: {
                     limit: 100000
                 }
@@ -393,7 +393,7 @@
 
         ///////
         vm.loadGrid();
-        vm.getAntennae();
+        vm.getBodies();
         vm.getCampaigns();
 
         // Needed for activation..

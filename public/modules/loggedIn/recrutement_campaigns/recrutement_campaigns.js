@@ -68,7 +68,7 @@
             params.shrinkToFit = true;
             params.colNames = [
                 'Actions',
-                'Antenna',
+                'Body',
                 'Start date',
                 'End date',
                 'Link',
@@ -147,10 +147,10 @@
             vm.searchGrid();
         }
 
-        vm.getAntennae = function() {
+        vm.getBodies = function() {
             $http({
                 method: 'GET',
-                url: '/api/getAntennae',
+                url: '/api/getBodies',
                 params: {
                     limit: 100000
                 }
@@ -275,7 +275,7 @@
 
         ///////
         vm.loadGrid();
-        vm.getAntennae();
+        vm.getBodies();
         vm.addDatePickers();
     }
 

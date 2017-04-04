@@ -5,7 +5,7 @@
     angular
         .module('app.bodies_management', [])
         .config(config)
-        .controller('AntennaController', AntennaController);
+        .controller('BodyController', BodyController);
 
     /** @ngInject */
     function config($stateProvider)
@@ -18,13 +18,13 @@
                 views   : {
                     'pageContent@app': {
                         templateUrl: 'modules/loggedIn/bodies_management/bodies_management.php',
-                        controller: 'AntennaController as vm'
+                        controller: 'BodyController as vm'
                     }
                 }
             });
     }
 
-    function AntennaController($http, $compile, $scope, $window, $httpParamSerializer) {
+    function BodyController($http, $compile, $scope, $window, $httpParamSerializer) {
         // Data
         var vm = this;
         vm.antenna = {};
@@ -37,13 +37,13 @@
 
         // Methods
 
-        vm.loadAntennaeGrid = function() {
+        vm.loadBodiesGrid = function() {
             var params = {};
             params.postData = {
                 is_grid: 1
             };
 
-            params.url = "/api/getAntennae";
+            params.url = "/api/getBodies";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -100,7 +100,7 @@
             params.sortname = 'title';
             params.sortorder = 'ASC';
             params.viewrecords = true;
-            params.caption = "Antennae";
+            params.caption = "Bodies";
 
             params.gridComplete = function() {
                 $compile($('.clickMeAnt'))($scope);
@@ -117,7 +117,7 @@
             });
         }
 
-        vm.searchAntennaGrid = function() {
+        vm.searchBodyGrid = function() {
             var object = {};
             object = vm.filter;
             object.country_id = $('#fCountry').val();
@@ -130,7 +130,7 @@
         vm.clearSearch = function() {
             vm.filter = {};
             $('#fCountry').val("").trigger("change");
-            vm.searchAntennaGrid();
+            vm.searchBodyGrid();
         }
 
         vm.closeAndReset = function() {
@@ -139,10 +139,10 @@
             $('#countries').val("").trigger("change");
         }
 
-        vm.saveAntenna = function() {
+        vm.saveBody = function() {
             $http({
                 method: "POST",
-                url: '/api/saveAntenna',
+                url: '/api/saveBody',
                 data: {
                     id: vm.antenna.id,
                     name: vm.antenna.name,
@@ -157,13 +157,13 @@
                 if(response.data.success == '1') {
                     $.gritter.add({
                         title: 'Success!',
-                        text: 'Antenna saved successfully!',
+                        text: 'Body saved successfully!',
                         sticky: true,
                         time: '',
                         class_name: 'my-sticky-class'
                     });
                     vm.closeAndReset();
-                    vm.searchAntennaGrid();
+                    vm.searchBodyGrid();
                 } else {
                     $.gritter.add({
                         title: 'Error!',
@@ -176,10 +176,10 @@
             });
         }
 
-        vm.editAntenna = function(id) {
+        vm.editBody = function(id) {
             $http({
                 method: 'GET',
-                url: "/api/getAntenna",
+                url: "/api/getBody",
                 params: {
                     id: id
                 }
@@ -206,7 +206,7 @@
 
         vm.exportGrid = function() {
             $http({
-                url: 'api/getAntennae',
+                url: 'api/getBodies',
                 method: 'GET',
                 responseType: 'arraybuffer',
                 params: {
@@ -241,7 +241,7 @@
         }
 
         ///////
-        vm.loadAntennaeGrid();
+        vm.loadBodiesGrid();
         $("#countries").select2({width: '100%'});
         $("#fCountry").select2({width: '100%'});
     }

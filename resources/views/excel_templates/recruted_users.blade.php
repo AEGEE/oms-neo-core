@@ -52,7 +52,7 @@
 					Signed up at
 				</th>
 				<th>
-					Antenna
+					Body
 				</th>
 				<th>
 					Status

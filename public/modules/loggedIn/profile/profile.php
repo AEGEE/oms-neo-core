@@ -80,11 +80,11 @@
 					                    </thead> -->
 			                            <tbody>
 			                                <tr class="highlight">
-			                                    <td class="field">Antenna</td>
+			                                    <td class="field">Body</td>
 			                                    <td>{{vm.user.antenna}}</td>
 			                                </tr>
 			                                <tr>
-			                                    <td class="field">Antenna city</td>
+			                                    <td class="field">Body city</td>
 			                                    <td>{{vm.user.antenna_city}}</td>
 			                                </tr>
 			                                <tr>

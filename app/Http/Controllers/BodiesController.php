@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\SaveAntennaRequest;
+use App\Http\Requests\SaveBodyRequest;
 
 use App\Models\Body;
 use App\Models\Country;
@@ -13,9 +13,9 @@ use App\Models\Country;
 use Excel;
 use Input;
 
-class AntennaController extends Controller
+class BodyController extends Controller
 {
-    public function getAntennae(Antenna $ant, Request $req) {
+    public function getBodies(Body $ant, Request $req) {
         $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
@@ -67,7 +67,7 @@ class AntennaController extends Controller
             $actions = "";
             if($isGrid) {
                 if($max_permission == 1) {
-                    $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editAntenna(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editBody(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
                 }
             } else {
                 $actions = $antenna->id;
@@ -89,7 +89,7 @@ class AntennaController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function saveAntenna(Antenna $ant, Country $country, SaveAntennaRequest $req) {
+    public function saveBody(Body $ant, Country $country, SaveBodyRequest $req) {
         $id = Input::get('id');
         if(!empty($id)) {
             $ant = $ant->findOrFail($id);
@@ -111,7 +111,7 @@ class AntennaController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getAntenna(Antenna $ant) {
+    public function getBody(Body $ant) {
         $id = Input::get('id');
         $ant = $ant->findOrFail($id);
 

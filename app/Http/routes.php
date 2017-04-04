@@ -45,11 +45,11 @@ Route::group(['middleware' => 'api'], function() {
 	Route::post('/api/editBio', 'MemberController@editBio');
 	Route::post('/api/uploadUserAvatar', 'MemberController@uploadUserAvatar');
 
-	// Antennae management..
+	// Bodies management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-		Route::get('/api/getAntennae', 'AntennaController@getAntennae');
-		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
-		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
+		Route::get('/api/getBodies', 'BodyController@getBodies');
+		Route::post('/api/saveBody', 'BodyController@saveBody');
+		Route::get('/api/getBody', 'BodyController@getBody');
 	});
 
 	// Working groups..

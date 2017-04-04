@@ -6,12 +6,12 @@ $omsObj = new omsHelperScript();
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
         <li><a ui-sref="app.dashboard">Dashboard</a></li>
-        <li class="active">Antennae management</li>
+        <li class="active">Bodies management</li>
     </ol>
     <!-- end breadcrumb -->
 
     <!-- begin page-header -->
-    <h1 class="page-header">Antennae management</h1>
+    <h1 class="page-header">Bodies management</h1>
     <!-- end page-header -->
 
     <div class="row hiddenItem" id="filters">
@@ -25,13 +25,13 @@ $omsObj = new omsHelperScript();
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="fName">Name</label>
-                            <input type="text" id="fName" class="form-control" ng-model="vm.filter.name" placeholder="Antenna name" required/>
+                            <input type="text" id="fName" class="form-control" ng-model="vm.filter.name" placeholder="Body name" required/>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label for="fCity">City</label>
-                            <input type="text" id="fCity" class="form-control" ng-model="vm.filter.city" placeholder="Antenna city" required/>
+                            <input type="text" id="fCity" class="form-control" ng-model="vm.filter.city" placeholder="Body city" required/>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -46,7 +46,7 @@ $omsObj = new omsHelperScript();
                 </div>
                 <div class="row pull-right">
                     <div class="col-md-12">
-                        <button class="btn btn-success" ng-click="vm.searchAntennaGrid()"><i class="fa fa-search"></i> Search</button>
+                        <button class="btn btn-success" ng-click="vm.searchBodyGrid()"><i class="fa fa-search"></i> Search</button>
                         <button class="btn btn-danger" ng-click="vm.clearSearch()"><i class="fa fa-ban"></i> Clear search</button>
                     </div>
                 </div>
@@ -58,7 +58,7 @@ $omsObj = new omsHelperScript();
         <div class="col-md-4">
             <?php
             if($omsObj->hasWriteAccess('antennae_management')) { ?>
-                <button class="btn btn-primary" data-target="#antennaModal" data-toggle="modal"><i class="fa fa-plus"></i> Add Antenna</button>
+                <button class="btn btn-primary" data-target="#antennaModal" data-toggle="modal"><i class="fa fa-plus"></i> Add Body</button>
             <?php } ?>
         </div>
         <div class="col-md-8 text-right">
@@ -85,29 +85,29 @@ if($omsObj->hasWriteAccess('antennae_management')) { ?>
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Antenna add/edit</h4>
+                    <h4 class="modal-title">Body add/edit</h4>
                 </div>
                 <form name="antennaForm" method="POST" class="margin-bottom-0" novalidate>
                     <div class="modal-body">
                         <div class="form-group m-b-20">
                             <label for="name">Name</label>
-                            <input type="text" id="name" class="form-control" ng-model="vm.antenna.name" placeholder="Antenna name" required/>
+                            <input type="text" id="name" class="form-control" ng-model="vm.antenna.name" placeholder="Body name" required/>
                         </div>
                         <div class="form-group m-b-20">
                             <label for="email">Email</label>
-                            <input type="email" id="email" class="form-control" ng-model="vm.antenna.email" placeholder="Antenna email" required/>
+                            <input type="email" id="email" class="form-control" ng-model="vm.antenna.email" placeholder="Body email" required/>
                         </div>
                         <div class="form-group m-b-20">
                             <label for="address">Address</label>
-                            <textarea id="address" class="form-control" ng-model="vm.antenna.address" placeholder="Antenna address" required></textarea>
+                            <textarea id="address" class="form-control" ng-model="vm.antenna.address" placeholder="Body address" required></textarea>
                         </div>
                         <div class="form-group m-b-20">
                             <label for="phone">Phone</label>
-                            <input type="text" id="phone" class="form-control" ng-model="vm.antenna.phone" placeholder="Antenna phone"/>
+                            <input type="text" id="phone" class="form-control" ng-model="vm.antenna.phone" placeholder="Body phone"/>
                         </div>
                         <div class="form-group m-b-20">
                             <label for="city">City</label>
-                            <input type="text" id="city" class="form-control" ng-model="vm.antenna.city" placeholder="Antenna city" required/>
+                            <input type="text" id="city" class="form-control" ng-model="vm.antenna.city" placeholder="Body city" required/>
                         </div>
                         <div class="form-group m-b-20">
                             <label for="countries">Country</label>
@@ -119,7 +119,7 @@ if($omsObj->hasWriteAccess('antennae_management')) { ?>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-sm btn-danger" ng-click="vm.closeAndReset()"><i class="fa fa-ban"></i> Close</button>
-                        <button ng-disabled="antennaForm.$pristine || antennaForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveAntenna()"><i class="fa fa-save"></i> Save antenna</button>
+                        <button ng-disabled="antennaForm.$pristine || antennaForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveBody()"><i class="fa fa-save"></i> Save antenna</button>
                     </div>
                 </form>
             </div>

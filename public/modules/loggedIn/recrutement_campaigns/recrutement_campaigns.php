@@ -20,8 +20,8 @@
                 <div class="row">
                     <div class="col-md-4" ng-show="vm.is_superadmin">
                         <div class="form-group">
-                            <label for="fAntenna">Antenna name</label>
-                            <select class="form-control" id="fAntenna" ng-model="vm.filter.antenna_id" ng-options="antenna.cell[0] as antenna.cell[1] for antenna in vm.antennae.rows track by antenna.cell[0]" required>
+                            <label for="fBody">Body name</label>
+                            <select class="form-control" id="fBody" ng-model="vm.filter.antenna_id" ng-options="antenna.cell[0] as antenna.cell[1] for antenna in vm.antennae.rows track by antenna.cell[0]" required>
                             	<option></option>
                             </select>
                         </div>
@@ -93,7 +93,7 @@
                         <div id="isTaken" class="alert alert-danger hiddenItem">Link is NOT available for use</div>
                     </div>
                     <div class="form-group m-b-20" ng-show="vm.is_superadmin">
-                        <label for="antenna">Antenna</label>
+                        <label for="antenna">Body</label>
                         <select class="form-control" id="antenna" ng-model="vm.campaign.antenna_id" ng-options="antenna.cell[0] as antenna.cell[1] for antenna in vm.antennae.rows track by antenna.cell[0]" required>
                         	<option></option>
                         </select>

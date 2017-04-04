@@ -106,7 +106,7 @@ class LoginController extends Controller
 		return response(json_encode($toReturn), 200);
     }
 
-    public function getRegistrationFields(Antenna $ant, StudyType $studType, StudyField $studField) {
+    public function getRegistrationFields(Body $ant, StudyType $studType, StudyField $studField) {
         $toReturn = array(
             'antennae'      =>  array(),
             'study_type'    =>  array(),

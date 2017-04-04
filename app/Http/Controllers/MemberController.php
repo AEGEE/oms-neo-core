@@ -257,7 +257,7 @@ class MemberController extends Controller
                                     ->orWhereNull('expiration');
                         })
                         ->firstOrFail();
-        $antenna = Antenna::findOrFail($userData->user->antenna_id);
+        $antenna = Body::findOrFail($userData->user->antenna_id);
 
         $toReturn['success'] = 1;
         $toReturn['user'] = $userData->user;

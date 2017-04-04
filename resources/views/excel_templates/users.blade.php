@@ -37,7 +37,7 @@
 					Gender
 				</th>
 				<th>
-					Antenna
+					Body
 				</th>
 				<th>
 					Department

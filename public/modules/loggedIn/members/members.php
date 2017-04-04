@@ -50,8 +50,8 @@ $omsObj = new omsHelperScript();
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label for="fAntenna">Antenna</label>
-                            <select class="form-control" id="fAntenna" ng-model="vm.filter.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id">
+                            <label for="fBody">Body</label>
+                            <select class="form-control" id="fBody" ng-model="vm.filter.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id">
                                 <option></option>
                             </select>
                         </div>
@@ -238,7 +238,7 @@ if($omsObj->hasWriteAccess('users')) { ?>
                             <h3 class="text-center">Other information</h3>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="antenna">Antenna *</label>
+                                    <label for="antenna">Body *</label>
                                     <select class="form-control" id="antenna" ng-model="vm.user.antenna_id" ng-options="antenna.id as antenna.name for antenna in vm.registrationFields.antennae track by antenna.id">
                                         <option></option>
                                     </select>

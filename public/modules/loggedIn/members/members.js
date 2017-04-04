@@ -105,7 +105,7 @@
                 'Date of birth',
                 'Registration email',
                 'Gender',
-                'Antenna',
+                'Body',
                 'Department',
                 'Internal email',
                 'Studies type',
@@ -203,7 +203,7 @@
 
         vm.searchUserGrid = function() {
             var object = {};
-            vm.filter.antenna_id = $('#fAntenna').val();
+            vm.filter.antenna_id = $('#fBody').val();
             vm.filter.department_id = $('#fDepartment').val();
             vm.filter.studies_type_id = $('#fStudyType').val();
             vm.filter.studies_field_id = $('#fStudyField').val();
@@ -218,7 +218,7 @@
 
         vm.clearSearch = function() {
             vm.filter = {};
-            $('#fAntenna').val("").trigger("change");
+            $('#fBody').val("").trigger("change");
             $('#fStudyType').val("").trigger("change");
             $('#fStudyField').val("").trigger("change");
             $('#fDepartment').val("").trigger("change");
@@ -315,7 +315,7 @@
                     date_of_birth: $('#fDob').val(),
                     contact_email: vm.filter.contact_email,
                     gender: vm.filter.gender,
-                    antenna_id: $('#fAntenna').val(),
+                    antenna_id: $('#fBody').val(),
                     department_id: $('#fDepartment').val(),
                     internal_email: vm.filter.internal_email,
                     studies_type_id: $('#fStudyType').val(),
@@ -346,7 +346,7 @@
                 autoclose: true,
                 format: 'yyyy-mm-dd'
             });
-            $("#fAntenna, #fStudyType, #fStudyField, #fDepartment, #antenna, #studies_type, #study_field, #activateDepartment").select2({width: '100%'});
+            $("#fBody, #fStudyType, #fStudyField, #fDepartment, #antenna, #studies_type, #study_field, #activateDepartment").select2({width: '100%'});
         }
 
         vm.getRoles = function() {
