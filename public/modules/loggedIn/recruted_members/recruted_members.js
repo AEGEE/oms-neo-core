@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.recruted_users', [])
+        .module('app.recruted_members', [])
         .config(config)
         .controller('RecrutedUsersController', RecrutedUsersController);
 
@@ -12,12 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.recruted_users', {
-                url: '/recruted_users',
-                data: {'pageTitle': 'Recruted users'},
+            .state('app.recruted_members', {
+                url: '/recruted_members',
+                data: {'pageTitle': 'Recruted members'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/recruted_users/recruted_users.php',
+                        templateUrl: 'modules/loggedIn/recruted_members/recruted_members.php',
                         controller: 'RecrutedUsersController as vm'
                     }
                 }
@@ -60,7 +60,7 @@
         var grid_container = "#gridContainer";
         var grid_pager = "#gridPager";
         // Methods
-        
+
         vm.loadGrid = function() {
             var params = {};
             params.postData = {
@@ -316,7 +316,7 @@
         }
         vm.createAndActivateUser = function() {
             vm.currentUser.feesPaid = {};
-            $.each(vm.fees, function(key, val) {   
+            $.each(vm.fees, function(key, val) {
                 vm.currentUser.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
             });
             $http({

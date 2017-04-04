@@ -43,6 +43,7 @@
             })
             .then(function successCallback(response) {
                 if(response.data.success == 1) {
+                    console.log(response.data);
                     location.reload();
                 } else {
                     $('#loginError').show();

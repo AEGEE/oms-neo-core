@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.antennae_management', [])
+        .module('app.bodies_management', [])
         .config(config)
         .controller('AntennaController', AntennaController);
 
@@ -12,12 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.antennae_management', {
-                url: '/antennae_management',
-                data: {'pageTitle': 'Antennae Management'},
+            .state('app.bodies_management', {
+                url: '/bodies_management',
+                data: {'pageTitle': 'Bodies Management'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/antennae_management/antennae_management.php',
+                        templateUrl: 'modules/loggedIn/bodies_management/bodies_management.php',
                         controller: 'AntennaController as vm'
                     }
                 }

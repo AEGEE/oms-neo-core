@@ -89,7 +89,9 @@ class LoginController extends Controller
     	// We try to also add it to session..
         $userData = $member->getLoginMemberArray($loginKey);
 
-		Session::put('userData', $userData);
+      Session::put('userData', $userData);
+      Session::save();
+      //dd(Session::all());
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
     	session_start();
     	$_SESSION['userData'] = Session::get('userData');

@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.users', [])
+        .module('app.members', [])
         .config(config)
         .controller('MemberController', MemberController);
 
@@ -12,12 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.users', {
-                url: '/users',
-                data: {'pageTitle': 'Users'},
+            .state('app.members', {
+                url: '/members',
+                data: {'pageTitle': 'Members'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/users/users.php',
+                        templateUrl: 'modules/loggedIn/members/members.php',
                         controller: 'MemberController as vm'
                     }
                 }

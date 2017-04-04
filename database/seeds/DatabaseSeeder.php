@@ -34,11 +34,10 @@ class DatabaseSeeder extends Seeder
     	$seededSomething = false;
     	foreach($seedersToRun as $seeder) {
     		if(in_array($seeder, $seedersArr)) {
-    			//continue;
+    			continue;
     		}
 
 
-        echo('$this->call(' . $seeder . '::class);' . PHP_EOL);
         try {
     		    eval('$this->call('.$seeder.'::class);');
         		SeederLog::create([

@@ -41,6 +41,8 @@ class ApiCheckMiddleware
 
         $request->attributes->add(['userData' => $auth->member]);
 
+        error_log("User login: " . $auth->member->forceGetAttribute('first_name'));
+
         return $next($request);
     }
 }

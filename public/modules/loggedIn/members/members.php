@@ -295,7 +295,7 @@ if($omsObj->hasWriteAccess('users')) { ?>
                         </div>
                         <hr />
                         <div class="row">
-                            
+
                             <h4>Roles</h4>
                             <div class="form-group m-b-20" ng-repeat="role in vm.roles">
                                 <div class="col-md-6">
@@ -308,7 +308,7 @@ if($omsObj->hasWriteAccess('users')) { ?>
                             </div>
                         </div>
                         <hr />
-                        <div class="row">   
+                        <div class="row">
                             <h4>Fees</h4>
                             <div class="alert alert-warning">
                                 Fees with no paid no date will be considered being paid today!
