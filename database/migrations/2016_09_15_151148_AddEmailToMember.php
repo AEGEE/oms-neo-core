@@ -12,7 +12,7 @@ class AddEmailToMember extends Migration
      */
     public function up()
     {
-        Schema::table('recruted_members', function (Blueprint $table) {
+        Schema::table('recruited_members', function (Blueprint $table) {
             $table->string('email');
             $table->string('email_hash');
         });
@@ -25,7 +25,7 @@ class AddEmailToMember extends Migration
      */
     public function down()
     {
-        Schema::table('recruted_members', function (Blueprint $table) {
+        Schema::table('recruited_members', function (Blueprint $table) {
             $table->dropColumn('email');
             $table->dropColumn('email_hash');
         });

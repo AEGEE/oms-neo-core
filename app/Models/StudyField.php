@@ -9,7 +9,7 @@ class StudyField extends Model
     protected $table = "study_fields";
 
     // Relationships..
-	public function recrutedMember() {
+	public function recruitedMember() {
         return $this->hasMany('App\Models\RecruitedMember');
     }
 

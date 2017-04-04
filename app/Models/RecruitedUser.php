@@ -8,7 +8,7 @@ use DB;
 
 class RecruitedMember extends Model
 {
-    protected $table = "recruted_members";
+    protected $table = "recruited_members";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth'];
 
@@ -27,12 +27,12 @@ class RecruitedMember extends Model
     );
 
     // Relationships..
-    public function recruted_comment() {
+    public function recruited_comment() {
         return $this->hasMany('App\Models\RecruitedComment');
     }
 
-    public function recrutement_campaigns() {
-        return $this->belongsTo('App\Models\RecruitementCampaign', 'campaign_id');
+    public function recruitment_campaigns() {
+        return $this->belongsTo('App\Models\RecruitmentCampaign', 'campaign_id');
     }
 
     public function studyField() {
@@ -116,9 +116,9 @@ class RecruitedMember extends Model
     }
 
     public function getFiltered($search = array(), $onlyTotal = false) {
-        $member = $this->select('antennas.name as antenna_name', 'recruted_members.*')
-                    ->join('recrutement_campaigns', 'recrutement_campaigns.id', '=', 'recruted_members.campaign_id')
-                    ->join('antennas', 'antennas.id', '=', 'recrutement_campaigns.antenna_id');
+        $member = $this->select('antennas.name as antenna_name', 'recruited_members.*')
+                    ->join('recruitment_campaigns', 'recruitment_campaigns.id', '=', 'recruited_members.campaign_id')
+                    ->join('antennas', 'antennas.id', '=', 'recruitment_campaigns.antenna_id');
 
         // Filters here..
         if(isset($search['name']) && !empty($search['name'])) {

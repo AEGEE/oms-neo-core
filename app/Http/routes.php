@@ -19,8 +19,8 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 // Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
 
-Route::post('/api/recruitUser', 'RecruitementController@recruitUser');
-Route::get('/api/checkCampaignExists', 'RecruitementController@checkCampaignExists');
+Route::post('/api/recruitUser', 'RecruitmentController@recruitUser');
+Route::get('/api/checkCampaignExists', 'RecruitmentController@checkCampaignExists');
 
 Route::get('/api/getMemberAvatar/{avatarId}', 'MemberController@getMemberAvatar');
 // UI accessible only!
@@ -134,20 +134,20 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
 	});
 
-	// Recruitement campaigns
-	Route::group(['middleware' => 'checkSpecialRoles:recrutement_campaigns,recruter'], function() {
-		Route::get('/api/getRecruitementCampaigns', 'RecruitementController@getRecruitementCampaigns');
-		Route::get('/api/checkLinkAvailability', 'RecruitementController@checkLinkAvailability');
-		Route::post('/api/saveCampaign', 'RecruitementController@saveCampaign');
+	// Recruitment campaigns
+	Route::group(['middleware' => 'checkSpecialRoles:recruitment_campaigns,recruiter'], function() {
+		Route::get('/api/getRecruitmentCampaigns', 'RecruitmentController@getRecruitmentCampaigns');
+		Route::get('/api/checkLinkAvailability', 'RecruitmentController@checkLinkAvailability');
+		Route::post('/api/saveCampaign', 'RecruitmentController@saveCampaign');
 	});
 
 	// Recruited users
-	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
-		Route::get('/api/getRecruitedUsers', 'RecruitementController@getRecruitedUsers');
-		Route::get('/api/getMemberDetails', 'RecruitementController@getMemberDetails');
-		Route::post('/api/addComment', 'RecruitementController@addComment');
-		Route::post('/api/changeStatus', 'RecruitementController@changeStatus');
-		Route::post('/api/activateUserRecruited', 'RecruitementController@activateUserRecruited');
+	Route::group(['middleware' => 'checkSpecialRoles:recruited_users,recruiter'], function() {
+		Route::get('/api/getRecruitedUsers', 'RecruitmentController@getRecruitedUsers');
+		Route::get('/api/getMemberDetails', 'RecruitmentController@getMemberDetails');
+		Route::post('/api/addComment', 'RecruitmentController@addComment');
+		Route::post('/api/changeStatus', 'RecruitmentController@changeStatus');
+		Route::post('/api/activateUserRecruited', 'RecruitmentController@activateUserRecruited');
 
 	});
 

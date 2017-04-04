@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.recruted_members', [])
+        .module('app.recruited_members', [])
         .config(config)
         .controller('RecruitedUsersController', RecruitedUsersController);
 
@@ -12,12 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.recruted_members', {
-                url: '/recruted_members',
+            .state('app.recruited_members', {
+                url: '/recruited_members',
                 data: {'pageTitle': 'Recruited members'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/recruted_members/recruted_members.php',
+                        templateUrl: 'modules/loggedIn/recruited_members/recruited_members.php',
                         controller: 'RecruitedUsersController as vm'
                     }
                 }
@@ -177,7 +177,7 @@
         vm.getCampaigns = function() {
             $http({
                 method: 'GET',
-                url: '/api/getRecruitementCampaigns',
+                url: '/api/getRecruitmentCampaigns',
                 params: {
                     limit: 100000
                 }

@@ -14,7 +14,7 @@ use App\Models\Fee;
 use App\Models\FeeMember;
 use App\Models\RecruitedComment;
 use App\Models\RecruitedUser;
-use App\Models\RecruitementCampaign;
+use App\Models\RecruitmentCampaign;
 use App\Models\Role;
 use App\Models\Member;
 use App\Models\MemberRole;
@@ -25,9 +25,9 @@ use Input;
 use Mail;
 use Session;
 
-class RecruitementController extends Controller
+class RecruitmentController extends Controller
 {
-    public function getRecruitementCampaigns(RecruitementCampaign $campaign, Request $req) {
+    public function getRecruitmentCampaigns(RecruitmentCampaign $campaign, Request $req) {
         $userData = $req->get('userData');
 
         $search = array(
@@ -99,7 +99,7 @@ class RecruitementController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function checkLinkAvailability(RecruitementCampaign $campaign) {
+    public function checkLinkAvailability(RecruitmentCampaign $campaign) {
     	$link = Input::get('link');
     	$exists = $campaign->whereLink($link)->count();
 		
@@ -107,7 +107,7 @@ class RecruitementController extends Controller
 		return json_encode($toReturn);
     }
 
-    public function saveCampaign(AddRecruitmentCampaignRequest $req, RecruitementCampaign $campaign) {
+    public function saveCampaign(AddRecruitmentCampaignRequest $req, RecruitmentCampaign $campaign) {
     	$campaign->start_date = Input::get('start_date');
     	$campaign->end_date = Input::get('end_date');
     	$campaign->link = Input::get('link', $campaign->createRandomLink());
@@ -140,7 +140,7 @@ class RecruitementController extends Controller
 		return json_encode($toReturn);
     }
 
-    public function checkCampaignExists(RecruitementCampaign $campaign) {
+    public function checkCampaignExists(RecruitmentCampaign $campaign) {
         $now = date('Y-m-d');
         $link = Input::get('link');
         $campaignExists = $campaign->whereLink($link)->where('start_date', '<=', $now)->where('end_date', '>=', $now)->firstOrFail();
@@ -151,7 +151,7 @@ class RecruitementController extends Controller
         return json_encode($toReturn);
     }
 
-    public function recruitUser(RecruitementCampaign $campaign, RecruitedUser $usr, Member $memberObj, SignupRequest $req) {
+    public function recruitUser(RecruitmentCampaign $campaign, RecruitedUser $usr, Member $memberObj, SignupRequest $req) {
         $now = date('Y-m-d');
         $link = Input::get('link');
         $campaignExists = $campaign->whereLink($link)->where('start_date', '<=', $now)->where('end_date', '>=', $now)->firstOrFail();
@@ -227,7 +227,7 @@ class RecruitementController extends Controller
         if($export) {
             Excel::create('users', function($excel) use ($users) {
                 $excel->sheet('users', function($sheet) use ($users) {
-                    $sheet->loadView('excel_templates.recruted_users')->with("users", $users);
+                    $sheet->loadView('excel_templates.recruited_users')->with("users", $users);
                 });
             })->export('xlsx');
             return;
@@ -282,10 +282,10 @@ class RecruitementController extends Controller
     public function getMemberDetails(RecruitedMember $member, RecruitedComment $comm) {
         $id = Input::get('id');
 
-        $user = $user->with('studyType')->with('studyField')->with('recrutement_campaigns')->findOrFail($id);
+        $user = $user->with('studyType')->with('studyField')->with('recruitment_campaigns')->findOrFail($id);
 
         $comments = array();
-        $comm = $comm->with('user')->where('recruted_member_id', $user->id)->orderBy('created_at', 'ASC')->get();
+        $comm = $comm->with('user')->where('recruited_member_id', $user->id)->orderBy('created_at', 'ASC')->get();
         foreach ($comm as $comment) {
             $comments[] = array(
                 'comment'           =>  $comment->comment,
@@ -322,7 +322,7 @@ class RecruitementController extends Controller
 
         $comm->member_id = $userData['id'];
         $comm->comment = Input::get('comment');
-        $comm->recruted_member_id = Input::get('member_id');
+        $comm->recruited_member_id = Input::get('member_id');
         if(!empty($comm->comment)) {
             $comm->save();
         }
@@ -353,7 +353,7 @@ class RecruitementController extends Controller
     public function activateUserRecruited(RecruitedUser $rUser, Member $member, Role $role, Fee $fee, EmailTemplate $tpl) {
         // User..
         $id = Input::get('id');
-        $rUser = $rUser->with('recrutement_campaigns')->findOrFail($id);
+        $rUser = $rUser->with('recruitment_campaigns')->findOrFail($id);
 
         // Creating new user..
         $user->contact_email = $rUser->email;
@@ -361,7 +361,7 @@ class RecruitementController extends Controller
         $user->last_name = $rUser->last_name;
         $user->date_of_birth = $rUser->date_of_birth;
         $user->gender = $rUser->gender;
-        $user->antenna_id = $rUser->recrutement_campaigns->antenna_id;
+        $user->antenna_id = $rUser->recruitment_campaigns->antenna_id;
         $user->university = $rUser->university;
         $user->studies_type_id = $rUser->studies_type_id;
         $user->studies_field_id = $rUser->studies_field_id;

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RecruitementCampaign extends Model
+class RecruitmentCampaign extends Model
 {
-    protected $table = "recrutement_campaigns";
+    protected $table = "recruitment_campaigns";
 
     protected $dates = ['created_at', 'updated_at', 'start_date', 'end_date'];
 
@@ -15,14 +15,14 @@ class RecruitementCampaign extends Model
         return $this->belongsTo('App\Models\Body');
     }
 
-    public function recrutedMember() {
+    public function recruitedMember() {
         return $this->hasMany('App\Models\RecruitedMember');
     }
 
     // Model methods go down here..
 
     public function getFiltered($search = array(), $onlyTotal = false) {
-    	$campaign = $this->select('antennas.name', 'recrutement_campaigns.*')->join('antennas', 'antennas.id', '=', 'recrutement_campaigns.antenna_id');
+    	$campaign = $this->select('antennas.name', 'recruitment_campaigns.*')->join('antennas', 'antennas.id', '=', 'recruitment_campaigns.antenna_id');
 
     	// Filters here..
     	if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {

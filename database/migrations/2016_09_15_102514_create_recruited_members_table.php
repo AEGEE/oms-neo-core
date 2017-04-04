@@ -12,7 +12,7 @@ class CreateRecruitedMembersTable extends Migration
      */
     public function up()
     {
-        Schema::create('recruted_members', function (Blueprint $table) {
+        Schema::create('recruited_members', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('campaign_id');
             $table->string('first_name');
@@ -31,7 +31,7 @@ class CreateRecruitedMembersTable extends Migration
             $table->text('custom_responses')->nullable();
             $table->timestamps();
 
-            $table->foreign('campaign_id')->references('id')->on('recrutement_campaigns')->onDelete('cascade');
+            $table->foreign('campaign_id')->references('id')->on('recruitment_campaigns')->onDelete('cascade');
             $table->foreign('studies_type_id')->references('id')->on('study_types')->onDelete('cascade');
             $table->foreign('studies_field_id')->references('id')->on('study_fields')->onDelete('cascade');
             $table->foreign('member_id_created')->references('id')->on('members')->onDelete('cascade');
@@ -45,6 +45,6 @@ class CreateRecruitedMembersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('recruted_members');
+        Schema::drop('recruited_members');
     }
 }

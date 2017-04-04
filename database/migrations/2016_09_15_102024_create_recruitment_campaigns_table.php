@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRecruitementCampaignsTable extends Migration
+class CreateRecruitmentCampaignsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateRecruitementCampaignsTable extends Migration
      */
     public function up()
     {
-        Schema::create('recrutement_campaigns', function (Blueprint $table) {
+        Schema::create('recruitment_campaigns', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('body_id');
             $table->timestamp('start_date');
@@ -32,6 +32,6 @@ class CreateRecruitementCampaignsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('recrutement_campaigns');
+        Schema::drop('recruitment_campaigns');
     }
 }

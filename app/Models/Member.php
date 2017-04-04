@@ -61,7 +61,7 @@ class Member extends AccessControlledModel
     	return $this->hasMany('App\Models\FeeMember');
     }
 
-    public function recrutedMember() {
+    public function recruitedMember() {
         return $this->belongsTo('App\Models\RecruitedMember');
     }
 

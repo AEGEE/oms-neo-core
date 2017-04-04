@@ -3,28 +3,28 @@
     'use strict';
 
     angular
-        .module('app.recrutement_campaigns', [])
+        .module('app.recruitment_campaigns', [])
         .config(config)
-        .controller('RecruitementCampaignsController', RecruitementCampaignsController);
+        .controller('RecruitmentCampaignsController', RecruitmentCampaignsController);
 
     /** @ngInject */
     function config($stateProvider)
     {
         // State
          $stateProvider
-            .state('app.recrutement_campaigns', {
-                url: '/recrutement_campaigns',
-                data: {'pageTitle': 'Recruitement campaigns'},
+            .state('app.recruitment_campaigns', {
+                url: '/recruitment_campaigns',
+                data: {'pageTitle': 'Recruitment campaigns'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/recrutement_campaigns/recrutement_campaigns.php',
-                        controller: 'RecruitementCampaignsController as vm'
+                        templateUrl: 'modules/loggedIn/recruitment_campaigns/recruitment_campaigns.php',
+                        controller: 'RecruitmentCampaignsController as vm'
                     }
                 }
             });
     }
 
-    function RecruitementCampaignsController($http, $q, $compile, $scope) {
+    function RecruitmentCampaignsController($http, $q, $compile, $scope) {
         // Data
         var vm = this;
         vm.campaign = {};
@@ -58,7 +58,7 @@
                 is_grid: 1
             };
 
-            params.url = "/api/getRecruitementCampaigns";
+            params.url = "/api/getRecruitmentCampaigns";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';

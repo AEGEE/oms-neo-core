@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class RecruitedComment extends Model
 {
-    protected $table = "recruted_comments";
+    protected $table = "recruited_comments";
 
     // Relationships..
-    public function recrutement_campaigns() {
+    public function recruitment_campaigns() {
         return $this->belongsTo('App\Models\RecruitedMember');
     }
 
