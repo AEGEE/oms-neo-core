@@ -4,6 +4,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\QueryException;
 
 use App\Models\SeederLog;
+use App\Models\Interfaces\HasUser;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,9 +39,8 @@ class DatabaseSeeder extends Seeder
     		}
           echo "Seeding: " . $seeder . PHP_EOL;
 
-
         try {
-    		    eval('$this->call('.$seeder.'::class);');
+    		    eval('$this->call('.$seeder.'::class);');//, class_implements(' . $seeder . '));');
         		SeederLog::create([
         			'code'	=>	$seeder
         		]);

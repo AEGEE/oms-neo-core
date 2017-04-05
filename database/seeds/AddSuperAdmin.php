@@ -5,6 +5,8 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Body;
 use App\Models\Member;
+use App\Models\MemberRole;
+use App\Models\Interfaces\HasUser;
 
 class AddSuperAdmin extends Seeder
 {
@@ -15,6 +17,7 @@ class AddSuperAdmin extends Seeder
    */
   public function run()
   {
+
   	Body::create([
   		'name'			=>	'Global antenna',
   		'city'			=>	'Cluj-Napoca',
@@ -40,6 +43,15 @@ class AddSuperAdmin extends Seeder
   		'studies_field_id'	=>	1,
       'city'              =>  'Cluj',
       'seo_url'           =>  'glitch'
+   ]);
+
+   MemberRole::create([
+     'role_id' => 1,
+     'member_id' => 1,
+   ]);
+   MemberRole::create([
+     'role_id' => 2,
+     'member_id' => 1,
    ]);
   }
 }

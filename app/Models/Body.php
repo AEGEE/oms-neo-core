@@ -6,8 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\AccessControlledModel;
 
-class Body extends Model
+class Body extends AccessControlledModel
 {
+    protected $permissions = array(
+      'read' => array(
+        'default' => array("id", "name", "city", "country_id", "address", "phone"),
+        'aegee' => array("created_at", "email"),
+        'self' => array("updated_at"),
+        'board' => array("updated_at", "contact_email"),
+        'cd' => array(),
+      ),
+      'write' => array(
+        'default' => array("id", "name", "city", "country_id", "address", "phone"),
+        'aegee' => array("created_at", "email"),
+        'self' => array("updated_at"),
+        'board' => array("updated_at", "contact_email"),
+        'cd' => array(),
+      ),
+    );
+
+
+
     protected $table = "bodies";
 
     // Relationships..

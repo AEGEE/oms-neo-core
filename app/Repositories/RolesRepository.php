@@ -23,6 +23,7 @@ class RolesRepository {
       return array();
     } else {
       $roles = $user->getObject()->roles()->get();
+      //dd($user->getObject()->roles()->get());
       return self::getSimpleRoles($roles);
     }
   }
@@ -50,7 +51,7 @@ class RolesRepository {
     if (get_class($user->getObject()) == "App\Models\Member") {
       return self::resolveRelationFromUser($user, $globalRoles, $target);
     } else {
-
+      return array('aegee');
     }
 
     return array();

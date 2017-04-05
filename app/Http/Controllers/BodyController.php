@@ -15,7 +15,7 @@ use Input;
 
 class BodyController extends Controller
 {
-    public function getBodies(Body $ant, Request $req) {
+    public function getBodies(Body $body, Request $req) {
         $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
@@ -111,12 +111,10 @@ class BodyController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getBody(Body $ant) {
-        $id = Input::get('id');
-        $ant = $ant->findOrFail($id);
-
+    public function getBody(Request $req, Body $body) {
+        $body->syncRoles($req->get('user'));
         $toReturn['success'] = 1;
-        $toReturn['antenna'] = $ant;
+        $toReturn['antenna'] = $body;
         return response(json_encode($toReturn), 200);
     }
 }

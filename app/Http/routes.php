@@ -46,10 +46,10 @@ Route::group(['middleware' => 'api'], function() {
 	Route::post('/api/uploadUserAvatar', 'MemberController@uploadUserAvatar');
 
 	// Bodies management..
-	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
+	Route::group(['middleware' => 'checkAccess:bodies_management'], function() {
 		Route::get('/api/getBodies', 'BodyController@getBodies');
 		Route::post('/api/saveBody', 'BodyController@saveBody');
-		Route::get('/api/getBody', 'BodyController@getBody');
+		Route::get('/api/getBody/{body}', 'BodyController@getBody');
 	});
 
 	// Working groups..

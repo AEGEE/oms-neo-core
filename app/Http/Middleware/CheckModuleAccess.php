@@ -32,7 +32,6 @@ class CheckModuleAccess
         try {
             $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            dd($user);
             return response('Forbidden', 403);
         }
 
