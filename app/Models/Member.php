@@ -48,8 +48,17 @@ class Member extends AccessControlledModel implements HasUser
     public function user() {
       return $this->belongsTo('App\Models\User');
     }
-    public function antenna() {
-    	return $this->belongsTo('App\Models\Body');
+
+    public function bodyRole(Body $body) {
+      return $this->hasMany('App\Models\MemberBodyRelation')->where('body_id', '=', $body->id);
+    }
+
+    public function bodyRoles() {
+      return $this->hasMany('App\Models\MemberBodyRelation');
+    }
+
+    public function bodies() {
+    	return $this->hasManyThrough('App\Models\Body', 'App\Models\MemberBodyRelation', 'member_id', 'id', 'id');
     }
 
     public function boardMember() {

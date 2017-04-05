@@ -135,6 +135,7 @@ class MemberController extends Controller
 
     public function getMember(Request $req, Member $member) {
       $member->syncRoles($req->get('user'));
+      dd($member->bodyRoles()->get());
       return response($member, 200);
     }
 

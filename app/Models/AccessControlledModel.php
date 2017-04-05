@@ -10,7 +10,7 @@ class AccessControlledModel extends Model
 {
 
     // Needs to be false for seeding the database.
-    protected static $ACCESS_CONTROL_ENABLED = true;
+    protected static $ACCESS_CONTROL_ENABLED = false;
 
     private $roles = array();
 
@@ -40,7 +40,7 @@ class AccessControlledModel extends Model
         return parent::getAttribute($key);
       } else {
         error_log("Permission denied to: " . $key . "; Roles: " . json_encode($this->roles));
-        dd(debug_backtrace());
+        //dd(debug_backtrace());
         return null;
       }
     }

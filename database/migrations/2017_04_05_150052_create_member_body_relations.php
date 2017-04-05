@@ -17,6 +17,7 @@ class CreateMemberBodyRelations extends Migration
             $table->integer('member_id');
             $table->integer('body_id');
             $table->integer('body_role');
+            $table->timestamps();
 
             $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');

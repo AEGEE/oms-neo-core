@@ -37,7 +37,6 @@ class AddSuperAdmin extends Seeder
   		'last_name'			=>	'Porutiu',
   		'date_of_birth'		=>	'1994-01-24',
   		'gender'			=>	1,
-  		'body_id'		=>	1,
   		'university'		=>	'UBB Cluj',
   		'studies_type_id'	=>	1,
   		'studies_field_id'	=>	1,

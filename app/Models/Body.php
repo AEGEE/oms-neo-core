@@ -34,7 +34,7 @@ class Body extends AccessControlledModel
     	return $this->belongsTo('App\Models\Country');
     }
 
-    public function member() {
+    public function members() {
     	return $this->hasMany('App\Models\Member');
     }
 

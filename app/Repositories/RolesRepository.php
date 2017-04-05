@@ -24,7 +24,6 @@ class RolesRepository {
       return array();
     } else {
       $roles = $user->getObject()->roles()->get();
-      //dd($user->getObject()->roles()->get());
       return self::getSimpleRoles($roles);
     }
   }
@@ -52,6 +51,7 @@ class RolesRepository {
     if (get_class($user->getObject()) == "App\Models\Member") {
       return self::resolveRelationFromUser($user, $globalRoles, $target);
     } else {
+      // TODO now what?
       return array('aegee');
     }
 
@@ -85,10 +85,13 @@ class RolesRepository {
   }
 
 
-  public static function resolveRelationUserToBody(User $user, $globalRoles, Body $target) {
+  public static function resolveRelationUserToBody(User $user, $globalRoles, Body $body) {
     $roles = array();
-    if ($user->member->forceGetAttribute('body_id') == $target->id) {
+    if ($user->member->bodyRole($body)->first()) {
       array_push($roles, "member");
+      if ($user->member->bodyRole($body)->first()->body_role == 2) {
+        array_push($roles, "board");
+      }
     }
 
     return $roles;

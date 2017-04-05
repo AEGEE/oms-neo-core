@@ -52,27 +52,6 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getBody/{body}', 'BodyController@getBody');
 	});
 
-	// Working groups..
-	Route::group(['middleware' => 'checkAccess:working_groups'], function() {
-		Route::get('/api/getWorkingGroups', 'WorkingGroupController@getWorkingGroups');
-		Route::post('/api/saveWorkGroup', 'WorkingGroupController@saveWorkGroup');
-		Route::get('/api/getWorkGroup', 'WorkingGroupController@getWorkGroup');
-	});
-
-	// Departments..
-	Route::group(['middleware' => 'checkAccess:departments'], function() {
-		Route::get('/api/getDepartments', 'DepartmentController@getDepartments');
-		Route::post('/api/saveDepartment', 'DepartmentController@saveDepartment');
-		Route::get('/api/getDepartment', 'DepartmentController@getDepartment');
-	});
-
-	// Fees management..
-	Route::group(['middleware' => 'checkAccess:fees_management'], function() {
-		Route::get('/api/getFees', 'FeeController@getFees');
-		Route::post('/api/saveFee', 'FeeController@saveFee');
-		Route::get('/api/getFee', 'FeeController@getFee');
-	});
-
 	// Roles..
 	Route::group(['middleware' => 'checkAccess:roles'], function() {
 		Route::get('/api/getRoles', 'RoleController@getRoles');

@@ -21,7 +21,6 @@ class CreateMembersTable extends Migration
             $table->string('last_name');
             $table->timestamp('date_of_birth');
             $table->integer('gender');
-            $table->integer('body_id');
             $table->string('university');
             $table->integer('studies_type_id');
             $table->integer('studies_field_id');
@@ -31,14 +30,11 @@ class CreateMembersTable extends Migration
             $table->string('zipcode')->nullable();
             $table->text('other')->nullable();
             $table->integer('is_suspended')->nullable();
-            $table->integer('department_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
             $table->foreign('studies_type_id')->references('id')->on('study_types')->onDelete('cascade');
             $table->foreign('studies_field_id')->references('id')->on('study_fields')->onDelete('cascade');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
         });
     }
 

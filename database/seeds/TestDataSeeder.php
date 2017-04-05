@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Body;
 use App\Models\Member;
 use App\Models\MemberRole;
+use App\Models\MemberBodyRelation;
 use App\Models\Interfaces\HasUser;
 
 class TestDataSeeder extends Seeder
@@ -45,12 +46,29 @@ class TestDataSeeder extends Seeder
   		'last_name'			=>	'De Bouwer',
   		'date_of_birth'		=>	'1992-01-24',
   		'gender'			=>	0,
-  		'body_id'		=>	2,
   		'university'		=>	'Yes',
   		'studies_type_id'	=>	1,
   		'studies_field_id'	=>	1,
       'city'              =>  'Enschede',
       'seo_url'           =>  'bob'
    ]);
+
+   MemberBodyRelation::create([
+     'member_id' => 1,
+     'body_id' => 1,
+     'body_role' => 1, //member
+   ]);
+
+
+   MemberBodyRelation::create([
+     'member_id' => 2,
+     'body_id' => 2,
+     'body_role' => 2, //board
+   ]);
+    MemberBodyRelation::create([
+      'member_id' => 2,
+      'body_id' => 3,
+      'body_role' => 1, //member
+    ]);
   }
 }
