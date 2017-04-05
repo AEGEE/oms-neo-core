@@ -23,6 +23,10 @@ class RolesRepository {
     if (!$user) {
       return array();
     } else {
+      $roles = array();
+      if ($user->member()) {
+        array_push($roles, "aegee");
+      }
       $roles = $user->getObject()->roles()->get();
       return self::getSimpleRoles($roles);
     }
