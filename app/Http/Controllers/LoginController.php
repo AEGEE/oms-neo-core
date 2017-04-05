@@ -76,9 +76,11 @@ class LoginController extends Controller
     	$auth->save();
 
       // We check if user has all fees paid, if not, we auto-suspend him..
+      $user->checkStillValid();
 
+      //dd($user->getObject());
     	// We try to also add it to session..
-      $userData = $user->getLoginMemberArray($loginKey);
+      $userData = $user->getLoginUserArray($loginKey);
 
       Session::put('userData', $userData);
       Session::save();
@@ -89,12 +91,12 @@ class LoginController extends Controller
     	session_write_close();
 
     	$toReturn = array(
-			'success'	=>	1,
-			'message'	=>	$loginKey
-		);
+  			'success'	=>	1,
+  			'message'	=>	$loginKey
+  		);
 
     	// Login successful.. returning data..
-		return response(json_encode($toReturn), 200);
+		    return response(json_encode($toReturn), 200);
     }
 
     public function getRegistrationFields(Body $ant, StudyType $studType, StudyField $studField) {

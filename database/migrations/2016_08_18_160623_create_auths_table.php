@@ -23,7 +23,7 @@ class CreateAuthsTable extends Migration
             $table->timestamp('expiration')->nullable();
             $table->timestamps();
 
-            $table->foreign('member_id')->references('id')->on('user_models')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

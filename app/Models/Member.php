@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AccessControlledModel;
 
+use App\Models\Interfaces\HasUser;
+
 use DB;
 
-class Member extends AccessControlledModel
+class Member extends AccessControlledModel implements HasUser
 {
 
     protected $permissions = array(
@@ -35,7 +37,19 @@ class Member extends AccessControlledModel
 
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
+    // Overwrite UserModel methods ..
+
+    public function checkStillValid(){
+      dd("check!");
+      if(empty($user->is_superadmin)) {
+          $fee->checkFeesForSuspention($user);
+      }
+    }
+
     // Relationships..
+    public function user() {
+      return $this->belongsTo('App\Models\User');
+    }
     public function antenna() {
     	return $this->belongsTo('App\Models\Body');
     }
@@ -311,21 +325,6 @@ class Member extends AccessControlledModel
         // Todo send email..
     }
 
-    public function getLoginMemberArray($authToken) {
-        return array(
-            'id'                =>  $this->id,
-            'membername'        =>  empty($this->tryGet('internal_email',"error, no internal email")) ? $this->tryGet('trycontact_email') : $this->tryGet('internal_email'),
-            'fullname'          =>  $this->tryGet('first_name')." ".$this->tryGet('last_name'),
-            'is_superadmin'     =>  $this->tryGet('is_superadmin'),
-            'department_id'     =>  $this->tryGet('department_id'),
-            'logged_in'         =>  true,
-            'authToken'         =>  $authToken,
-            'seo_url'           =>  $this->tryGet('seo_url'),
-            'is_suspended'      =>  !empty($this->tryGet('is_suspended')) ? true : false,
-            'suspended_reason'  =>  $this->tryGet('suspended_reason'),
-        );
-    }
-
     // oAuth methods..
     public function oAuthCreateAccount($provider, $delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
         switch ($provider) {
@@ -402,5 +401,19 @@ class Member extends AccessControlledModel
         }
 
         return $response->getStatusCode();
+    }
+
+
+    // Interface methods...
+    public function getUserName() {
+      return empty($this->tryGet('internal_email',"error, no internal email")) ? $this->tryGet('trycontact_email') : $this->tryGet('internal_email');
+    }
+
+    public function getName() {
+      return $this->tryGet('first_name')." ".$this->tryGet('last_name');
+    }
+
+    public function getSEOURL() {
+      return $this->tryGet('seo_url');
     }
 }

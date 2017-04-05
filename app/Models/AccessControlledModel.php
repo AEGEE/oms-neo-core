@@ -9,6 +9,9 @@ use App\Repositories\RolesRepository as Repo;
 class AccessControlledModel extends Model
 {
 
+    // Needs to be false for seeding the database.
+    protected static $ACCESS_CONTROL_ENABLED = false;
+
     private $roles = array();
 
     private $visible_write = array();
@@ -22,6 +25,7 @@ class AccessControlledModel extends Model
       $this->updateRoles();
       return $result;
     }
+
     public function setRawAttributes(array $attributes, $sync = false)
     {
       $result = parent::setRawAttributes($attributes, $sync);
@@ -87,7 +91,7 @@ class AccessControlledModel extends Model
     public function updateReadRoles() {
       $attributes = array_keys($this->getAttributes());
 
-      if (!in_array('super_admin', $this->roles)) {
+      if ($this->accessControlEnabled()) {
         $visible = $this->permissions['read']['default'];
         foreach($this->roles as $role) {
           if (isset($this->permissions['read'][$role])) {
@@ -105,7 +109,7 @@ class AccessControlledModel extends Model
     }
 
     public function updateWriteRoles() {
-      if (!in_array('super_admin', $this->roles)) {
+      if ($this->accessControlEnabled()) {
         $visible = $this->permissions['write']['default'];
         foreach($this->roles as $role) {
           if (isset($this->permissions['write'][$role])) {
@@ -120,8 +124,12 @@ class AccessControlledModel extends Model
       }
     }
 
+    public function accessControlEnabled() {
+      return self::$ACCESS_CONTROL_ENABLED && !in_array('super_admin', $this->roles);
+    }
+
     public function canRead($attribute) {
-      if (!in_array('super_admin', $this->roles)) {
+      if ($this->accessControlEnabled()) {
         return in_array($attribute, $this->getVisible());
       } else {
         //Superadmin
@@ -130,7 +138,7 @@ class AccessControlledModel extends Model
     }
 
     public function canWrite($attribute) {
-      if (!in_array('super_admin', $this->roles)) {
+      if ($this->accessControlEnabled()) {
         return in_array($attribute, $this->visible_write);
       } else {
         //Superadmin

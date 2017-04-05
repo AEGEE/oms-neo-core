@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
     		if(in_array($seeder, $seedersArr)) {
     			continue;
     		}
+          echo "Seeding: " . $seeder . PHP_EOL;
 
 
         try {
@@ -45,7 +46,6 @@ class DatabaseSeeder extends Seeder
         		]);
         } catch (Exception $e) {
           echo $e . PHP_EOL;
-          echo $e->getSql() . PHP_EOL;
         }
 
     		$seededSomething = true;
