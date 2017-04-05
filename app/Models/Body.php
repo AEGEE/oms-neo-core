@@ -12,7 +12,7 @@ class Body extends AccessControlledModel
       'read' => array(
         'default' => array("id", "name", "city", "country_id", "address", "phone"),
         'aegee' => array("created_at", "email"),
-        'self' => array("updated_at"),
+        'member' => array("updated_at"),
         'board' => array("updated_at", "contact_email"),
         'cd' => array(),
       ),

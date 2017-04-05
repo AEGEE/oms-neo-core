@@ -40,7 +40,7 @@ class AccessControlledModel extends Model
         return parent::getAttribute($key);
       } else {
         error_log("Permission denied to: " . $key . "; Roles: " . json_encode($this->roles));
-        //dd(debug_backtrace());
+        dd(debug_backtrace());
         return null;
       }
     }
@@ -75,6 +75,8 @@ class AccessControlledModel extends Model
 
       //Set roles of this object.
       $this->setRoles($roles);
+
+      dump($roles);
     }
 
     public function setRoles($roles) {

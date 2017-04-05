@@ -115,6 +115,7 @@ class BodyController extends Controller
         $body->syncRoles($req->get('user'));
         $toReturn['success'] = 1;
         $toReturn['antenna'] = $body;
+        return response()->json($body);
         return response(json_encode($toReturn), 200);
     }
 }

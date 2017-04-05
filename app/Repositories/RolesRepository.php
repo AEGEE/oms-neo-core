@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Body;
 use App\Models\Role;
 use App\Models\SimpleRole;
 
@@ -60,8 +61,8 @@ class RolesRepository {
   public static function resolveRelationFromUser(User $user, $globalRoles, $target) {
     if (get_class($target) == "App\Models\Member") {
       return self::resolveRelationUserToMember($user, $globalRoles, $target);
-    } else {
-
+    } else if (get_class($target) == "App\Models\Body") {
+      return self::resolveRelationUserToBody($user, $globalRoles, $target);
     }
 
     return array();
@@ -70,7 +71,7 @@ class RolesRepository {
 
   public static function resolveRelationUserToMember(User $user, $globalRoles, Member $target) {
     $roles = array();
-    if ($user->id == $target->id) {
+    if ($user->getObject()->id == $target->id) {
       array_push($roles, "self");
     }
     if ($user->getObject()->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {
@@ -78,6 +79,16 @@ class RolesRepository {
     }
     if (true == false) { //No idea how to determine board members currently
       array_push($roles, "board");
+    }
+
+    return $roles;
+  }
+
+
+  public static function resolveRelationUserToBody(User $user, $globalRoles, Body $target) {
+    $roles = array();
+    if ($user->member->forceGetAttribute('body_id') == $target->id) {
+      array_push($roles, "member");
     }
 
     return $roles;

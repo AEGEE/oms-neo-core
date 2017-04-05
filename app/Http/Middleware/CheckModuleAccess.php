@@ -40,17 +40,17 @@ class CheckModuleAccess
         }
 
         $max_permission = 1;
-        if($user->is_superadmin == 1) {
+        //if($user->is_superadmin == 1) {
             // Member is superadmin.. can access any module..
             $request->attributes->add(['max_permission' => $max_permission]);
             return $next($request);
-        }
+        //}
 
         // Else we need to check if user has a role which allows him to access it..
         $canAccess = RoleModulePage::select(DB::raw('max(permission_level) as max_permission, count(role_module_pages.id) as role_exists'))
                                     ->join('roles', 'roles.id', '=', 'role_module_pages.role_id')
-                                    ->join('user_roles', 'roles.id', '=', 'user_roles.role_id')
-                                    ->where('user_roles.member_id', $userData->id)
+                                    ->join('member_roles', 'roles.id', '=', 'member_roles.role_id')
+                                    ->where('member_roles.member_id', $user->id)
                                     ->whereNull('roles.is_disabled')
                                     ->where('role_module_pages.module_page_id', $modulePage->id);
 

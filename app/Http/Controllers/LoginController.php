@@ -63,7 +63,6 @@ class LoginController extends Controller
     		return response(json_encode($toReturn), 422);
     	}
 
-
     	// We found a user..
     	$auth->user_id = $user->id;
 
