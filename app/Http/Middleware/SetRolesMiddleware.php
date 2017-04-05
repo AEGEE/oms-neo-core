@@ -18,7 +18,7 @@ class SetRolesMiddleware
     public function handle($request, Closure $next)
     {
         //Set the global roles for the user.
-        $request->get('userData')->syncRoles();
+        //$request->get('user')->syncRoles();
 
         return $next($request);
     }

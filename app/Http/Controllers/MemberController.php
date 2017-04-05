@@ -42,7 +42,7 @@ class MemberController extends Controller
 {
     public function getMembers(Member $member, Request $req, Repo $repo) {
         $max_permission = $req->get('max_permission');
-    	$user = $req->get('userData');
+    	$user = $req->get('user');
         $search = array(
             'name'          	=>  Input::get('name'),
             'date_of_birth'		=>	Input::get('date_of_birth'),
@@ -134,8 +134,8 @@ class MemberController extends Controller
     }
 
     public function getMember(Request $req, Member $member) {
-        $member->syncRoles($req->get('userData'));
-        return response($member, 200);
+      $member->syncRoles($req->get('user'));
+      return response($member, 200);
     }
 
     public function activateUser(Member $member, Role $role, Fee $fee, EmailTemplate $tpl, Request $req) {

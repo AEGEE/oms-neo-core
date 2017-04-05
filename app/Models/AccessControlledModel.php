@@ -10,7 +10,7 @@ class AccessControlledModel extends Model
 {
 
     // Needs to be false for seeding the database.
-    protected static $ACCESS_CONTROL_ENABLED = false;
+    protected static $ACCESS_CONTROL_ENABLED = true;
 
     private $roles = array();
 
@@ -64,14 +64,13 @@ class AccessControlledModel extends Model
       return $this->canWrite($key) ? parent::setAttribute($key, $value) : null;
     }
 
-    public function syncRoles($source = null) {
+    public function syncRoles($user) {
       $roles = array();
-
-      if ($source) {
+      if ($user) {
         //Get global roles of the member (source)
-        $roles = Repo::getGlobalRoles($source);
+        $roles = Repo::getGlobalRoles($user);
         //Get scoped roles of the member (source) on this object.
-        $roles = Repo::getRoles($source, $roles, $this);
+        $roles = Repo::getRoles($user, $roles, $this);
       }
 
       //Set roles of this object.

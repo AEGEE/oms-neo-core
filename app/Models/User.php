@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\AccessControlledModel;
+use App\Models\Interfaces\HasUser;
 
-class User extends Model
+class User extends Model implements HasUser
 {
   protected $table = "users";
 
@@ -51,5 +52,15 @@ class User extends Model
     if(empty($user->is_superadmin)) {
         $fee->checkFeesForSuspention($user);
     }
+  }
+
+  public function getName() {
+    return $this->getObject()->getName();
+  }
+  public function getUserName() {
+    return $this->getObject()->getUserName();
+  }
+  public function getSEOURL() {
+    return $this->getObject()->getSEOURL();
   }
 }

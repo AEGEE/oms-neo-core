@@ -23,9 +23,9 @@ class CheckModuleAccess
      */
     public function handle($request, Closure $next, $moduleCode)
     {
-        $user = $request->get('userData');
+        $user = $request->get('user');
 
-        if(!empty($user->forceGetAttribute('is_suspended'))) {
+        if(!$user->checkStillValid()) {
             return response('Forbidden', 403);
         }
 

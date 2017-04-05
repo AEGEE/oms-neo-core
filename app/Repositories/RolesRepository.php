@@ -2,19 +2,19 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use App\Models\Member;
 use App\Models\Role;
 use App\Models\SimpleRole;
 
 class RolesRepository {
 
-  public static function syncRolesForAll($models, $source) {
-    $models->map(function($model, $key) use ($source) { $model->syncRoles($source); });
+  public static function syncRolesForAll($models, $user) {
+    $models->map(function($model, $key) use ($user) { $model->syncRoles($user); });
   }
 
-  public static function getRoles($source, $globalRoles, $target) {
-    //return array("super_admin");
-    $scopedRoles = self::getScopedRoles($source, $globalRoles, $target);
+  public static function getRoles($user, $globalRoles, $object) {
+    $scopedRoles = self::resolveRelation($user, $globalRoles, $object);
     return array_merge($globalRoles, $scopedRoles);
   }
 
@@ -22,19 +22,9 @@ class RolesRepository {
     if (!$user) {
       return array();
     } else {
-      $roles = $user->roles()->get();
+      $roles = $user->getObject()->roles()->get();
       return self::getSimpleRoles($roles);
     }
-  }
-
-  public static function getScopedRoles($source, $globalRoles, $target) {
-    if (get_class($source) == "App\Models\Member") {
-      return self::resolveRelationFromMember($source, $globalRoles, $target);
-    } else {
-
-    }
-
-    return array();
   }
 
   public static function hasRole($needle, $haystack) {
@@ -56,9 +46,19 @@ class RolesRepository {
     return $return;
   }
 
-  public static function resolveRelationFromMember(Member $source, $globalRoles, $target) {
+  public static function resolveRelation($user, $globalRoles, $target) {
+    if (get_class($user->getObject()) == "App\Models\Member") {
+      return self::resolveRelationFromUser($user, $globalRoles, $target);
+    } else {
+
+    }
+
+    return array();
+  }
+
+  public static function resolveRelationFromUser(User $user, $globalRoles, $target) {
     if (get_class($target) == "App\Models\Member") {
-      return self::resolveRelationMemberToMember($source, $globalRoles, $target);
+      return self::resolveRelationUserToMember($user, $globalRoles, $target);
     } else {
 
     }
@@ -67,12 +67,12 @@ class RolesRepository {
   }
 
 
-  public static function resolveRelationMemberToMember(Member $source, $globalRoles, Member $target) {
+  public static function resolveRelationUserToMember(User $user, $globalRoles, Member $target) {
     $roles = array();
-    if ($source->id == $target->id) {
+    if ($user->id == $target->id) {
       array_push($roles, "self");
     }
-    if ($source->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {
+    if ($user->getObject()->forceGetAttribute("antenna_id") == $target->forceGetAttribute("antenna_id")) {
       array_push($roles, "samebody");
     }
     if (true == false) { //No idea how to determine board members currently
