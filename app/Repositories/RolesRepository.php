@@ -23,12 +23,12 @@ class RolesRepository {
     if (!$user) {
       return array();
     } else {
-      $roles = array();
-      if ($user->member()) {
+      $roles = self::getSimpleRoles($user->getObject()->roles()->get());
+      if ($user->member()->first()) {
+        //TODO determine 'aegee' role this way?
         array_push($roles, "aegee");
       }
-      $roles = $user->getObject()->roles()->get();
-      return self::getSimpleRoles($roles);
+      return $roles;
     }
   }
 

@@ -29,6 +29,7 @@ use Uuid;
 class LoginController extends Controller
 {
     public function loginUsingCredentials(LoginRequest $req, Auth $auth, Fee $fee) {
+      error_log("Received login request");
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -58,6 +59,7 @@ class LoginController extends Controller
       $user = UserRepository::getFromCredentials($username, $password);
 
     	if(!$user) {
+        error_log("No user found for credentials");
     	   // No user found for credentials..
     		$auth->save();
     		return response(json_encode($toReturn), 422);
@@ -94,8 +96,9 @@ class LoginController extends Controller
   			'message'	=>	$loginKey
   		);
 
+      error_log("User login: " . $user->getName());
     	// Login successful.. returning data..
-		    return response(json_encode($toReturn), 200);
+	    return response(json_encode($toReturn), 200);
     }
 
     public function getRegistrationFields(Body $ant, StudyType $studType, StudyField $studField) {

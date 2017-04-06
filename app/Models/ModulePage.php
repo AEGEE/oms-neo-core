@@ -107,4 +107,14 @@ class ModulePage extends Model
         }
         return $pagesCache;
     }
+
+    public function canRead($roles) {
+      //TODO do something fancy with getting the required roles of the module page and checking if any of them match the given roles.
+      return in_array('aegee', $roles);
+    }
+
+    public function canWrite($roles) {
+      //TODO do something fancy with getting the required roles of the module page and checking if any of them match the given roles.
+      return in_array('admin', $roles);
+    }
 }

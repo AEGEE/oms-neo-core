@@ -75,8 +75,11 @@ class AccessControlledModel extends Model
 
       //Set roles of this object.
       $this->setRoles($roles);
+    }
 
-      dump($roles);
+    public function getRoles() {
+      $this->updateRoles();
+      return $this->roles;
     }
 
     public function setRoles($roles) {

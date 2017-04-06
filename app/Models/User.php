@@ -35,6 +35,14 @@ class User extends Model implements HasUser
     }
   }
 
+  public function getRoles() {
+    return $this->getObject()->getRoles();
+  }
+
+  public function isSuperAdmin() {
+    return in_array('super_admin', $this->getRoles());
+  }
+
   public function getLoginUserArray() {
       return array(
           'id'                =>  $this->id,
