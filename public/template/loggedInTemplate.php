@@ -11,10 +11,10 @@ $omsObj = new omsHelperScript();
 <!-- end #sidebar -->
 
 <!-- begin #content -->
-<div id="content" view-content class="content" ng-class="{ 
-    'content-full-width': setting.layout.pageContentFullWidth, 
-    'height-full': setting.layout.pageContentFullHeight, 
-    'content-inverse-mode': setting.layout.pageContentInverseMode 
+<div id="content" view-content class="content" ng-class="{
+    'content-full-width': setting.layout.pageContentFullWidth,
+    'height-full': setting.layout.pageContentFullHeight,
+    'content-inverse-mode': setting.layout.pageContentInverseMode
 }">
     <div ui-view="pageContent"></div>
 </div>

@@ -43,14 +43,14 @@ class User extends Model implements HasUser
     return in_array('super_admin', $this->getRoles());
   }
 
-  public function getLoginUserArray() {
+  public function getLoginUserArray($loginKey) {
       return array(
           'id'                =>  $this->id,
           'username'          =>  $this->getObject()->getUserName(),
           'fullname'          =>  $this->getObject()->getName(),
           'is_superadmin'     =>  $this->is_superadmin,
           'logged_in'         =>  true,
-          'authToken'         =>  $this->oauth_token,
+          'authToken'         =>  $loginKey,
           'seo_url'           =>  $this->getObject()->getSEOURL(),
       );
   }

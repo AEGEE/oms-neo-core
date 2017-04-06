@@ -12,14 +12,14 @@ $omsObj = new omsHelperScript();
     <!-- begin page-header -->
     <h1 class="page-header">Dashboard</h1>
     <!-- end page-header -->
-    
+
     <div class="alert alert-danger" ng-show="vm.suspended">
         You account was suspended!<br />
         You only have access to limited features. <br />
         Suspention reason: {{vm.suspendedFor}}
     </div>
 
-    <?php 
+    <?php
     if($omsObj->hasSystemRole('announcer')) { ?>
         <div class="row">
             <div class="col-md-12">
@@ -32,7 +32,7 @@ $omsObj = new omsHelperScript();
     <?php } ?>
 
     <div class="row">
-        <div class="col-md-6"> 
+        <div class="col-md-6">
             <div class="panel panel-inverse">
                 <div class="panel-heading">
                     <h4 class="panel-title">Latest news</h4>
@@ -43,7 +43,7 @@ $omsObj = new omsHelperScript();
                             <li class="media media-lg" ng-repeat="new in vm.latestNews.rows">
                                 <div class="media-body">
                                     <h4 class="media-heading" ng-click="vm.goToNews(new.id)"><a href="#">{{new.cell[1]}}</a><br /><small>Posted on {{new.cell[3]}} by {{new.cell[4]}}</small></h4>
-                                    <?php 
+                                    <?php
                                     if($omsObj->hasSystemRole('announcer')) { ?>
                                         <div class="p-b-20">
                                             <button class="btn btn-xs btn-success" ng-click="vm.editNews(new.id)">Edit</button>
@@ -87,7 +87,7 @@ $omsObj = new omsHelperScript();
     </div>
 </div>
 
-<?php 
+<?php
 if($omsObj->hasSystemRole('announcer')) { ?>
     <!-- #modal-dialog -->
     <div class="modal fade" id="newsModal">
