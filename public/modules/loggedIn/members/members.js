@@ -31,6 +31,7 @@
         vm.filter = {};
         vm.roles = {};
         vm.fees = {};
+        vm.members = {};
 
         vm.genderTypes = [
             {
@@ -86,31 +87,72 @@
         }
 
         vm.loadUsersGrid = function() {
-            var params = {};
-            params.postData = {
-                is_grid: 1
-            };
+            $http({
+                method: 'GET',
+                url: '/api/getMembers'
+            })
+            .then(function successCallback(response) {
+              vm.members = vm.transformMembersData(response);
+              vm.showMembersGrid();
+            });
+        }
 
-            params.url = "/api/getUsers";
-            params.datatype = "json";
-            params.mtype = 'GET';
+        vm.transformMembersData = function(membersData) {
+          var rows = [];
+          var i = 0;
+          for (i = 0; i < membersData.data.length; i++) {
+            var memberData = vm.transformMemberData(membersData.data[i]);
+            rows.push(memberData);
+          }
+          return rows;
+        }
+
+        vm.transformMemberData = function(member) {
+
+          member.actions = "<button class='btn btn-default btn-xs clickMeUser' title='View user profile' ng-click='vm.visitProfile(\"" + member.seo_url + "\")'><i class='fa fa-search'></i></button>";
+          /*
+          PHP code:
+
+          if($userX->status == 2 && $max_permission == 1) {
+              $actions .= "<button class='btn btn-default btn-xs clickMeUser' title='Activate user' ng-click='vm.editUser(".$userX->id.", \"activateUserModal\")'><i class='fa fa-check'></i></button>";
+          } elseif($userX->status != 2 && $userX->id != $userData->id) {
+              $actions .= ;
+          }
+          */
+          member.name =  member.first_name + " " + member.last_name;
+          member.status = 1;
+          member.gender = member.gender == 1 ? 'male' : 'female';
+          return member;
+        }
+
+        vm.showMembersGrid = function(users) {
+
+            var params = {};
+            params.datatype = "local";
             params.styleUI = 'Bootstrap';
             params.autowidth = true;
             params.height = 'auto';
             params.rownumbers = true;
             params.shrinkToFit = true;
+            params.multiselect = true
+            params.caption = "Manipulating Array Data";
+            params.rowNum = 25;
+            params.rowList = [10, 25, 50, 75, 100, 150];
+            params.pager = user_grid_pager;
+            params.sortname = 'name';
+            params.sortorder = 'ASC';
+            params.viewrecords = true;
+            params.caption = "Users";
+
             params.colNames = [
                 'Actions',
-                'Full name',
+                'Name',
                 'Date of birth',
                 'Registration email',
                 'Gender',
-                'Body',
-                'Department',
-                'Internal email',
                 'Studies type',
                 'Studies field',
-                'Status'
+                'status',
             ];
             params.colModel = [
                 {
@@ -135,62 +177,45 @@
                     index: 'gender',
                     width: 100
                 }, {
-                    name: 'antenna_id',
-                    index: 'antenna_id',
+                    name: 'studies_type_id',
+                    index: 'studies_type_id',
                     sortable: false,
                     width: 100
                 }, {
-                    name: 'department',
-                    index: 'department',
-                    sortable: false,
-                    width: 100
-                }, {
-                    name: 'internal_email',
-                    index: 'internal_email',
-                    width: 100
-                }, {
-                    name: 'studies_type',
-                    index: 'studies_type',
-                    sortable: false,
-                    width: 100
-                }, {
-                    name: 'studies_field',
-                    index: 'studies_field',
+                    name: 'studies_field_id',
+                    index: 'studies_field_id',
                     sortable: false,
                     width: 95
                 }, {
                     name: 'status',
                     index: 'status',
                     sortable: false,
-                    hidden: true,
-                    width: 1
+                    width: 95
                 }
             ];
-            params.rowNum = 25;
-            params.rowList = [10, 25, 50, 75, 100, 150];
-            params.pager = user_grid_pager;
-            params.sortname = 'name';
-            params.sortorder = 'ASC';
-            params.viewrecords = true;
-            params.caption = "Users";
 
             params.gridComplete = function() {
                 $compile($('.clickMeUser'))($scope);
-            }
+            };
 
             params.rowattr = function (rd) {
                 var row = rd.status;
                 switch(row) {
-                    case '1': // Active
+                    case 1: // Active
                         return {'style': "background: #5cb85c; color: #000"}; // green
-                    case '2': // Inactive
+                    case 2: // Inactive
                         return {'style': "background: #C1BCBC; color: #000"}; // grey
-                    case '3': // Suspended
+                    case 3: // Suspended
                         return {'style': "background: #d9534f; color: #000"}; // red
                 }
-            }
+            };
 
             jQuery(user_grid_container).jqGrid(params);
+
+
+            var mydata = vm.members;
+            for(var i=0;i<=mydata.length;i++)
+            	jQuery(user_grid_container).jqGrid('addRowData',i+1,mydata[i]);
 
             jQuery(user_grid_container).jqGrid('navGrid', user_grid_pager, {
                 refresh: true,

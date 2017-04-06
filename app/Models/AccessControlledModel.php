@@ -10,7 +10,7 @@ class AccessControlledModel extends Model
 {
 
     // Needs to be false for seeding the database.
-    protected static $ACCESS_CONTROL_ENABLED = false;
+    protected static $ACCESS_CONTROL_ENABLED = true;
 
     private $roles = array();
 
