@@ -390,6 +390,7 @@ class MemberController extends Controller
     }
 
     public function addMemberRoles(Role $role, AddRoleRequest $req) {
+        error_log("Adding member roles...");
         $id = Input::get('member_id');
         $rolesCache = $role->getCache();
 
