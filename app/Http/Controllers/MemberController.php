@@ -272,7 +272,8 @@ class MemberController extends Controller
 
         $url = Input::get('seo_url', $user->seo_url);
         $isUi = Input::get('is_ui', false);
-        $member = $member->with('studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        //$member = $member->with('studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        $member = $member->where('seo_url', $url)->firstOrFail(); //Temporarily
         $member->syncRoles($user);
 
         $id = $user->id;
@@ -288,7 +289,7 @@ class MemberController extends Controller
             'date_of_birth'     =>  $member->date_of_birth->format('Y-m-d'),
             'gender'            =>  $user->genderText,
             'university'        =>  $user->university,
-            'studies'           =>  $member->studyField->name." (".$member->studyType->name.")",
+            'studies'           =>  'not supported yet', //$member->studyField->name." (".$member->studyType->name.")",
             'city'              =>  $user->city,
             'bio'               =>  !empty($user->other) ? $user->other : "No bio available",
             'rank'              =>  'Member',
