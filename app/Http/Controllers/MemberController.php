@@ -268,33 +268,32 @@ class MemberController extends Controller
 
     public function getMemberProfile(Member $member, WorkingGroup $wg, Department $dep, Role $role, Fee $fee, MemberRole $userRole, Request $req) {
         $isOauthDefined = $this->isOauthDefined();
-        $user = $req->get('userData');
+        $user = $req->get('user');
 
         $url = Input::get('seo_url', $user->seo_url);
         $isUi = Input::get('is_ui', false);
-        $member = $member->with('antenna', 'department', 'studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
+        $member = $member->with('studyField', 'studyType')->where('seo_url', $url)->firstOrFail();
         $member->syncRoles($user);
+
         $id = $user->id;
-        //dump($user);
-        //dump($member);
         $toReturn['success'] = 1;
-        $country = Country::find($user->antenna->country_id);
+        //$country = Country::find($user->bodies->first()->country_id);
         $toReturn['user'] = array(
             'id'                =>  $user->id,
             'fullname'          =>  $user->first_name." ".$user->last_name,
-            'antenna'           =>  $user->antenna->name,
-            'antenna_city'      =>  $user->antenna->city,
-            'country'           =>  $country->name,
+            'antenna'           =>  json_encode($member->getBodiesQuery()->pluck('name')),
+            'antenna_city'      =>  'not supported yet',
+            'country'           =>  'not supported yet',
             'department'        =>  !empty($user->department) ? $user->department->name : "-",
-            'date_of_birth'     =>  $user->date_of_birth->format('Y-m-d'),
+            'date_of_birth'     =>  $member->date_of_birth->format('Y-m-d'),
             'gender'            =>  $user->genderText,
             'university'        =>  $user->university,
-            'studies'           =>  $user->studyField->name." (".$user->studyType->name.")",
+            'studies'           =>  $member->studyField->name." (".$member->studyType->name.")",
             'city'              =>  $user->city,
             'bio'               =>  !empty($user->other) ? $user->other : "No bio available",
             'rank'              =>  'Member',
-            'email'             =>  $user->getEmailAddress(),
-            'activated_at'      =>  $user->activated_at->format('Y-m-d'),
+            'email'             =>  $member->getEmailAddress(),
+            'activated_at'      =>  $user->activated_at, //->format('Y-m-d'),
             'status'            =>  $user->status_text,
             'suspended_for'     =>  $user->suspended_reason,
             'is_boardmember'    =>  0

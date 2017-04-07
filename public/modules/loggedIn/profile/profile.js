@@ -50,9 +50,10 @@
             $('#loadingOverlay').show();
             $http({
                 method: 'GET',
-                url: "/api/getUserProfile",
+                url: "/api/getMemberProfile",
                 params: data
             }).then(function successCallback(response) {
+                    console.log(response);
                     if(response.data.success == 0) {
                         $state.go('app.dashboard');
                     }
@@ -244,7 +245,7 @@
 
         vm.addFees = function() {
             vm.feesPaid = {};
-            $.each(vm.fees, function(key, val) {   
+            $.each(vm.fees, function(key, val) {
                 console.log(val);
                 vm.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
             });

@@ -14,7 +14,7 @@ class Member extends AccessControlledModel implements HasUser
 
     protected $permissions = array(
       'read' => array(
-        'default' => array("id", "is_superadmin", "department_id"),
+        'default' => array("id", "user_id", "is_superadmin", "department_id"),
         'aegee' => array("first_name", "last_name", "gender", "gender_text", "antenna_id", "seo_url"),
         'samebody' => array("contact_email", "university", "studies_type_id", "studies_field_id", "phone", "address", "city", "zipcode", "is_suspended", "internal_email", "date_of_birth"),
         'self' => array("password"),
@@ -57,8 +57,18 @@ class Member extends AccessControlledModel implements HasUser
       return $this->hasMany('App\Models\MemberBodyRelation');
     }
 
-    public function bodies() {
-    	return $this->hasManyThrough('App\Models\Body', 'App\Models\MemberBodyRelation', 'member_id', 'id', 'id');
+    public function getBodiesQuery() {
+      //TODO tidy this function up: respect laravel conventions.
+      //Investigate ->with()
+      $query =  DB::table('member_body_relations')
+        ->where('member_id', $this->id)
+        ->join('bodies', 'member_body_relations.body_id', '=', 'bodies.id')
+        ->select('bodies.*');
+      return $query;
+    }
+
+    public function getBodies() {
+      return $this->getBodiesQuery()->get();
     }
 
     public function boardMember() {

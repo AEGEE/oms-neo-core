@@ -21,7 +21,7 @@ class UserRepository {
     } catch(ModelNotFoundException $ex) {
       return null;
     }
-    $user = $member->user;
+    $user = $member->forceGetAttribute('user');
 
     // Check password..
     if ($password && Hash::check($password, $user->password)) {
