@@ -279,8 +279,8 @@ class MemberController extends Controller
         $id = $user->id;
         $toReturn['success'] = 1;
         //$country = Country::find($user->bodies->first()->country_id);
-        $toReturn['user'] = array(
-            'id'                =>  $user->id,
+        $toReturn['member'] = array(
+            'id'                =>  $member->id,
             'fullname'          =>  $user->first_name." ".$user->last_name,
             'antenna'           =>  json_encode($member->getBodiesQuery()->pluck('name')),
             'antenna_city'      =>  'not supported yet',

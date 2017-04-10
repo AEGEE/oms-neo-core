@@ -10,10 +10,10 @@ class MemberBodyRelation extends Model
 
     // Relationships..
     public function member() {
-    	return $this->hasOne('App\Models\Member');
+    	return $this->belongsTo('App\Models\Member');
     }
 
     public function body() {
-    	return $this->hasOne('App\Models\Body');
+    	return $this->belongsTo('App\Models\Body');
     }
 }

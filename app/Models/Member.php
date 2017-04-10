@@ -58,6 +58,8 @@ class Member extends AccessControlledModel implements HasUser
     }
 
     public function getBodiesQuery() {
+      //dump($this->hasManyThrough('App\Models\Body', 'App\Models\MemberBodyRelation', 'id1', 'id2', 'id')->toSql());
+      //dump($this->hasMany('App\Models\MemberBodyRelation')->with('body')->get());
       //TODO tidy this function up: respect laravel conventions.
       //Investigate ->with()
       $query =  DB::table('member_body_relations')
