@@ -33,7 +33,6 @@ class Kernel extends HttpKernel
 
         'api' => [
             'checkKey',
-            'setGlobalRoles'
         ],
     ];
 
