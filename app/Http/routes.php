@@ -19,8 +19,8 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 // Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
 
-Route::post('/api/recruitUser', 'RecruitmentController@recruitUser');
-Route::get('/api/checkCampaignExists', 'RecruitmentController@checkCampaignExists');
+//Route::post('/api/recruitUser', 'RecruitmentController@recruitUser');
+//Route::get('/api/checkCampaignExists', 'RecruitmentController@checkCampaignExists');
 
 Route::get('/api/getMemberAvatar/{avatarId}', 'MemberController@getMemberAvatar');
 // UI accessible only!
@@ -67,17 +67,18 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/activateUser', 'MemberController@activateUser');
 
 		// Creates..
-		Route::post('/api/setBoardPosition', 'MemberController@setBoardPosition');
+		//Route::post('/api/setBoardPosition', 'MemberController@setBoardPosition');
 		Route::post('/api/addMemberRoles', 'MemberController@addMemberRoles');
-		Route::post('/api/addFeesToUser', 'MemberController@addFeesToUser');
-		Route::post('/api/addWorkingGroupToUser', 'MemberController@addWorkingGroupToUser');
+		//Route::post('/api/addFeesToUser', 'MemberController@addFeesToUser');
+		//Route::post('/api/addWorkingGroupToUser', 'MemberController@addWorkingGroupToUser');
 		Route::post('/api/createUser', 'LoginController@createUser');
 
+
 		// Deletes..
-		Route::post('/api/deleteFee', 'MemberController@deleteFee');
+		//Route::post('/api/deleteFee', 'MemberController@deleteFee');
 		Route::post('/api/deleteRole', 'MemberController@deleteRole');
-		Route::post('/api/deleteMembership', 'MemberController@deleteMembership');
-		Route::post('/api/deleteWorkGroup', 'MemberController@deleteWorkGroup');
+		//Route::post('/api/deleteMembership', 'MemberController@deleteMembership');
+		//Route::post('/api/deleteWorkGroup', 'MemberController@deleteWorkGroup');
 
 		// Suspensions and others..
 		Route::post('/api/suspendAccount', 'MemberController@suspendAccount');
@@ -115,18 +116,18 @@ Route::group(['middleware' => 'api'], function() {
 
 	// Recruitment campaigns
 	Route::group(['middleware' => 'checkSpecialRoles:recruitment_campaigns,recruiter'], function() {
-		Route::get('/api/getRecruitmentCampaigns', 'RecruitmentController@getRecruitmentCampaigns');
-		Route::get('/api/checkLinkAvailability', 'RecruitmentController@checkLinkAvailability');
-		Route::post('/api/saveCampaign', 'RecruitmentController@saveCampaign');
+		//Route::get('/api/getRecruitmentCampaigns', 'RecruitmentController@getRecruitmentCampaigns');
+		//Route::get('/api/checkLinkAvailability', 'RecruitmentController@checkLinkAvailability');
+		//Route::post('/api/saveCampaign', 'RecruitmentController@saveCampaign');
 	});
 
 	// Recruited users
 	Route::group(['middleware' => 'checkSpecialRoles:recruited_users,recruiter'], function() {
-		Route::get('/api/getRecruitedUsers', 'RecruitmentController@getRecruitedUsers');
-		Route::get('/api/getMemberDetails', 'RecruitmentController@getMemberDetails');
-		Route::post('/api/addComment', 'RecruitmentController@addComment');
-		Route::post('/api/changeStatus', 'RecruitmentController@changeStatus');
-		Route::post('/api/activateUserRecruited', 'RecruitmentController@activateUserRecruited');
+		//Route::get('/api/getRecruitedUsers', 'RecruitmentController@getRecruitedUsers');
+		//Route::get('/api/getMemberDetails', 'RecruitmentController@getMemberDetails');
+		//Route::post('/api/addComment', 'RecruitmentController@addComment');
+		//Route::post('/api/changeStatus', 'RecruitmentController@changeStatus');
+		//Route::post('/api/activateUserRecruited', 'RecruitmentController@activateUserRecruited');
 
 	});
 

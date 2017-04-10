@@ -38,6 +38,7 @@ use Mail;
 use Response;
 use Session;
 
+//TODO: Split member controller between Member controller and UserController.
 class MemberController extends Controller
 {
     public function getMembers(Member $member, Request $req, Repo $repo) {
