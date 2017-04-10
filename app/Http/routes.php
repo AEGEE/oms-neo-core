@@ -45,8 +45,8 @@ Route::group(['middleware' => 'api'], function() {
 	Route::post('/api/editBio', 'MemberController@editBio');
 	Route::post('/api/uploadUserAvatar', 'MemberController@uploadUserAvatar');
 
-	// Bodies management..
-	Route::group(['middleware' => 'checkAccess:bodies_management'], function() {
+	// Body management..
+	Route::group(['middleware' => 'checkAccess:body_management'], function() {
 		Route::get('/api/getBodies', 'BodyController@getBodies');
 		Route::post('/api/saveBody', 'BodyController@saveBody');
 		Route::get('/api/getBody/{body}', 'BodyController@getBody');

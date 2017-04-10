@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
     		'OptionsSeeder',
     		'EmailTemplateSeeder',
     		'AddSuperAdmin',
-        'AddRecruitmentModuleSeeder',
         'AddSystemRoles',
         'TestDataSeeder',
     	);

@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.recruited_members', {
-                url: '/recruited_members',
+                url: '/recruited_membersblegh',
                 data: {'pageTitle': 'Recruited members'},
                 views   : {
                     'pageContent@app': {

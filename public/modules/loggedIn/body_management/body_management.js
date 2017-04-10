@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.bodies_management', [])
+        .module('app.body_management', [])
         .config(config)
         .controller('BodyController', BodyController);
 
@@ -12,12 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.bodies_management', {
-                url: '/bodies_management',
-                data: {'pageTitle': 'Bodies Management'},
+            .state('app.body_management', {
+                url: '/body_management',
+                data: {'pageTitle': 'Body Management'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/bodies_management/bodies_management.php',
+                        templateUrl: 'modules/loggedIn/body_management/body_management.php',
                         controller: 'BodyController as vm'
                     }
                 }

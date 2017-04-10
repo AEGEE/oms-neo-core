@@ -6,12 +6,12 @@ $omsObj = new omsHelperScript();
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
         <li><a ui-sref="app.dashboard">Dashboard</a></li>
-        <li class="active">Bodies management</li>
+        <li class="active">Body management</li>
     </ol>
     <!-- end breadcrumb -->
 
     <!-- begin page-header -->
-    <h1 class="page-header">Bodies management</h1>
+    <h1 class="page-header">Body management</h1>
     <!-- end page-header -->
 
     <div class="row hiddenItem" id="filters">
