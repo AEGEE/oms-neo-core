@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 use Closure;
 
@@ -43,8 +44,6 @@ class ApiCheckMiddleware
         $auth->user->getObject()->syncRoles($auth->user);
 
         $request->attributes->add(['user' => $auth->user]);
-
-        //error_log("User token login: " . $auth->user->getName());
 
         return $next($request);
     }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Http\Requests;
@@ -29,7 +29,7 @@ use Uuid;
 class LoginController extends Controller
 {
     public function loginUsingCredentials(LoginRequest $req, Auth $auth, Fee $fee) {
-      error_log("Received login request");
+      Log::debug("Received login request");
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -59,7 +59,7 @@ class LoginController extends Controller
       $user = UserRepository::getFromCredentials($username, $password);
 
     	if(!$user) {
-        error_log("No user found for credentials");
+        Log::debug("No user found for credentials");
     	   // No user found for credentials..
     		$auth->save();
     		return response(json_encode($toReturn), 422);
@@ -96,7 +96,7 @@ class LoginController extends Controller
   			'message'	=>	$loginKey
   		);
 
-      error_log("User login: " . $user->getName());
+      Log::debug("User login: " . $user->getName());
     	// Login successful.. returning data..
 	    return response(json_encode($toReturn), 200);
     }

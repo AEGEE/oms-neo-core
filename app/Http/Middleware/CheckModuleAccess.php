@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\ModulePage;
 use App\Models\RoleModulePage;
@@ -26,25 +27,25 @@ class CheckModuleAccess
     $user = $request->get('user');
 
     if($user->isSuperAdmin()) {
-      error_log("Super admin detected.");
+      Log::debug("Super admin detected.");
       $request->attributes->add(['max_permission' => 1]);
       return $next($request);
     }
 
     if(!$user->checkStillValid()) {
-      error_log("User no longer valid.");
+      Log::info("User no longer valid.");
       return response('Forbidden', 403);
     }
 
     try {
       $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
     } catch(ModelNotFoundException $ex) {
-      error_log("Module code not found.");
+      Log::debug("Module code not found.");
       return response('Forbidden', 403);
     }
 
     if(!empty($modulePage->module_id) && empty($modulePage->module->is_active)) {
-      error_log("Module is inactive.");
+      Log::debug("Module is inactive.");
       return response('Forbidden', 403);
     }
 
@@ -59,7 +60,7 @@ class CheckModuleAccess
     }
 
     if ($permission < 0) {
-      error_log("User does not have access to this module.");
+      Log::debug("User does not have access to this module.");
       return response('Forbidden', 403);
     } else {
       $request->attributes->add(['max_permission' => $permission]);

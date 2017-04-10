@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 use App\Repositories\RolesRepository as Repo;
 
@@ -39,8 +40,7 @@ class AccessControlledModel extends Model
       if ($this->canRead($key)) {
         return parent::getAttribute($key);
       } else {
-        error_log("Permission denied to: " . $key . "on: " . get_class($this) . "; Roles: " . json_encode($this->roles));
-        dd(debug_backtrace());
+        Log::debug("Permission denied to: " . $key . "on: " . get_class($this) . "; Roles: " . json_encode($this->roles));
         return null;
       }
     }

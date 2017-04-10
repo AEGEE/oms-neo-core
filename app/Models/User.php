@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\AccessControlledModel;
 use App\Models\Interfaces\HasUser;
@@ -29,7 +30,7 @@ class User extends Model implements HasUser
     } else if ($this->body) {
       return $this->body;
     } else {
-      error_log("No object assigned to this user.");
+      Log::debug("No object assigned to this user.");
       //Panic.
       return;
     }

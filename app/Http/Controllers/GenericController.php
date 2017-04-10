@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 use App\Http\Requests;
 
@@ -146,7 +147,7 @@ class GenericController extends Controller
     		return view('loggedIn', $addToView);
     	}
 
-      error_log("User is not logged in.");
+      Log::debug("User is not logged in.");
       $addToView['oAuthDefined'] = $this->isOauthDefined();
       return view('notLogged', $addToView);
     }
