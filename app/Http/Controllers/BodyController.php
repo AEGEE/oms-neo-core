@@ -80,8 +80,7 @@ class BodyController extends Controller
               $body->email,
               $body->address,
               $body->phone,
-        			$body->city,
-        			$body->country->name
+        			$body->city
         		)
         	);
         }

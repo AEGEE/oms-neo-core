@@ -99,31 +99,28 @@ class LoginController extends Controller
 	    return response(json_encode($toReturn), 200);
     }
 
-    public function getRegistrationFields(Body $ant, StudyType $studType, StudyField $studField) {
+    public function getRegistrationFields() {
         $toReturn = array(
             'antennae'      =>  array(),
             'study_type'    =>  array(),
             'study_field'   =>  array()
         );
 
-        $antenna = $ant->all();
-        foreach($antenna as $antX) {
+        foreach(Body::all() as $body) {
             $toReturn['antennae'][] = array(
-                'id'    =>  $antX->id,
-                'name'  =>  $antX->name
+                'id'    =>  $body->id,
+                'name'  =>  $body->name
             );
         }
 
-        $study_types = $studType->all();
-        foreach($study_types as $study_type) {
+        foreach(StudyType::all() as $study_type) {
             $toReturn['study_type'][] = array(
                 'id'    =>  $study_type->id,
                 'name'  =>  $study_type->name
             );
         }
 
-        $study_fields = $studField->all();
-        foreach($study_fields as $study_field) {
+        foreach(StudyField::all() as $study_field) {
             $toReturn['study_field'][] = array(
                 'id'    =>  $study_field->id,
                 'name'  =>  $study_field->name
@@ -133,7 +130,10 @@ class LoginController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function createUser(AddUserRequest $req, Member $usr, Auth $auth) {
+    public function createUser() { //AddUserRequest $req, Member $usr, Auth $auth) {
+        return response()->json('Not supported yet');
+        //TODO: Method seems to already been in a broken state before.
+
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
@@ -166,6 +166,7 @@ class LoginController extends Controller
     }
 
     public function loginUsingOauth() {
+        Log::debug("Oauth login attempt detected.");
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,

@@ -54,7 +54,7 @@ class GenericController extends Controller
           // Adding modules to which he has access..
           if($user->isSuperAdmin()) {
               // Has access to all modules, regardless of roles assigned..
-              $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
+              $modulePages = ModulePage::with('module')->whereNotNull('module_pages.is_active')
                                       ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                       ->orderBy('module_pages.name', 'ASC')->get();
           } else {
@@ -63,7 +63,7 @@ class GenericController extends Controller
                   return view('loggedIn', $addToView);
               }
               // Getting module pages to which the user has access to..
-              $modules = ModulePage::all()->filter(function ($value, $key) use ($user) {
+              $modulePages = ModulePage::all()->filter(function ($value, $key) use ($user) {
                 return $value->canRead($user->getRoles());
               });
 
@@ -73,7 +73,7 @@ class GenericController extends Controller
           $lastModuleId = 0;
           $menuMarkUp = "";
           $moduleAccess = array();
-          foreach($modules as $module) {
+          foreach($modulePages as $module) {
               $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
 
               if(!empty($module->module_id) && empty($module->module->is_active)) {
@@ -83,14 +83,14 @@ class GenericController extends Controller
               $addToView['modulesSrc'] .= "<script type='text/javascript' src='".$moduleBase.$module->module_link."'></script>";
               $addToView['modulesNames'] .= ", 'app.".$module->code."'";
 
-              if($lastModuleId != $module->module_id) {
+              if($lastModuleId != $module->id) {
                   if(strlen($addToView['baseUrlRepo']) > 0) {
                       $addToView['baseUrlRepo'] .= ",";
                   }
 
-                  $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
+                  $addToView['baseUrlRepo'] .= "'".$module->code."': '".$moduleBase."'";
                   $lastModuleId = $module->module_id;
-                  $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
+                  $menuMarkUp .= '<li class="nav-header">'.$module->name.'</li>';
               }
 
               $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
@@ -103,8 +103,8 @@ class GenericController extends Controller
                   $addToView['moduleAccess'] .= $module->code.": 1";
                   $moduleAccess[$module->code] = 1;
               } else {
-                  $addToView['moduleAccess'] .= $module->code.": ".$modulePageIds[$module->id];
-                  $moduleAccess[$module->code] = $modulePageIds[$module->id]; // todo get highest access level..
+                  $addToView['moduleAccess'] .= $module->code.": ".$module->id;
+                  $moduleAccess[$module->code] = $module->id; // todo get highest access level..
               }
           }
 

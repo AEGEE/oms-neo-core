@@ -149,5 +149,6 @@ Route::group(['middleware' => 'microServiceAuth'], function() {
 
 // Generic routes.. TODO
 Route::any('/logout', 'GenericController@logout');
+Log::debug("No route found, redirecting to default.");
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
 Route::any('{all}', array('uses' => 'GenericController@defaultRoute'))->where('all', '.*');

@@ -24,6 +24,7 @@ class ApiCheckMiddleware
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         if(empty($xAuthToken)) {
+            Log::debug("X-Auth-Token header is missing.");
             return response('Forbidden', 403);
         }
 
@@ -44,7 +45,7 @@ class ApiCheckMiddleware
         $auth->user->getObject()->syncRoles($auth->user);
 
         $request->attributes->add(['user' => $auth->user]);
-
+        Log::debug("User access token accepted.");
         return $next($request);
     }
 }
