@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 use App\Repositories\RolesRepository as Repo;
 
+//TODO: Improve performance by reducing unnecessary role updates
 class AccessControlledModel extends Model
 {
 
@@ -45,7 +46,7 @@ class AccessControlledModel extends Model
       }
     }
 
-    //Returns default error when permission is denied, does not give an error.
+    //Returns default value when permission is denied, does not give an error.
     public function tryGet($key, $default = null) {
         if ($this->canRead($key)) {
           return parent::getAttribute($key);
@@ -67,9 +68,9 @@ class AccessControlledModel extends Model
     public function syncRoles($user) {
       $roles = array();
       if ($user) {
-        //Get global roles of the member (source)
+        //Get global roles of the user (source)
         $roles = Repo::getGlobalRoles($user);
-        //Get scoped roles of the member (source) on this object.
+        //Get scoped roles of the user (source) on this object (target).
         $roles = Repo::getRoles($user, $roles, $this);
       }
 
@@ -136,7 +137,6 @@ class AccessControlledModel extends Model
       if ($this->accessControlEnabled()) {
         return in_array($attribute, $this->getVisible());
       } else {
-        //Superadmin
         return true;
       }
     }
@@ -145,7 +145,6 @@ class AccessControlledModel extends Model
       if ($this->accessControlEnabled()) {
         return in_array($attribute, $this->visible_write);
       } else {
-        //Superadmin
         return true;
       }
     }
