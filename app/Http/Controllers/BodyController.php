@@ -17,7 +17,7 @@ class BodyController extends Controller
 {
     public function getBodies(Body $body, Request $req) {
         $max_permission = $req->get('max_permission');
-    	$search = array(
+  	   $search = array(
             'name'          =>  Input::get('name'),
             'city'          =>  Input::get('city'),
             'country_id'    =>  Input::get('country_id'),
@@ -32,56 +32,56 @@ class BodyController extends Controller
             $search['noLimit'] = true;
         }
 
-        $antennae = $ant->getFiltered($search);
+        $bodies = $body->getFiltered($search);
 
         if($export) {
-            Excel::create('antennae', function($excel) use ($antennae) {
-                $excel->sheet('antennae', function($sheet) use ($antennae) {
-                    $sheet->loadView('excel_templates.antennae')->with("antennae", $antennae);
+            Excel::create('antennae', function($excel) use ($bodies) {
+                $excel->sheet('antennae', function($sheet) use ($bodies) {
+                    $sheet->loadView('excel_templates.antennae')->with("antennae", $bodies);
                 });
             })->export('xlsx');
             return;
         }
 
-    	$antennaCount = $ant->getFiltered($search, true);
-    	if($antennaCount == 0) {
+    	$bodiesCount = $body->getFiltered($search, true);
+    	if($bodiesCount == 0) {
             $numPages = 0;
         } else {
-            if($antennaCount % $search['limit'] > 0) {
-                $numPages = ($antennaCount - ($antennaCount % $search['limit'])) / $search['limit'] + 1;
+            if($bodiesCount % $search['limit'] > 0) {
+                $numPages = ($bodiesCount - ($bodiesCount % $search['limit'])) / $search['limit'] + 1;
             } else {
-                $numPages = $antennaCount / $search['limit'];
+                $numPages = $bodiesCount / $search['limit'];
             }
         }
 
         $toReturn = array(
             'rows'      =>  array(),
-            'records'   =>  $antennaCount,
+            'records'   =>  $bodiesCount,
             'page'      =>  $search['page'],
             'total'     =>  $numPages
         );
 
         $isGrid = Input::get('is_grid', false); // Checking if the caller is jqGrid -> if yes, we add actions to the response..
 
-        foreach($antennae as $antenna) {
+        foreach($bodies as $body) {
             $actions = "";
             if($isGrid) {
                 if($max_permission == 1) {
-                    $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editBody(".$antenna->id.")'><i class='fa fa-pencil'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeAnt' title='Edit' ng-click='vm.editBody(".$body->id.")'><i class='fa fa-pencil'></i></button>";
                 }
             } else {
-                $actions = $antenna->id;
+                $actions = $body->id;
             }
         	$toReturn['rows'][] = array(
-        		'id'	=>	$antenna->id,
+        		'id'	=>	$body->id,
         		'cell'	=> 	array(
         			$actions,
-        			$antenna->name,
-                    $antenna->email,
-                    $antenna->address,
-                    $antenna->phone,
-        			$antenna->city,
-        			$antenna->country->name
+        			$body->name,
+              $body->email,
+              $body->address,
+              $body->phone,
+        			$body->city,
+        			$body->country->name
         		)
         	);
         }
@@ -89,23 +89,23 @@ class BodyController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function saveBody(Body $ant, Country $country, SaveBodyRequest $req) {
+    public function saveBody(Body $body, Country $country, SaveBodyRequest $req) {
         $id = Input::get('id');
         if(!empty($id)) {
-            $ant = $ant->findOrFail($id);
+            $body = $body->findOrFail($id);
         }
 
-        $ant->name = Input::get('name');
-        $ant->city = Input::get('city');
-        $ant->email = Input::get('email');
-        $ant->address = Input::get('address');
-        $ant->phone = Input::get('phone');
+        $body->name = Input::get('name');
+        $body->city = Input::get('city');
+        $body->email = Input::get('email');
+        $body->address = Input::get('address');
+        $body->phone = Input::get('phone');
 
         $country_id = Input::get('country_id');
         $countryCheck = $country->findOrFail($country_id);
 
-        $ant->country_id = $country_id;
-        $ant->save();
+        $body->country_id = $country_id;
+        $body->save();
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
@@ -114,7 +114,7 @@ class BodyController extends Controller
     public function getBody(Request $req, Body $body) {
         $body->syncRoles($req->get('user'));
         $toReturn['success'] = 1;
-        $toReturn['antenna'] = $body;
+        $toReturn['body'] = $body;
         return response()->json($body);
         return response(json_encode($toReturn), 200);
     }
