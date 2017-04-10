@@ -14,6 +14,8 @@ use App\Models\Notification;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\MemberRole;
+use App\Models\User;
+use App\Models\Role;
 
 use Session;
 
@@ -21,6 +23,7 @@ class GenericController extends Controller
 {
     public function defaultRoute(GlobalOption $opt, Auth $auth, MenuItem $menuItem) {
     	$userData = Session::get('userData');
+      $user = User::find($userData['id']);
       $addToView = array();
 
       // Options..
@@ -35,7 +38,7 @@ class GenericController extends Controller
       session_write_close();
 
       $addToView['appName'] = $optionsArr['app_name'];
-      if($auth->isMemberLogged($userData['authToken'])) {
+      if($auth->isUserLogged($userData['authToken'])) {
           $systemRolesAccess = array();
 
           $addToView['maps_key'] = $this->isMapsDefined();
@@ -49,34 +52,22 @@ class GenericController extends Controller
           $addToView['authToken'] = $userData['authToken'];
 
           // Adding modules to which he has access..
-          if($userData['is_superadmin'] == 1) {
+          if($user->isSuperAdmin()) {
               // Has access to all modules, regardless of roles assigned..
               $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
                                       ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
                                       ->orderBy('module_pages.name', 'ASC')->get();
           } else {
-              if($userData['is_suspended']) {
+              if(!$user->checkStillValid()) {
                   $addToView['suspention'] = $userData['suspended_reason'];
                   return view('loggedIn', $addToView);
               }
-              // Getting module pages ids to which it has access to..
-              $userRolesObj = new MemberRole();
-              $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
-              $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                      ->whereIn('module_pages.id', array_keys($modulePageIds))
-                                      ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
-                                      ->orderBy('module_pages.name', 'ASC')->get();
+              // Getting module pages to which the user has access to..
+              $modules = ModulePage::all()->filter(function ($value, $key) use ($user) {
+                return $value->canRead($user->getRoles());
+              });
 
-              $systemRoles = MemberRole::distinct('code')
-                                      ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-                                      ->where('member_id', $userData['id'])
-                                      ->whereNull('is_disabled')
-                                      ->get();
-
-              foreach($systemRoles as $roleX) {
-                  $systemRolesAccess[] = $roleX->code;
-              }
-
+              $systemRolesAccess = Role::all()->where('system_role', 1)->whereIn('code', $user->getRoles())->pluck('code')->toArray();
           }
 
           $lastModuleId = 0;

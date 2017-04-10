@@ -15,7 +15,7 @@ class Auth extends Model
     }
 
     // Model methods go down here..
-    public function isMemberLogged($xApiKey = '') {
+    public function isUserLogged($xApiKey = '') {
     	if(empty($xApiKey)) {
     		return false;
     	}

@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
             $table->integer('object_id')->nullable();
             $table->string('oauth_token')->nullable();
             $table->timestamp('oauth_expiration')->nullable();
-            $table->integer('is_superadmin')->nullable();
             $table->string('password')->nullable();
             $table->timestamps();
         });

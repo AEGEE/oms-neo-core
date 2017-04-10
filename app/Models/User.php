@@ -37,6 +37,7 @@ class User extends Model implements HasUser
   }
 
   public function getRoles() {
+    $this->getObject()->syncRoles($this);
     return $this->getObject()->getRoles();
   }
 
