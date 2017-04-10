@@ -79,13 +79,11 @@ class LoginController extends Controller
       // We check if user has all fees paid, if not, we auto-suspend him..
       $user->checkStillValid();
 
-      //dd($user->getObject());
     	// We try to also add it to session..
       $userData = $user->getLoginUserArray($loginKey);
 
       Session::put('userData', $userData);
       Session::save();
-      //dd(Session::all());
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
     	session_start();
     	$_SESSION['userData'] = Session::get('userData');

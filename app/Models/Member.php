@@ -38,7 +38,6 @@ class Member extends AccessControlledModel implements HasUser
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
     public function checkStillValid(){
-      dd("check!");
       if(empty($user->is_superadmin)) {
           $fee->checkFeesForSuspention($user);
       }
