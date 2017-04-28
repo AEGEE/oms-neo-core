@@ -21,6 +21,7 @@ class CleanStart extends Migration
         Schema::rename('departments', 'old_departments');
         Schema::rename('email_templates', 'old_email_templates');
         Schema::rename('fee_users', 'old_fee_users');
+        Schema::rename('fees', 'old_fees');
         Schema::rename('forums', 'old_forums');
         Schema::rename('global_options', 'old_global_options');
         Schema::rename('menu_items', 'old_menu_items');
@@ -42,6 +43,7 @@ class CleanStart extends Migration
         Schema::rename('user_working_groups', 'old_user_working_groups');
         Schema::rename('users', 'old_users');
         Schema::rename('working_groups', 'old_working_groups');
+        Schema::rename('sessions', 'old_sessions');
     }
 
     /**
@@ -60,6 +62,7 @@ class CleanStart extends Migration
         Schema::rename('old_departments', 'departments');
         Schema::rename('old_email_templates', 'email_templates');
         Schema::rename('old_fee_users', 'fee_users');
+        Schema::rename('old_fees', 'fees');
         Schema::rename('old_forums', 'forums');
         Schema::rename('old_global_options', 'global_options');
         Schema::rename('old_menu_items', 'menu_items');
@@ -81,5 +84,6 @@ class CleanStart extends Migration
         Schema::rename('old_user_working_groups', 'user_working_groups');
         Schema::rename('old_users', 'users');
         Schema::rename('old_working_groups', 'working_groups');
+        Schema::rename('old_sessions', 'sessions');
     }
 }
