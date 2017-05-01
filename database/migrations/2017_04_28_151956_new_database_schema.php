@@ -14,8 +14,8 @@ class NewDatabaseSchema extends Migration
     {
         Schema::create('global_options', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('code');
+            $table->string('name'); //TODO remove
+            $table->string('code'); //TODO rename to key
             $table->string('value');
             $table->text('description')->nullable();
             $table->integer('not_editable')->nullable();
@@ -24,12 +24,12 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('seeder_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code');
+            $table->string('code'); //TODO rename to key
             $table->timestamps();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->unique();
+            $table->increments('id'); //This used to be string()->unique();
             $table->integer('user_id')->nullables();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
@@ -45,18 +45,18 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('country_id');
+            $table->integer('country_id')->unsigned();
             $table->string('street');
             $table->string('zipcode');
             $table->string('city');
             $table->timestamps();
 
-            $table->foreign('country_id')->references('id')->on('countries');
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('restrict');
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('address_id');
+            $table->integer('address_id')->unsigned();
             $table->text('oauth_token')->nullable();
             $table->timestamp('oauth_expiration')->nullable();
             $table->string('contact_email');
@@ -71,15 +71,15 @@ class NewDatabaseSchema extends Migration
             $table->string('suspended_reason')->nullable();
             $table->string('seo_url')->nullable();
             $table->string('email_hash')->nullable();
-            $table->timestamp('activated_at');
+            $table->timestamp('activated_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
         });
 
         Schema::create('auths', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->nullable();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('ip_address', 45);
             $table->string('user_agent');
             $table->text('raw_request_params');
@@ -99,17 +99,17 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('bodies', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('type_id');
-            $table->integer('address_id');
+            $table->integer('type_id')->unsigned();
+            $table->integer('address_id')->unsigned();
             $table->string('name');
             $table->string('email');
-            $table->string('phone');
-            $table->string('description');
-            $table->char('legacy_key', 3);
+            $table->string('phone')->nullable();
+            $table->string('description')->nullable();
+            $table->char('legacy_key', 3)->nullable();
             $table->timestamps();
 
-            $table->foreign('type_id')->references('id')->on('body_types')->onDelete('cascade');
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
+            $table->foreign('type_id')->references('id')->on('body_types')->onDelete('restrict');
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
         });
 
         Schema::create('study_fields', function (Blueprint $table) {
@@ -126,9 +126,9 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('universities', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('address_id');
+            $table->integer('address_id')->unsigned();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
 
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
@@ -136,13 +136,13 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('studies', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('study_field_id');
-            $table->integer('study_type_id');
-            $table->integer('university_id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('study_field_id')->unsigned();
+            $table->integer('study_type_id')->unsigned();
+            $table->integer('university_id')->unsigned();
             $table->integer('status');
-            $table->timestamp('start_date');
-            $table->timestamp('end_date');
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('study_field_id')->references('id')->on('study_fields')->onDelete('restrict');
@@ -152,8 +152,8 @@ class NewDatabaseSchema extends Migration
 
         Schema::create('body_memberships', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('body_id');
+            $table->integer('user_id')->unsigned();
+            $table->integer('body_id')->unsigned();
             $table->integer('status')->nullable();
             $table->timestamp('start_date');
             $table->timestamp('end_date')->nullable();
@@ -163,32 +163,33 @@ class NewDatabaseSchema extends Migration
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
         });
 
-        Schema::create('body_membership_circles', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('membership_id');
-            $table->integer('circle_id');
-            $table->timestamps();
-
-            $table->foreign('membership_id')->references('id')->on('body_memberships')->onDelete('cascade');
-        });
-
         Schema::create('global_circles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
         });
 
         Schema::create('body_circles', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('body_id');
-            $table->integer('global_circle_id')->nullable();
+            $table->integer('body_id')->unsigned();
+            $table->integer('global_circle_id')->unsigned()->nullable();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->timestamps();
 
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
             $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict');
+        });
+
+        Schema::create('body_membership_circles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('membership_id')->unsigned();
+            $table->integer('circle_id')->unsigned();
+            $table->timestamps();
+
+            $table->foreign('membership_id')->references('id')->on('body_memberships')->onDelete('cascade');
+            $table->foreign('circle_id')->references('id')->on('body_circles')->onDelete('restrict');
         });
 
 
