@@ -15,8 +15,8 @@ class CleanStart extends Migration
       $tables = $this->getTables();
       foreach($tables as $table) {
         if (Schema::hasTable($table)) {
-          //Schema::rename($table, 'old_' . $table);
-          Schema::drop(DB::raw($table . " CASCADE"));
+          Schema::rename($table, 'old_' . $table);
+          //Schema::drop(DB::raw($table . " CASCADE"));
         }
       }
     }
@@ -31,8 +31,8 @@ class CleanStart extends Migration
       $tables = $this->getTables();
       foreach($tables as $table) {
         if (Schema::hasTable('old_' . $table)) {
-          //Schema::rename('old_' . $table, $table);
-          Schema::dropIfExists($table);
+          Schema::rename('old_' . $table, $table);
+          //Schema::dropIfExists($table);
         }
       }
     }

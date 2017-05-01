@@ -179,7 +179,7 @@ class NewDatabaseSchema extends Migration
             $table->timestamps();
 
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
-            $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict');
+            $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict'); //Maybe simply unlink instead of restricting?
         });
 
         Schema::create('body_membership_circles', function (Blueprint $table) {
@@ -278,28 +278,32 @@ class NewDatabaseSchema extends Migration
      */
     public function down()
     {
-        Schema::drop('addresses');
-        Schema::drop('auths');
-        Schema::drop('bodies');
-        Schema::drop('body_circles');
-        Schema::drop('body_membership_circles');
-        Schema::drop('body_types');
-        Schema::drop('countries');
-        Schema::drop('global_circles');
-        Schema::drop('clobal_options');
-        Schema::drop('menu_items');
-        Schema::drop('migrations');
-        Schema::drop('module_pages');
-        Schema::drop('modules');
-        Schema::drop('role_module_pages');
-        Schema::drop('roles');
-        Schema::drop('seeder_logs');
-        Schema::drop('sessions');
-        Schema::drop('studies');
-        Schema::drop('study_fields');
-        Schema::drop('study_types');
-        Schema::drop('universities');
-        Schema::drop('user_roles');
-        schema::drop('users');
+        Schema::dropIfExists('auths');
+
+        Schema::dropIfExists('studies');
+        Schema::dropIfExists('study_fields');
+        Schema::dropIfExists('study_types');
+        Schema::dropIfExists('universities');
+
+        Schema::dropIfExists('user_roles');
+        Schema::dropIfExists('body_membership_circles');
+        Schema::dropIfExists('body_memberships');
+
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('body_circles');
+        Schema::dropIfExists('global_circles');
+        Schema::dropIfExists('bodies');
+
+        Schema::dropIfExists('addresses');
+        Schema::dropIfExists('body_types');
+        Schema::dropIfExists('countries');
+        Schema::dropIfExists('global_options');
+        Schema::dropIfExists('menu_items');
+        Schema::dropIfExists('role_module_pages');
+        Schema::dropIfExists('module_pages');
+        Schema::dropIfExists('modules');
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('seeder_logs');
+        Schema::dropIfExists('sessions');
     }
 }
