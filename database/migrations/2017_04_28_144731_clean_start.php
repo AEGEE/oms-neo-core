@@ -3,6 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/* Renames tables to be migrated to the new schema in a later migration. */
 class CleanStart extends Migration
 {
     /**
@@ -16,7 +17,6 @@ class CleanStart extends Migration
       foreach($tables as $table) {
         if (Schema::hasTable($table)) {
           Schema::rename($table, 'old_' . $table);
-          //Schema::drop(DB::raw($table . " CASCADE"));
         }
       }
     }
@@ -32,7 +32,6 @@ class CleanStart extends Migration
       foreach($tables as $table) {
         if (Schema::hasTable('old_' . $table)) {
           Schema::rename('old_' . $table, $table);
-          //Schema::dropIfExists($table);
         }
       }
     }

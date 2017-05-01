@@ -194,12 +194,7 @@ class NewDatabaseSchema extends Migration
 
 
 
-
-
-
-
-
-
+//Older tables, to be replaced later.
 
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
