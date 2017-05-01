@@ -43,37 +43,15 @@ class NewDatabaseSchema extends Migration
             $table->timestamps();
         });
 
-        Schema::create('study_fields', function (Blueprint $table) {
+        Schema::create('addresses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('study_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('body_types', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->timestamps();
-        });
-
-        Schema::create('bodies', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('type_id');
-            $table->integer('address_id');
-            $table->string('name');
-            $table->string('email');
-            $table->string('phone');
-            $table->string('description');
-            $table->char('legacy_key', 3);
+            $table->integer('country_id');
+            $table->string('street');
+            $table->string('zipcode');
+            $table->string('city');
             $table->timestamps();
 
-            $table->foreign('type_id')->references('id')->on('body_types')->onDelete('cascade');
-            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
+            $table->foreign('country_id')->references('id')->on('countries');
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -112,6 +90,115 @@ class NewDatabaseSchema extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+
+        Schema::create('body_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('bodies', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('type_id');
+            $table->integer('address_id');
+            $table->string('name');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('description');
+            $table->char('legacy_key', 3);
+            $table->timestamps();
+
+            $table->foreign('type_id')->references('id')->on('body_types')->onDelete('cascade');
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('cascade');
+        });
+
+        Schema::create('study_fields', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('study_types', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+        Schema::create('universities', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('address_id');
+            $table->string('name');
+            $table->string('description');
+            $table->timestamps();
+
+            $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
+        });
+
+        Schema::create('studies', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id');
+            $table->integer('study_field_id');
+            $table->integer('study_type_id');
+            $table->integer('university_id');
+            $table->integer('status');
+            $table->timestamp('start_date');
+            $table->timestamp('end_date');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('study_field_id')->references('id')->on('study_fields')->onDelete('restrict');
+            $table->foreign('study_type_id')->references('id')->on('study_types')->onDelete('restrict');
+            $table->foreign('university_id')->references('id')->on('study_types')->onDelete('restrict');
+        });
+
+        Schema::create('body_memberships', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('user_id');
+            $table->integer('body_id');
+            $table->integer('status')->nullable();
+            $table->timestamp('start_date');
+            $table->timestamp('end_date')->nullable();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
+        });
+
+        Schema::create('body_membership_circles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('membership_id');
+            $table->integer('circle_id');
+            $table->timestamps();
+
+            $table->foreign('membership_id')->references('id')->on('body_memberships')->onDelete('cascade');
+        });
+
+        Schema::create('global_circles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('description');
+            $table->timestamps();
+        });
+
+        Schema::create('body_circles', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('body_id');
+            $table->integer('global_circle_id')->nullable();
+            $table->string('name');
+            $table->string('description');
+            $table->timestamps();
+
+            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
+            $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict');
+        });
+
+
+
+
+
+
+
+
+
 
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
@@ -181,32 +268,6 @@ class NewDatabaseSchema extends Migration
             $table->foreign('module_page_id')->references('id')->on('module_pages')->onDelete('cascade');
             $table->foreign('parent_id')->references('id')->on('menu_items')->onDelete('cascade');
         });
-
-        Schema::create('body_membership_roles', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->integer('body_id')->nullable();
-            $table->integer('is_internal')->nullable();
-            $table->integer('is_admin')->nullable();
-            $table->timestamps();
-
-            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
-        });
-
-        Schema::create('body_memberships', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('body_id');
-            $table->integer('organizational_role_id')->nullable();
-            $table->integer('status')->nullable();
-            $table->timestamp('start_date');
-            $table->timestamp('end_date')->nullable();
-            $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
-            $table->foreign('organizational_role_id')->references('id')->on('organizational_roles')->onDelete('cascade');
-        });
     }
 
     /**
@@ -216,20 +277,28 @@ class NewDatabaseSchema extends Migration
      */
     public function down()
     {
-        Schema::drop('sessions');
-        Schema::drop('global_options');
+        Schema::drop('addresses');
+        Schema::drop('auths');
+        Schema::drop('bodies');
+        Schema::drop('body_circles');
+        Schema::drop('body_membership_circles');
+        Schema::drop('body_types');
         Schema::drop('countries');
+        Schema::drop('global_circles');
+        Schema::drop('clobal_options');
+        Schema::drop('menu_items');
+        Schema::drop('migrations');
+        Schema::drop('module_pages');
+        Schema::drop('modules');
+        Schema::drop('role_module_pages');
+        Schema::drop('roles');
+        Schema::drop('seeder_logs');
+        Schema::drop('sessions');
+        Schema::drop('studies');
         Schema::drop('study_fields');
         Schema::drop('study_types');
-        Schema::drop('bodies');
-        Schema::drop('users');
-        Schema::drop('auths');
-        Schema::drop('roles');
+        Schema::drop('universities');
         Schema::drop('user_roles');
-        Schema::drop('modules');
-        Schema::drop('module_pages');
-        Schema::drop('role_module_pages');
-        schema::drop('body_types');
-        schema::drop('body_membership_roles');
+        schema::drop('users');
     }
 }
