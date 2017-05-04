@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Body extends Model
 {
-    protected $table = "antennas";
+    protected $table = "bodies";
 
     // Relationships..
     public function address() {
@@ -31,19 +31,20 @@ class Body extends Model
 
     // Model methods go down here..
     public function getFiltered($search = array(), $onlyTotal = false) {
-    	$antennae = $this->with('country');
+        $bodies = $this->with('address');
 
     	// Filters here..
+        /* FILTERS DISABLED.
+        //TODO reimplement filters.
     	if(isset($search['name']) && !empty($search['name'])) {
-            $antennae = $antennae->where('name', 'LIKE', "%".$search['name']."%");
+            $bodies = $bodies->where('name', 'LIKE', "%".$search['name']."%");
         }
-
         if(isset($search['city']) && !empty($search['city'])) {
-            $antennae = $antennae->where('city', 'LIKE', "%".$search['city']."%");
+            $bodies = $bodies->where('city', 'LIKE', "%".$search['city']."%");
         }
 
         if(isset($search['country_id']) && !empty($search['country_id'])) {
-            $antennae = $antennae->where('country_id', $search['country_id']);
+            $bodies = $bodies->where('country_id', $search['country_id']);
         }
     	// END filters..
 
@@ -75,7 +76,8 @@ class Body extends Model
 			$from 	= ($page - 1)*$limit;
 			$antennae = $antennae->take($limit)->skip($from);
 		}
+        */
 
-		return $antennae->get();
+		return Body::all();
     }
 }

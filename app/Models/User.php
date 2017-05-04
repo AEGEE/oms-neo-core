@@ -36,7 +36,7 @@ class User extends Model
     }
 
     public function studies() {
-    	return $this->hasMany('App\Models\Studies');
+    	return $this->hasMany('App\Models\Study');
     }
 
     public function studyFields() {
@@ -99,10 +99,6 @@ class User extends Model
         return $status;
     }
 
-    public function getEmailAddress() {
-        return empty($this->getOriginal('internal_email')) ? $this->contact_email : $this->internal_email;
-    }
-
     // Model methods go down here..
     public function getEmailHash($email) {
         $emailHash = strtolower($email);
@@ -129,10 +125,17 @@ class User extends Model
     }
 
     public function getFiltered($search = array(), $onlyTotal = false) {
-        $users = $this
-                        ->with('antenna')
-                        ->with('studyField')
-                        ->with('StudyType');
+
+        //DISABLED FILTERING
+        //TODO rework filtering.
+
+        /*
+        //Example how filtering should be done:
+        $users = $this->with([
+                    'bodies' => function ($q) {
+                        $q->where('bodies.id', 2);
+                    }, 'studies']);
+        //this filters during the query, instead of afterwards.
 
         // Filters here..
         if(isset($search['name']) && !empty($search['name'])) {
@@ -153,14 +156,6 @@ class User extends Model
 
         if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
             $users = $users->where('antenna_id', $search['antenna_id']);
-        }
-
-        if(isset($search['department_id']) && !empty($search['department_id'])) {
-            $users = $users->where('department_id', $search['department_id']);
-        }
-
-        if(isset($search['internal_email']) && !empty($search['internal_email'])) {
-            $users = $users->where('internal_email', $search['internal_email']);
         }
 
         if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
@@ -216,8 +211,9 @@ class User extends Model
             $from   = ($page - 1)*$limit;
             $users = $users->take($limit)->skip($from);
         }
-
-        return $users->get();
+        */
+        
+        return User::all();
     }
 
     public function generateRandomPassword($max_length = 8) {

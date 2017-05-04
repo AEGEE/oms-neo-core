@@ -16,5 +16,13 @@ class Address extends Model
     public function universities() {
     	return $this->hasMany('App\Models\Universities');
     }
+
+    public function users() {
+    	return $this->hasMany('App\Models\Users');
+    }
+
+    public function bodies() {
+    	return $this->hasMany('App\Models\Body');
+    }
     // Model methods go down here..
 }

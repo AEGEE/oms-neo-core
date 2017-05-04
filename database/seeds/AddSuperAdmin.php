@@ -3,6 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\Models\Body;
+use App\Models\BodyMembership;
 use App\Models\BodyType;
 use App\Models\Address;
 use App\Models\User;
@@ -50,5 +51,13 @@ class AddSuperAdmin extends Seeder
 			'is_superadmin'		=>	1,
             'seo_url'           =>  'superadmin'
 		]);
+
+        BodyMembership::create([
+            'user_id'       =>  1,
+            'body_id'       =>  1,
+            'status'        =>  1,
+            'start_date'  =>  date('Y-m-d H:i:s'),
+            'end_date'  =>  date('Y-m-d H:i:s'),
+        ]);
     }
 }
