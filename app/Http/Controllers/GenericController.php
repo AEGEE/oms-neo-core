@@ -9,7 +9,6 @@ use App\Http\Requests;
 use App\Models\Auth;
 use App\Models\Country;
 use App\Models\GlobalOption;
-use App\Models\Notification;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\UserRole;
@@ -81,7 +80,7 @@ class GenericController extends Controller
             $moduleAccess = array();
             foreach($modules as $module) {
                 $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
-                
+
                 if(!empty($module->module_id) && empty($module->module->is_active)) {
                     continue;
                 }
@@ -93,7 +92,7 @@ class GenericController extends Controller
                     if(strlen($addToView['baseUrlRepo']) > 0) {
                         $addToView['baseUrlRepo'] .= ",";
                     }
-                    
+
                     $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
                     $lastModuleId = $module->module_id;
                     $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
@@ -162,7 +161,7 @@ class GenericController extends Controller
         return redirect('/');
     }
 
-    public function noSessionTimeout() {    
+    public function noSessionTimeout() {
         $now = date('now');
 
         Session::put('lastActive', $now);
@@ -174,7 +173,10 @@ class GenericController extends Controller
         return 1;
     }
 
-    public function getNotifications(Request $req, Notification $not) {
+    public function getNotifications(Request $req) {
+        //DISABLED
+        //TODO rewrite notifications.
+        /*
         $userData = $req->get('userData');
 
         $unreadNotifications = $not->where('user_id', $userData['id'])
@@ -206,9 +208,13 @@ class GenericController extends Controller
         }
 
         return json_encode($toReturn, 200);
+        */
     }
 
-    public function markNotificationsAsRead(Request $req, Notification $not) {
+    public function markNotificationsAsRead(Request $req) {
+        //DISABLED
+        //TODO rewrite notifications.
+        /*
         $userData = $req->get('userData');
         $not->where('user_id', $userData['id'])
             ->whereNull('is_read')
@@ -218,5 +224,6 @@ class GenericController extends Controller
 
         $toReturn['success'] = 1;
         return json_encode($toReturn, 200);
+        */
     }
 }

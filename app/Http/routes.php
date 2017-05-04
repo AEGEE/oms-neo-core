@@ -19,12 +19,7 @@ Route::post('/api/login', 'LoginController@loginUsingCredentials');
 Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
 // Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
 
-Route::post('/api/recruitUser', 'RecrutementController@recruitUser');
-Route::get('/api/checkCampaignExists', 'RecrutementController@checkCampaignExists');
-
 Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
-// UI accessible only!
-Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
@@ -32,12 +27,9 @@ Route::group(['middleware' => 'api'], function() {
 	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');
 	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
-	
+
 	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
 	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
-
-	Route::get('/api/getNews', 'NewsController@getNews');
-	Route::get('/api/getNewsById', 'NewsController@getNewsById');
 
 	// Personal routes..
 	Route::post('/api/changeEmail', 'UserController@changeEmail');
@@ -50,27 +42,6 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getAntennae', 'AntennaController@getAntennae');
 		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
 		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
-	});
-
-	// Working groups..
-	Route::group(['middleware' => 'checkAccess:working_groups'], function() {
-		Route::get('/api/getWorkingGroups', 'WorkingGroupController@getWorkingGroups');
-		Route::post('/api/saveWorkGroup', 'WorkingGroupController@saveWorkGroup');
-		Route::get('/api/getWorkGroup', 'WorkingGroupController@getWorkGroup');
-	});
-
-	// Departments..
-	Route::group(['middleware' => 'checkAccess:departments'], function() {
-		Route::get('/api/getDepartments', 'DepartmentController@getDepartments');
-		Route::post('/api/saveDepartment', 'DepartmentController@saveDepartment');
-		Route::get('/api/getDepartment', 'DepartmentController@getDepartment');
-	});
-
-	// Fees management..
-	Route::group(['middleware' => 'checkAccess:fees_management'], function() {
-		Route::get('/api/getFees', 'FeeController@getFees');
-		Route::post('/api/saveFee', 'FeeController@saveFee');
-		Route::get('/api/getFee', 'FeeController@getFee');
 	});
 
 	// Roles..
@@ -86,7 +57,7 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
 		Route::get('/api/getUser', 'UserController@getUser');
 		Route::post('/api/activateUser', 'UserController@activateUser');
-		
+
 		// Creates..
 		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
 		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
@@ -114,11 +85,6 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getOption', 'OptionController@getOption');
 		Route::post('/api/saveOption', 'OptionController@saveOption');
 
-		// Mails..
-		Route::get('/api/getEmailTemplates', 'EmailController@getEmailTemplates');
-		Route::get('/api/getEmailTemplate', 'EmailController@getEmailTemplate');
-		Route::post('/api/saveEmailTemplate', 'EmailController@saveEmailTemplate');
-
 		// Menu..
 		Route::post('/api/saveMenu', 'MenuController@saveMenu');
 		Route::get('/api/getMenu', 'MenuController@getMenu');
@@ -132,30 +98,6 @@ Route::group(['middleware' => 'api'], function() {
 		Route::post('/api/activateDeactivateModule', 'ModuleController@activateDeactivateModule');
 		Route::get('/api/getSharedSecret', 'ModuleController@getSharedSecret');
 		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
-	});
-
-	// Recrutement campaigns
-	Route::group(['middleware' => 'checkSpecialRoles:recrutement_campaigns,recruter'], function() {
-		Route::get('/api/getRecrutementCampaigns', 'RecrutementController@getRecrutementCampaigns');
-		Route::get('/api/checkLinkAvailability', 'RecrutementController@checkLinkAvailability');
-		Route::post('/api/saveCampaign', 'RecrutementController@saveCampaign');
-	});
-
-	// Recruted users
-	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
-		Route::get('/api/getRecrutedUsers', 'RecrutementController@getRecrutedUsers');
-		Route::get('/api/getUserDetails', 'RecrutementController@getUserDetails');
-		Route::post('/api/addComment', 'RecrutementController@addComment');
-		Route::post('/api/changeStatus', 'RecrutementController@changeStatus');
-		Route::post('/api/activateUserRecruted', 'RecrutementController@activateUserRecruted');
-		
-	});
-
-	// News
-	Route::group(['middleware' => 'checkSpecialRoles:null,announcer'], function() {
-		Route::post('/api/saveNews', 'NewsController@saveNews');
-		Route::post('/api/deleteNews', 'NewsController@deleteNews');
-		
 	});
 });
 
