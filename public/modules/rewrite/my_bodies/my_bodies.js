@@ -6,6 +6,7 @@
         .module('app.my_bodies', [])
         .config(config)
         .directive('circle', CircleDirective)
+
         .controller('MyBodiesController', MyBodiesController);
 
     /** @ngInject */

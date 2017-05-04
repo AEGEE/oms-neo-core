@@ -8,6 +8,7 @@
         .directive('bodytile', TileDirective)
         .controller('BodyListingController', BodyListingController)
         .controller('BodySingleController', BodySingleController);
+        .controller('BodyController', BodyController);
 
     /** @ngInject */
     function config($stateProvider)
