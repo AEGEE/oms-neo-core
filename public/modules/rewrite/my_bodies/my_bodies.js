@@ -5,6 +5,7 @@
     angular
         .module('app.my_bodies', [])
         .config(config)
+        .directive('circle', CircleDirective)
         .controller('MyBodiesController', MyBodiesController);
 
     /** @ngInject */
@@ -24,9 +25,30 @@
             });
     }
 
+    function TileDirective() {
+        return {
+            restrict: 'E',
+            scope: {
+                circle: '='
+            },
+            templateUrl: 'modules/rewrite/my_bodies/directive_circle.html'
+        };
+    }
+
     function MyBodiesController($http, $compile, $scope, $window, $httpParamSerializer) {
         // Data
         var vm = this;
+
+        // TODO replace with real http requests
+        vm.bodies = [
+            {
+                title: "AEGEE-Dresden",
+                subtitle: "The best local ever"
+            }, {
+                title: "ITC",
+                subtitle: "Nerds and stuff"
+            }
+        ];
     }
 
 })();
