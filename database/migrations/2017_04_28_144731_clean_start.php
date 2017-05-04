@@ -69,7 +69,6 @@ class CleanStart extends Migration
       'user_working_groups',
       'users',
       'working_groups',
-      'sessions',
       'seeder_logs',
       );
     }
