@@ -28,15 +28,6 @@ class NewDatabaseSchema extends Migration
             $table->timestamps();
         });
 
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->increments('id'); //This used to be string()->unique();
-            $table->integer('user_id')->nullables();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->text('payload');
-            $table->integer('last_activity');
-        });
-
         Schema::create('countries', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
@@ -299,6 +290,5 @@ class NewDatabaseSchema extends Migration
         Schema::dropIfExists('modules');
         Schema::dropIfExists('roles');
         Schema::dropIfExists('seeder_logs');
-        Schema::dropIfExists('sessions');
     }
 }
