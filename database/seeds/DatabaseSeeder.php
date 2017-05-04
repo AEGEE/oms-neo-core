@@ -18,11 +18,11 @@ class DatabaseSeeder extends Seeder
     		'TypeAndFieldOfStudiesSeeder',
     		'ModuleSeeder',
     		'OptionsSeeder',
-    		'EmailTemplateSeeder',
+    	//	'EmailTemplateSeeder',
     		'AddSuperAdmin',
-            'AddRecrutementModuleSeeder',
+        //    'AddRecrutementModuleSeeder',
             'AddAnnouncementsRole',
-            'BodiesPatch'
+        //    'BodiesPatch'
     	);
 
     	$seeders = SeederLog::all();
