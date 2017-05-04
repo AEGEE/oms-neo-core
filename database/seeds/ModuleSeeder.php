@@ -18,7 +18,7 @@ class ModuleSeeder extends Seeder
         	'code'			=>	'antennae_management',
         	'module_link'	=>	'modules/loggedIn/antennae_management/antennae_management.js',
             'icon'          =>  'ion-android-wifi',
-        	'is_active'		=>	1
+        	'is_active'		=>	0
         ]);
 
         ModulePage::create([
@@ -26,7 +26,7 @@ class ModuleSeeder extends Seeder
             'code'          =>  'working_groups',
             'module_link'   =>  'modules/loggedIn/working_groups/working_groups.js',
             'icon'          =>  'fa fa-group',
-            'is_active'     =>  1
+            'is_active'     =>  0
         ]);
         
         ModulePage::create([
@@ -34,7 +34,7 @@ class ModuleSeeder extends Seeder
             'code'          =>  'departments',
             'module_link'   =>  'modules/loggedIn/departments/departments.js',
             'icon'          =>  'fa fa-briefcase',
-            'is_active'     =>  1
+            'is_active'     =>  0
         ]);
 
         ModulePage::create([
@@ -42,7 +42,7 @@ class ModuleSeeder extends Seeder
             'code'          =>  'fees_management',
             'module_link'   =>  'modules/loggedIn/fees_management/fees_management.js',
             'icon'          =>  'fa fa-usd',
-            'is_active'     =>  1
+            'is_active'     =>  0
         ]);
 
         ModulePage::create([
@@ -73,6 +73,30 @@ class ModuleSeeder extends Seeder
             'name'          =>  'Modules',
             'code'          =>  'modules',
             'module_link'   =>  'modules/loggedIn/modules/modules.js',
+            'icon'          =>  'fa fa-puzzle-piece',
+            'is_active'     =>  1
+        ]);
+
+        ModulePage::create([
+            'name'          =>  'All Bodies',
+            'code'          =>  'body_management',
+            'module_link'   =>  'modules/rewrite/body_management/body_management.js',
+            'icon'          =>  'fa fa-puzzle-piece',
+            'is_active'     =>  1
+        ]);
+
+         ModulePage::create([
+            'name'          =>  'My Bodies',
+            'code'          =>  'my_bodies',
+            'module_link'   =>  'modules/rewrite/my_bodies/my_bodies.js',
+            'icon'          =>  'fa fa-puzzle-piece',
+            'is_active'     =>  1
+        ]);
+
+        ModulePage::create([
+            'name'          =>  'Body Admin',
+            'code'          =>  'body_admin',
+            'module_link'   =>  'modules/rewrite/body_admin/body_admin.js',
             'icon'          =>  'fa fa-puzzle-piece',
             'is_active'     =>  1
         ]);
