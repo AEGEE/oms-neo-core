@@ -36,9 +36,9 @@ class LoginController extends Controller
     		return response(json_encode($toReturn), 422);
     	}
 
-    	$auth->ip = $req->ip();
+    	$auth->ip_address = $req->ip();
     	$auth->user_agent = $req->header('User-Agent');
-    	
+
     	$rawRequestParams = http_build_query($req->all());
     	$rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
 
@@ -93,7 +93,7 @@ class LoginController extends Controller
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
     	session_start();
     	$_SESSION['userData'] = Session::get('userData');
-    	session_write_close();    	
+    	session_write_close();
 
     	$toReturn = array(
 			'success'	=>	1,
@@ -204,7 +204,7 @@ class LoginController extends Controller
         // Saving login request..
         $auth->ip = $req->ip();
         $auth->user_agent = $req->header('User-Agent');
-        
+
         $rawRequestParams = http_build_query($req->all());
         $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
 
@@ -255,7 +255,7 @@ class LoginController extends Controller
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..
         session_start();
         $_SESSION['userData'] = Session::get('userData');
-        session_write_close();      
+        session_write_close();
 
         $toReturn = array(
             'success'   =>  1,
