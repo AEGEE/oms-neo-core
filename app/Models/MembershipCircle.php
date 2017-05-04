@@ -4,17 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BoardMember extends Model
+class BodyMembership extends Model
 {
-    protected $table = "board_members";
+    protected $table = "body_memberships";
 
     // Relationships..
     public function user() {
     	return $this->belongsTo('App\Models\User');
     }
 
-    public function workingGroup() {
-    	return $this->belongsTo('App\Models\WorkingGroup');
+    public function body() {
+    	return $this->belongsTo('App\Models\Body');
     }
 
     // Model methods go down here..

@@ -114,11 +114,11 @@ class UserController extends Controller
         			$userX->date_of_birth->format('d/m/Y'),
         			$userX->contact_email,
         			$userX->gender_text,
-        			$userX->antenna->name,
+        			"TODO: body", //$userX->antenna->name,
         			empty($userX->department_id) ? "-" : $userX->department->name,
         			$userX->internal_email,
-        			$userX->studyField->name,
-        			$userX->studyType->name,
+        			"TODO studyField", //$userX->studyField->name,
+        			"TODO studyName", //$userX->studyType->name,
         			$userX->status,
                     $userX->seo_url
         		)
@@ -492,7 +492,7 @@ class UserController extends Controller
     public function changePassword(User $user, ChangePasswordRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($userData['id']);
-        
+
         $newPassword = Input::get('password');
         $user->password = Hash::make($newPassword);
         $user->save();
@@ -518,7 +518,7 @@ class UserController extends Controller
 
         $id = Input::get('id');
         $user = $user->findOrFail($id);
-        
+
         $suspensionReason = Input::get('reason');
         $user->suspendAccount($suspensionReason, $userData->first_name." ".$userData->last_name);
 
@@ -531,7 +531,7 @@ class UserController extends Controller
 
         $id = Input::get('id');
         $user = $user->findOrFail($id);
-        
+
         $user->unsuspendAccount();
 
         $toReturn['success'] = 1;
@@ -555,7 +555,7 @@ class UserController extends Controller
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..
         session_start();
         $_SESSION['userData'] = Session::get('userData');
-        session_write_close();      
+        session_write_close();
 
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
@@ -603,7 +603,7 @@ class UserController extends Controller
                 'local'     =>  $member->antenna->name,
                 'seo_url'   =>  $member->seo_url
             );
-            
+
         }
 
         $toReturn['latestNews'] = array(

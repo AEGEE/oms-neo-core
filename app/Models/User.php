@@ -15,58 +15,44 @@ class User extends Model
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
     // Relationships..
-    public function antenna() {
-    	return $this->belongsTo('App\Models\Antenna');
+    public function bodies() {
+    	return $this->belongsToMany('App\Models\Body', 'body_memberships', 'user_id', 'body_id');
     }
 
     public function auth() {
     	return $this->hasMany('App\Models\Auth');
     }
 
-    public function boardMember() {
-    	return $this->hasMany('App\Models\BoardMember');
+    public function address() {
+    	return $this->belongsTo('App\Models\Address');
     }
 
-    public function department() {
-    	return $this->belongsTo('App\Models\Department');
-    }
-
-    public function fees() {
-        return $this->belongsToMany('App\Models\Fee', 'fee_users', 'user_id', 'fee_id')
-                    ->withPivot('date_paid', 'expiration_date');
-    }
-
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
-    }
-
-    public function recrutedUser() {
-        return $this->belongsTo('App\Models\RecrutedUser');
+    public function bodyMemberships() {
+    	return $this->hasMany('App\Models\BodyMembership');
     }
 
     public function roles() {
         return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
     }
 
-    public function studyField() {
-    	return $this->belongsTo('App\Models\StudyField', 'studies_field_id');
+    public function studies() {
+    	return $this->hasMany('App\Models\Studies');
     }
 
-    public function studyType() {
-    	return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
+    public function studyFields() {
+    	return $this->belongsToMany('App\Models\StudyField', 'studies', 'user_id', 'study_field_id');
+    }
+
+    public function studyTypes() {
+    	return $this->belongsToMany('App\Models\StudyType', 'studies', 'user_id', 'study_type_id');
+    }
+
+    public function universities() {
+    	return $this->belongsToMany('App\Models\University', 'studies', 'user_id', 'university_id');
     }
 
     public function userRole() {
     	return $this->hasMany('App\Models\UserRole');
-    }
-
-    public function userWorkingGroup() {
-    	return $this->hasMany('App\Models\UserWorkingGroup');
-    }
-
-    public function workingGroups() {
-        return $this->belongsToMany('App\Models\WorkingGroup', 'user_working_groups', 'user_id', 'work_group_id')
-                    ->withPivot('start_date', 'end_date');
     }
 
     // Accessors..
@@ -85,10 +71,6 @@ class User extends Model
                 break;
         }
         return $genderText;
-    }
-
-    public function getInternalEmailAttribute($value) {
-        return empty($value) ? "No internal email assigned!" : $value;
     }
 
     public function getStatusTextAttribute($value) {
@@ -149,7 +131,6 @@ class User extends Model
     public function getFiltered($search = array(), $onlyTotal = false) {
         $users = $this
                         ->with('antenna')
-                        ->with('department')
                         ->with('studyField')
                         ->with('StudyType');
 
@@ -307,83 +288,5 @@ class User extends Model
             'is_suspended'      =>  !empty($this->is_suspended) ? true : false,
             'suspended_reason'  =>  $this->suspended_reason
         );
-    }
-
-    // oAuth methods..
-    public function oAuthCreateAccount($provider, $delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
-        switch ($provider) {
-            case 'google':
-                return $this->createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password);
-                break;
-            case 'azure':
-                return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
-                break;
-            
-            default:
-                return false;
-                break;
-        }
-    }
-
-    private function createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
-        $scopes = array(
-            'https://www.googleapis.com/auth/admin.directory.user'
-        );
-
-        $client = new \Google_Client();
-        $client->setScopes($scopes);
-        $client->setSubject($delegatedAdmin);
-
-        $client->setAuthConfig($oAuthCredentials);
-
-        $dir = new \Google_Service_Directory($client);
-
-        $userInstance = new \Google_Service_Directory_User();
-        $nameInstance = new \Google_Service_Directory_UserName();
-
-        $nameInstance->setGivenName($this->first_name);
-        $nameInstance->setFamilyName($this->last_name);
-
-        $userInstance->setName($nameInstance);
-        $userInstance->setHashFunction("MD5");
-        $userInstance->setPrimaryEmail($seo."@".$domain);
-        $userInstance->setPassword(hash("md5", $password));
-        $userInstance->setChangePasswordAtNextLogin(true);
-
-        $createUserResult = $dir->users->insert($userInstance);
-
-        return true;
-    }
-
-    private function createAzureAdAccount($oAuthCredentials, $domain, $seo, $password) {
-        $userData = array(
-            'displayName'           =>  $this->first_name." ".$this->last_name,
-            'userPrincipalName'     =>  $seo."@".$domain,
-            'mailNickname'          =>  $seo,
-            'passwordProfile'       =>  array(
-                                            'password'  =>  $password,
-                                            'forceChangePasswordNextLogin'  =>  true
-                                        ),
-            'accountEnabled'        =>  true
-        );
-
-        $client = new \GuzzleHttp\Client();
-
-        $response = $client->request('POST', 'https://graph.windows.net/myorganization/users', [
-            'query' => [
-                'api-version' => '1.5'
-            ],
-            'headers'   =>  [
-                'Authorization' =>  'Bearer '.$oAuthCredentials['token'],
-                'Content-Type' => 'application/json'
-            ],
-            'body' => json_encode($userData)
-        ]);
-
-        if($response->getStatusCode() == 201) {
-            return true;
-        }
-
-        return $response->getStatusCode();
     }
 }
