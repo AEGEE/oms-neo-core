@@ -2,7 +2,9 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Models\Antenna;
+use App\Models\Body;
+use App\Models\BodyType;
+use App\Models\Address;
 use App\Models\User;
 
 class AddSuperAdmin extends Seeder
@@ -14,27 +16,39 @@ class AddSuperAdmin extends Seeder
      */
     public function run()
     {
-    	Antenna::create([
-    		'name'			=>	'Global antenna',
-    		'city'			=>	'Cluj-Napoca',
-    		'country_id' 	=>	1
+        Address::create([
+            'id'            =>  1,
+            'country_id'    =>  21,
+            'street'        =>  'Notelaarsstraat 55',
+            'zipcode'       =>  '1000',
+            'city'          =>  'Brussels',
+        ]);
+
+        BodyType::create([
+            'id'            =>  1,
+            'name'          =>  'special',
+        ]);
+
+    	Body::create([
+            'type_id'       =>  1,
+            'address_id'    =>  1,
+    		'name'			=>	'AEGEE-Europe',
+            'email'         =>  'headoffice@aegee.org',
+            'legacy_key'    =>  'AEU'
     	]);
 
         User::create([
-			'contact_email' 	=> 	'flaviu@glitch.ro',
-			'first_name'		=>	'Flaviu',
-			'last_name'			=>	'Porutiu',
-			'date_of_birth'		=>	'1994-01-24',
-			'gender'			=>	1,
-			'antenna_id'		=>	1,
-			'university'		=>	'UBB Cluj',
-			'studies_type_id'	=>	1,
-			'studies_field_id'	=>	1,
+            'id'                =>  1,
+            'address_id'        =>  1,
+			'contact_email' 	=> 	'admin@aegee.org',
+			'first_name'		=>	'Super',
+			'last_name'			=>	'Admin',
+			'date_of_birth'		=>	'1985-04-16',
+			'gender'			=>	0,
 			'password'			=>	Hash::make('1234'),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
 			'is_superadmin'		=>	1,
-            'city'              =>  'Cluj',
-            'seo_url'           =>  'glitch'
+            'seo_url'           =>  'superadmin'
 		]);
     }
 }

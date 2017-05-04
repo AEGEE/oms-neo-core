@@ -190,6 +190,8 @@ class NewDatabaseSchema extends Migration
         Schema::create('roles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string('code');
+            $table->integer('system_role');
             $table->integer('is_disabled')->nullable();
             $table->timestamps();
         });
