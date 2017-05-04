@@ -1,3 +1,7 @@
+<!-- TODO find out how to really include CSS files -->
+<link rel="stylesheet" type="text/css" href="assets/css/own.css" />
+
+
 <h1 class="page-header">Bodies overview</h1>
 
 <div class="row">
@@ -9,15 +13,20 @@
 	</div>
 	<div class="row">
 		<button type="button" class="btn btn-white pull-left">Advanced filtering</button>
-		<button type="button" class="btn btn-white pull-left" ng-if="vm.permissions.create_body">Create new body</button>
-		<button type="button" class="btn btn-white pull-right">Export to Excel</button>
+		<button type="button" class="btn btn-white pull-left" ng-if="vm.permissions.create_body" ng-click="vm.showBodyModal()">Create new body</button>
+		<button type="button" class="btn btn-white disabled pull-right">Export to Excel</button>
 	</div>
 </div>
 
 <hr />
 
-<div class="row" ng-repeat="body in vm.bodies">
-	<a ui-sref="app.body_management.single">
-		<bodytile body="body"></bodytile>
-	</a>
+<div class="row">
+	<div class="row" ng-repeat="body in vm.bodies">
+		<a ui-sref="app.body_management.single">
+			<bodytile body="body"></bodytile>
+		</a>
+	</div>
 </div>
+
+
+<ng-include src="'modules/rewrite/body_management/edit_body_form.html'"></ng-include>

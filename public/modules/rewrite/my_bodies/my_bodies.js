@@ -5,7 +5,7 @@
     angular
         .module('app.my_bodies', [])
         .config(config)
-        .directive('circle', CircleDirective)
+        .directive('circlepanel', CircleDirective)
 
         .controller('MyBodiesController', MyBodiesController);
 
@@ -26,7 +26,7 @@
             });
     }
 
-    function TileDirective() {
+    function CircleDirective() {
         return {
             restrict: 'E',
             scope: {

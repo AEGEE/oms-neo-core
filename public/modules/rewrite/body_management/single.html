@@ -8,6 +8,14 @@
 	<h4 class="col-sm-4">Click to contact</h4>
 </div>
 
-<button class="btn btn-white" type="button">Edit Details</button>
+<a ui-sref="app.body_management" class="btn btn-white">Back to overview</a>
+<button class="btn btn-white" type="button" ng-click="vm.showBodyModal()">Edit Details</button>
+<button class="btn btn-white" type="button">Request to join</button>
 
+<hr />
 
+<div class="row" ng-repeat="circle in vm.body.circles">
+	<circlepanel circle="circle"></circlepanel>
+</div>
+
+<ng-include src="'modules/rewrite/body_management/edit_body_form.html'"></ng-include>

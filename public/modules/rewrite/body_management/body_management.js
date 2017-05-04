@@ -8,7 +8,6 @@
         .directive('bodytile', TileDirective)
         .controller('BodyListingController', BodyListingController)
         .controller('BodySingleController', BodySingleController);
-        .controller('BodyController', BodyController);
 
     /** @ngInject */
     function config($stateProvider)
@@ -65,6 +64,10 @@
                 subtitle: "Nerds and stuff"
             }
         ];
+
+        vm.showBodyModal = function() {
+            $('#editBodyModal').modal('show');
+        }
     }
 
     function BodySingleController() {
@@ -72,7 +75,19 @@
 
         vm.body = {
             title: "AEGEE-Dresden",
-            subtitle: "The best local ever"
+            subtitle: "The best local ever",
+            circles: [
+                {
+                    name: "Members"
+                },
+                {
+                    name: "Board"
+                }
+            ]
+        }
+
+        vm.showBodyModal = function() {
+            $('#editBodyModal').modal('show');
         }
     }
 

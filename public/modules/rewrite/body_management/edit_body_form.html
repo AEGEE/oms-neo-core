@@ -1,0 +1,47 @@
+
+<!-- #modal-dialog -->
+<div class="modal fade" id="editBodyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Body add/edit</h4>
+            </div>
+            <form name="bodyForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="form-group m-b-20">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.body.name" placeholder="Body name" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" ng-model="vm.body.email" placeholder="Body email" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="address">Address</label>
+                        <textarea id="address" class="form-control" ng-model="vm.body.address" placeholder="Body address" required></textarea>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" class="form-control" ng-model="vm.body.phone" placeholder="Body phone"/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="city">City</label>
+                        <input type="text" id="city" class="form-control" ng-model="vm.body.city" placeholder="Body city" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="countries">Country</label>
+                        <select ng-model="vm.body.country" class="form-control" id="countries">
+                            <option value=""></option>
+                            <option ng-repeat="(key, value) in vm.countries" value="{{key}}">{{value}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--<button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>-->
+                    <button ng-disabled="bodyForm.$pristine || bodyForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveBody()"><i class="fa fa-save"></i> Save body</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

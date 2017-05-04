@@ -30,7 +30,8 @@ elixir(function(mix) {
         '../../../public/assets/plugins/parsley/src/parsley.css',
         '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
         '../../../node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
-        '../otherLibs/nestable/style.css'
+        '../otherLibs/nestable/style.css',
+        '../../../public/assets/css/own.css'
 	],
 	'public/vendor/vendor.css');
 

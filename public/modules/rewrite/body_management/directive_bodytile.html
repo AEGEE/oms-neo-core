@@ -1,13 +1,15 @@
-<span class="bodytile">
-	<div class="col-lg-3">
+
+
+<div class="row bodytile">
+	<div class="col-lg-3 bodytile-logo">
 	A logo will pop up here... soon
 	</div>
 
-	<div class="col-lg-9">
-		<h2>{{ body.title }}</h2>
-		<h3>{{ body.subtitle }}</h3>
-		<div>
+	<div class="col-lg-9 bodytile-content">
+		<h2 class="bodytile-heading">{{ body.title }}</h2>
+		<span class="bodytile-subheading">{{ body.subtitle }}</span>
+		<div class="bodytile-footer">
 		{{ body.members }} Members, 0 Events
 		</div>
 	</div>
-</span>
+</div>
