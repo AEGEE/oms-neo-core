@@ -74,7 +74,7 @@ class UserController extends Controller
             return;
         }
 
-    	$usersCount = $user->getFiltered($search, true);
+    	$usersCount = $user->count();
     	if($usersCount == 0) {
             $numPages = 0;
         } else {
