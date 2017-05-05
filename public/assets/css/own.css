@@ -19,3 +19,28 @@
 	padding: 0 0 5px 0;
 	font-size: 17px;
 }
+
+
+.edit-circles-table {
+	text-align: center;
+}
+
+.edit-circles-table thead {
+	font-weight: bold;
+	font-size: 18px;
+	border-bottom: 1px solid black;
+}
+
+.edit-circles-table td {
+	width: 150px;
+	padding: 5px 0 5px 0;
+}
+
+.edit-circles-table-usercol {
+	border-right: 1px solid black;
+}
+
+
+tbody .edit-circles-table-usercol {
+	font-size: 16px;
+}
