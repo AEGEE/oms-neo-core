@@ -89,6 +89,7 @@
             }
         ];
 
+        // Intersects each users circles with all available ones to render the table
         var intersectCircles = function(users, circles) {
             var helper = function(usercircles, circles) {
                 return circles.map(function(item) {

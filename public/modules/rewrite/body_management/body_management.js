@@ -73,15 +73,32 @@
     function BodySingleController() {
         var vm = this;
 
+        vm.permissions = {
+            edit_body: true,
+            edit_circles: true
+        };
+
         vm.body = {
             title: "AEGEE-Dresden",
             subtitle: "The best local ever",
             circles: [
                 {
-                    name: "Members"
+                    name: "Members",
+                    users: [
+                        {
+                            name: "Nico",
+                        }, {
+                            name: "Dresdino"
+                        }
+                    ]
                 },
                 {
-                    name: "Board"
+                    name: "Board",
+                    users: [
+                        {
+                            name: "Nico"
+                        }
+                    ]
                 }
             ]
         }

@@ -21,7 +21,7 @@
 }
 
 
-.edit-circles-table {
+.edit-circles-table, .edit-circles-table th {
 	text-align: center;
 }
 
