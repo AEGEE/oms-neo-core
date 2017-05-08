@@ -28,19 +28,13 @@ Route::group(['middleware' => 'api'], function() {
 	Route::any('/api/getNotifications', 'GenericController@getNotifications');
 	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
 
-	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
-	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
-
 	// Personal routes..
-	Route::post('/api/changeEmail', 'UserController@changeEmail');
-	Route::post('/api/changePassword', 'UserController@changePassword');
-	Route::post('/api/editBio', 'UserController@editBio');
 	Route::post('/api/uploadUserAvatar', 'UserController@uploadUserAvatar');
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
 		Route::get('/api/getBodies', 'BodyController@getBodies');
-		Route::post('/api/saveBody/{id}', 'BodyController@saveBody');
+		Route::post('/api/saveBody/{id}', 'BodyController@saveBody')->where('id', '[0-9]+');
 		Route::get('/api/getBody/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
         //TODO /api/createBody
 	});
@@ -56,26 +50,24 @@ Route::group(['middleware' => 'api'], function() {
 	// Users..
 	Route::group(['middleware' => 'checkAccess:users'], function() {
 		Route::get('/api/getUsers', 'UserController@getUsers');
-		Route::get('/api/getUser', 'UserController@getUser');
-		Route::post('/api/activateUser', 'UserController@activateUser');
+		Route::get('/api/getUser/{id}', 'UserController@getUser')->where('id', '[0-9]+');
+
+        // Updates..
+		Route::get('/api/saveUser/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
+		Route::post('/api/activateUser/{id}', 'UserController@activateUser')->where('id', '[0-9]+');
+        Route::post('api/user/{user_id}/join/body/{body_id}')->where('user_id', '[0-9]+')->where('body_id', '[0-9]+');;
 
 		// Creates..
-		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
-		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
-		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
-		Route::post('/api/addWorkingGroupToUser', 'UserController@addWorkingGroupToUser');
 		Route::post('/api/createUser', 'LoginController@createUser');
+		Route::post('/api/createUserRoles', 'UserController@addUserRoles');
 
 		// Deletes..
-		Route::post('/api/deleteFee', 'UserController@deleteFee');
 		Route::post('/api/deleteRole', 'UserController@deleteRole');
-		Route::post('/api/deleteMembership', 'UserController@deleteMembership');
-		Route::post('/api/deleteWorkGroup', 'UserController@deleteWorkGroup');
 
 		// Suspensions and others..
-		Route::post('/api/suspendAccount', 'UserController@suspendAccount');
-		Route::post('/api/unsuspendAccount', 'UserController@unsuspendAccount');
-		Route::post('/api/impersonateUser', 'UserController@impersonateUser');
+		Route::post('/api/suspendAccount/{id}', 'UserController@suspendAccount')->where('id', '[0-9]+');
+		Route::post('/api/unsuspendAccount/{id}', 'UserController@unsuspendAccount')->where('id', '[0-9]+');
+		Route::post('/api/impersonateUser/{id}', 'UserController@impersonateUser')->where('id', '[0-9]+');
 
 	});
 

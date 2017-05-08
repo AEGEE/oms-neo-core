@@ -21,19 +21,19 @@ class BodyController extends Controller
 
         //TODO: rewrite search (filtering)
         $search = array();
-        $bodies = $body->getFiltered($search);
+        $bodies = $body->getFiltered();
 
         return response()->json($bodies);
     }
 
     public function saveBody($id, SaveBodyRequest $req) {
         $body = Body::findOrFail($id);
-        $body->name = $req->name;
-        $body->email = $req->email;
-        $body->phone = $req->phone;
+        $body->name = $req->has('name') ? $req->name : $body->name;
+        $body->email = $req->has('email') ? $req->email : $body->email;
+        $body->phone = $req->has('phone') ? $req->phone : $body->phone;
 
-        $body->type_id = BodyType::findOrFail($req->type_id)->id;
-        $body->address_id = Address::findOrFail($req->address_id)->id;
+        $body->type_id = $req->has('type_id') ? BodyType::findOrFail($req->type_id)->id : $body->type_id;
+        $body->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $body->address_id;
 
         $body->save();
 

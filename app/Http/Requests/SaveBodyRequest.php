@@ -24,12 +24,12 @@ class SaveBodyRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'required',
-            'type_id'       =>  'required|integer',
-            'address_id'    =>  'required|integer',
-            'email'         =>  'required|email',
-            'phone'         =>  'numeric', //Saved as null if not specified
-            'description'   =>  'max:255', //Saved as null if not specified
+            'name'          =>  'max:255',
+            'type_id'       =>  'integer',
+            'address_id'    =>  'integer',
+            'email'         =>  'email|unique:users,contact_email',
+            'phone'         =>  'numeric',
+            'description'   =>  'max:1024',
         ];
     }
 }

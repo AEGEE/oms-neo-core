@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveDepartmentRequest extends Request
+class AddBodyToUserRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SaveDepartmentRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,10 @@ class SaveDepartmentRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'required',
-            'description'   =>  'required'
+            'user_id'           =>  'required|exists:users,id',
+            'body_id'           =>  'required|exists:bodies,id',
+            'date_of_birth'     =>  'date',
+            'date_of_birth'     =>  'date',
         ];
     }
 }
