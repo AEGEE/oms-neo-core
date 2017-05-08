@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Requests\SaveAntennaRequest;
 
-use App\Models\Antenna;
+use App\Models\Body;
 use App\Models\Country;
 
 use Excel;
 use Input;
 
-class AntennaController extends Controller
+class BodyController extends Controller
 {
-    public function getAntennae(Antenna $ant, Request $req) {
+    public function getAntennae(Body $ant, Request $req) {
         $max_permission = $req->get('max_permission');
     	$search = array(
             'name'          =>  Input::get('name'),
