@@ -39,9 +39,10 @@ Route::group(['middleware' => 'api'], function() {
 
 	// Antennae management..
 	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-		Route::get('/api/getAntennae', 'AntennaController@getAntennae');
-		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
-		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
+		Route::get('/api/getBodies', 'BodyController@getBodies');
+		Route::post('/api/saveBody/{id}', 'BodyController@saveBody');
+		Route::get('/api/getBody/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
+        //TODO /api/createBody
 	});
 
 	// Roles..

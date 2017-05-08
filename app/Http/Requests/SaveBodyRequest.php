@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveAntennaRequest extends Request
+class SaveBodyRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +25,11 @@ class SaveAntennaRequest extends Request
     {
         return [
             'name'          =>  'required',
-            'city'          =>  'required',
-            'email'         =>  'required',
-            'address'       =>  'required',
-            'country_id'    =>  'required'
+            'type_id'       =>  'required|integer',
+            'address_id'    =>  'required|integer',
+            'email'         =>  'required|email',
+            'phone'         =>  'numeric', //Saved as null if not specified
+            'description'   =>  'max:255', //Saved as null if not specified
         ];
     }
 }
