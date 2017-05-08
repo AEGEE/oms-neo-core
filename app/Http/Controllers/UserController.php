@@ -1,49 +1,37 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\Http\Requests\AddBodyToUserRequest;
-use App\Http\Requests\ChangeEmailRequest;
-use App\Http\Requests\SaveUserRequest;
-
-use App\Models\Antenna;
-use App\Models\Auth;
-use App\Models\BoardMember;
-use App\Models\Country;
-use App\Models\Department;
-use App\Models\EmailTemplate;
-use App\Models\Fee;
-use App\Models\FeeUser;
-use App\Models\News;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\UserRole;
-use App\Models\UserWorkingGroup;
-use App\Models\WorkingGroup;
-
-use Excel;
-use File;
-use Hash;
-use Image;
-use Input;
 use Mail;
-use Response;
+use Hash;
+use File;
+use Input;
+use Image;
+use Excel;
 use Session;
+use Response;
+use App\Http\Requests;
+use App\Http\Requests\SaveUserRequest;
+use App\Http\Requests\AddBodyToUserRequest;
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Auth;
+use App\Models\Country;
+use App\Models\UserRole;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function getUsers(User $user, Request $req) {
         $max_permission = $req->get('max_permission');
 
+        //TODO: rewrite search (filtering)
         $users = $user->getFiltered();
 
         return response()->json($users);
     }
 
     public function getUser($id) {
+        //TODO Decide what (if) should be eager loaded.
         $user = User::findOrFail($id)->with('address', 'bodies')->get();
         return response()->json($user);
     }

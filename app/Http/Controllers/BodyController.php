@@ -20,7 +20,6 @@ class BodyController extends Controller
         $max_permission = $req->get('max_permission');
 
         //TODO: rewrite search (filtering)
-        $search = array();
         $bodies = $body->getFiltered();
 
         return response()->json($bodies);
@@ -41,6 +40,7 @@ class BodyController extends Controller
     }
 
     public function getBody($id) {
+        //TODO Decide what (if) should be eager loaded.
         return response()->json(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
     }
 }

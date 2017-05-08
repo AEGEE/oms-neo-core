@@ -24,8 +24,8 @@ class AddBodyToUserRequest extends Request
     public function rules()
     {
         return [
-            'user_id'           =>  'required|exists:users,id',
-            'body_id'           =>  'required|exists:bodies,id',
+            'user_id'           =>  'required|integer|exists:users,id',
+            'body_id'           =>  'required|integer|exists:bodies,id',
             'date_of_birth'     =>  'date',
             'date_of_birth'     =>  'date',
         ];

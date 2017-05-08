@@ -174,56 +174,10 @@ class GenericController extends Controller
     }
 
     public function getNotifications(Request $req) {
-        //DISABLED
-        //TODO rewrite notifications.
-        /*
-        $userData = $req->get('userData');
-
-        $unreadNotifications = $not->where('user_id', $userData['id'])
-                                    ->whereNull('is_read')
-                                    ->limit(10)
-                                    ->orderBy('created_at', 'desc')
-                                    ->get();
-
-        $toReturn['notifications'] = array();
-        $toReturn['notificationsCount'] = 0;
-        foreach($unreadNotifications as $unread) {
-            $toReturn['notifications'][] = $unread;
-            $toReturn['notificationsCount']++;
-        }
-
-        if($toReturn['notificationsCount'] == 10) {
-            // We just finish here..
-            return json_encode($toReturn, 200);
-        }
-
-        $limit = 10 - $toReturn['notificationsCount'];
-        $otherNotifications = $not->where('user_id', $userData['id'])
-                                    ->whereNotNull('is_read')
-                                    ->orderBy('created_at', 'desc')
-                                    ->limit($limit)
-                                    ->get();
-        foreach ($otherNotifications as $not) {
-            $toReturn['notifications'][] = $not;
-        }
-
-        return json_encode($toReturn, 200);
-        */
+        //TODO implement notifications.
     }
 
     public function markNotificationsAsRead(Request $req) {
-        //DISABLED
-        //TODO rewrite notifications.
-        /*
-        $userData = $req->get('userData');
-        $not->where('user_id', $userData['id'])
-            ->whereNull('is_read')
-            ->limit(10)
-            ->orderBy('created_at', 'desc')
-            ->update(['is_read' => 1]);
-
-        $toReturn['success'] = 1;
-        return json_encode($toReturn, 200);
-        */
+        //TODO implement notifications.
     }
 }
