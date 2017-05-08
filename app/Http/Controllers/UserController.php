@@ -5,12 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\AddBoardPositionRequest;
-use App\Http\Requests\AddFeesRequest;
-use App\Http\Requests\AddRoleRequest;
-use App\Http\Requests\AddWorkingGroupRequest;
+use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\ChangeEmailRequest;
-use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\SaveUserRequest;
 
 use App\Models\Antenna;
 use App\Models\Auth;
@@ -87,7 +84,7 @@ class UserController extends Controller
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 
         $user->save();
-        return response()->json($body);
+        return response()->json($user);
     }
 
     public function addBodyToUser($user_id, $body_id, AddBodyToUserRequest $req) {
@@ -102,7 +99,7 @@ class UserController extends Controller
         $membership->start_date = $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s');
         $membership->end_date = $req->has('end_date') ? $req->end_date : null;
 
-        $membership->save()
+        $membership->save();
 
         return response()->json($membership);
     }
@@ -237,6 +234,7 @@ class UserController extends Controller
         $toReturn['success'] = 1;
         return response(json_encode($toReturn), 200);
     }
+
 
     //TODO If I am not mistaken user avatar management can be done a lot simpler using Laravel.
     public function uploadUserAvatar(Request $req) {

@@ -24,7 +24,7 @@ class SaveUserRequest extends Request
     public function rules()
     {
         return [
-            'address_id'            =>  'integer',
+            'address_id'            =>  'integer|exists:address,id',
             'contact_email'         =>  'email|unique:users,contact_email',
             'first_name'            =>  'max:255',
             'last_name'             =>  'max:255',

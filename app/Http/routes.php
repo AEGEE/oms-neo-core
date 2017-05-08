@@ -53,7 +53,7 @@ Route::group(['middleware' => 'api'], function() {
 		Route::get('/api/getUser/{id}', 'UserController@getUser')->where('id', '[0-9]+');
 
         // Updates..
-		Route::get('/api/saveUser/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
+		Route::post('/api/saveUser/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
 		Route::post('/api/activateUser/{id}', 'UserController@activateUser')->where('id', '[0-9]+');
         Route::post('api/user/{user_id}/join/body/{body_id}')->where('user_id', '[0-9]+')->where('body_id', '[0-9]+');;
 
