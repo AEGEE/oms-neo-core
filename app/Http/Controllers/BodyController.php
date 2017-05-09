@@ -25,7 +25,12 @@ class BodyController extends Controller
         return response()->success($bodies);
     }
 
-    public function saveBody($id, SaveBodyRequest $req) {
+    public function getBody($id) {
+        //TODO Decide what (if) should be eager loaded.
+        return response()->success(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
+    }
+
+    public function updateBody($id, SaveBodyRequest $req) {
         $body = Body::findOrFail($id);
         $body->name = $req->has('name') ? $req->name : $body->name;
         $body->email = $req->has('email') ? $req->email : $body->email;
@@ -37,10 +42,5 @@ class BodyController extends Controller
         $body->save();
 
         return response()->success($body, null, "Body saved");
-    }
-
-    public function getBody($id) {
-        //TODO Decide what (if) should be eager loaded.
-        return response()->success(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get(), null, "Here is your body");
     }
 }
