@@ -45,7 +45,7 @@ class AddSuperAdmin extends Seeder
 			'first_name'		=>	'Super',
 			'last_name'			=>	'Admin',
 			'date_of_birth'		=>	'1985-04-16',
-			'gender'			=>	0,
+			'gender'			=>	'other',
 			'password'			=>	Hash::make('1234'),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
 			'is_superadmin'		=>	1,
