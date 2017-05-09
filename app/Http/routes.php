@@ -16,90 +16,92 @@ Route::any('/oauth/login', 'LoginController@loginUsingOauth');
 Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
-Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
-// Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
+Route::get('/api/registration/fields', 'LoginController@getRegistrationFields');
 
-Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
+Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar');
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
-	// Routes go in here..
-	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
-	Route::any('/api/getNotifications', 'GenericController@getNotifications');
-	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
+    // Routes go in here..
+    Route::put('/session', 'GenericController@noSessionTimeout');
+    Route::get('/api/notifications', 'GenericController@getNotifications');
+    Route::put('/api/notifications', 'GenericController@markNotificationsAsRead');
 
-	// Personal routes..
-	Route::post('/api/uploadUserAvatar', 'UserController@uploadUserAvatar');
+    // Personal routes..
+    Route::post('/api/users/{user_id}/avatars', 'UserController@uploadUserAvatar');
 
-	// Antennae management..
-	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-		Route::get('/api/getBodies', 'BodyController@getBodies');
-		Route::post('/api/saveBody/{id}', 'BodyController@saveBody')->where('id', '[0-9]+');
-		Route::get('/api/getBody/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
-        //TODO /api/createBody
-	});
+    // Antennae management..
+    Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
+        Route::get('/api/bodies', 'BodyController@getBodies');
+        Route::put('/api/bodies/{id}', 'BodyController@saveBody')->where('id', '[0-9]+');
+        Route::get('/api/bodies/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
+        //TODO Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+');
+    });
 
-	// Roles..
-	Route::group(['middleware' => 'checkAccess:roles'], function() {
-		Route::get('/api/getRoles', 'RoleController@getRoles');
-		Route::get('/api/getModulePages', 'ModuleController@getModulePages');
-		Route::post('/api/saveRole', 'RoleController@saveRole');
-		Route::get('/api/getRole', 'RoleController@getRole');
-	});
+    // Roles..
+    Route::group(['middleware' => 'checkAccess:roles'], function() {
+        Route::get('/api/getRoles', 'RoleController@getRoles');
+        Route::get('/api/getModulePages', 'ModuleController@getModulePages');
+        Route::post('/api/saveRole', 'RoleController@saveRole');
+        Route::get('/api/getRole', 'RoleController@getRole');
+    });
 
-	// Users..
-	Route::group(['middleware' => 'checkAccess:users'], function() {
-		Route::get('/api/getUsers', 'UserController@getUsers');
-		Route::get('/api/getUser/{id}', 'UserController@getUser')->where('id', '[0-9]+');
+    // Users..
+    Route::group(['middleware' => 'checkAccess:users'], function() {
+        // GET - request
+        Route::get('/api/users', 'UserController@getUsers');
+        Route::get('/api/users/{id}', 'UserController@getUser')->where('id', '[0-9]+');
 
-        // Updates..
-		Route::post('/api/saveUser/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
-		Route::post('/api/activateUser/{id}', 'UserController@activateUser')->where('id', '[0-9]+');
-        Route::post('api/user/{user_id}/join/body/{body_id}')->where('user_id', '[0-9]+')->where('body_id', '[0-9]+');;
+        // PUT - update
+        Route::put('/api/users/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
+        //Could also choose to not put body_id in url...
+        //TODO better idea for these: ?
+        Route::put('/api/users/{id}/suspend', 'UserController@suspendAccount')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/unsuspend', 'UserController@unsuspendAccount')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/impersonate', 'UserController@impersonateUser')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/activate', 'UserController@activateUser')->where('id', '[0-9]+');
 
-		// Creates..
-		Route::post('/api/createUser', 'LoginController@createUser');
-		Route::post('/api/createUserRoles', 'UserController@addUserRoles');
+        // POST - create
+        Route::post('/api/users', 'LoginController@createUser');
+        Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles');
+        Route::post('/api/users/{user_id}/bodies/{body_id}', 'UserController@addBodyToUser')->where('user_id', '[0-9]+')->where('body_id', '[0-9]+');
 
-		// Deletes..
-		Route::post('/api/deleteRole', 'UserController@deleteRole');
+        // DELETE - remove
+        //TODO rework with roles, currently requires UserRole id..
+        Route::delete('/api/roles/{role_id}', 'UserController@deleteRole');
+    });
 
-		// Suspensions and others..
-		Route::post('/api/suspendAccount/{id}', 'UserController@suspendAccount')->where('id', '[0-9]+');
-		Route::post('/api/unsuspendAccount/{id}', 'UserController@unsuspendAccount')->where('id', '[0-9]+');
-		Route::post('/api/impersonateUser/{id}', 'UserController@impersonateUser')->where('id', '[0-9]+');
+    // Settings..
+    Route::group(['middleware' => 'checkAccess:settings'], function() {
+        // Global..
+        Route::get('/api/options', 'OptionController@getOptions');
+        Route::get('/api/option/{id}', 'OptionController@getOption');
+        Route::put('/api/option', 'OptionController@saveOption');
 
-	});
+        // Menu..
+        Route::put('/api/menu', 'MenuController@saveMenu');
+        Route::get('/api/menu', 'MenuController@getMenu');
+    });
 
-	// Settings..
-	Route::group(['middleware' => 'checkAccess:settings'], function() {
-		// Global..
-		Route::get('/api/getOptions', 'OptionController@getOptions');
-		Route::get('/api/getOption', 'OptionController@getOption');
-		Route::post('/api/saveOption', 'OptionController@saveOption');
-
-		// Menu..
-		Route::post('/api/saveMenu', 'MenuController@saveMenu');
-		Route::get('/api/getMenu', 'MenuController@getMenu');
-	});
-
-	// Modules..
-	Route::group(['middleware' => 'checkAccess:modules'], function() {
-		Route::get('/api/getModules', 'ModuleController@getModules');
-		Route::get('/api/getModulePagesForSubgrid', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
-		Route::post('/api/activateDeactivatePage', 'ModuleController@activateDeactivatePage');
-		Route::post('/api/activateDeactivateModule', 'ModuleController@activateDeactivateModule');
-		Route::get('/api/getSharedSecret', 'ModuleController@getSharedSecret');
-		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
-	});
+    // Modules..
+    Route::group(['middleware' => 'checkAccess:modules'], function() {
+        Route::get('/api/modules', 'ModuleController@getModules');
+        Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+        Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
+        Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
+        Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
+        Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
+    });
 });
 
 // Microservice routes..
-Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice');
+Route::post('/api/microservice/register', 'ModuleController@registerMicroservice');
 
 // Microservice group..
 Route::group(['middleware' => 'microServiceAuth'], function() {
-	Route::post('/api/getUserByToken', 'UserController@getUserByToken');
+    Route::get('/api/tokens/user', 'UserController@getUserByToken');
 });
 
 // Generic routes.. TODO
