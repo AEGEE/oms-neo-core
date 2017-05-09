@@ -173,8 +173,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function deleteRole(UserRole $obj) {
-        $id = Input::get('id');
+    public function deleteRole($role_id, UserRole $obj) {
         $obj = $obj->findOrFail($id);
         $obj->delete();
 
@@ -264,7 +263,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserAvatar($avatarId) {
+    public function getUserAvatar($avatar_id) {
         $fallbackAvatar = storage_path()."/baseFiles/defaultAvatar.jpg";
         $path = storage_path()."/userAvatars/".$avatarId.".jpg";
 

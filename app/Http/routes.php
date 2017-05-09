@@ -51,6 +51,7 @@ Route::group(['middleware' => 'api'], function() {
         // GET - request
         Route::get('/api/users', 'UserController@getUsers');
         Route::get('/api/users/{id}', 'UserController@getUser')->where('id', '[0-9]+');
+        //TODO allow seo-urls ('[a-zA-Z0-9_]+') -> laravel cannot assume the id anymore.
 
         // PUT - update
         Route::put('/api/users/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
@@ -75,8 +76,8 @@ Route::group(['middleware' => 'api'], function() {
     Route::group(['middleware' => 'checkAccess:settings'], function() {
         // Global..
         Route::get('/api/options', 'OptionController@getOptions');
-        Route::get('/api/option/{id}', 'OptionController@getOption');
-        Route::put('/api/option', 'OptionController@saveOption');
+        Route::get('/api/options/{id}', 'OptionController@getOption');
+        Route::put('/api/options', 'OptionController@saveOption');
 
         // Menu..
         Route::put('/api/menu', 'MenuController@saveMenu');
