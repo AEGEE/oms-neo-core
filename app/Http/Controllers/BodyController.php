@@ -22,7 +22,7 @@ class BodyController extends Controller
         //TODO: rewrite search (filtering)
         $bodies = $body->getFiltered();
 
-        return response()->json($bodies);
+        return response()->success($bodies);
     }
 
     public function saveBody($id, SaveBodyRequest $req) {
@@ -36,11 +36,11 @@ class BodyController extends Controller
 
         $body->save();
 
-        return response()->json($body);
+        return response()->success($body, null, "Body saved");
     }
 
     public function getBody($id) {
         //TODO Decide what (if) should be eager loaded.
-        return response()->json(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
+        return response()->success(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get(), null, "Here is your body");
     }
 }
