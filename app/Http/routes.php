@@ -94,11 +94,11 @@ Route::group(['middleware' => 'api'], function() {
     });
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
-    Route::get('api/bodies/types/{id}', 'BodyTypeController@getBodyType')->where('id', '[0-9]+');
+    Route::get('api/bodies/types/{body_type}', 'BodyTypeController@getBodyType')->where('body_type', '[0-9]+');
     Route::get('api/addresses', 'AddressController@getAddresses');
-    Route::get('api/addresses/{id}', 'AddressController@getAddress')->where('id', '[0-9]+');
+    Route::get('api/addresses/{address}', 'AddressController@getAddress')->where('address', '[0-9]+');
     Route::get('api/countries', 'CountryController@getCountries');
-    Route::get('api/countries/{id}', 'CountryController@getCountry')->where('id', '[0-9]+');
+    Route::get('api/countries/{country}', 'CountryController@getCountry')->where('country', '[0-9]+');
 });
 
 // Microservice routes..
@@ -113,4 +113,6 @@ Route::group(['middleware' => 'microServiceAuth'], function() {
 Route::any('/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
+
+Route::any('/api/{all}', function() { return response()->failure("Incorrect API URL");})->where('all', '.*');
 Route::any('{all}', array('uses' => 'GenericController@defaultRoute'))->where('all', '.*');

@@ -10,7 +10,7 @@ class BodyTypeController extends Controller
         return response()->success(BodyType::All());
     }
 
-    public function getBodyTypes(BodyType $bodyType) {
-        return response()->success($bodyType);
+    public function getBodyType(BodyType $body_type) {
+        return response()->success($body_type);
     }
 }
