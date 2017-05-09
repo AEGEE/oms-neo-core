@@ -198,4 +198,82 @@ class User extends Model
             'suspended_reason'  =>  $this->suspended_reason
         );
     }
+
+    // oAuth methods..
+    public function oAuthCreateAccount($provider, $delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        switch ($provider) {
+            case 'google':
+                return $this->createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password);
+                break;
+            case 'azure':
+                return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
+                break;
+
+            default:
+                return false;
+                break;
+        }
+    }
+
+    private function createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        $scopes = array(
+            'https://www.googleapis.com/auth/admin.directory.user'
+        );
+
+        $client = new \Google_Client();
+        $client->setScopes($scopes);
+        $client->setSubject($delegatedAdmin);
+
+        $client->setAuthConfig($oAuthCredentials);
+
+        $dir = new \Google_Service_Directory($client);
+
+        $userInstance = new \Google_Service_Directory_User();
+        $nameInstance = new \Google_Service_Directory_UserName();
+
+        $nameInstance->setGivenName($this->first_name);
+        $nameInstance->setFamilyName($this->last_name);
+
+        $userInstance->setName($nameInstance);
+        $userInstance->setHashFunction("MD5");
+        $userInstance->setPrimaryEmail($seo."@".$domain);
+        $userInstance->setPassword(hash("md5", $password));
+        $userInstance->setChangePasswordAtNextLogin(true);
+
+        $createUserResult = $dir->users->insert($userInstance);
+
+        return true;
+    }
+
+    private function createAzureAdAccount($oAuthCredentials, $domain, $seo, $password) {
+        $userData = array(
+            'displayName'           =>  $this->first_name." ".$this->last_name,
+            'userPrincipalName'     =>  $seo."@".$domain,
+            'mailNickname'          =>  $seo,
+            'passwordProfile'       =>  array(
+                                            'password'  =>  $password,
+                                            'forceChangePasswordNextLogin'  =>  true
+                                        ),
+            'accountEnabled'        =>  true
+        );
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('POST', 'https://graph.windows.net/myorganization/users', [
+            'query' => [
+                'api-version' => '1.5'
+            ],
+            'headers'   =>  [
+                'Authorization' =>  'Bearer '.$oAuthCredentials['token'],
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode($userData)
+        ]);
+
+        if($response->getStatusCode() == 201) {
+            return true;
+        }
+
+        return $response->getStatusCode();
+    }
 }
