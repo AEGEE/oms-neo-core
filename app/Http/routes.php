@@ -55,12 +55,9 @@ Route::group(['middleware' => 'api'], function() {
 
         // PUT - update
         Route::put('/api/users/{id}', 'UserController@saveUser')->where('id', '[0-9]+');
-        //Could also choose to not put body_id in url...
-        //TODO better idea for these: ?
-        Route::put('/api/users/{id}/suspend', 'UserController@suspendAccount')->where('id', '[0-9]+');
-        Route::put('/api/users/{id}/unsuspend', 'UserController@unsuspendAccount')->where('id', '[0-9]+');
-        Route::put('/api/users/{id}/impersonate', 'UserController@impersonateUser')->where('id', '[0-9]+');
-        Route::put('/api/users/{id}/activate', 'UserController@activateUser')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/suspendended', 'UserController@suspendUnsuspendAccount')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/activated', 'UserController@activateUser')->where('id', '[0-9]+');
+        Route::put('/api/users/{id}/impersonated', 'UserController@impersonateUser')->where('id', '[0-9]+');
 
         // POST - create
         Route::post('/api/users', 'LoginController@createUser');
@@ -95,6 +92,13 @@ Route::group(['middleware' => 'api'], function() {
         Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
         Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
     });
+
+    Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
+    Route::get('api/bodies/types/{id}', 'BodyTypeController@getBodyType')->where('id', '[0-9]+');
+    Route::get('api/addresses', 'AddressController@getAddresses');
+    Route::get('api/addresses/{id}', 'AddressController@getAddress')->where('id', '[0-9]+');
+    Route::get('api/countries', 'CountryController@getCountries');
+    Route::get('api/countries/{id}', 'CountryController@getCountry')->where('id', '[0-9]+');
 });
 
 // Microservice routes..

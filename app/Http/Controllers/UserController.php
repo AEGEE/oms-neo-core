@@ -12,6 +12,7 @@ use Response;
 use App\Http\Requests;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
+use App\Http\Requests\SuspendUserRequest;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Auth;
@@ -53,7 +54,7 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
-    public function saveUser($id, SaveUserRequest $req) {
+    public function updateUser($id, SaveUserRequest $req) {
         $user = User::findOrFail($id);
 
         $user->first_name = $req->has('first_name') ? $req->first_name : $user->first_name;
@@ -181,23 +182,21 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function suspendAccount($id, Request $req) {
+    public function suspendUnsuspendAccount($id, SuspendUserRequest $req) {
         $userData = $req->get('userData');
         $user = $user->findOrFail($id);
 
-        $suspensionReason = $req->reason;
-        $user->suspendAccount($userData->id, $suspensionReason);
+        if ($req->suspend != $req->unsuspend) {
+            if ($req->suspend) {
+                $user->suspendAccount($userData->id, $req->reason);
+            } else {
+                $user->unsuspendAccount($userData->id);
+            }
+        } else {
+            return response()->failure("Ambigious action");
+        }
 
-        return response()->json($user);
-    }
-
-    public function unsuspendAccount($id, Request $req) {
-        $userData = $req->get('userData');
-        $user = $user->findOrFail($id);
-
-        $user->unsuspendAccount($userData->id);
-
-        return response()->json($user);
+        return response()->success($user);
     }
 
     public function impersonateUser($id, Request $req) {
