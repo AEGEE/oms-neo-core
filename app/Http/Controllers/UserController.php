@@ -32,10 +32,16 @@ class UserController extends Controller
         return response()->json($users);
     }
 
-    public function getUser($id) {
+    public function getUser($user_id) {
         //TODO Decide what (if) should be eager loaded.
-        $user = User::findOrFail($id)->with('address', 'bodies')->get();
+        $user = User::findOrFail($user_id)->with('address', 'bodies')->get();
         return response()->json($user);
+    }
+
+    public function getBodies($user_id) {
+        //TODO Decide what (if) should be eager loaded.
+        $bodies = User::findOrFail($user_id)->bodies;
+        return response()->json($bodies);
     }
 
     public function getUserByToken() {
@@ -55,8 +61,8 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
-    public function updateUser($id, SaveUserRequest $req) {
-        $user = User::findOrFail($id);
+    public function updateUser($user_id, SaveUserRequest $req) {
+        $user = User::findOrFail($user_id);
 
         $user->first_name = $req->has('first_name') ? $req->first_name : $user->first_name;
         $user->last_name = $req->has('last_name') ? $req->last_name : $user->last_name;
@@ -77,9 +83,11 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function addBodyToUser(User $user_id, AddBodyToUserRequest $req) {
+    public function addBodyToUser($user_id, AddBodyToUserRequest $req) {
+        $user = User::findOrFail($user_id);
+
         $membership = BodyMembership::firstOrCreate([
-            'user_id'       =>  $user_id->id,
+            'user_id'       =>  $user->id,
             'body_id'       =>  $req->body_id,
         ]);
 
@@ -91,9 +99,9 @@ class UserController extends Controller
         return response()->json($membership);
     }
 
-    public function activateUser($id, Role $role, Request $req) {
+    public function activateUser($user_id, Role $role, Request $req) {
+        $user = User::findOrFail($user_id);
         $currentUser = $req->get('userData');
-        $user = User::findOrFail($id);
 
         if ($req->activate != $req->deactivate) {
             if ($req->activate) {
@@ -185,9 +193,9 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function suspendUnsuspendAccount($id, SuspendUserRequest $req) {
+    public function suspendUnsuspendAccount($user_id, SuspendUserRequest $req) {
+        $user = User::findOrFail($user_id);
         $userData = $req->get('userData');
-        $user = User::findOrFail($id);
 
         if ($req->suspend != $req->unsuspend) {
             if ($req->suspend) {
@@ -202,11 +210,10 @@ class UserController extends Controller
         return response()->success($user);
     }
 
-    public function impersonateUser($id, Request $req) {
+    public function impersonateUser($user_id, Request $req) {
+        $user = User::findOrFail($user_id);
         $userData = $req->get('userData');
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
-
-        $user = User::findOrFail($id);
 
         $auth = Auth::where('token_generated', $xAuthToken)->firstOrFail();
         $auth->user_id = $id; // Switching token to new user..
