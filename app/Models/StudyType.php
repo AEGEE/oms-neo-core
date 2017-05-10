@@ -9,12 +9,16 @@ class StudyType extends Model
     protected $table = "study_types";
 
     // Relationships..
-    public function recrutedUser() {
-        return $this->hasMany('App\Models\RecrutedUser');
+	public function studies() {
+        return $this->hasMany('App\Models\Study');
     }
-    
-    public function user() {
-    	return $this->hasMany('App\Models\User');
+
+    public function users() {
+        return $this->belongsToMany('App\Models\User', 'studies', 'study_type_id', 'user_id');
+    }
+
+    public function universities() {
+        return $this->belongsToMany('App\Models\University', 'studies', 'study_type_id', 'university_id');
     }
 
     // Model methods go down here..

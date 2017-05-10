@@ -11,8 +11,6 @@ use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
 use App\Models\Auth;
-use App\Models\Antenna;
-use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\User;
@@ -25,7 +23,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth, Fee $fee) {
+    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth) {
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -80,11 +78,6 @@ class LoginController extends Controller
     	$auth->token_generated = $loginKey;
     	$auth->successful = 1;
     	$auth->save();
-
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
-        }
 
     	// We try to also add it to session..
         $userData = $user->getLoginUserArray($loginKey);
@@ -192,7 +185,7 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Fee $fee, Request $req) {
+    public function oAuthCallback(User $user, Auth $auth, Request $req) {
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
@@ -242,11 +235,6 @@ class LoginController extends Controller
         $auth->token_generated = $loginKey;
         $auth->successful = 1;
         $auth->save();
-
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
-        }
 
         // We try to also add it to session..
         $userData = $user->getLoginUserArray($loginKey);
