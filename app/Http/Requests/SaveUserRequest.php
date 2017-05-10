@@ -29,7 +29,7 @@ class SaveUserRequest extends Request
             'first_name'            =>  'max:255',
             'last_name'             =>  'max:255',
             'date_of_birth'         =>  'date',
-            'gender'                =>  'integer',
+            'gender'                =>  'max:255',
             'phone'                 =>  'numeric',
             'seo_url'               =>  'max:255',
             'password'              =>  'min:8|confirmed',

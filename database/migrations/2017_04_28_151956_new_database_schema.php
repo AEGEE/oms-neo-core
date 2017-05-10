@@ -54,7 +54,7 @@ class NewDatabaseSchema extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->timestamp('date_of_birth');
-            $table->integer('gender');
+            $table->string('gender');
             $table->string('phone')->nullable();
             $table->text('description')->nullable();
             $table->string('password');
