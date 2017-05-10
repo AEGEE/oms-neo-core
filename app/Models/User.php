@@ -124,95 +124,8 @@ class User extends Model
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
-    public function getFiltered($search = array(), $onlyTotal = false) {
-
-        //DISABLED FILTERING
+    public function getFiltered($search = array()) {
         //TODO rework filtering.
-
-        /*
-        //Example how filtering should be done:
-        $users = $this->with([
-                    'bodies' => function ($q) {
-                        $q->where('bodies.id', 2);
-                    }, 'studies']);
-        //this filters during the query, instead of afterwards.
-
-        // Filters here..
-        if(isset($search['name']) && !empty($search['name'])) {
-            $users = $users->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
-        }
-
-        if(isset($search['date_of_birth']) && !empty($search['date_of_birth'])) {
-            $users = $users->where('date_of_birth', $search['date_of_birth']);
-        }
-
-        if(isset($search['contact_email']) && !empty($search['contact_email'])) {
-            $users = $users->where('contact_email', $search['contact_email']);
-        }
-
-        if(isset($search['gender']) && !empty($search['gender'])) {
-            $users = $users->where('gender', $search['gender']);
-        }
-
-        if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $users = $users->where('antenna_id', $search['antenna_id']);
-        }
-
-        if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
-            $users = $users->where('studies_type_id', $search['studies_type_id']);
-        }
-
-        if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
-            $users = $users->where('studies_field_id', $search['studies_field_id']);
-        }
-
-        if(isset($search['status']) && !empty($search['status'])) {
-            switch ($search['status']) {
-                case '1':
-                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
-                    break;
-                case '2':
-                    $users = $users->whereNull('activated_at');
-                    break;
-                case '3':
-                    $users = $users->whereNotNull('is_suspended');
-                    break;
-            }
-        }
-        // END filters..
-
-        if($onlyTotal) {
-            return $users->count();
-        }
-
-        // Ordering..
-        $sOrder = (isset($search['sord']) && ($search['sord'] == 'asc' || $search['sord'] == 'desc')) ? $search['sord'] : 'asc';
-        if(isset($search['sidx'])) {
-            switch ($search['sidx']) {
-                case 'name':
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-                case 'date_of_birth':
-                case 'contact_email':
-                case 'gender':
-                case 'internal_email':
-                    $users = $users->orderBy($search['sidx'], $search['sord']);
-                    break;
-
-                default:
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-            }
-        }
-
-        if(!isset($search['noLimit']) || !$search['noLimit']) {
-            $limit  = !isset($search['limit']) || empty($search['limit']) ? 10 : $search['limit'];
-            $page   = !isset($search['page']) || empty($search['page']) ? 1 : $search['page'];
-            $from   = ($page - 1)*$limit;
-            $users = $users->take($limit)->skip($from);
-        }
-        */
-        
         return User::all();
     }
 
@@ -255,7 +168,7 @@ class User extends Model
         return $this->where('seo_url', $url)->count() == 0;
     }
 
-    public function suspendAccount($reason, $suspender = 'System') {
+    public function suspendAccount($suspender = 'System', $reason = 'no reason given') {
         $this->is_suspended = 1;
         $this->suspended_reason = $reason." Suspended by: ".$suspender." on ".date('Y-m-d H:i:s');
         $this->save();
@@ -284,5 +197,83 @@ class User extends Model
             'is_suspended'      =>  !empty($this->is_suspended) ? true : false,
             'suspended_reason'  =>  $this->suspended_reason
         );
+    }
+
+    // oAuth methods..
+    public function oAuthCreateAccount($provider, $delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        switch ($provider) {
+            case 'google':
+                return $this->createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password);
+                break;
+            case 'azure':
+                return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
+                break;
+
+            default:
+                return false;
+                break;
+        }
+    }
+
+    private function createGoogleAppsAccount($delegatedAdmin, $oAuthCredentials, $domain, $seo, $password) {
+        $scopes = array(
+            'https://www.googleapis.com/auth/admin.directory.user'
+        );
+
+        $client = new \Google_Client();
+        $client->setScopes($scopes);
+        $client->setSubject($delegatedAdmin);
+
+        $client->setAuthConfig($oAuthCredentials);
+
+        $dir = new \Google_Service_Directory($client);
+
+        $userInstance = new \Google_Service_Directory_User();
+        $nameInstance = new \Google_Service_Directory_UserName();
+
+        $nameInstance->setGivenName($this->first_name);
+        $nameInstance->setFamilyName($this->last_name);
+
+        $userInstance->setName($nameInstance);
+        $userInstance->setHashFunction("MD5");
+        $userInstance->setPrimaryEmail($seo."@".$domain);
+        $userInstance->setPassword(hash("md5", $password));
+        $userInstance->setChangePasswordAtNextLogin(true);
+
+        $createUserResult = $dir->users->insert($userInstance);
+
+        return true;
+    }
+
+    private function createAzureAdAccount($oAuthCredentials, $domain, $seo, $password) {
+        $userData = array(
+            'displayName'           =>  $this->first_name." ".$this->last_name,
+            'userPrincipalName'     =>  $seo."@".$domain,
+            'mailNickname'          =>  $seo,
+            'passwordProfile'       =>  array(
+                                            'password'  =>  $password,
+                                            'forceChangePasswordNextLogin'  =>  true
+                                        ),
+            'accountEnabled'        =>  true
+        );
+
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('POST', 'https://graph.windows.net/myorganization/users', [
+            'query' => [
+                'api-version' => '1.5'
+            ],
+            'headers'   =>  [
+                'Authorization' =>  'Bearer '.$oAuthCredentials['token'],
+                'Content-Type' => 'application/json'
+            ],
+            'body' => json_encode($userData)
+        ]);
+
+        if($response->getStatusCode() == 201) {
+            return true;
+        }
+
+        return $response->getStatusCode();
     }
 }

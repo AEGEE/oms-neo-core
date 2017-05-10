@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveDepartmentRequest extends Request
+class SaveBodyRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SaveDepartmentRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,12 @@ class SaveDepartmentRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'required',
-            'description'   =>  'required'
+            'name'          =>  'max:255',
+            'type_id'       =>  'integer',
+            'address_id'    =>  'integer',
+            'email'         =>  'email|unique:users,contact_email',
+            'phone'         =>  'numeric',
+            'description'   =>  'max:1024',
         ];
     }
 }

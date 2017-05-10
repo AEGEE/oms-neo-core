@@ -9,7 +9,6 @@ use App\Http\Requests;
 use App\Models\Auth;
 use App\Models\Country;
 use App\Models\GlobalOption;
-use App\Models\Notification;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\UserRole;
@@ -81,7 +80,7 @@ class GenericController extends Controller
             $moduleAccess = array();
             foreach($modules as $module) {
                 $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
-                
+
                 if(!empty($module->module_id) && empty($module->module->is_active)) {
                     continue;
                 }
@@ -93,7 +92,7 @@ class GenericController extends Controller
                     if(strlen($addToView['baseUrlRepo']) > 0) {
                         $addToView['baseUrlRepo'] .= ",";
                     }
-                    
+
                     $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
                     $lastModuleId = $module->module_id;
                     $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
@@ -162,7 +161,7 @@ class GenericController extends Controller
         return redirect('/');
     }
 
-    public function noSessionTimeout() {    
+    public function noSessionTimeout() {
         $now = date('now');
 
         Session::put('lastActive', $now);
@@ -174,49 +173,11 @@ class GenericController extends Controller
         return 1;
     }
 
-    public function getNotifications(Request $req, Notification $not) {
-        $userData = $req->get('userData');
-
-        $unreadNotifications = $not->where('user_id', $userData['id'])
-                                    ->whereNull('is_read')
-                                    ->limit(10)
-                                    ->orderBy('created_at', 'desc')
-                                    ->get();
-
-        $toReturn['notifications'] = array();
-        $toReturn['notificationsCount'] = 0;
-        foreach($unreadNotifications as $unread) {
-            $toReturn['notifications'][] = $unread;
-            $toReturn['notificationsCount']++;
-        }
-
-        if($toReturn['notificationsCount'] == 10) {
-            // We just finish here..
-            return json_encode($toReturn, 200);
-        }
-
-        $limit = 10 - $toReturn['notificationsCount'];
-        $otherNotifications = $not->where('user_id', $userData['id'])
-                                    ->whereNotNull('is_read')
-                                    ->orderBy('created_at', 'desc')
-                                    ->limit($limit)
-                                    ->get();
-        foreach ($otherNotifications as $not) {
-            $toReturn['notifications'][] = $not;
-        }
-
-        return json_encode($toReturn, 200);
+    public function getNotifications(Request $req) {
+        //TODO implement notifications.
     }
 
-    public function markNotificationsAsRead(Request $req, Notification $not) {
-        $userData = $req->get('userData');
-        $not->where('user_id', $userData['id'])
-            ->whereNull('is_read')
-            ->limit(10)
-            ->orderBy('created_at', 'desc')
-            ->update(['is_read' => 1]);
-
-        $toReturn['success'] = 1;
-        return json_encode($toReturn, 200);
+    public function markNotificationsAsRead(Request $req) {
+        //TODO implement notifications.
     }
 }
