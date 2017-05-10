@@ -267,7 +267,7 @@ class UserController extends Controller
 
     public function getUserAvatar($avatar_id) {
         $fallbackAvatar = storage_path()."/baseFiles/defaultAvatar.jpg";
-        $path = storage_path()."/userAvatars/".$avatarId.".jpg";
+        $path = storage_path()."/userAvatars/".$avatar_id.".jpg";
 
         if(!File::exists($path)) {
             $file = File::get($fallbackAvatar);
