@@ -3,8 +3,6 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Response;
 
 class AppServiceProvider extends ServiceProvider
 {
