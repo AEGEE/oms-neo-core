@@ -124,8 +124,91 @@ class User extends Model
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
+    public function scopeFilterName($query, $name) {
+        if (!empty($name)) {
+            return $query->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($name).'%');
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterDateOfBirth($query, $date_of_birth) {
+        if (!empty($date_of_birth)) {
+            return $query->whereDate('date_of_birth', $date_of_birth);
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterContactEmail($query, $contact_email) {
+        if (!empty($date_of_birth)) {
+            return $query->where('contact_email', $contact_email);
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterGender($query, $gender) {
+        if (!empty($gender)) {
+            return $query->where('gender', $gender);
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterBodyID($query, $body_id) {
+        if (!empty($body_id)) {
+            //TODO user_id and body_id are currently in output, should be removed.
+            return $query->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')->where('body_memberships.body_id', $body_id)->with('bodies');
+        } else {
+            return $query;
+        }
+    }
+
     public function getFiltered($search = array()) {
         //TODO rework filtering.
+        dump(User::filterBodyID(1)->toSql());
+        dd(User::filterBodyID(1)->get()->toArray());
+        $search['body_id'] = '1';
+        $query = $this
+            ->filterName($search['name'] ?? '')
+            ->filterDateOfBirth($search['date_of_birth'] ?? '')
+            ->filterContactEmail($search['contact_email'] ?? '')
+            ->filterGender($search['gender'] ?? '')
+            ->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
+            ->filterBodyID('bodies.id', 1);
+        dd($query->get()->toArray());
+
+        if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
+            $users = $users->where('antenna_id', $search['antenna_id']);
+        }
+
+        if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
+            $users = $users->where('studies_type_id', $search['studies_type_id']);
+        }
+
+        if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
+            $users = $users->where('studies_field_id', $search['studies_field_id']);
+        }
+
+        if(isset($search['status']) && !empty($search['status'])) {
+            switch ($search['status']) {
+                case '1':
+                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
+                    break;
+                case '2':
+                    $users = $users->whereNull('activated_at');
+                    break;
+                case '3':
+                    $users = $users->whereNotNull('is_suspended');
+                    break;
+            }
+        }
+
+
         return User::all();
     }
 
