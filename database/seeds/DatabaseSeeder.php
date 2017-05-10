@@ -21,9 +21,7 @@ class DatabaseSeeder extends Seeder
             'BodySeeder',
             'UserSeeder',
     	);
-
-        dump(BodySeeder::class);
-
+        
     	$seeders = SeederLog::all()->pluck('code')->toArray();
     	$seededSomething = false;
     	foreach($seedersToRun as $seeder) {
