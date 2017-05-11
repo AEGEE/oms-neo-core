@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Address;
+use App\Http\Requests\CreateAddressRequest;
 
 class AddressController extends Controller
 {
@@ -12,5 +13,16 @@ class AddressController extends Controller
 
     public function getAddress(Address $address) {
         return response()->success($address);
+    }
+
+    public function createAddress(CreateAddressRequest $req) {
+        $arr = [
+            'country_id'    => $req->country_id,
+            'street'        => $req->street,
+            'zipcode'       => $req->zipcode,
+            'city'          => $req->city,
+        ];
+        $address = Address::create($arr);
+        return response()->success($address, null, 'Address created');
     }
 }

@@ -98,10 +98,15 @@ Route::group(['middleware' => 'api'], function() {
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
     Route::get('api/bodies/types/{body_type}', 'BodyTypeController@getBodyType')->where('body_type', '[0-9]+');
+    Route::post('api/bodies/types', 'BodyTypeController@createBodyType');
+
     Route::get('api/addresses', 'AddressController@getAddresses');
     Route::get('api/addresses/{address}', 'AddressController@getAddress')->where('address', '[0-9]+');
+    Route::post('api/addresses', 'AddressController@createAddress');
+
     Route::get('api/countries', 'CountryController@getCountries');
     Route::get('api/countries/{country}', 'CountryController@getCountry')->where('country', '[0-9]+');
+    Route::post('api/countries', 'CountryController@createCountry');
 });
 
 // Microservice routes..
