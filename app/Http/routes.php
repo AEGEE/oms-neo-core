@@ -35,7 +35,7 @@ Route::group(['middleware' => 'api'], function() {
         Route::get('/api/bodies', 'BodyController@getBodies');
         Route::get('/api/bodies/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
         Route::put('/api/bodies/{id}', 'BodyController@updateBody')->where('id', '[0-9]+');
-        //Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+'); TODO
+        Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+');
     });
 
     // Roles..

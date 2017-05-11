@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveBodyRequest extends Request
+class CreateBodyRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class SaveBodyRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'max:255',
-            'type_id'       =>  'integer',
-            'address_id'    =>  'integer',
-            'email'         =>  'email|unique:users,contact_email',
+            'type_id'       =>  'required|integer|exists:body_types,id',
+            'address_id'    =>  'required|integer|exists:addresses,id',
+            'name'          =>  'required|max:255',
+            'email'         =>  'required|email',
             'phone'         =>  'numeric',
             'description'   =>  'max:1024',
         ];
