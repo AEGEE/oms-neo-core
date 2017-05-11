@@ -159,57 +159,55 @@ class User extends Model
         }
     }
 
-    public function scopeFilterBodyID($query, $body_id) {
-        if (!empty($body_id)) {
-            //TODO user_id and body_id are currently in output, should be removed.
-            return $query->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')->where('body_memberships.body_id', $body_id)->with('bodies');
+
+    public function scopeFilterStatus($query, $status) {
+        if (!empty($status)) {
+            switch ($status) {
+                case '1':
+                    return $query->whereNull('is_suspended')->whereNotNull('activated_at');
+                case '2':
+                    return $query->whereNull('activated_at');
+                case '3':
+                    return $query->whereNotNull('is_suspended');
+            }
         } else {
             return $query;
         }
     }
 
-    public function getFiltered($search = array()) {
-        //TODO rework filtering.
-        dump(User::filterBodyID(1)->toSql());
-        dd(User::filterBodyID(1)->get()->toArray());
-        $search['body_id'] = '1';
-        $query = $this
+    public function scopeFilterBodyID($query, $body_id) {
+        if (!empty($body_id)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->where('body_memberships.body_id', $body_id);
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterBodyName($query, $body_name) {
+        if (!empty($body_name)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->rightJoin('bodies', 'body_memberships.body_id', '=', 'bodies.id')
+            ->where(DB::raw('LOWER(bodies.name)'), 'LIKE', '%'.strtolower($body_name).'%');
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterArray($query, $search = array()) {
+        $query //->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
             ->filterName($search['name'] ?? '')
             ->filterDateOfBirth($search['date_of_birth'] ?? '')
             ->filterContactEmail($search['contact_email'] ?? '')
             ->filterGender($search['gender'] ?? '')
-            ->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
-            ->filterBodyID('bodies.id', 1);
-        dd($query->get()->toArray());
+            ->filterStatus($search['status'] ?? '')
+            ->filterBodyID($search['body_id'] ?? '')
+            ->filterBodyName($search['body_name'] ?? '');
+        //TODO add study filters
 
-        if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $users = $users->where('antenna_id', $search['antenna_id']);
-        }
-
-        if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
-            $users = $users->where('studies_type_id', $search['studies_type_id']);
-        }
-
-        if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
-            $users = $users->where('studies_field_id', $search['studies_field_id']);
-        }
-
-        if(isset($search['status']) && !empty($search['status'])) {
-            switch ($search['status']) {
-                case '1':
-                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
-                    break;
-                case '2':
-                    $users = $users->whereNull('activated_at');
-                    break;
-                case '3':
-                    $users = $users->whereNotNull('is_suspended');
-                    break;
-            }
-        }
-
-
-        return User::all();
+        return $query;
     }
 
     public function generateRandomPassword($max_length = 8) {
@@ -358,5 +356,50 @@ class User extends Model
         }
 
         return $response->getStatusCode();
+    }
+
+    public function getAllColumnsNames()
+    {
+        switch (DB::connection()->getConfig('driver')) {
+            case 'pgsql':
+                $query = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$this->getTable()."'";
+                $column_name = 'column_name';
+                $reverse = true;
+                break;
+
+            case 'mysql':
+                $query = 'SHOW COLUMNS FROM '.$this->getTable();
+                $column_name = 'Field';
+                $reverse = false;
+                break;
+
+            case 'sqlsrv':
+                $parts = explode('.', $this->getTable());
+                $num = (count($parts) - 1);
+                $table = $parts[$num];
+                $query = "SELECT column_name FROM ".DB::connection()->getConfig('database').".INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$table."'";
+                $column_name = 'column_name';
+                $reverse = false;
+                break;
+
+            default:
+                $error = 'Database driver not supported: '.DB::connection()->getConfig('driver');
+                throw new Exception($error);
+                break;
+        }
+
+        $columns = array();
+
+        foreach(DB::select($query) as $column)
+        {
+            $columns[$column->$column_name] = $column->$column_name; // setting the column name as key too
+        }
+
+        if($reverse)
+        {
+            $columns = array_reverse($columns);
+        }
+
+        return $columns;
     }
 }
