@@ -20,7 +20,7 @@ class BodyController extends Controller
         $max_permission = $req->get('max_permission');
 
         //TODO: rewrite search (filtering)
-        $bodies = $body->getFiltered();
+        $bodies = Body::filterArray(['country_name' => 'Netherlands'])->get();
 
         return response()->json($bodies);
     }
