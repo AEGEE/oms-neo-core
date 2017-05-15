@@ -29,8 +29,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     	return $this->belongsToMany('App\Models\Body', 'body_memberships', 'user_id', 'body_id');
     }
 
-    public function auth() {
-    	return $this->hasMany('App\Models\Auth');
+    public function authToken() {
+    	return $this->hasMany('App\Models\AuthToken');
     }
 
     public function address() {

@@ -70,7 +70,7 @@ class NewDatabaseSchema extends Migration
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
         });
 
-        Schema::create('auths', function (Blueprint $table) {
+        Schema::create('auth_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('ip_address', 45);

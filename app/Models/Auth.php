@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class Auth extends Model
+class AuthToken extends Model
 {
-    protected $table = "auths";
+    protected $table = "auth_tokens";
 
     // Relationships..
     public function user() {
