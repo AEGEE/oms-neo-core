@@ -14,6 +14,7 @@ use App\Http\Requests;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\SuspendUserRequest;
+use App\Http\Requests\CreateUserRequest;
 use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
@@ -53,7 +54,7 @@ class UserController extends Controller
         }
 
         $now = date('Y-m-d H:i:s');
-        $auth = Auth::where('token_generated', $token)
+        $auth = AuthToken::where('token_generated', $token)
                         ->where(function($query) use($now) {
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');
@@ -216,7 +217,7 @@ class UserController extends Controller
         $userData = $req->get('userData');
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
-        $auth = Auth::where('token_generated', $xAuthToken)->firstOrFail();
+        $auth = AuthToken::where('token_generated', $xAuthToken)->firstOrFail();
         $auth->user_id = $id; // Switching token to new user..
         $auth->save();
 

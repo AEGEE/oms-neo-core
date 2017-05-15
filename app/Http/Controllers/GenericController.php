@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\GlobalOption;
 use App\Models\MenuItem;
@@ -17,7 +17,7 @@ use Session;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt, Auth $auth, MenuItem $menuItem) {
+    public function defaultRoute(GlobalOption $opt, AuthToken $auth, MenuItem $menuItem) {
     	$userData = Session::get('userData');
         $addToView = array();
 
@@ -147,7 +147,7 @@ class GenericController extends Controller
 		return view('notLogged', $addToView);
     }
 
-    public function logout(Auth $auth) {
+    public function logout(AuthToken $auth) {
         $userData = Session::get('userData');
         // Invalidating api key if exists..
         if(!empty($userData)) {

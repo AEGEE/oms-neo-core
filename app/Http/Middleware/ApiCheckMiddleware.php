@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Closure;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 
 class ApiCheckMiddleware
 {
@@ -29,7 +29,7 @@ class ApiCheckMiddleware
         $now = date('Y-m-d H:i:s');
 
         try {
-            $auth = Auth::where('token_generated', $xAuthToken)
+            $auth = AuthToken::where('token_generated', $xAuthToken)
                         ->where(function($query) use($now) {
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');

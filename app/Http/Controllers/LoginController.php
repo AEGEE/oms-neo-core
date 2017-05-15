@@ -10,7 +10,7 @@ use App\Http\Requests;
 use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\User;
@@ -23,7 +23,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, Auth $auth) {
+    public function loginUsingCredentials(LoginRequest $req, AuthToken $auth) {
     	// TODO: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -135,7 +135,7 @@ class LoginController extends Controller
         */
     }
 
-    public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
+    public function createUser(AddUserRequest $req, User $usr, AuthToken $auth) {
         //TODO Rewrite creating a user.
         /*
         // Checking email for duplicate..
@@ -192,7 +192,7 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Request $req) {
+    public function oAuthCallback(User $user, AuthToken $auth, Request $req) {
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
