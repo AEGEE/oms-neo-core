@@ -19,7 +19,6 @@ Route::group(['middleware' => 'login:oauth'], function() {
     //Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
     //Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
 });
-//Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {

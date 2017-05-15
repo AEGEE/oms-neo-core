@@ -70,15 +70,6 @@ class UserController extends Controller
         return response()->success($user, null, 'User created');
     }
 
-    public function tryLogin(Request $req) {
-        Auth::logout();
-        if (Auth::attempt(['email' => $req->email, 'password' => $req->password])) {
-            return response()->success(Auth::user(), null, "logged in!");
-        } else {
-            return response()->failure("Invalid login credentials.");
-        }
-    }
-
     public function updateUser($user_id, SaveUserRequest $req) {
         $user = User::findOrFail($user_id);
 

@@ -40,6 +40,7 @@ class ApiCheckMiddleware
             return response()->forbidden();
         }
 
+        Auth::logout(); //Just to be safe, should not be necessary.
         Auth::onceUsingId($auth->user->id);
 
         return $next($request);
