@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Closure;
+use Auth;
 
 use App\Models\AuthToken;
 
@@ -39,7 +40,7 @@ class ApiCheckMiddleware
             return response()->forbidden();
         }
 
-        $request->attributes->add(['userData' => $auth->user]);
+        Auth::onceUsingId($auth->user->id);
 
         return $next($request);
     }

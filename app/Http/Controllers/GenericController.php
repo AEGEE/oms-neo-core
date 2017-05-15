@@ -14,11 +14,12 @@ use App\Models\ModulePage;
 use App\Models\UserRole;
 
 use Session;
+use Auth;
 
 class GenericController extends Controller
 {
     public function defaultRoute(GlobalOption $opt, AuthToken $auth, MenuItem $menuItem) {
-    	$userData = Session::get('userData');
+    	$userData = Auth::user();
         $addToView = array();
 
         // Options..
@@ -36,7 +37,7 @@ class GenericController extends Controller
         if($auth->isUserLogged($userData['authToken'])) {
             $systemRolesAccess = array();
 
-            $addToView['userData'] = $userData;
+            $addToView['userData'] = Auth::user();
             $addToView['countries'] = "";
             $addToView['modulesSrc'] = "";
             $addToView['baseUrlRepo'] = "";
@@ -148,7 +149,8 @@ class GenericController extends Controller
     }
 
     public function logout(AuthToken $auth) {
-        $userData = Session::get('userData');
+        $userData = Auth::user();
+        Auth::logout();
         // Invalidating api key if exists..
         if(!empty($userData)) {
             $auth = $auth->where('token_generated', $userData['authToken'])->firstOrFail();

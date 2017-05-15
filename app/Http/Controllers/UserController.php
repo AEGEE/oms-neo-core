@@ -119,7 +119,7 @@ class UserController extends Controller
 
     public function activateUser($user_id, Role $role, Request $req) {
         $user = User::findOrFail($user_id);
-        $currentUser = $req->get('userData');
+        $currentUser = Auth::user();
 
         if ($req->activate != $req->deactivate) {
             if ($req->activate) {
@@ -213,7 +213,7 @@ class UserController extends Controller
 
     public function suspendUnsuspendAccount($user_id, SuspendUserRequest $req) {
         $user = User::findOrFail($user_id);
-        $userData = $req->get('userData');
+        $userData = Auth::user();
 
         if ($req->suspend != $req->unsuspend) {
             if ($req->suspend) {
@@ -230,7 +230,7 @@ class UserController extends Controller
 
     public function impersonateUser($user_id, Request $req) {
         $user = User::findOrFail($user_id);
-        $userData = $req->get('userData');
+        $userData = Auth::user();
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         $auth = AuthToken::where('token_generated', $xAuthToken)->firstOrFail();
@@ -252,7 +252,7 @@ class UserController extends Controller
 
     //TODO If I am not mistaken user avatar management can be done a lot simpler using Laravel.
     public function uploadUserAvatar(Request $req) {
-        $userData = $req->get('userData');
+        $userData = Auth::user();
 
         $allowedExt = array(
             'png', 'jpg', 'jpeg'
