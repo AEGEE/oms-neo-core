@@ -63,6 +63,22 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
+    public function createUser(CreateUserRequest $req) {
+        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'contact_email', 'gender', 'phone', 'description', 'password']);
+        $arr['password'] = Hash::make($req->password);
+        $user = User::create($arr);
+        return response()->success($user, null, 'User created');
+    }
+
+    public function tryLogin(Request $req) {
+        Auth::logout();
+        if (Auth::attempt(['email' => $req->email, 'password' => $req->password])) {
+            return response()->success(Auth::user(), null, "logged in!");
+        } else {
+            return response()->failure("Invalid login credentials.");
+        }
+    }
+
     public function updateUser($user_id, SaveUserRequest $req) {
         $user = User::findOrFail($user_id);
 
