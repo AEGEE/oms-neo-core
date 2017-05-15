@@ -18,11 +18,17 @@ class LoginMethodMiddleware
     {
         if ($loginMethod == 'oauth') {
             if ($this->isOauthDefined()) {
+                //oAuth login method.
+
+                $request->provider = $this->getOAuthProvider();
+                $request->allowedDomain = $this->getOAuthAllowedDomain();
+                
                 return $next($request);
             } else {
                 return response()->failure("Please use credentials as login method.");
             }
         } else {
+            //Credentials login method.
             return $next($request);
         }
     }

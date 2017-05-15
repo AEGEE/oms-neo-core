@@ -37,7 +37,11 @@ class ResponseServiceProvider extends ServiceProvider
         });
         Response::macro('unauthorized', function () {
             //TODO add WWW-Authenticate header.
-            return response()->json('Unauthorized', 401);
+            return response()->failure('Unauthorized', 401);
+        });
+        Response::macro('credentialsFailure', function () {
+            //TODO add WWW-Authenticate header.
+            return response()->failure('Invalid login credentials.', 400);
         });
     }
 
