@@ -24,7 +24,7 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req)
+    public function loginUsingCredentials(LoginRequest $req) {
         $auth = $this->generateAuthToken($req);
 
         if (!Auth::once(['contact_email' => $req->username, 'password' => $req->password])) {
@@ -34,7 +34,6 @@ class LoginController extends Controller
         if ($user->activated_at == null) {
             return response()->failure('User not activated.');
         }
-
         $loginKey = Uuid::generate(1)->string;
 
         $this->completeAuthToken($auth, $user->id, $loginKey);

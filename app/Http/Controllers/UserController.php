@@ -130,9 +130,8 @@ class UserController extends Controller
                 $user->seo_url = $user->generateSeoUrl();
                 $user->activated_at = date('Y-m-d H:i:s');
 
-                $userPass = $user->generateRandomPassword();
-
-                $oAuthActive = $this->isOauthDefined();
+                //TODO restructure oAuth implementation.
+                $oAuthActive = false; //$this->isOauthDefined();
                 if($oAuthActive) {
                     $domain = $this->getOAuthAllowedDomain();
                     $username = $user->seo_url."@".$domain;
@@ -151,9 +150,6 @@ class UserController extends Controller
                     if($success !== true) {
                         die("oAuth problem! Error code:".$success);
                     }
-                } else {
-                    $username = $user->contact_email;
-                    $user->password = Hash::make($userPass);
                 }
 
                 $user->save();
@@ -174,7 +170,7 @@ class UserController extends Controller
 
                 //TODO Email user with all data..
 
-                return response()->succes($user);
+                return response()->success($user, null, 'User activated');
             } else {
                 //TODO deactivate?
             }
