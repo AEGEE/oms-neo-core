@@ -63,12 +63,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request)
-    {
-        dd("hi");
-        parent::register($request);
-    }
-
     /**
      * Create a new user instance after a valid registration.
      *
@@ -77,10 +71,8 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        dump("creating user.");
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
-        //return $user;
         return response()->success($user, null, 'User created');
     }
 }

@@ -58,6 +58,7 @@ class NewDatabaseSchema extends Migration
             $table->string('phone')->nullable();
             $table->text('description')->nullable();
             $table->string('password');
+            $table->rememberToken();
             $table->integer('is_superadmin')->nullable();
             $table->integer('is_suspended')->nullable();
             $table->string('suspended_reason')->nullable();
