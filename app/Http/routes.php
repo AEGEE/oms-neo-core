@@ -35,7 +35,7 @@ Route::group(['middleware' => 'api'], function() {
         Route::get('/api/bodies', 'BodyController@getBodies');
         Route::get('/api/bodies/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
         Route::put('/api/bodies/{id}', 'BodyController@updateBody')->where('id', '[0-9]+');
-        //Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+'); TODO
+        Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+');
     });
 
     // Roles..
@@ -98,10 +98,18 @@ Route::group(['middleware' => 'api'], function() {
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
     Route::get('api/bodies/types/{body_type}', 'BodyTypeController@getBodyType')->where('body_type', '[0-9]+');
+    Route::put('api/bodies/types', 'BodyTypeController@updateBodyType');
+    Route::post('api/bodies/types', 'BodyTypeController@createBodyType');
+
     Route::get('api/addresses', 'AddressController@getAddresses');
     Route::get('api/addresses/{address}', 'AddressController@getAddress')->where('address', '[0-9]+');
+    Route::put('api/addresses', 'AddressController@updateAddress');
+    Route::post('api/addresses', 'AddressController@createAddress');
+
     Route::get('api/countries', 'CountryController@getCountries');
     Route::get('api/countries/{country}', 'CountryController@getCountry')->where('country', '[0-9]+');
+    Route::put('api/countries', 'CountryController@updateCountry');
+    Route::post('api/countries', 'CountryController@createCountry');
 });
 
 // Microservice routes..

@@ -8,6 +8,13 @@ class Body extends Model
 {
     protected $table = "bodies";
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
     // Relationships..
     public function address() {
         return $this->belongsTo('App\Models\Address');

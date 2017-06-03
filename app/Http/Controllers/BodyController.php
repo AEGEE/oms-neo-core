@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\SaveBodyRequest;
+use App\Http\Requests\UpdateBodyRequest;
+use App\Http\Requests\CreateBodyRequest;
 
 use App\Models\Body;
 use App\Models\BodyType;
@@ -30,7 +31,7 @@ class BodyController extends Controller
         return response()->success(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
     }
 
-    public function updateBody($id, SaveBodyRequest $req) {
+    public function updateBody($id, UpdateBodyRequest $req) {
         $body = Body::findOrFail($id);
         $body->name = $req->has('name') ? $req->name : $body->name;
         $body->email = $req->has('email') ? $req->email : $body->email;
@@ -42,5 +43,18 @@ class BodyController extends Controller
         $body->save();
 
         return response()->success($body, null, "Body saved");
+    }
+
+    public function createBody(CreateBodyRequest $req) {
+        $arr = [
+            'type_id'       => $req->type_id,
+            'address_id'    => $req->address_id,
+            'name'          => $req->name,
+            'email'         => $req->email,
+            'phone'         => $req->phone,
+            'description'   => $req->description,
+        ];
+        $body = Body::create($arr);
+        return response()->success($body, null, 'Body created');
     }
 }
