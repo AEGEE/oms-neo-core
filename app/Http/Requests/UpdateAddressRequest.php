@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveAntennaRequest extends Request
+class UpdateAddressRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,11 @@ class SaveAntennaRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'required',
-            'city'          =>  'required',
-            'email'         =>  'required',
-            'address'       =>  'required',
-            'country_id'    =>  'required'
+            'id'            =>  'required|integer|exists:addresses,id',
+            'country_id'    =>  'integer|exists:countries,id',
+            'street'        =>  'max:255',
+            'zipcode'       =>  'max:255',
+            'city'          =>  'max:255',
         ];
     }
 }

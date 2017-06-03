@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class AddWorkingGroupRequest extends Request
+class CreateCountryRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,7 @@ class AddWorkingGroupRequest extends Request
     public function rules()
     {
         return [
-            'user_id'           =>  'required|exists:users,id',
-            'work_group_id'     =>  'required|exists:working_groups,id'
+            'name'      =>  'required|alpha_num|max:255|unique:countries,name',
         ];
     }
 }

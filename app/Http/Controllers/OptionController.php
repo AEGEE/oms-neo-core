@@ -48,7 +48,7 @@ class OptionController extends Controller
         foreach($options as $option) {
             $actions = "";
             if($isGrid) {
-                if($max_permission == 1) {    
+                if($max_permission == 1) {
                     $actions .= "<button class='btn btn-default btn-xs clickMeSett' title='Edit' ng-click='vm.editOption(".$option->id.")'><i class='fa fa-pencil'></i></button>";
                 }
             } else {
@@ -65,26 +65,17 @@ class OptionController extends Controller
         	);
         }
 
-        return response(json_encode($toReturn), 200);
+        return response()->success($toReturn);
     }
 
-    public function getOption(GlobalOption $opt) {
-    	$id = Input::get('id');
-    	$opt = $opt->findOrFail($id);
-
-    	$toReturn['success'] = 1;
-        $toReturn['option'] = $opt;
-        return response(json_encode($toReturn), 200);
+    public function getOption(GlobalOption $option) {
+        return response()->success($option);
     }
 
-    public function saveOption(GlobalOption $opt) {
-    	$id = Input::get('id');
-    	$opt = $opt->findOrFail($id);
+    public function updateOption(GlobalOption $option) {
+        $option->value = Input::get('value');
+    	$option->save();
 
-    	$opt->value = Input::get('value');
-    	$opt->save();
-
-    	$toReturn['success'] = 1;
-        return response(json_encode($toReturn), 200);
+        return response()->success($option, null, "Option updated");
     }
 }

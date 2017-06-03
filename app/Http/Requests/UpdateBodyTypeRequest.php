@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveDepartmentRequest extends Request
+class UpdateBodyTypeRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SaveDepartmentRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,8 +24,8 @@ class SaveDepartmentRequest extends Request
     public function rules()
     {
         return [
-            'name'          =>  'required',
-            'description'   =>  'required'
+            'id'            =>  'required|integer|exists:body_types,id',
+            'name'          =>  'max:255|unique:body_types,name',
         ];
     }
 }

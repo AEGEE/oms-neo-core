@@ -11,8 +11,6 @@ use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
 use App\Models\Auth;
-use App\Models\Antenna;
-use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\User;
@@ -25,8 +23,8 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth, Fee $fee) {
-    	// Todo: check if oAuth is defined..
+    public function loginUsingCredentials(LoginRequest $req, Auth $auth) {
+    	// TODO: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
     		$toReturn = array(
@@ -55,7 +53,7 @@ class LoginController extends Controller
     	// Trying to find a user..
     	// Non oAuth logins are handled by contact_email field..
     	try {
-    		$user = $user->where('contact_email', $username)
+    		$user = User::where('contact_email', $username)
     					->whereNotNull('password')
     					->whereNotNull('activated_at') // If its null, then the account was not activated..
     					->firstOrFail(); // If password is null, then account should be used with oAuth..
@@ -81,11 +79,6 @@ class LoginController extends Controller
     	$auth->successful = 1;
     	$auth->save();
 
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
-        }
-
     	// We try to also add it to session..
         $userData = $user->getLoginUserArray($loginKey);
 
@@ -105,6 +98,9 @@ class LoginController extends Controller
     }
 
     public function getRegistrationFields(Antenna $ant, StudyType $studType, StudyField $studField) {
+        //TODO Rewrite getting the registration fields.
+
+        /*
         $toReturn = array(
             'antennae'      =>  array(),
             'study_type'    =>  array(),
@@ -136,9 +132,12 @@ class LoginController extends Controller
         }
 
         return response(json_encode($toReturn), 200);
+        */
     }
 
     public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
+        //TODO Rewrite creating a user.
+        /*
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
@@ -168,6 +167,7 @@ class LoginController extends Controller
         );
 
         return response(json_encode($toReturn), 200);
+        */
     }
 
     public function loginUsingOauth() {
@@ -192,7 +192,7 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Fee $fee, Request $req) {
+    public function oAuthCallback(User $user, Auth $auth, Request $req) {
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
@@ -242,11 +242,6 @@ class LoginController extends Controller
         $auth->token_generated = $loginKey;
         $auth->successful = 1;
         $auth->save();
-
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
-        }
 
         // We try to also add it to session..
         $userData = $user->getLoginUserArray($loginKey);

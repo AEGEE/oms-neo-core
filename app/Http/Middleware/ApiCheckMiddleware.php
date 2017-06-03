@@ -23,7 +23,7 @@ class ApiCheckMiddleware
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         if(empty($xAuthToken)) {
-            return response('Forbidden', 403);
+            return response()->unauthorized();
         }
 
         $now = date('Y-m-d H:i:s');
@@ -36,9 +36,9 @@ class ApiCheckMiddleware
                         })
                         ->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            return response('Forbidden', 403); 
+            return response()->forbidden();
         }
-        
+
         $request->attributes->add(['userData' => $auth->user]);
 
         return $next($request);

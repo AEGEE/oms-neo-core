@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class AddFeesRequest extends Request
+class SuspendUserRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class AddFeesRequest extends Request
     public function rules()
     {
         return [
-            'user_id'   =>  'required|exists:users,id',
-            'fees'      =>  'required',
-            'feesPaid'      =>  'required'
+            'suspend'       =>  'required|boolean',
+            'unsuspend'     =>  'required|boolean'
         ];
     }
 }

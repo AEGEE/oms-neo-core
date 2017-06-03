@@ -12,163 +12,119 @@
 */
 
 // Login route..
-Route::any('/oauth/login', 'LoginController@loginUsingOauth');
-Route::any('/oauth/callback', 'LoginController@oAuthCallback');
+//Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
+//Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
 
 Route::post('/api/login', 'LoginController@loginUsingCredentials');
-Route::get('/api/getRegistrationFields', 'LoginController@getRegistrationFields');
-// Route::post('/api/signup', 'LoginController@signup'); // Endpoint not available anymore, use recruitUser instead
+//Route::get('/api/registration/fields', 'LoginController@getRegistrationFields'); TODO
 
-Route::post('/api/recruitUser', 'RecrutementController@recruitUser');
-Route::get('/api/checkCampaignExists', 'RecrutementController@checkCampaignExists');
-
-Route::get('/api/getUserAvatar/{avatarId}', 'UserController@getUserAvatar');
-// UI accessible only!
-Route::get('/previewEmail/{templateName}', 'EmailController@previewEmail');
+//Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
-	// Routes go in here..
-	Route::any('/noSessionTimeout', 'GenericController@noSessionTimeout');
-	Route::any('/api/getNotifications', 'GenericController@getNotifications');
-	Route::any('/api/markNotificationsAsRead', 'GenericController@markNotificationsAsRead');
-	
-	Route::get('/api/getUserProfile', 'UserController@getUserProfile');
-	Route::get('/api/getDashboardData', 'UserController@getDashboardData');
+    // Routes go in here..
+    Route::put('/session', 'GenericController@noSessionTimeout');
+    //Route::get('/api/notifications', 'GenericController@getNotifications'); TODO
+    //Route::put('/api/notifications', 'GenericController@markNotificationsAsRead'); TODO
 
-	Route::get('/api/getNews', 'NewsController@getNews');
-	Route::get('/api/getNewsById', 'NewsController@getNewsById');
+    // Personal routes..
+    //Route::post('/api/users/{user_id}/avatars', 'UserController@uploadUserAvatar'); TODO
 
-	// Personal routes..
-	Route::post('/api/changeEmail', 'UserController@changeEmail');
-	Route::post('/api/changePassword', 'UserController@changePassword');
-	Route::post('/api/editBio', 'UserController@editBio');
-	Route::post('/api/uploadUserAvatar', 'UserController@uploadUserAvatar');
+    // Antennae management..
+    Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
+        Route::get('/api/bodies', 'BodyController@getBodies');
+        Route::get('/api/bodies/{id}', 'BodyController@getBody')->where('id', '[0-9]+');
+        Route::put('/api/bodies/{id}', 'BodyController@updateBody')->where('id', '[0-9]+');
+        Route::post('/api/bodies/', 'BodyController@createBody')->where('id', '[0-9]+');
+    });
 
-	// Antennae management..
-	Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-		Route::get('/api/getAntennae', 'AntennaController@getAntennae');
-		Route::post('/api/saveAntenna', 'AntennaController@saveAntenna');
-		Route::get('/api/getAntenna', 'AntennaController@getAntenna');
-	});
+    // Roles..
+    Route::group(['middleware' => 'checkAccess:roles'], function() {
+        //TODO roles rework.
+        //Route::get('/api/getRoles', 'RoleController@getRoles');
+        //Route::get('/api/getModulePages', 'ModuleController@getModulePages');
+        //Route::post('/api/saveRole', 'RoleController@saveRole');
+        //Route::get('/api/getRole', 'RoleController@getRole');
+    });
 
-	// Working groups..
-	Route::group(['middleware' => 'checkAccess:working_groups'], function() {
-		Route::get('/api/getWorkingGroups', 'WorkingGroupController@getWorkingGroups');
-		Route::post('/api/saveWorkGroup', 'WorkingGroupController@saveWorkGroup');
-		Route::get('/api/getWorkGroup', 'WorkingGroupController@getWorkGroup');
-	});
+    // Users..
+    Route::group(['middleware' => 'checkAccess:users'], function() {
+        // GET - request
+        Route::get('/api/users', 'UserController@getUsers');
+        Route::group(['middleware' => 'seoURL:user'], function() {
+            Route::get('/api/users/{user}', 'UserController@getUser')->where('user', '[a-zA-Z0-9_]+');
+            Route::get('/api/users/{user}/bodies', 'UserController@getBodies')->where('user', '[a-zA-Z0-9_]+');
 
-	// Departments..
-	Route::group(['middleware' => 'checkAccess:departments'], function() {
-		Route::get('/api/getDepartments', 'DepartmentController@getDepartments');
-		Route::post('/api/saveDepartment', 'DepartmentController@saveDepartment');
-		Route::get('/api/getDepartment', 'DepartmentController@getDepartment');
-	});
+            // PUT - update
+            // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
+            Route::put('/api/users/{user}/suspended', 'UserController@suspendUnsuspendAccount')->where('user', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user}/activated', 'UserController@activateUser')->where('user', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user}/impersonated', 'UserController@impersonateUser')->where('user', '[a-zA-Z0-9_]+');
 
-	// Fees management..
-	Route::group(['middleware' => 'checkAccess:fees_management'], function() {
-		Route::get('/api/getFees', 'FeeController@getFees');
-		Route::post('/api/saveFee', 'FeeController@saveFee');
-		Route::get('/api/getFee', 'FeeController@getFee');
-	});
+            // POST - create
+            //Route::post('/api/users', 'LoginController@createUser'); TODO
+            //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
+            Route::post('/api/users/{user}/bodies', 'UserController@addBodyToUser')->where('user', '[a-zA-Z0-9_]+');
+        });
 
-	// Roles..
-	Route::group(['middleware' => 'checkAccess:roles'], function() {
-		Route::get('/api/getRoles', 'RoleController@getRoles');
-		Route::get('/api/getModulePages', 'ModuleController@getModulePages');
-		Route::post('/api/saveRole', 'RoleController@saveRole');
-		Route::get('/api/getRole', 'RoleController@getRole');
-	});
+        // DELETE - remove
+        //Route::delete('/api/roles/{role_id}', 'UserController@deleteRole'); TODO
+    });
 
-	// Users..
-	Route::group(['middleware' => 'checkAccess:users'], function() {
-		Route::get('/api/getUsers', 'UserController@getUsers');
-		Route::get('/api/getUser', 'UserController@getUser');
-		Route::post('/api/activateUser', 'UserController@activateUser');
-		
-		// Creates..
-		Route::post('/api/setBoardPosition', 'UserController@setBoardPosition');
-		Route::post('/api/addUserRoles', 'UserController@addUserRoles');
-		Route::post('/api/addFeesToUser', 'UserController@addFeesToUser');
-		Route::post('/api/addWorkingGroupToUser', 'UserController@addWorkingGroupToUser');
-		Route::post('/api/createUser', 'LoginController@createUser');
+    // Settings..
+    Route::group(['middleware' => 'checkAccess:settings'], function() {
+        // Global..
+        Route::get('/api/options', 'OptionController@getOptions');
+        Route::get('/api/options/{option}', 'OptionController@getOption')->where('option', '[0-9]+');
+        Route::put('/api/options/{option}', 'OptionController@updateOption')->where('option', '[0-9]+');
 
-		// Deletes..
-		Route::post('/api/deleteFee', 'UserController@deleteFee');
-		Route::post('/api/deleteRole', 'UserController@deleteRole');
-		Route::post('/api/deleteMembership', 'UserController@deleteMembership');
-		Route::post('/api/deleteWorkGroup', 'UserController@deleteWorkGroup');
+        // Menu..
+        //Route::get('/api/menu', 'MenuController@getMenu'); TODO
+        //Route::put('/api/menu', 'MenuController@saveMenu'); TODO
+    });
 
-		// Suspensions and others..
-		Route::post('/api/suspendAccount', 'UserController@suspendAccount');
-		Route::post('/api/unsuspendAccount', 'UserController@unsuspendAccount');
-		Route::post('/api/impersonateUser', 'UserController@impersonateUser');
+    // Modules..
+    Route::group(['middleware' => 'checkAccess:modules'], function() {
+        //TODO all of the below.
+        //Route::get('/api/modules', 'ModuleController@getModules');
+        //Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+        //Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
+        //Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
+        //Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
+        //Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
+        //Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
+        //Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
+    });
 
-	});
+    Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
+    Route::get('api/bodies/types/{body_type}', 'BodyTypeController@getBodyType')->where('body_type', '[0-9]+');
+    Route::put('api/bodies/types', 'BodyTypeController@updateBodyType');
+    Route::post('api/bodies/types', 'BodyTypeController@createBodyType');
 
-	// Settings..
-	Route::group(['middleware' => 'checkAccess:settings'], function() {
-		// Global..
-		Route::get('/api/getOptions', 'OptionController@getOptions');
-		Route::get('/api/getOption', 'OptionController@getOption');
-		Route::post('/api/saveOption', 'OptionController@saveOption');
+    Route::get('api/addresses', 'AddressController@getAddresses');
+    Route::get('api/addresses/{address}', 'AddressController@getAddress')->where('address', '[0-9]+');
+    Route::put('api/addresses', 'AddressController@updateAddress');
+    Route::post('api/addresses', 'AddressController@createAddress');
 
-		// Mails..
-		Route::get('/api/getEmailTemplates', 'EmailController@getEmailTemplates');
-		Route::get('/api/getEmailTemplate', 'EmailController@getEmailTemplate');
-		Route::post('/api/saveEmailTemplate', 'EmailController@saveEmailTemplate');
-
-		// Menu..
-		Route::post('/api/saveMenu', 'MenuController@saveMenu');
-		Route::get('/api/getMenu', 'MenuController@getMenu');
-	});
-
-	// Modules..
-	Route::group(['middleware' => 'checkAccess:modules'], function() {
-		Route::get('/api/getModules', 'ModuleController@getModules');
-		Route::get('/api/getModulePagesForSubgrid', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
-		Route::post('/api/activateDeactivatePage', 'ModuleController@activateDeactivatePage');
-		Route::post('/api/activateDeactivateModule', 'ModuleController@activateDeactivateModule');
-		Route::get('/api/getSharedSecret', 'ModuleController@getSharedSecret');
-		Route::post('/api/generateNewSharedSecret', 'ModuleController@generateNewSharedSecret');
-	});
-
-	// Recrutement campaigns
-	Route::group(['middleware' => 'checkSpecialRoles:recrutement_campaigns,recruter'], function() {
-		Route::get('/api/getRecrutementCampaigns', 'RecrutementController@getRecrutementCampaigns');
-		Route::get('/api/checkLinkAvailability', 'RecrutementController@checkLinkAvailability');
-		Route::post('/api/saveCampaign', 'RecrutementController@saveCampaign');
-	});
-
-	// Recruted users
-	Route::group(['middleware' => 'checkSpecialRoles:recruted_users,recruter'], function() {
-		Route::get('/api/getRecrutedUsers', 'RecrutementController@getRecrutedUsers');
-		Route::get('/api/getUserDetails', 'RecrutementController@getUserDetails');
-		Route::post('/api/addComment', 'RecrutementController@addComment');
-		Route::post('/api/changeStatus', 'RecrutementController@changeStatus');
-		Route::post('/api/activateUserRecruted', 'RecrutementController@activateUserRecruted');
-		
-	});
-
-	// News
-	Route::group(['middleware' => 'checkSpecialRoles:null,announcer'], function() {
-		Route::post('/api/saveNews', 'NewsController@saveNews');
-		Route::post('/api/deleteNews', 'NewsController@deleteNews');
-		
-	});
+    Route::get('api/countries', 'CountryController@getCountries');
+    Route::get('api/countries/{country}', 'CountryController@getCountry')->where('country', '[0-9]+');
+    Route::put('api/countries', 'CountryController@updateCountry');
+    Route::post('api/countries', 'CountryController@createCountry');
 });
 
 // Microservice routes..
-Route::post('/api/registerMicroservice', 'ModuleController@registerMicroservice');
+//Route::post('/api/microservice/register', 'ModuleController@registerMicroservice'); TODO
 
 // Microservice group..
 Route::group(['middleware' => 'microServiceAuth'], function() {
-	Route::post('/api/getUserByToken', 'UserController@getUserByToken');
+    //TODO Should be GET method, but token should not be in URL.
+    Route::post('/api/tokens/user', 'UserController@getUserByToken');
 });
 
-// Generic routes.. TODO
+// Generic routes..
 Route::any('/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
+
+Route::any('/api/{all}', function() { return response()->failure("Incorrect API URL");})->where('all', '.*');
 Route::any('{all}', array('uses' => 'GenericController@defaultRoute'))->where('all', '.*');

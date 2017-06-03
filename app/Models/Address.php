@@ -6,5 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Address extends Model
 {
-    //
+    protected $table = "addresses";
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
+    // Relationships..
+    public function country() {
+    	return $this->belongsTo('App\Models\Country');
+    }
+
+    public function universities() {
+    	return $this->hasMany('App\Models\Universities');
+    }
+
+    public function users() {
+    	return $this->hasMany('App\Models\Users');
+    }
+
+    public function bodies() {
+    	return $this->hasMany('App\Models\Body');
+    }
+    // Model methods go down here..
 }

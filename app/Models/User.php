@@ -15,58 +15,44 @@ class User extends Model
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
     // Relationships..
-    public function antenna() {
-    	return $this->belongsTo('App\Models\Antenna');
+    public function bodies() {
+    	return $this->belongsToMany('App\Models\Body', 'body_memberships', 'user_id', 'body_id');
     }
 
     public function auth() {
     	return $this->hasMany('App\Models\Auth');
     }
 
-    public function boardMember() {
-    	return $this->hasMany('App\Models\BoardMember');
+    public function address() {
+    	return $this->belongsTo('App\Models\Address');
     }
 
-    public function department() {
-    	return $this->belongsTo('App\Models\Department');
-    }
-
-    public function fees() {
-        return $this->belongsToMany('App\Models\Fee', 'fee_users', 'user_id', 'fee_id')
-                    ->withPivot('date_paid', 'expiration_date');
-    }
-
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
-    }
-
-    public function recrutedUser() {
-        return $this->belongsTo('App\Models\RecrutedUser');
+    public function bodyMemberships() {
+    	return $this->hasMany('App\Models\BodyMembership');
     }
 
     public function roles() {
         return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
     }
 
-    public function studyField() {
-    	return $this->belongsTo('App\Models\StudyField', 'studies_field_id');
+    public function studies() {
+    	return $this->hasMany('App\Models\Study');
     }
 
-    public function studyType() {
-    	return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
+    public function studyFields() {
+    	return $this->belongsToMany('App\Models\StudyField', 'studies', 'user_id', 'study_field_id');
+    }
+
+    public function studyTypes() {
+    	return $this->belongsToMany('App\Models\StudyType', 'studies', 'user_id', 'study_type_id');
+    }
+
+    public function universities() {
+    	return $this->belongsToMany('App\Models\University', 'studies', 'user_id', 'university_id');
     }
 
     public function userRole() {
     	return $this->hasMany('App\Models\UserRole');
-    }
-
-    public function userWorkingGroup() {
-    	return $this->hasMany('App\Models\UserWorkingGroup');
-    }
-
-    public function workingGroups() {
-        return $this->belongsToMany('App\Models\WorkingGroup', 'user_working_groups', 'user_id', 'work_group_id')
-                    ->withPivot('start_date', 'end_date');
     }
 
     // Accessors..
@@ -85,10 +71,6 @@ class User extends Model
                 break;
         }
         return $genderText;
-    }
-
-    public function getInternalEmailAttribute($value) {
-        return empty($value) ? "No internal email assigned!" : $value;
     }
 
     public function getStatusTextAttribute($value) {
@@ -117,10 +99,6 @@ class User extends Model
         return $status;
     }
 
-    public function getEmailAddress() {
-        return empty($this->getOriginal('internal_email')) ? $this->contact_email : $this->internal_email;
-    }
-
     // Model methods go down here..
     public function getEmailHash($email) {
         $emailHash = strtolower($email);
@@ -146,97 +124,9 @@ class User extends Model
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
-    public function getFiltered($search = array(), $onlyTotal = false) {
-        $users = $this
-                        ->with('antenna')
-                        ->with('department')
-                        ->with('studyField')
-                        ->with('StudyType');
-
-        // Filters here..
-        if(isset($search['name']) && !empty($search['name'])) {
-            $users = $users->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
-        }
-
-        if(isset($search['date_of_birth']) && !empty($search['date_of_birth'])) {
-            $users = $users->where('date_of_birth', $search['date_of_birth']);
-        }
-
-        if(isset($search['contact_email']) && !empty($search['contact_email'])) {
-            $users = $users->where('contact_email', $search['contact_email']);
-        }
-
-        if(isset($search['gender']) && !empty($search['gender'])) {
-            $users = $users->where('gender', $search['gender']);
-        }
-
-        if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $users = $users->where('antenna_id', $search['antenna_id']);
-        }
-
-        if(isset($search['department_id']) && !empty($search['department_id'])) {
-            $users = $users->where('department_id', $search['department_id']);
-        }
-
-        if(isset($search['internal_email']) && !empty($search['internal_email'])) {
-            $users = $users->where('internal_email', $search['internal_email']);
-        }
-
-        if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
-            $users = $users->where('studies_type_id', $search['studies_type_id']);
-        }
-
-        if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
-            $users = $users->where('studies_field_id', $search['studies_field_id']);
-        }
-
-        if(isset($search['status']) && !empty($search['status'])) {
-            switch ($search['status']) {
-                case '1':
-                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
-                    break;
-                case '2':
-                    $users = $users->whereNull('activated_at');
-                    break;
-                case '3':
-                    $users = $users->whereNotNull('is_suspended');
-                    break;
-            }
-        }
-        // END filters..
-
-        if($onlyTotal) {
-            return $users->count();
-        }
-
-        // Ordering..
-        $sOrder = (isset($search['sord']) && ($search['sord'] == 'asc' || $search['sord'] == 'desc')) ? $search['sord'] : 'asc';
-        if(isset($search['sidx'])) {
-            switch ($search['sidx']) {
-                case 'name':
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-                case 'date_of_birth':
-                case 'contact_email':
-                case 'gender':
-                case 'internal_email':
-                    $users = $users->orderBy($search['sidx'], $search['sord']);
-                    break;
-
-                default:
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-            }
-        }
-
-        if(!isset($search['noLimit']) || !$search['noLimit']) {
-            $limit  = !isset($search['limit']) || empty($search['limit']) ? 10 : $search['limit'];
-            $page   = !isset($search['page']) || empty($search['page']) ? 1 : $search['page'];
-            $from   = ($page - 1)*$limit;
-            $users = $users->take($limit)->skip($from);
-        }
-
-        return $users->get();
+    public function getFiltered($search = array()) {
+        //TODO rework filtering.
+        return User::all();
     }
 
     public function generateRandomPassword($max_length = 8) {
@@ -278,7 +168,7 @@ class User extends Model
         return $this->where('seo_url', $url)->count() == 0;
     }
 
-    public function suspendAccount($reason, $suspender = 'System') {
+    public function suspendAccount($suspender = 'System', $reason = 'no reason given') {
         $this->is_suspended = 1;
         $this->suspended_reason = $reason." Suspended by: ".$suspender." on ".date('Y-m-d H:i:s');
         $this->save();
@@ -318,7 +208,7 @@ class User extends Model
             case 'azure':
                 return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
                 break;
-            
+
             default:
                 return false;
                 break;

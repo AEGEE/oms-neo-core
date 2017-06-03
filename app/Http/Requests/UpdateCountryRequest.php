@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class ChangeEmailRequest extends Request
+class UpdateCountryRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,8 +13,7 @@ class ChangeEmailRequest extends Request
      */
     public function authorize()
     {
-        $isOauthDefined = false;
-        return !$isOauthDefined;
+        return true;
     }
 
     /**
@@ -25,8 +24,8 @@ class ChangeEmailRequest extends Request
     public function rules()
     {
         return [
-            'email'                 =>      'required|unique:users,contact_email|confirmed|email',
-            'email_confirmation'    =>      'required'
+            'id'        =>  'required|integer|exists:countries,id',
+            'name'      =>  'max:255|unique:countries,name',
         ];
     }
 }

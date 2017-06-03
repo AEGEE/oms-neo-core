@@ -54,8 +54,9 @@ class NewDatabaseSchema extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->timestamp('date_of_birth');
-            $table->integer('gender');
+            $table->string('gender');
             $table->string('phone')->nullable();
+            $table->text('description')->nullable();
             $table->string('password');
             $table->integer('is_superadmin')->nullable();
             $table->integer('is_suspended')->nullable();
@@ -95,7 +96,7 @@ class NewDatabaseSchema extends Migration
             $table->string('name');
             $table->string('email');
             $table->string('phone')->nullable();
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->char('legacy_key', 3)->nullable();
             $table->timestamps();
 
@@ -106,6 +107,7 @@ class NewDatabaseSchema extends Migration
         Schema::create('study_fields', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->text('description')->nullable();
             $table->timestamps();
         });
 
@@ -119,7 +121,7 @@ class NewDatabaseSchema extends Migration
             $table->increments('id');
             $table->integer('address_id')->unsigned();
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
@@ -166,7 +168,7 @@ class NewDatabaseSchema extends Migration
             $table->integer('body_id')->unsigned();
             $table->integer('global_circle_id')->unsigned()->nullable();
             $table->string('name');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
