@@ -36,7 +36,7 @@ class BodyController extends Controller
 
     public function getBody($id) {
         //TODO Decide what (if) should be eager loaded.
-        return response()->success(Body::findOrFail($id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
+        return response()->success(Body::where('id', 3)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
     }
 
     public function updateBody($id, UpdateBodyRequest $req) {
@@ -44,6 +44,7 @@ class BodyController extends Controller
         $body->name = $req->has('name') ? $req->name : $body->name;
         $body->email = $req->has('email') ? $req->email : $body->email;
         $body->phone = $req->has('phone') ? $req->phone : $body->phone;
+        $body->description = $req->has('description') ? $req->description : $body->description;
 
         $body->type_id = $req->has('type_id') ? BodyType::findOrFail($req->type_id)->id : $body->type_id;
         $body->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $body->address_id;
