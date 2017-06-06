@@ -43,7 +43,7 @@ class UserController extends Controller
     }
 
     public function getUser($id) {
-        $user = User::findOrFail($id)->with('address', 'bodies')->get();
+        $user = User::where('id', $id)->with('address', 'bodies')->get();
         return response()->json($user);
     }
 
@@ -96,7 +96,7 @@ class UserController extends Controller
         $user = User::findOrFail($user_id);
 
         $membership = BodyMembership::firstOrCreate([
-            'user_id'       =>  $user->id,
+            'user_id'       =>  $user->user_id,
             'body_id'       =>  $req->body_id,
         ]);
 
@@ -167,7 +167,7 @@ class UserController extends Controller
 
                 return response()->succes($user);
             } else {
-                //TODO deactivate?
+                return response()->notImplemented();
             }
         } else {
             return response()->failure("Ambigious action");
@@ -225,7 +225,7 @@ class UserController extends Controller
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         $auth = Auth::where('token_generated', $xAuthToken)->firstOrFail();
-        $auth->user_id = $id; // Switching token to new user..
+        $auth->user_id = $user_id; // Switching token to new user..
         $auth->save();
 
         $userData = $user->getLoginUserArray($xAuthToken);

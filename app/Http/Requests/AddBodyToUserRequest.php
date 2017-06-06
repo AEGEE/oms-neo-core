@@ -25,8 +25,8 @@ class AddBodyToUserRequest extends Request
     {
         return [
             'body_id'           =>  'required|integer|exists:bodies,id',
-            'date_of_birth'     =>  'date',
-            'date_of_birth'     =>  'date',
+            'start_date'        =>  'date',
+            'end_date'          =>  'date',
         ];
     }
 }
