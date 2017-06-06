@@ -12,6 +12,8 @@ use Response;
 use App\Http\Requests;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
+use App\Http\Requests\SuspendUserRequest;
+use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Auth;
@@ -45,6 +47,12 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    public function getBodies($user_id) {
+        //TODO Decide what (if) should be eager loaded.
+        $bodies = User::findOrFail($user_id)->bodies;
+        return response()->json($bodies);
+    }
+
     public function getUserByToken() {
         $token = Input::get('token');
         if(empty($token)) {
@@ -62,8 +70,8 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
-    public function saveUser($id, SaveUserRequest $req) {
-        $user = User::findOrFail($id);
+    public function updateUser($user_id, SaveUserRequest $req) {
+        $user = User::findOrFail($user_id);
 
         $user->first_name = $req->has('first_name') ? $req->first_name : $user->first_name;
         $user->last_name = $req->has('last_name') ? $req->last_name : $user->last_name;
@@ -84,14 +92,13 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function addBodyToUser($user_id, $body_id, AddBodyToUserRequest $req) {
-        $membership = BodyMembership::firstOrCreate([
-            'user_id'       =>  $user_id,
-            'body_id'       =>  $body_id,
-        ]);
+    public function addBodyToUser($user_id, AddBodyToUserRequest $req) {
+        $user = User::findOrFail($user_id);
 
-        $start_date = $req->startInput::get('start_date');
-        $end_date = Input::get('end_date');
+        $membership = BodyMembership::firstOrCreate([
+            'user_id'       =>  $user->id,
+            'body_id'       =>  $req->body_id,
+        ]);
 
         $membership->start_date = $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s');
         $membership->end_date = $req->has('end_date') ? $req->end_date : null;
@@ -101,65 +108,70 @@ class UserController extends Controller
         return response()->json($membership);
     }
 
-    public function activateUser($id, Role $role, Request $req) {
+    public function activateUser($user_id, Role $role, Request $req) {
+        $user = User::findOrFail($user_id);
         $currentUser = $req->get('userData');
-        $user = User::findOrFail($id);
 
-        if(!empty($user->activated_at)) {
-            $toReturn['success'] = 0;
-            $toReturn['message'] = "User already activated!";
-            return response(json_encode($toReturn), 200);
-        }
+        if ($req->activate != $req->deactivate) {
+            if ($req->activate) {
+                if(!empty($user->activated_at)) {
+                    return response()->failure("User already activated");
+                }
 
-        $user->seo_url = $user->generateSeoUrl();
-        $user->activated_at = date('Y-m-d H:i:s');
+                $user->seo_url = $user->generateSeoUrl();
+                $user->activated_at = date('Y-m-d H:i:s');
 
-        $userPass = $user->generateRandomPassword();
+                $userPass = $user->generateRandomPassword();
 
-        $oAuthActive = $this->isOauthDefined();
-        if($oAuthActive) {
-            $domain = $this->getOAuthAllowedDomain();
-            $username = $user->seo_url."@".$domain;
+                $oAuthActive = $this->isOauthDefined();
+                if($oAuthActive) {
+                    $domain = $this->getOAuthAllowedDomain();
+                    $username = $user->seo_url."@".$domain;
 
-            $success = $user->oAuthCreateAccount(
-                $this->getOAuthProvider(),
-                $this->getDelegatedAdmin(),
-                $this->getOauthCredentials($currentUser['id']),
-                $domain,
-                $user->seo_url,
-                $userPass
-            );
+                    $success = $user->oAuthCreateAccount(
+                        $this->getOAuthProvider(),
+                        $this->getDelegatedAdmin(),
+                        $this->getOauthCredentials($currentUser['id']),
+                        $domain,
+                        $user->seo_url,
+                        $userPass
+                    );
 
-            $user->internal_email = $username;
+                    $user->internal_email = $username;
 
-            if($success !== true) {
-                die("oAuth problem! Error code:".$success);
+                    if($success !== true) {
+                        die("oAuth problem! Error code:".$success);
+                    }
+                } else {
+                    $username = $user->contact_email;
+                    $user->password = Hash::make($userPass);
+                }
+
+                $user->save();
+
+                $rolesCache = $role->getCache();
+
+                // Now for roles..
+                $roles = Input::get('roles', array());
+                foreach($roles as $key => $val) {
+                    if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
+                        continue;
+                    }
+                    $tmpRole = new UserRole();
+                    $tmpRole->user_id = $user->id;
+                    $tmpRole->role_id = $key;
+                    $tmpRole->save();
+                }
+
+                //TODO Email user with all data..
+
+                return response()->succes($user);
+            } else {
+                //TODO deactivate?
             }
         } else {
-            $username = $user->contact_email;
-            $user->password = Hash::make($userPass);
+            return response()->failure("Ambigious action");
         }
-
-        $user->save();
-
-        $rolesCache = $role->getCache();
-
-        // Now for roles..
-        $roles = Input::get('roles', array());
-        foreach($roles as $key => $val) {
-            if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
-                continue;
-            }
-            $tmpRole = new UserRole();
-            $tmpRole->user_id = $user->id;
-            $tmpRole->role_id = $key;
-            $tmpRole->save();
-        }
-
-        // Email user with all data..
-        //TODO
-
-        return response()->json($user);
     }
 
     public function addUserRoles(Role $role, AddRoleRequest $req) {
@@ -182,8 +194,7 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function deleteRole(UserRole $obj) {
-        $id = Input::get('id');
+    public function deleteRole($role_id, UserRole $obj) {
         $obj = $obj->findOrFail($id);
         $obj->delete();
 
@@ -191,30 +202,27 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function suspendAccount($id, Request $req) {
+    public function suspendUnsuspendAccount($user_id, SuspendUserRequest $req) {
+        $user = User::findOrFail($user_id);
         $userData = $req->get('userData');
-        $user = $user->findOrFail($id);
 
-        $suspensionReason = $req->reason;
-        $user->suspendAccount($userData->id, $suspensionReason);
+        if ($req->suspend != $req->unsuspend) {
+            if ($req->suspend) {
+                $user->suspendAccount($userData->id, $req->reason);
+            } else {
+                $user->unsuspendAccount($userData->id);
+            }
+        } else {
+            return response()->failure("Ambigious action");
+        }
 
-        return response()->json($user);
+        return response()->success($user);
     }
 
-    public function unsuspendAccount($id, Request $req) {
-        $userData = $req->get('userData');
-        $user = $user->findOrFail($id);
-
-        $user->unsuspendAccount($userData->id);
-
-        return response()->json($user);
-    }
-
-    public function impersonateUser($id, Request $req) {
+    public function impersonateUser($user_id, Request $req) {
+        $user = User::findOrFail($user_id);
         $userData = $req->get('userData');
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
-
-        $user = $user->findOrFail($id);
 
         $auth = Auth::where('token_generated', $xAuthToken)->firstOrFail();
         $auth->user_id = $id; // Switching token to new user..
@@ -229,7 +237,7 @@ class UserController extends Controller
         session_write_close();
 
         $toReturn['success'] = 1;
-        return response(json_encode($toReturn), 200);
+        return response()->success(null, null, "Impersonated user: " . $user->first_name);
     }
 
 
@@ -273,9 +281,9 @@ class UserController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function getUserAvatar($avatarId) {
+    public function getUserAvatar($avatar_id) {
         $fallbackAvatar = storage_path()."/baseFiles/defaultAvatar.jpg";
-        $path = storage_path()."/userAvatars/".$avatarId.".jpg";
+        $path = storage_path()."/userAvatars/".$avatar_id.".jpg";
 
         if(!File::exists($path)) {
             $file = File::get($fallbackAvatar);

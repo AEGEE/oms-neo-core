@@ -24,17 +24,17 @@ class CheckModuleAccess
     {
         $userData = $request->get('userData');
         if(!empty($userData->is_suspended)) {
-            return response('Forbidden', 403);
+            return response()->forbidden();
         }
 
         try {
             $modulePage = ModulePage::with('module')->whereNotNull('is_active')->where('code', $moduleCode)->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            return response('Forbidden', 403);
+            return response()->forbidden();
         }
 
         if(!empty($modulePage->module_id) && empty($modulePage->module->is_active)) {
-            return response('Forbidden', 403);
+            return response()->forbidden();
         }
 
         $max_permission = 1;
@@ -51,7 +51,7 @@ class CheckModuleAccess
                                     ->where('user_roles.user_id', $userData->id)
                                     ->whereNull('roles.is_disabled')
                                     ->where('role_module_pages.module_page_id', $modulePage->id);
-        
+
         if($request->isMethod('post')) {
             $canAccess = $canAccess->where('permission_level', 1);
         }
@@ -59,7 +59,7 @@ class CheckModuleAccess
 
         $canAccess = $canAccess->first();
         if($canAccess->role_exists == 0) {
-            return response('Forbidden', 403);
+            return response()->forbidden();
         }
         $max_permission = $canAccess->max_permission;
         $request->attributes->add(['max_permission' => $max_permission]);

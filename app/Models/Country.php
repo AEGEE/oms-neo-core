@@ -8,6 +8,13 @@ class Country extends Model
 {
     protected $table = "countries";
 
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = ['id'];
+
     // Relationships..
     public function addresses() {
         return $this->hasMany('App\Models\Address');

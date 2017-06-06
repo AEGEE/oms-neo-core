@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class AddBodyToUserRequest extends Request
+class CreateAddressRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,10 @@ class AddBodyToUserRequest extends Request
     public function rules()
     {
         return [
-            'body_id'           =>  'required|integer|exists:bodies,id',
-            'date_of_birth'     =>  'date',
-            'date_of_birth'     =>  'date',
+            'country_id'    =>  'required|integer|exists:countries,id',
+            'street'        =>  'required|max:255',
+            'zipcode'       =>  'required|max:255',
+            'city'          =>  'required|max:255',
         ];
     }
 }
