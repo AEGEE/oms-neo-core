@@ -51,7 +51,7 @@ Route::group(['middleware' => 'api'], function() {
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
         Route::post('/api/users', 'UserController@createUser');
-        Route::put('/api/users/{user_id}', function() { return response()->notImplemented();});
+        Route::put('/api/users/{user_id}', 'UserController@updateUser');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
         Route::group(['middleware' => 'seoURL:user'], function() {
             Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user', '[a-zA-Z0-9_]+');

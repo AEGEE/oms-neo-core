@@ -11,13 +11,14 @@ use Session;
 use Response;
 use Auth;
 use App\Http\Requests;
-use App\Http\Requests\SaveUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\SuspendUserRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Address;
 use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
@@ -79,7 +80,7 @@ class UserController extends Controller
         return response()->success($user, null, 'User created');
     }
 
-    public function updateUser($user_id, SaveUserRequest $req) {
+    public function updateUser($user_id, UpdateUserRequest $req) {
         $user = User::findOrFail($user_id);
 
         $user->first_name = $req->has('first_name') ? $req->first_name : $user->first_name;
@@ -90,10 +91,7 @@ class UserController extends Controller
         $user->seo_url = $req->has('seo_url') ? $req->seo_url : $user->seo_url;
         $user->password = $req->has('password') ? Hash::make($req->password) : $user->password;
         $user->description = $req->has('description') ? nl2br($req->description) : $user->description;
-
         $user->contact_email = $req->has('contact_email') ? $req->contact_email : $user->contact_email;
-        //TODO Previously there was a hash check as well, but this should already be validated unique by the validation.
-        //See SaveUserRequest. Should test if this works properly now.
 
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 
