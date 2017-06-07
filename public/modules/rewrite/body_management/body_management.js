@@ -57,13 +57,27 @@
 
         vm.query = "";
 
+        vm.querytoken = 0;
+
         vm.getBodies = function() {
+            var active_types = vm.body_types
+                .filter(function(item) {return item.filter_active;})
+                .map(function(item) {return item.id});
+
+            vm.querytoken += 1;
+            var mytoken = vm.querytoken;
+
             $http({
                 method: 'GET',
-                url: '/api/bodies'
+                url: '/api/bodies',
+                params: {
+                    "name": vm.query,
+                    "body_id": active_types
+                }
             })
             .then(function successCallback(response) {
-                vm.bodies = response.data.data;
+                if(mytoken == vm.querytoken) // Make sure no request has surpassed us
+                    vm.bodies = response.data.data;
             }).catch(function(err) {showError(err);});
         }
         vm.getBodies();
@@ -74,7 +88,7 @@
                 url: '/api/bodies/types'
             })
             .then(function successCallback(response) {
-                vm.body_types = response.data.data;
+                vm.body_types = response.data.data.map(function(cur) {cur.filter_active=true; return cur;});
             }).catch(function(err) {showError(err);});
         }
         vm.getBodyTypes();

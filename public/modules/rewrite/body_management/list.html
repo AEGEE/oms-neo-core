@@ -7,11 +7,17 @@
 	<div class="row">
 		<div class="input-group">
 			<span class="input-group-addon"><i class="fa fa-search"></i>Search</span>
-			<input type="text" class="form-control" placeholder="Type any keywords" ng-model="vm.query" />
+			<input type="text" class="form-control" placeholder="Type any keywords" ng-model="vm.query" ng-change="vm.getBodies()" />
 		</div>
 	</div>
 	<div class="row">
 		<button type="button" class="btn btn-white pull-left" ng-if="vm.permissions.create_body" ng-click="vm.showBodyModal()">Create new body</button>
+		<div class="pull-left">
+			<label class="checkbox-inline" ng-repeat="type in vm.body_types">
+				<input type="checkbox" ng-model="type.filter_active" />
+				{{ type.name }}
+			</label>
+		</div>
 		<button type="button" class="btn btn-white disabled pull-right">Export to Excel</button>
 	</div>
 </div>
