@@ -7,39 +7,51 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h4 class="modal-title">Body add/edit</h4>
             </div>
-            <form name="bodyForm" method="POST" class="margin-bottom-0" novalidate>
+            <form name="bodyForm" ng-submit="vm.saveBodyForm()" class="margin-bottom-0" novalidate>
                 <div class="modal-body">
                     <div class="form-group m-b-20">
-                        <label for="name">Name</label>
+                        <label for="name">Name*</label>
                         <input type="text" id="name" class="form-control" ng-model="vm.body.name" placeholder="Body name" required/>
                     </div>
                     <div class="form-group m-b-20">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" class="form-control" ng-model="vm.body.email" placeholder="Body email" required/>
+                        <label for="name">Description</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.body.description" placeholder="Body Description"/>
                     </div>
                     <div class="form-group m-b-20">
-                        <label for="address">Address</label>
-                        <textarea id="address" class="form-control" ng-model="vm.body.address" placeholder="Body address" required></textarea>
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" class="form-control" ng-model="vm.body.email" placeholder="Body email" required/>
                     </div>
                     <div class="form-group m-b-20">
                         <label for="phone">Phone</label>
                         <input type="text" id="phone" class="form-control" ng-model="vm.body.phone" placeholder="Body phone"/>
                     </div>
                     <div class="form-group m-b-20">
-                        <label for="city">City</label>
-                        <input type="text" id="city" class="form-control" ng-model="vm.body.city" placeholder="Body city" required/>
+                        <label for="type">Type*</label>
+                        <select ng-model="vm.body.type_id" ng-options="type.id as type.name for type in vm.body_types" class="form-control" id="countries" required>
+                        </select>
+                    </div>                    
+                    <hr>
+                    <div class="form-group m-b-20">
+                        <label for="street">Street*</label>
+                        <input type="text" id="street" class="form-control" ng-model="vm.body.address.street" placeholder="Body street" required/>
                     </div>
                     <div class="form-group m-b-20">
-                        <label for="countries">Country</label>
-                        <select ng-model="vm.body.country" class="form-control" id="countries">
-                            <option value=""></option>
-                            <option ng-repeat="(key, value) in vm.countries" value="{{key}}">{{value}}</option>
+                        <label for="city">City*</label>
+                        <input type="text" id="city" class="form-control" ng-model="vm.body.address.city" placeholder="Body city" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="zipcode">Zipcode*</label>
+                        <input type="text" id="zipcode" class="form-control" ng-model="vm.body.address.zipcode" placeholder="Zipcode" required/>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="countries">Country*</label>
+                        <select ng-model="vm.body.address.country_id" ng-options="country.id as country.name for country in vm.countries" class="form-control" id="countries" required>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <!--<button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>-->
-                    <button ng-disabled="bodyForm.$pristine || bodyForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveBody()"><i class="fa fa-save"></i> Save body</button>
+                    <button ng-disabled="bodyForm.$pristine || bodyForm.$invalid" class="btn btn-sm btn-success" type="submit"><i class="fa fa-save"></i> Save body</button>
                 </div>
             </form>
         </div>

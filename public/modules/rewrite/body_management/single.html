@@ -19,6 +19,10 @@
 				<td>{{ vm.body.email }}</td>
 			</tr>
 			<tr>
+				<td>Phone</td>
+				<td>{{ vm.body.phone }}</td>
+			</tr>
+			<tr>
 				<td>Name</td>
 				<td>{{ vm.body.name }}</td>
 			</tr>
@@ -35,12 +39,6 @@
 			</tr>
 		</table>
 	</div>
-</div>
-
-<div class="row">
-	<h4 class="col-sm-4">{{ vm.body.city }}</h4>
-	<h4 class="col-sm-4">{{ vm.body.type }}</h4>
-	<h4 class="col-sm-4">Click to contact</h4>
 </div>
 
 <a ui-sref="app.body_management" class="btn btn-white">Back to overview</a>

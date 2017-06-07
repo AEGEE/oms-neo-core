@@ -55,6 +55,8 @@
             create_body: true
         };
 
+        vm.query = "";
+
         vm.getBodies = function() {
             $http({
                 method: 'GET',
@@ -62,12 +64,73 @@
             })
             .then(function successCallback(response) {
                 vm.bodies = response.data.data;
-            })
-            .catch(function(err) {
-                showError(err);
-            });
+            }).catch(function(err) {showError(err);});
         }
         vm.getBodies();
+
+        vm.getBodyTypes = function() {
+            $http({
+                method: 'GET',
+                url: '/api/bodies/types'
+            })
+            .then(function successCallback(response) {
+                vm.body_types = response.data.data;
+            }).catch(function(err) {showError(err);});
+        }
+        vm.getBodyTypes();
+
+        vm.getCountries = function() {
+            $http({
+                method: 'GET',
+                url: '/api/countries'
+            })
+            .then(function successCallback(response) {
+                vm.countries = response.data.data;
+            }).catch(function(err) {showError(err);});
+        }
+        vm.getCountries();
+
+        vm.saveBodyForm = function() {
+            // First create the address object, then the body
+            $http({
+                method: 'POST',
+                url: '/api/addresses',
+                data: vm.body.address
+            })
+            .then(function successCallback(response) {
+                vm.body.address = response.data.data;
+                vm.body.address_id = vm.body.address.id;
+                // Create the body
+                $http({
+                    method: 'POST',
+                    url: '/api/bodies',
+                    data: vm.body
+                })
+                .then(function successCallback(response) {
+                    // Successfully saved that body
+                    $('#editBodyModal').modal('hide');
+                    $.gritter.add({
+                        title: 'Success',
+                        text: `Successfully added body`,
+                        sticky: false,
+                        time: 8000,
+                        class_name: 'my-sticky-class',
+                      });
+                    vm.getBodies();
+                }).catch(function(err) {
+                    if(err.status == 422)
+                        vm.errors = err.data.errors;
+                    else
+                        showError(err);
+                });
+
+            }).catch(function(err) {
+                if(err.status == 422)
+                    vm.errors = err.data.errors;
+                else
+                    showError(err);
+            });
+        };
 
         vm.showBodyModal = function() {
             $('#editBodyModal').modal('show');
@@ -89,10 +152,7 @@
             })
             .then(function successCallback(response) {
                 vm.body.type = response.data.data;
-            })
-            .catch(function(err) {
-                showError(err);
-            });
+            }).catch(function(err) {showError(err);});
         }
 
         vm.getBodyAddress = function(id) {
@@ -102,10 +162,7 @@
             })
             .then(function successCallback(response) {
                 vm.body.address = response.data.data;
-            })
-            .catch(function(err) {
-                showError(err);
-            });
+            }).catch(function(err) {showError(err);});
         }
 
         vm.getBody = function(id) {
@@ -117,12 +174,20 @@
                 vm.body = response.data.data[0];
                 vm.getBodyType(vm.body.type_id);
                 vm.getBodyAddress(vm.body.address_id);
-            })
-            .catch(function(err) {
-                showError(err);
-            });
+            }).catch(function(err) {showError(err);});
         };
         vm.getBody($stateParams.id);
+
+        vm.getCountries = function() {
+            $http({
+                method: 'GET',
+                url: '/api/countries'
+            })
+            .then(function successCallback(response) {
+                vm.countries = response.data.data;
+            }).catch(function(err) {showError(err);});
+        }
+        vm.getCountries();
 
         vm.showBodyModal = function() {
             $('#editBodyModal').modal('show');

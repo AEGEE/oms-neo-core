@@ -4,8 +4,8 @@ $(function() {
 
 function noSessionTimeout() {
 	$.ajax({
-		url: 'noSessionTimeout',
-		type: 'GET',
+		url: '/session',
+		type: 'PUT',
 		async: true,
 		success: function(response) {
 			if(response != 1) {
