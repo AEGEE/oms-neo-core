@@ -17,7 +17,7 @@ use Input;
 
 class BodyController extends Controller
 {
-    public function getBodies(Body $body, Request $req) {
+    public function getBodies(Request $req) {
         $max_permission = $req->get('max_permission');
 
         // Extract URL arguments to filter on.
@@ -34,13 +34,13 @@ class BodyController extends Controller
         return response()->success($bodies);
     }
 
-    public function getBody($id) {
+    public function getBody($body_id) {
         //TODO Decide what (if) should be eager loaded.
-        return response()->success(Body::where('id', $id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
+        return response()->success(Body::where('id', $body_id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}])->get());
     }
 
-    public function updateBody($id, UpdateBodyRequest $req) {
-        $body = Body::findOrFail($id);
+    public function updateBody($body_id, UpdateBodyRequest $req) {
+        $body = Body::findOrFail($body_id);
         $body->name = $req->has('name') ? $req->name : $body->name;
         $body->email = $req->has('email') ? $req->email : $body->email;
         $body->phone = $req->has('phone') ? $req->phone : $body->phone;

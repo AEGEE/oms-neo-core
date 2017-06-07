@@ -25,7 +25,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function getUsers(User $user, Request $req) {
+    public function getUsers(Request $req) {
         $max_permission = $req->get('max_permission');
 
         // Extract URL arguments to filter on.
@@ -44,8 +44,8 @@ class UserController extends Controller
         return response()->success($users);
     }
 
-    public function getUser($id) {
-        $user = User::where('id', $id)->with('address', 'bodies')->get();
+    public function getUser($user_id) {
+        $user = User::where('id', $user_id)->with('address', 'bodies')->get();
         return response()->success($user);
     }
 

@@ -12,8 +12,8 @@ class CountryController extends Controller
         return response()->success(Country::All());
     }
 
-    public function getCountry(Country $country) {
-        return response()->success($country);
+    public function getCountry(Country $country_id) {
+        return response()->success($country_id);
     }
 
     public function createCountry(CreateCountryRequest $req) {
