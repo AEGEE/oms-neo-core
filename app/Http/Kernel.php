@@ -44,15 +44,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'checkKey' => \App\Http\Middleware\ApiCheckMiddleware::class,
-        'checkAccess' => \App\Http\Middleware\CheckModuleAccess::class,
-        'microServiceAuth' => \App\Http\Middleware\MicroServiceAuth::class,
-        'checkSpecialRoles' => \App\Http\Middleware\CheckSpecialRoles::class,
-        'seoURL' => \App\Http\Middleware\SeoURLMiddleware::class,
+        'auth'                  => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'            => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'can'                   => \Illuminate\Foundation\Http\Middleware\Authorize::class,
+        'guest'                 => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'throttle'              => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'checkKey'              => \App\Http\Middleware\ApiCheckMiddleware::class,
+        'checkAccess'           => \App\Http\Middleware\CheckModuleAccess::class,
+        'microServiceAuth'      => \App\Http\Middleware\MicroServiceAuth::class,
+        'checkSpecialRoles'     => \App\Http\Middleware\CheckSpecialRoles::class,
+        'seoURL'                => \App\Http\Middleware\SeoURLMiddleware::class,
+        'login'                 => \App\Http\Middleware\LoginMethodMiddleware::class,
     ];
 }

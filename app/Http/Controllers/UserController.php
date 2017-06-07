@@ -9,14 +9,16 @@ use Image;
 use Excel;
 use Session;
 use Response;
+use Auth;
 use App\Http\Requests;
 use App\Http\Requests\SaveUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\SuspendUserRequest;
+use App\Http\Requests\CreateUserRequest;
 use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Auth;
+use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
@@ -61,13 +63,20 @@ class UserController extends Controller
         }
 
         $now = date('Y-m-d H:i:s');
-        $auth = Auth::where('token_generated', $token)
+        $auth = AuthToken::where('token_generated', $token)
                         ->where(function($query) use($now) {
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');
                         })->firstOrFail();
 
         return $this->getUser($auth->user_id);
+    }
+
+    public function createUser(CreateUserRequest $req) {
+        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'contact_email', 'gender', 'phone', 'description', 'password']);
+        $arr['password'] = Hash::make($req->password);
+        $user = User::create($arr);
+        return response()->success($user, null, 'User created');
     }
 
     public function updateUser($user_id, SaveUserRequest $req) {
@@ -110,7 +119,7 @@ class UserController extends Controller
 
     public function activateUser($user_id, Role $role, Request $req) {
         $user = User::findOrFail($user_id);
-        $currentUser = $req->get('userData');
+        $currentUser = Auth::user();
 
         if ($req->activate != $req->deactivate) {
             if ($req->activate) {
@@ -121,9 +130,8 @@ class UserController extends Controller
                 $user->seo_url = $user->generateSeoUrl();
                 $user->activated_at = date('Y-m-d H:i:s');
 
-                $userPass = $user->generateRandomPassword();
-
-                $oAuthActive = $this->isOauthDefined();
+                //TODO restructure oAuth implementation.
+                $oAuthActive = false; //$this->isOauthDefined();
                 if($oAuthActive) {
                     $domain = $this->getOAuthAllowedDomain();
                     $username = $user->seo_url."@".$domain;
@@ -142,9 +150,6 @@ class UserController extends Controller
                     if($success !== true) {
                         die("oAuth problem! Error code:".$success);
                     }
-                } else {
-                    $username = $user->contact_email;
-                    $user->password = Hash::make($userPass);
                 }
 
                 $user->save();
@@ -165,7 +170,7 @@ class UserController extends Controller
 
                 //TODO Email user with all data..
 
-                return response()->succes($user);
+                return response()->success($user, null, 'User activated');
             } else {
                 return response()->notImplemented();
             }
@@ -204,7 +209,7 @@ class UserController extends Controller
 
     public function suspendUnsuspendAccount($user_id, SuspendUserRequest $req) {
         $user = User::findOrFail($user_id);
-        $userData = $req->get('userData');
+        $userData = Auth::user();
 
         if ($req->suspend != $req->unsuspend) {
             if ($req->suspend) {
@@ -221,10 +226,10 @@ class UserController extends Controller
 
     public function impersonateUser($user_id, Request $req) {
         $user = User::findOrFail($user_id);
-        $userData = $req->get('userData');
+        $userData = Auth::user();
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
-        $auth = Auth::where('token_generated', $xAuthToken)->firstOrFail();
+        $auth = AuthToken::where('token_generated', $xAuthToken)->firstOrFail();
         $auth->user_id = $user_id; // Switching token to new user..
         $auth->save();
 
@@ -243,7 +248,7 @@ class UserController extends Controller
 
     //TODO If I am not mistaken user avatar management can be done a lot simpler using Laravel.
     public function uploadUserAvatar(Request $req) {
-        $userData = $req->get('userData');
+        $userData = Auth::user();
 
         $allowedExt = array(
             'png', 'jpg', 'jpeg'
