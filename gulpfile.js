@@ -57,6 +57,8 @@ elixir(function(mix) {
 		'../bower_components/angular-file-upload/dist/angular-file-upload.min.js',
 		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.js',
 		'../../../node_modules/angular-bootstrap-datetimepicker/src/js/datetimepicker.templates.js',
+		'../../../node_modules/ng-infinite-scroll/build/ng-infinite-scroll.js',
+		'../../../node_modules/angular-bootstrap3-typeahead/angular-bootstrap3-typeahead.js',
 		'../bower_components/showdown/compressed/Showdown.min.js',
 		'../bower_components/angular-markdown-directive/markdown.js',
 		'../otherLibs/nestable/jquery.nestable.js',
@@ -78,8 +80,7 @@ elixir(function(mix) {
 		'../../../public/assets/js/angular-directive.js',
 		'../bower_components/angular-sanitize/angular-sanitize.min.js',
 		'../../../public/assets/js/apps.js',
-		'../../../node_modules/angular-bootstrap3-typeahead/angular-bootstrap3-typeahead.js'
-
+		'../../../public/assets/js/own.js'
 	],
 	'public/vendor/template.js');
 });

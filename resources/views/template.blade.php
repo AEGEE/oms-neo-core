@@ -99,7 +99,8 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            'oc.lazyLoad',
 	            'angularFileUpload',
 	            'bootstrap3-typeahead',
-	            'btford.markdown'
+	            'btford.markdown',
+	            'infinite-scroll',
 	            @yield('modules')  
 	        ])
 	        .config(appConfig)

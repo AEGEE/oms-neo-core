@@ -25,7 +25,7 @@
                 }
             })
             .state('app.body_management.single', {
-                url: '/body_management/single',
+                url: '/body_management/:id',
                 data: {'pageTitle': 'Body Details'},
                 views   : {
                     'pageContent@app': {
@@ -46,7 +46,7 @@
         };
     }
 
-    function BodyListingController($http, $compile, $scope, $window, $httpParamSerializer) {
+    function BodyListingController($http, $scope, $stateParams) {
         // Data
         var vm = this;
 
@@ -55,15 +55,19 @@
             create_body: true
         };
 
-        vm.bodies = [
-            {
-                title: "AEGEE-Dresden",
-                subtitle: "The best local ever"
-            }, {
-                title: "ITC",
-                subtitle: "Nerds and stuff"
-            }
-        ];
+        vm.getBodies = function() {
+            $http({
+                method: 'GET',
+                url: '/api/bodies'
+            })
+            .then(function successCallback(response) {
+                vm.bodies = response.data;
+            })
+            .catch(function(err) {
+                showError(err);
+            });
+        }
+        vm.getBodies();
 
         vm.showBodyModal = function() {
             $('#editBodyModal').modal('show');
@@ -78,30 +82,19 @@
             edit_circles: true
         };
 
-        vm.body = {
-            title: "AEGEE-Dresden",
-            subtitle: "The best local ever",
-            circles: [
-                {
-                    name: "Members",
-                    users: [
-                        {
-                            name: "Nico",
-                        }, {
-                            name: "Dresdino"
-                        }
-                    ]
-                },
-                {
-                    name: "Board",
-                    users: [
-                        {
-                            name: "Nico"
-                        }
-                    ]
-                }
-            ]
-        }
+        vm.getBody = function(id) {
+            $http({
+                method: 'GET',
+                url: '/api/bodies/' + id
+            })
+            .then(function successCallback(response) {
+                vm.body = response.data;
+            })
+            .catch(function(err) {
+                showError(err);
+            });
+        };
+        vm.getBody($stateParams.id);
 
         vm.showBodyModal = function() {
             $('#editBodyModal').modal('show');

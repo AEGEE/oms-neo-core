@@ -13337,7 +13337,7 @@ if ('function' === typeof define && define.amd)
     }
 
     function DateObject () {
-      var tempDate = new Date()
+      var tempDate = new Date(arguments[0].utcDateValue)
       var localOffset = tempDate.getTimezoneOffset() * 60000
 
       this.utcDateValue = tempDate.getTime()
@@ -13492,7 +13492,7 @@ if ('function' === typeof define && define.amd)
       }
     }
   }
-}))
+})); // eslint-disable-line semi
 
 /* globals define, module, require, angular */
 
@@ -13523,7 +13523,319 @@ if ('function' === typeof define && define.amd)
   angular.module('ui.bootstrap.datetimepicker').run(['$templateCache', function ($templateCache) {
     $templateCache.put('templates/datetimepicker.html', '<div class="datetimepicker table-responsive">\n    <table class="table table-condensed {{ data.currentView }}-view">\n        <thead>\n        <tr>\n            <th class="left" data-ng-click="changeView(data.currentView, data.leftDate, $event)" data-ng-show="data.leftDate.selectable"><i class="glyphicon glyphicon-arrow-left"><span class="sr-only">{{ screenReader.previous }}</span></i>\n            </th>\n            <th class="switch" colspan="5" data-ng-show="data.previousViewDate.selectable" data-ng-click="changeView(data.previousView, data.previousViewDate, $event)">{{ data.previousViewDate.display }}</th>\n            <th class="right" data-ng-click="changeView(data.currentView, data.rightDate, $event)" data-ng-show="data.rightDate.selectable"><i class="glyphicon glyphicon-arrow-right"><span class="sr-only">{{ screenReader.next }}</span></i>\n            </th>\n        </tr>\n        <tr>\n            <th class="dow" data-ng-repeat="day in data.dayNames">{{ day }}</th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr data-ng-if="data.currentView !== \'day\'">\n            <td colspan="7">\n                          <span class="{{ data.currentView }}" data-ng-repeat="dateObject in data.dates" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}" data-ng-click="changeView(data.nextView, dateObject, $event)">{{ dateObject.display }}</span></td>\n        </tr>\n        <tr data-ng-if="data.currentView === \'day\'" data-ng-repeat="week in data.weeks">\n            <td data-ng-repeat="dateObject in week.dates" data-ng-click="changeView(data.nextView, dateObject, $event)" class="day" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}">{{ dateObject.display }}</td>\n        </tr>\n        </tbody>\n    </table>\n</div>\n')
   }])
-}))
+})); // eslint-disable-line semi
+
+/* ng-infinite-scroll - v1.3.0 - 2016-06-30 */
+angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).directive('infiniteScroll', [
+  '$rootScope', '$window', '$interval', 'THROTTLE_MILLISECONDS', function($rootScope, $window, $interval, THROTTLE_MILLISECONDS) {
+    return {
+      scope: {
+        infiniteScroll: '&',
+        infiniteScrollContainer: '=',
+        infiniteScrollDistance: '=',
+        infiniteScrollDisabled: '=',
+        infiniteScrollUseDocumentBottom: '=',
+        infiniteScrollListenForEvent: '@'
+      },
+      link: function(scope, elem, attrs) {
+        var changeContainer, checkInterval, checkWhenEnabled, container, handleInfiniteScrollContainer, handleInfiniteScrollDisabled, handleInfiniteScrollDistance, handleInfiniteScrollUseDocumentBottom, handler, height, immediateCheck, offsetTop, pageYOffset, scrollDistance, scrollEnabled, throttle, unregisterEventListener, useDocumentBottom, windowElement;
+        windowElement = angular.element($window);
+        scrollDistance = null;
+        scrollEnabled = null;
+        checkWhenEnabled = null;
+        container = null;
+        immediateCheck = true;
+        useDocumentBottom = false;
+        unregisterEventListener = null;
+        checkInterval = false;
+        height = function(elem) {
+          elem = elem[0] || elem;
+          if (isNaN(elem.offsetHeight)) {
+            return elem.document.documentElement.clientHeight;
+          } else {
+            return elem.offsetHeight;
+          }
+        };
+        offsetTop = function(elem) {
+          if (!elem[0].getBoundingClientRect || elem.css('none')) {
+            return;
+          }
+          return elem[0].getBoundingClientRect().top + pageYOffset(elem);
+        };
+        pageYOffset = function(elem) {
+          elem = elem[0] || elem;
+          if (isNaN(window.pageYOffset)) {
+            return elem.document.documentElement.scrollTop;
+          } else {
+            return elem.ownerDocument.defaultView.pageYOffset;
+          }
+        };
+        handler = function() {
+          var containerBottom, containerTopOffset, elementBottom, remaining, shouldScroll;
+          if (container === windowElement) {
+            containerBottom = height(container) + pageYOffset(container[0].document.documentElement);
+            elementBottom = offsetTop(elem) + height(elem);
+          } else {
+            containerBottom = height(container);
+            containerTopOffset = 0;
+            if (offsetTop(container) !== void 0) {
+              containerTopOffset = offsetTop(container);
+            }
+            elementBottom = offsetTop(elem) - containerTopOffset + height(elem);
+          }
+          if (useDocumentBottom) {
+            elementBottom = height((elem[0].ownerDocument || elem[0].document).documentElement);
+          }
+          remaining = elementBottom - containerBottom;
+          shouldScroll = remaining <= height(container) * scrollDistance + 1;
+          if (shouldScroll) {
+            checkWhenEnabled = true;
+            if (scrollEnabled) {
+              if (scope.$$phase || $rootScope.$$phase) {
+                return scope.infiniteScroll();
+              } else {
+                return scope.$apply(scope.infiniteScroll);
+              }
+            }
+          } else {
+            if (checkInterval) {
+              $interval.cancel(checkInterval);
+            }
+            return checkWhenEnabled = false;
+          }
+        };
+        throttle = function(func, wait) {
+          var later, previous, timeout;
+          timeout = null;
+          previous = 0;
+          later = function() {
+            previous = new Date().getTime();
+            $interval.cancel(timeout);
+            timeout = null;
+            return func.call();
+          };
+          return function() {
+            var now, remaining;
+            now = new Date().getTime();
+            remaining = wait - (now - previous);
+            if (remaining <= 0) {
+              $interval.cancel(timeout);
+              timeout = null;
+              previous = now;
+              return func.call();
+            } else {
+              if (!timeout) {
+                return timeout = $interval(later, remaining, 1);
+              }
+            }
+          };
+        };
+        if (THROTTLE_MILLISECONDS != null) {
+          handler = throttle(handler, THROTTLE_MILLISECONDS);
+        }
+        scope.$on('$destroy', function() {
+          container.unbind('scroll', handler);
+          if (unregisterEventListener != null) {
+            unregisterEventListener();
+            unregisterEventListener = null;
+          }
+          if (checkInterval) {
+            return $interval.cancel(checkInterval);
+          }
+        });
+        handleInfiniteScrollDistance = function(v) {
+          return scrollDistance = parseFloat(v) || 0;
+        };
+        scope.$watch('infiniteScrollDistance', handleInfiniteScrollDistance);
+        handleInfiniteScrollDistance(scope.infiniteScrollDistance);
+        handleInfiniteScrollDisabled = function(v) {
+          scrollEnabled = !v;
+          if (scrollEnabled && checkWhenEnabled) {
+            checkWhenEnabled = false;
+            return handler();
+          }
+        };
+        scope.$watch('infiniteScrollDisabled', handleInfiniteScrollDisabled);
+        handleInfiniteScrollDisabled(scope.infiniteScrollDisabled);
+        handleInfiniteScrollUseDocumentBottom = function(v) {
+          return useDocumentBottom = v;
+        };
+        scope.$watch('infiniteScrollUseDocumentBottom', handleInfiniteScrollUseDocumentBottom);
+        handleInfiniteScrollUseDocumentBottom(scope.infiniteScrollUseDocumentBottom);
+        changeContainer = function(newContainer) {
+          if (container != null) {
+            container.unbind('scroll', handler);
+          }
+          container = newContainer;
+          if (newContainer != null) {
+            return container.bind('scroll', handler);
+          }
+        };
+        changeContainer(windowElement);
+        if (scope.infiniteScrollListenForEvent) {
+          unregisterEventListener = $rootScope.$on(scope.infiniteScrollListenForEvent, handler);
+        }
+        handleInfiniteScrollContainer = function(newContainer) {
+          if ((newContainer == null) || newContainer.length === 0) {
+            return;
+          }
+          if (newContainer.nodeType && newContainer.nodeType === 1) {
+            newContainer = angular.element(newContainer);
+          } else if (typeof newContainer.append === 'function') {
+            newContainer = angular.element(newContainer[newContainer.length - 1]);
+          } else if (typeof newContainer === 'string') {
+            newContainer = angular.element(document.querySelector(newContainer));
+          }
+          if (newContainer != null) {
+            return changeContainer(newContainer);
+          } else {
+            throw new Error("invalid infinite-scroll-container attribute.");
+          }
+        };
+        scope.$watch('infiniteScrollContainer', handleInfiniteScrollContainer);
+        handleInfiniteScrollContainer(scope.infiniteScrollContainer || []);
+        if (attrs.infiniteScrollParent != null) {
+          changeContainer(angular.element(elem.parent()));
+        }
+        if (attrs.infiniteScrollImmediateCheck != null) {
+          immediateCheck = scope.$eval(attrs.infiniteScrollImmediateCheck);
+        }
+        return checkInterval = $interval((function() {
+          if (immediateCheck) {
+            handler();
+          }
+          return $interval.cancel(checkInterval);
+        }));
+      }
+    };
+  }
+]);
+
+if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports) {
+  module.exports = 'infinite-scroll';
+}
+
+/**
+ * angular-bootstrap3-typeahead
+ * angular directive for https://github.com/bassjobsen/Bootstrap-3-Typeahead
+ *
+ * @version v0.0.1 - 2016-04-04
+ * @author David Konrad (davidkonrad@gmail.com)
+ * @license MIT (https://opensource.org/licenses/MIT)
+**/
+
+(function() {
+'use strict';
+
+//declaration
+angular.module('bootstrap3-typeahead', []);
+
+//implementation
+angular.module('bootstrap3-typeahead')
+	.directive('bs3Typeahead', ["$parse", "$timeout", function ($parse, $timeout) {
+
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function link(scope, element, attrs, controller) {
+
+				/**
+					default typeahead options
+				 */
+        var attrMap = {
+					source: [],
+					items: 8,
+					minLength: 1,
+					showHintOnFocus: false,
+					scrollHeight: 0,
+					displayText: null,
+					afterSelect: null,
+					addItem: false,
+					autoSelect: true,
+					delay: 0,
+					matcher: null,
+					sorter: null,
+					updater: null,
+					highlighter: null
+				}
+
+				/**
+					bootstrap3-typeahead reference
+				 */
+				var instance = null
+
+        /**
+         * return the directive attribute name associated with a typeahead option
+         * 
+         * @param typeahead option name, example items
+         * @returns {string} attrName, example bs3Items
+         */
+				var getAttrName = function(attr) {
+					return 'bs3' + attr.charAt(0).toUpperCase() + attr.toLowerCase().slice(1)					
+				}
+
+        /**
+         * return the value of an attribute declaration
+				 * checks if the attribute value is found in the scope
+         * 
+         * @param bs3-* attrName 
+         * @returns {value} a default value, a custom value or a $scope variable
+         */
+				var getAttrValue = function(attrName) {
+					var value = attrs[attrName], scopeValue = scope[value]
+					return scopeValue !== undefined ? scopeValue : value
+				}	
+
+				/**
+				 * initialize the typeahead
+				 *
+         * @param object attributes, harvested directive attributes translated into jQuery names
+				 *
+				**/
+				var initialize = function(attributes) {
+					if (instance) element.typeahead('destroy')
+					instance = element.typeahead(attributes)
+				}
+
+        /**
+         * read attributes and wait for promise (if any)
+         * calls initialize() when ready
+         */
+				var prepare = function() {
+					var attributes = angular.copy(attrMap)
+					for (var name in attributes) {
+						var value = getAttrValue(getAttrName(name))
+						if (value != undefined) attributes[name] = value
+					}
+					var promise = attrs['bs3Promise']
+					if (promise) {
+						scope.$watch(promise, function(newVal, oldVal, childScope) {
+							if (typeof childScope[promise] == 'object') {
+								attributes['source'] = JSON.parse(angular.toJson(childScope[promise]))
+								initialize(attributes)
+							}
+						})
+					} else {
+						initialize(attributes)	
+					}
+        }
+
+				prepare()
+
+				/**
+					clean up the typeahead instance after destroy
+				**/
+				scope.$on('$destroy', function() {
+					element.typeahead('destroy');
+	 			})
+
+			}
+    }
+  }])
+
+})();
+
+
 
 /*! showdown 06-01-2015 */
 var Showdown={extensions:{}},forEach=Showdown.forEach=function(a,b){if("function"==typeof a.forEach)a.forEach(b);else{var c,d=a.length;for(c=0;d>c;c++)b(a[c],c,a)}},stdExtName=function(a){return a.replace(/[_-]||\s/g,"").toLowerCase()};Showdown.converter=function(a){var b,c,d,e=0,f=[],g=[];if("undefined"!=typeof module&&"undefined"!=typeof exports&&"undefined"!=typeof require){var h=require("fs");if(h){var i=h.readdirSync((__dirname||".")+"/extensions").filter(function(a){return~a.indexOf(".js")}).map(function(a){return a.replace(/\.js$/,"")});Showdown.forEach(i,function(a){var b=stdExtName(a);Showdown.extensions[b]=require("./extensions/"+a)})}}if(this.makeHtml=function(a){return b={},c={},d=[],a=a.replace(/~/g,"~T"),a=a.replace(/\$/g,"~D"),a=a.replace(/\r\n/g,"\n"),a=a.replace(/\r/g,"\n"),a="\n\n"+a+"\n\n",a=M(a),a=a.replace(/^[ \t]+$/gm,""),Showdown.forEach(f,function(b){a=l(b,a)}),a=z(a),a=n(a),a=m(a),a=p(a),a=K(a),a=a.replace(/~D/g,"$$"),a=a.replace(/~T/g,"~"),Showdown.forEach(g,function(b){a=l(b,a)}),a},a&&a.extensions){var j=this;Showdown.forEach(a.extensions,function(a){if("string"==typeof a&&(a=Showdown.extensions[stdExtName(a)]),"function"!=typeof a)throw"Extension '"+a+"' could not be loaded.  It was either not found or is not a valid extension.";Showdown.forEach(a(j),function(a){a.type?"language"===a.type||"lang"===a.type?f.push(a):("output"===a.type||"html"===a.type)&&g.push(a):g.push(a)})})}var k,l=function(a,b){if(a.regex){var c=new RegExp(a.regex,"g");return b.replace(c,a.replace)}return a.filter?a.filter(b):void 0},m=function(a){return a+="~0",a=a.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|(?=~0))/gm,function(a,d,e,f,g){return d=d.toLowerCase(),b[d]=G(e),f?f+g:(g&&(c[d]=g.replace(/"/g,"&quot;")),"")}),a=a.replace(/~0/,"")},n=function(a){a=a.replace(/\n/g,"\n\n");return a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\b[^\r]*?\n<\/\2>[ \t]*(?=\n+))/gm,o),a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|style|section|header|footer|nav|article|aside)\b[^\r]*?<\/\2>[ \t]*(?=\n+)\n)/gm,o),a=a.replace(/(\n[ ]{0,3}(<(hr)\b([^<>])*?\/?>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(\n\n[ ]{0,3}<!(--[^\r]*?--\s*)+>[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(?:\n\n)([ ]{0,3}(?:<([?%])[^\r]*?\2>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/\n\n/g,"\n")},o=function(a,b){var c=b;return c=c.replace(/\n\n/g,"\n"),c=c.replace(/^\n/,""),c=c.replace(/\n+$/g,""),c="\n\n~K"+(d.push(c)-1)+"K\n\n"},p=function(a){a=w(a);var b=A("<hr />");return a=a.replace(/^[ ]{0,2}([ ]?\*[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\-[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\_[ ]?){3,}[ \t]*$/gm,b),a=x(a),a=y(a),a=E(a),a=n(a),a=F(a)},q=function(a){return a=B(a),a=r(a),a=H(a),a=u(a),a=s(a),a=I(a),a=G(a),a=D(a),a=a.replace(/  +\n/g," <br />\n")},r=function(a){var b=/(<[a-z\/!$]("[^"]*"|'[^']*'|[^'">])*>|<!(--.*?--\s*)+>)/gi;return a=a.replace(b,function(a){var b=a.replace(/(.)<\/?code>(?=.)/g,"$1`");return b=N(b,"\\`*_")})},s=function(a){return a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,t),a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\]\([ \t]*()<?(.*?(?:\(.*?\).*?)?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,t),a=a.replace(/(\[([^\[\]]+)\])()()()()()/g,t)},t=function(a,d,e,f,g,h,i,j){void 0==j&&(j="");var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(""==n)if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0!=b[m])n=b[m],void 0!=c[m]&&(o=c[m]);else{if(!(k.search(/\(\s*\)$/m)>-1))return k;n=""}n=N(n,"*_");var p='<a href="'+n+'"';return""!=o&&(o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"'),p+=">"+l+"</a>"},u=function(a){return a=a.replace(/(!\[(.*?)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,v),a=a.replace(/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,v)},v=function(a,d,e,f,g,h,i,j){var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(o||(o=""),""==n){if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0==b[m])return k;n=b[m],void 0!=c[m]&&(o=c[m])}l=l.replace(/"/g,"&quot;"),n=N(n,"*_");var p='<img src="'+n+'" alt="'+l+'"';return o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"',p+=" />"},w=function(a){function b(a){return a.replace(/[^\w]/g,"").toLowerCase()}return a=a.replace(/^(.+)[ \t]*\n=+[ \t]*\n+/gm,function(a,c){return A('<h1 id="'+b(c)+'">'+q(c)+"</h1>")}),a=a.replace(/^(.+)[ \t]*\n-+[ \t]*\n+/gm,function(a,c){return A('<h2 id="'+b(c)+'">'+q(c)+"</h2>")}),a=a.replace(/^(\#{1,6})[ \t]*(.+?)[ \t]*\#*\n+/gm,function(a,c,d){var e=c.length;return A("<h"+e+' id="'+b(d)+'">'+q(d)+"</h"+e+">")})},x=function(a){a+="~0";var b=/^(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/gm;return e?a=a.replace(b,function(a,b,c){var d=b,e=c.search(/[*+-]/g)>-1?"ul":"ol";d=d.replace(/\n{2,}/g,"\n\n\n");var f=k(d);return f=f.replace(/\s+$/,""),f="<"+e+">"+f+"</"+e+">\n"}):(b=/(\n\n|^\n?)(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/g,a=a.replace(b,function(a,b,c,d){var e=b,f=c,g=d.search(/[*+-]/g)>-1?"ul":"ol",f=f.replace(/\n{2,}/g,"\n\n\n"),h=k(f);return h=e+"<"+g+">\n"+h+"</"+g+">\n"})),a=a.replace(/~0/,"")};k=function(a){return e++,a=a.replace(/\n{2,}$/,"\n"),a+="~0",a=a.replace(/(\n)?(^[ \t]*)([*+-]|\d+[.])[ \t]+([^\r]+?(\n{1,2}))(?=\n*(~0|\2([*+-]|\d+[.])[ \t]+))/gm,function(a,b,c,d,e){var f=e,g=b;return g||f.search(/\n{2,}/)>-1?f=p(L(f)):(f=x(L(f)),f=f.replace(/\n$/,""),f=q(f)),"<li>"+f+"</li>\n"}),a=a.replace(/~0/g,""),e--,a};var y=function(a){return a+="~0",a=a.replace(/(?:\n\n|^)((?:(?:[ ]{4}|\t).*\n+)+)(\n*[ ]{0,3}[^ \t\n]|(?=~0))/g,function(a,b,c){var d=b,e=c;return d=C(L(d)),d=M(d),d=d.replace(/^\n+/g,""),d=d.replace(/\n+$/g,""),d="<pre><code>"+d+"\n</code></pre>",A(d)+e}),a=a.replace(/~0/,"")},z=function(a){return a+="~0",a=a.replace(/(?:^|\n)```(.*)\n([\s\S]*?)\n```/g,function(a,b,c){var d=b,e=c;return e=C(e),e=M(e),e=e.replace(/^\n+/g,""),e=e.replace(/\n+$/g,""),e="<pre><code"+(d?' class="'+d+'"':"")+">"+e+"\n</code></pre>",A(e)}),a=a.replace(/~0/,"")},A=function(a){return a=a.replace(/(^\n+|\n+$)/g,""),"\n\n~K"+(d.push(a)-1)+"K\n\n"},B=function(a){return a=a.replace(/(^|[^\\])(`+)([^\r]*?[^`])\2(?!`)/gm,function(a,b,c,d){var e=d;return e=e.replace(/^([ \t]*)/g,""),e=e.replace(/[ \t]*$/g,""),e=C(e),b+"<code>"+e+"</code>"})},C=function(a){return a=a.replace(/&/g,"&amp;"),a=a.replace(/</g,"&lt;"),a=a.replace(/>/g,"&gt;"),a=N(a,"*_{}[]\\",!1)},D=function(a){return a=a.replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g,"<strong>$2</strong>"),a=a.replace(/(\*|_)(?=\S)([^\r]*?\S)\1/g,"<em>$2</em>")},E=function(a){return a=a.replace(/((^[ \t]*>[ \t]?.+\n(.+\n)*\n*)+)/gm,function(a,b){var c=b;return c=c.replace(/^[ \t]*>[ \t]?/gm,"~0"),c=c.replace(/~0/g,""),c=c.replace(/^[ \t]+$/gm,""),c=p(c),c=c.replace(/(^|\n)/g,"$1  "),c=c.replace(/(\s*<pre>[^\r]+?<\/pre>)/gm,function(a,b){var c=b;return c=c.replace(/^  /gm,"~0"),c=c.replace(/~0/g,"")}),A("<blockquote>\n"+c+"\n</blockquote>")})},F=function(a){a=a.replace(/^\n+/g,""),a=a.replace(/\n+$/g,"");for(var b=a.split(/\n{2,}/g),c=[],e=b.length,f=0;e>f;f++){var g=b[f];g.search(/~K(\d+)K/g)>=0?c.push(g):g.search(/\S/)>=0&&(g=q(g),g=g.replace(/^([ \t]*)/g,"<p>"),g+="</p>",c.push(g))}e=c.length;for(var f=0;e>f;f++)for(;c[f].search(/~K(\d+)K/)>=0;){var h=d[RegExp.$1];h=h.replace(/\$/g,"$$$$"),c[f]=c[f].replace(/~K\d+K/,h)}return c.join("\n\n")},G=function(a){return a=a.replace(/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/g,"&amp;"),a=a.replace(/<(?![a-z\/?\$!])/gi,"&lt;")},H=function(a){return a=a.replace(/\\(\\)/g,O),a=a.replace(/\\([`*_{}\[\]()>#+-.!])/g,O)},I=function(a){return a=a.replace(/<((https?|ftp|dict):[^'">\s]+)>/gi,'<a href="$1">$1</a>'),a=a.replace(/<(?:mailto:)?([-.\w]+\@[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+)>/gi,function(a,b){return J(K(b))})},J=function(a){var b=[function(a){return"&#"+a.charCodeAt(0)+";"},function(a){return"&#x"+a.charCodeAt(0).toString(16)+";"},function(a){return a}];return a="mailto:"+a,a=a.replace(/./g,function(a){if("@"==a)a=b[Math.floor(2*Math.random())](a);else if(":"!=a){var c=Math.random();a=c>.9?b[2](a):c>.45?b[1](a):b[0](a)}return a}),a='<a href="'+a+'">'+a+"</a>",a=a.replace(/">.+:/g,'">')},K=function(a){return a=a.replace(/~E(\d+)E/g,function(a,b){var c=parseInt(b);return String.fromCharCode(c)})},L=function(a){return a=a.replace(/^(\t|[ ]{1,4})/gm,"~0"),a=a.replace(/~0/g,"")},M=function(a){return a=a.replace(/\t(?=\t)/g,"    "),a=a.replace(/\t/g,"~A~B"),a=a.replace(/~B(.+?)~A/g,function(a,b){for(var c=b,d=4-c.length%4,e=0;d>e;e++)c+=" ";return c}),a=a.replace(/~A/g,"    "),a=a.replace(/~B/g,"")},N=function(a,b,c){var d="(["+b.replace(/([\[\]\\])/g,"\\$1")+"])";c&&(d="\\\\"+d);var e=new RegExp(d,"g");return a=a.replace(e,O)},O=function(a,b){var c=b.charCodeAt(0);return"~E"+c+"E"}},"undefined"!=typeof module&&(module.exports=Showdown),"function"==typeof define&&define.amd&&define("showdown",function(){return Showdown}),"undefined"!=typeof angular&&"undefined"!=typeof Showdown&&!function(a,b){function c(){function a(){var a=new b.converter(c);this.makeHtml=function(b){return a.makeHtml(b)},this.stripHtml=function(a){return String(a).replace(/<[^>]+>/gm,"")}}var c={extensions:[],stripHtml:!0};this.setOption=function(a,b){return c.key=b,this},this.getOption=function(a){return c.hasOwnProperty(a)?c.key:null},this.loadExtension=function(a){return c.extensions.push(a),this},this.$get=function(){return new a}}function d(a){var b=function(b,c){b.$watch("model",function(b){var d;d="string"==typeof b?a.makeHtml(b):typeof b,c.html(d)})};return{restrict:"A",link:b,scope:{model:"=sdModelToHtml"}}}function e(){return function(a){return String(a).replace(/<[^>]+>/gm,"")}}a.provider("$Showdown",c).directive("sdModelToHtml",["$Showdown",d]).filter("sdStripHtml",e)}(angular.module("Showdown",[]),Showdown);
