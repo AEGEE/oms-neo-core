@@ -61,7 +61,7 @@
                 url: '/api/bodies'
             })
             .then(function successCallback(response) {
-                vm.bodies = response.data;
+                vm.bodies = response.data.data;
             })
             .catch(function(err) {
                 showError(err);
@@ -74,7 +74,7 @@
         }
     }
 
-    function BodySingleController() {
+    function BodySingleController($http, $scope, $stateParams) {
         var vm = this;
 
         vm.permissions = {
@@ -82,13 +82,41 @@
             edit_circles: true
         };
 
+        vm.getBodyType = function(id) {
+            $http({
+                method: 'GET',
+                url: '/api/bodies/types/' + id
+            })
+            .then(function successCallback(response) {
+                vm.body.type = response.data.data;
+            })
+            .catch(function(err) {
+                showError(err);
+            });
+        }
+
+        vm.getBodyAddress = function(id) {
+            $http({
+                method: 'GET',
+                url: '/api/addresses/' + id
+            })
+            .then(function successCallback(response) {
+                vm.body.address = response.data.data;
+            })
+            .catch(function(err) {
+                showError(err);
+            });
+        }
+
         vm.getBody = function(id) {
             $http({
                 method: 'GET',
                 url: '/api/bodies/' + id
             })
             .then(function successCallback(response) {
-                vm.body = response.data;
+                vm.body = response.data.data[0];
+                vm.getBodyType(vm.body.type_id);
+                vm.getBodyAddress(vm.body.address_id);
             })
             .catch(function(err) {
                 showError(err);

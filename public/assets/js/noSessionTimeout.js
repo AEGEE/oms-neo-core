@@ -9,13 +9,13 @@ function noSessionTimeout() {
 		async: true,
 		success: function(response) {
 			if(response != 1) {
-				alert('Session timed out! Please login again!');
-				location.reload();
+				//alert('Session timed out! Please login again!');
+				//location.reload();
 			}
 		}, 
 		error: function(response) {
-			alert('Session timed out! Please login again!');
-			location.reload();
+			//alert('Session timed out! Please login again!');
+			//location.reload();
 		}
 	});
 }
