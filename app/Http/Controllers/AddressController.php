@@ -12,8 +12,8 @@ class AddressController extends Controller
         return response()->success(Address::All());
     }
 
-    public function getAddress(Address $address) {
-        return response()->success($address);
+    public function getAddress($address_id) {
+        return response()->success(Address::where('id', $address_id)->with('country')->get());
     }
 
     public function createAddress(CreateAddressRequest $req) {
@@ -27,7 +27,7 @@ class AddressController extends Controller
         return response()->success($address, null, 'Address created');
     }
 
-    public function updateAddress(UpdateAddressRequest $req) {
+    public function updateAddress($address_id, UpdateAddressRequest $req) {
         $fields = array('country_id', 'street', 'zipcode', 'city');
         $arr = array();
 
@@ -35,7 +35,7 @@ class AddressController extends Controller
             if ($req->has($field)) { $arr[$field] = $req->get($field);}
         }
 
-        $address = Address::find($req->id);
+        $address = Address::findOrFail($address_id);
         $address->update($arr);
         return response()->success($address, null, 'Address updated');
     }

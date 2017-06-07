@@ -24,7 +24,7 @@ class BodyTypeController extends Controller
         return response()->success($bodyType, null, 'BodyType created');
     }
 
-    public function updateBodyType(UpdateBodyTypeRequest $req) {
+    public function updateBodyType($body_type_id, UpdateBodyTypeRequest $req) {
         $fields = array('name');
         $arr = array();
 
@@ -32,7 +32,7 @@ class BodyTypeController extends Controller
             if ($req->has($field)) { $arr[$field] = $req->get($field);}
         }
 
-        $bodyType = BodyType::find($req->id);
+        $bodyType = BodyType::findOrFail($body_type_id);
         $bodyType->update($arr);
         return response()->success($bodyType, null, 'BodyType updated');
     }

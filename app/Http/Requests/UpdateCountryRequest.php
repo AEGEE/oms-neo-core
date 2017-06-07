@@ -24,7 +24,6 @@ class UpdateCountryRequest extends Request
     public function rules()
     {
         return [
-            'id'        =>  'required|integer|exists:countries,id',
             'name'      =>  'max:255|unique:countries,name',
         ];
     }
