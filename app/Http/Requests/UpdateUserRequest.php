@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class SaveUserRequest extends Request
+class UpdateUserRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,8 +24,8 @@ class SaveUserRequest extends Request
     public function rules()
     {
         return [
-            'address_id'            =>  'integer|exists:address,id',
-            'contact_email'         =>  'email|unique:users,contact_email',
+            'address_id'            =>  'integer|exists:addresses,id',
+            'contact_email'         =>  'email|unique:users,contact_email,' . $this->user_id,
             'first_name'            =>  'max:255',
             'last_name'             =>  'max:255',
             'date_of_birth'         =>  'date',

@@ -12,8 +12,8 @@ class CountryController extends Controller
         return response()->success(Country::All());
     }
 
-    public function getCountry(Country $country) {
-        return response()->success($country);
+    public function getCountry(Country $country_id) {
+        return response()->success($country_id);
     }
 
     public function createCountry(CreateCountryRequest $req) {
@@ -24,7 +24,7 @@ class CountryController extends Controller
         return response()->success($country, null, 'Country created');
     }
 
-    public function updateCountry(UpdateCountryRequest $req) {
+    public function updateCountry($country_id, UpdateCountryRequest $req) {
         $fields = array('name');
         $arr = array();
 
@@ -32,7 +32,7 @@ class CountryController extends Controller
             if ($req->has($field)) { $arr[$field] = $req->get($field);}
         }
 
-        $country = Country::find($req->id);
+        $country = Country::findOrFail($country_id);
         $country->update($arr);
         return response()->success($country, null, 'Country updated');
     }

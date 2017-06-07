@@ -11,13 +11,14 @@ use Session;
 use Response;
 use Auth;
 use App\Http\Requests;
-use App\Http\Requests\SaveUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\SuspendUserRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Address;
 use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
@@ -25,7 +26,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function getUsers(User $user, Request $req) {
+    public function getUsers(Request $req) {
         $max_permission = $req->get('max_permission');
 
         // Extract URL arguments to filter on.
@@ -41,18 +42,18 @@ class UserController extends Controller
 
         $users = User::filterArray($search)->get();
 
-        return response()->json($users);
+        return response()->success($users);
     }
 
-    public function getUser($id) {
-        $user = User::findOrFail($id)->with('address', 'bodies')->get();
-        return response()->json($user);
+    public function getUser($user_id) {
+        $user = User::where('id', $user_id)->with('address', 'bodies')->first();
+        return response()->success($user);
     }
 
     public function getBodies($user_id) {
         //TODO Decide what (if) should be eager loaded.
         $bodies = User::findOrFail($user_id)->bodies;
-        return response()->json($bodies);
+        return response()->success($bodies);
     }
 
     public function getUserByToken() {
@@ -79,7 +80,7 @@ class UserController extends Controller
         return response()->success($user, null, 'User created');
     }
 
-    public function updateUser($user_id, SaveUserRequest $req) {
+    public function updateUser($user_id, UpdateUserRequest $req) {
         $user = User::findOrFail($user_id);
 
         $user->first_name = $req->has('first_name') ? $req->first_name : $user->first_name;
@@ -90,31 +91,24 @@ class UserController extends Controller
         $user->seo_url = $req->has('seo_url') ? $req->seo_url : $user->seo_url;
         $user->password = $req->has('password') ? Hash::make($req->password) : $user->password;
         $user->description = $req->has('description') ? nl2br($req->description) : $user->description;
-
         $user->contact_email = $req->has('contact_email') ? $req->contact_email : $user->contact_email;
-        //TODO Previously there was a hash check as well, but this should already be validated unique by the validation.
-        //See SaveUserRequest. Should test if this works properly now.
 
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 
         $user->save();
-        return response()->json($user);
+        return response()->success($user);
     }
 
     public function addBodyToUser($user_id, AddBodyToUserRequest $req) {
         $user = User::findOrFail($user_id);
 
-        $membership = BodyMembership::firstOrCreate([
+        $membership = BodyMembership::create([
             'user_id'       =>  $user->id,
             'body_id'       =>  $req->body_id,
+            'start_date'    =>  $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s'),
+            'end_date'      =>  $req->has('end_date') ? $req->end_date : null,
         ]);
-
-        $membership->start_date = $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s');
-        $membership->end_date = $req->has('end_date') ? $req->end_date : null;
-
-        $membership->save();
-
-        return response()->json($membership);
+        return response()->success($membership);
     }
 
     public function activateUser($user_id, Role $role, Request $req) {
@@ -172,7 +166,7 @@ class UserController extends Controller
 
                 return response()->success($user, null, 'User activated');
             } else {
-                //TODO deactivate?
+                return response()->notImplemented();
             }
         } else {
             return response()->failure("Ambigious action");
@@ -230,7 +224,7 @@ class UserController extends Controller
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         $auth = AuthToken::where('token_generated', $xAuthToken)->firstOrFail();
-        $auth->user_id = $id; // Switching token to new user..
+        $auth->user_id = $user_id; // Switching token to new user..
         $auth->save();
 
         $userData = $user->getLoginUserArray($xAuthToken);
