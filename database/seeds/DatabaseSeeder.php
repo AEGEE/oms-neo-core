@@ -1,8 +1,10 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Database\QueryException;
 
 use App\Models\SeederLog;
+use App\Models\Interfaces\HasUser;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,8 +22,8 @@ class DatabaseSeeder extends Seeder
     		'OptionsSeeder',
     		'EmailTemplateSeeder',
     		'AddSuperAdmin',
-            'AddRecrutementModuleSeeder',
-            'AddAnnouncementsRole'
+        'AddSystemRoles',
+        'TestDataSeeder',
     	);
 
     	$seeders = SeederLog::all();
@@ -35,11 +37,16 @@ class DatabaseSeeder extends Seeder
     		if(in_array($seeder, $seedersArr)) {
     			continue;
     		}
+          echo "Seeding: " . $seeder . PHP_EOL;
 
-    		eval('$this->call('.$seeder.'::class);');
-    		SeederLog::create([
-    			'code'	=>	$seeder
-    		]);
+        try {
+    		    eval('$this->call('.$seeder.'::class);');//, class_implements(' . $seeder . '));');
+        		SeederLog::create([
+        			'code'	=>	$seeder
+        		]);
+        } catch (Exception $e) {
+          echo $e . PHP_EOL;
+        }
 
     		$seededSomething = true;
     	}
@@ -50,15 +57,15 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-class userSeeder extends Seeder {
+class memberSeeder extends Seeder {
 	public function run() {
-		User::create([
+		Member::create([
 			'contact_email' 	=> 	'flaviu@glitch.ro',
 			'first_name'		=>	'Flaviu',
 			'last_name'			=>	'Porutiu',
 			'date_of_birth'		=>	'1994-01-24',
 			'gender'			=>	1,
-			'antenna_id'		=>	$antenna->id,
+			'body_id'		=>	$body->id,
 			'university'		=>	'UBB Cluj',
 			'studies_type_id'	=>	1,
 			'studies_field_id'	=>	1,

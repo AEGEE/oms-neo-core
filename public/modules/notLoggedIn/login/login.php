@@ -8,7 +8,7 @@ session_write_close();
 	    <div class="login-cover-image"><img src="assets/img/login-bg/bg-1.jpg" data-id="login-cover-image" alt="" /></div>
 	    <div class="login-cover-bg"></div>
 	</div>
-	
+
     <!-- begin login -->
     <div class="login login-v2" data-pageload-addclass="animated fadeIn">
         <!-- begin brand -->

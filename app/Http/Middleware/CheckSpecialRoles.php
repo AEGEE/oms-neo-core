@@ -36,14 +36,14 @@ class CheckSpecialRoles
         }
 
         if($userData->is_superadmin == 1) {
-            // User is superadmin.. can access any module..
+            // Member is superadmin.. can access any module..
             return $next($request);
         }
 
         // Else we need to check if user has a role which allows him to access it..
         $canAccess = Role::join('user_roles', 'roles.id', '=', 'user_roles.role_id')
                             ->where('roles.code', $roleCode)
-                            ->where('user_roles.user_id', $userData->id)
+                            ->where('user_roles.member_id', $userData->id)
                             ->whereNull('roles.is_disabled')
                             ->count();
 

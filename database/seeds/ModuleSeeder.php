@@ -13,36 +13,13 @@ class ModuleSeeder extends Seeder
      */
     public function run()
     {
+
         ModulePage::create([
-        	'name'			=>	'Antennae management',
-        	'code'			=>	'antennae_management',
-        	'module_link'	=>	'modules/loggedIn/antennae_management/antennae_management.js',
+        	'name'			=>	'Body management',
+        	'code'			=>	'body_management',
+        	'module_link'	=>	'modules/loggedIn/body_management/body_management.js',
             'icon'          =>  'ion-android-wifi',
         	'is_active'		=>	1
-        ]);
-
-        ModulePage::create([
-            'name'          =>  'Working groups',
-            'code'          =>  'working_groups',
-            'module_link'   =>  'modules/loggedIn/working_groups/working_groups.js',
-            'icon'          =>  'fa fa-group',
-            'is_active'     =>  1
-        ]);
-        
-        ModulePage::create([
-            'name'          =>  'Departments',
-            'code'          =>  'departments',
-            'module_link'   =>  'modules/loggedIn/departments/departments.js',
-            'icon'          =>  'fa fa-briefcase',
-            'is_active'     =>  1
-        ]);
-
-        ModulePage::create([
-            'name'          =>  'Fees management',
-            'code'          =>  'fees_management',
-            'module_link'   =>  'modules/loggedIn/fees_management/fees_management.js',
-            'icon'          =>  'fa fa-usd',
-            'is_active'     =>  1
         ]);
 
         ModulePage::create([
@@ -54,9 +31,9 @@ class ModuleSeeder extends Seeder
         ]);
 
         ModulePage::create([
-            'name'          =>  'Users',
-            'code'          =>  'users',
-            'module_link'   =>  'modules/loggedIn/users/users.js',
+            'name'          =>  'Members',
+            'code'          =>  'members',
+            'module_link'   =>  'modules/loggedIn/members/members.js',
             'icon'          =>  'fa fa-user',
             'is_active'     =>  1
         ]);

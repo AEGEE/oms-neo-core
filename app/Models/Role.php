@@ -14,16 +14,16 @@ class Role extends Model
                     ->withPivot('permission_level');
     }
 
-    public function user() {
-        return $this->belongsToMany('App\Models\User', 'user_roles', 'role_id', 'user_id');
+    public function member() {
+        return $this->belongsToMany('App\Models\Member', 'member_roles', 'role_id', 'member_id');
     }
 
     public function roleModulePages() {
     	return $this->hasMany('App\Models\RoleModulePage');
     }
 
-    public function userRole() {
-    	return $this->hasMany('App\Models\UserRole');
+    public function memberRole() {
+    	return $this->hasMany('App\Models\MemberRole');
     }
 
     // Model methods go down here..
@@ -75,10 +75,10 @@ class Role extends Model
         return $toReturn;
     }
 
-    public function getUserRoles($userId) {
-        return $this->select('roles.name', 'user_roles.id')
-                    ->join('user_roles', 'user_roles.role_id', '=', 'roles.id')
-                    ->where('user_id', $userId)
+    public function getMemberRoles($memberId) {
+        return $this->select('roles.name', 'member_roles.id')
+                    ->join('member_roles', 'member_roles.role_id', '=', 'roles.id')
+                    ->where('member_id', $memberId)
                     ->whereNull('is_disabled')
                     ->get();
     }

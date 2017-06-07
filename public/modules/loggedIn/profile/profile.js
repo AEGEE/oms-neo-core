@@ -27,7 +27,7 @@
     function ProfileController($http, $stateParams, $state, $scope, $sce, FileUploader) {
         // Data
         var vm = this;
-        vm.user = {};
+        vm.member = {};
         vm.workingGroups = {};
         vm.board_positions = {};
         vm.roles = {};
@@ -40,7 +40,7 @@
         vm.avatar = "";
 
         // Methods
-        vm.getUserProfile = function() {
+        vm.getMemberProfile = function() {
             var data = {};
             data.is_ui = 1;
             if($stateParams.seo != '') {
@@ -50,20 +50,21 @@
             $('#loadingOverlay').show();
             $http({
                 method: 'GET',
-                url: "/api/getUserProfile",
+                url: "/api/getMemberProfile",
                 params: data
             }).then(function successCallback(response) {
                     if(response.data.success == 0) {
                         $state.go('app.dashboard');
                     }
-                    vm.user = response.data.user;
+                    vm.member = response.data.member;
+                    console.log(vm.member);
                     vm.workingGroups = response.data.workingGroups;
                     vm.board_positions = response.data.board_positions;
                     vm.roles = response.data.roles;
                     vm.fees_paid = response.data.fees_paid;
                     vm.active_fields = response.data.active_fields;
-                    $scope.bio = $sce.trustAsHtml(vm.user.bio);
-                    vm.avatar = "/api/getUserAvatar/"+vm.user.id+"?"+new Date().getTime();
+                    $scope.bio = $sce.trustAsHtml(vm.member.bio);
+                    vm.avatar = "/api/getMemberAvatar/"+vm.member.id+"?"+new Date().getTime();
 
                     setTimeout(vm.fixUiHeights, 500);
             }, function errorCallback() {
@@ -73,7 +74,7 @@
         }
 
         vm.uploader = new FileUploader();
-        vm.uploader.url = "/api/uploadUserAvatar";
+        vm.uploader.url = "/api/uploadMemberAvatar";
         vm.uploader.alias = "avatar";
         vm.uploader.autoUpload = true;
         vm.uploader.headers = {
@@ -81,7 +82,7 @@
         }
         vm.uploader.onCompleteAll = function(response) {
             // location.reload();
-            vm.getUserProfile();
+            vm.getMemberProfile();
         }
 
         vm.getRoles = function() {
@@ -147,7 +148,7 @@
                 method: "POST",
                 url: '/api/setBoardPosition',
                 data: {
-                    user_id: vm.user.id,
+                    member_id: vm.member.id,
                     department_id: $('#department').val(),
                     start_date: $('#startDateBoard').val(),
                     end_date: $('#endDateBoard').val()
@@ -162,7 +163,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addBoardModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -179,9 +180,9 @@
         vm.addWorkingGroup = function() {
             $http({
                 method: "POST",
-                url: '/api/addWorkingGroupToUser',
+                url: '/api/addWorkingGroupToMember',
                 data: {
-                    user_id: vm.user.id,
+                    member_id: vm.member.id,
                     work_group_id: $('#workgroup').val(),
                     start_date: $('#startDateWg').val(),
                     end_date: $('#endDateWg').val()
@@ -191,12 +192,12 @@
                 if(response.data.success == '1') {
                     $.gritter.add({
                         title: 'Success!',
-                        text: 'User added to working group successfully!',
+                        text: 'Member added to working group successfully!',
                         sticky: true,
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addWorkGroupModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -213,9 +214,9 @@
         vm.addRoles = function() {
             $http({
                 method: "POST",
-                url: '/api/addUserRoles',
+                url: '/api/addMemberRoles',
                 data: {
-                    user_id: vm.user.id,
+                    member_id: vm.member.id,
                     roles: vm.roleChecked
                 }
             })
@@ -228,7 +229,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addRolesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -244,16 +245,16 @@
 
         vm.addFees = function() {
             vm.feesPaid = {};
-            $.each(vm.fees, function(key, val) {   
+            $.each(vm.fees, function(key, val) {
                 console.log(val);
                 vm.feesPaid[val.cell[0]] = $('#feepaid_'+val.cell[0]).val();
             });
 
             $http({
                 method: "POST",
-                url: '/api/addFeesToUser',
+                url: '/api/addFeesToMember',
                 data: {
-                    user_id: vm.user.id,
+                    member_id: vm.member.id,
                     feesPaid: vm.feesPaid,
                     fees: vm.feesToPay
                 }
@@ -267,7 +268,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addFeesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -286,7 +287,7 @@
                 method: "POST",
                 url: '/api/editBio',
                 data: {
-                    bio: vm.user.bio
+                    bio: vm.member.bio
                 }
             })
             .then(function successCallback(response) {
@@ -298,7 +299,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#editBioModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -317,8 +318,8 @@
                 method: "POST",
                 url: '/api/changeEmail',
                 data: {
-                    email: vm.user.email_change,
-                    email_confirmation: vm.user.email_confirmation
+                    email: vm.member.email_change,
+                    email_confirmation: vm.member.email_confirmation
                 }
             })
             .then(function successCallback(response) {
@@ -330,7 +331,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#changeEmailModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -349,8 +350,8 @@
                 method: "POST",
                 url: '/api/changePassword',
                 data: {
-                    password: vm.user.password,
-                    password_confirmation: vm.user.password_confirmation
+                    password: vm.member.password,
+                    password_confirmation: vm.member.password_confirmation
                 }
             })
             .then(function successCallback(response) {
@@ -397,7 +398,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addRolesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -432,7 +433,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addRolesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -467,7 +468,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addRolesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -502,7 +503,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#addRolesModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -522,7 +523,7 @@
                 url: '/api/suspendAccount',
                 data: {
                     reason: vm.reason,
-                    id: vm.user.id
+                    id: vm.member.id
                 }
             })
             .then(function successCallback(response) {
@@ -534,7 +535,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#suspendAccountModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -549,14 +550,14 @@
         }
 
         vm.unsuspendAccount = function() {
-            if(!confirm("Are you sure you want to unsuspend this account? Account suspension will not be lifted if the user was suspended by the System!")) {
+            if(!confirm("Are you sure you want to unsuspend this account? Account suspension will not be lifted if the member was suspended by the System!")) {
                 return;
             }
             $http({
                 method: "POST",
                 url: '/api/unsuspendAccount',
                 data: {
-                    id: vm.user.id
+                    id: vm.member.id
                 }
             })
             .then(function successCallback(response) {
@@ -568,7 +569,7 @@
                         time: '',
                         class_name: 'my-sticky-class'
                     });
-                    vm.getUserProfile();
+                    vm.getMemberProfile();
                     $('#suspendAccountModal').modal('hide');
                 } else {
                     $.gritter.add({
@@ -588,9 +589,9 @@
             }
             $http({
                 method: "POST",
-                url: '/api/impersonateUser',
+                url: '/api/impersonateMember',
                 data: {
-                    id: vm.user.id
+                    id: vm.member.id
                 }
             })
             .then(function successCallback(response) {
@@ -624,7 +625,7 @@
             $('#loadingOverlay').hide();
         }
         ///////
-        vm.getUserProfile();
+        vm.getMemberProfile();
         vm.getRoles();
         vm.getFees();
         vm.getDepartments();

@@ -24,7 +24,7 @@ class AddBoardPositionRequest extends Request
     public function rules()
     {
         return [
-            'user_id'           =>  'required|exists:users,id',
+            'member_id'           =>  'required|exists:users,id',
             'department_id'     =>  'required|exists:departments,id',
             'start_date'        =>  'required|date',
             'end_date'          =>  'required|date'

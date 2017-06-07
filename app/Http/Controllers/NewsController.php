@@ -9,7 +9,7 @@ use App\Http\Requests\AddNewsRequest;
 
 use App\Models\News;
 use App\Models\Notification;
-use App\Models\User;
+use App\Models\Member;
 
 use Input;
 
@@ -48,7 +48,7 @@ class NewsController extends Controller
         foreach($newsX as $new) {
             $actions = "";
             if($isGrid) {
-                
+
             } else {
                 $actions = $new->id;
             }
@@ -59,7 +59,7 @@ class NewsController extends Controller
                     $new->title,
                     $new->content,
                     $new->created_at->format('d/m/Y'),
-                    $new->user->first_name." ".$new->user->last_name
+                    $new->member->first_name." ".$new->member->last_name
                 )
             );
         }
@@ -68,7 +68,10 @@ class NewsController extends Controller
     }
 
     public function saveNews(AddNewsRequest $req, News $news) {
-    	$userData = $req->get('userData');
+      return response()->json('Not supported yet');
+      //TODO: Fix saving news after user/member refactor.
+
+    	$user = $req->get('user');
     	$id = Input::get('id');
 
         $toSendNotification = true;
@@ -79,7 +82,7 @@ class NewsController extends Controller
 
     	$news->title = Input::get('title');
     	$news->content = Input::get('content');
-    	$news->user_id = $userData['id'];
+    	$news->member_id = $user->getObject()->id;
     	$news->save();
 
         if($toSendNotification) {
@@ -88,7 +91,7 @@ class NewsController extends Controller
                 $not = new Notification();
                 $not->title = "New news item";
                 $not->text = "A new news item was posted!";
-                $not->user_id = $user->id;
+                $not->member_id = $user->id;
                 $not->link = "/news/".$news->id;
                 $not->save();
             }

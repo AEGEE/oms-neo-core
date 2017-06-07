@@ -16,7 +16,7 @@ $omsObj = new omsHelperScript();
             </button>
         </div>
         <!-- end mobile sidebar expand / collapse button -->
-        
+
         <!-- begin header navigation right -->
         <ul class="nav navbar-nav navbar-right">
             <li>
@@ -59,7 +59,7 @@ $omsObj = new omsHelperScript();
                             </div>
                         </a>
                     </li>
-                    
+
                 </ul>
             </li>
             <li class="dropdown navbar-language" ng-if="setting.layout.pageLanguageBar === true">
@@ -79,7 +79,7 @@ $omsObj = new omsHelperScript();
             </li>
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                    <img src="/api/getUserAvatar/<?=$omsObj->userData['id']?>" alt="" /> 
+                    <img src="/api/getUserAvatar/<?=$omsObj->userData['id']?>" alt="" />
                     <span class="hidden-xs"><?=$omsObj->userData['fullname']?></span> <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">

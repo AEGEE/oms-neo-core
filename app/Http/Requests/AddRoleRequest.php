@@ -24,7 +24,7 @@ class AddRoleRequest extends Request
     public function rules()
     {
         return [
-            'user_id'   =>  'required|exists:users,id',
+            'member_id'   =>  'required|exists:users,id',
             'roles'     =>  'required'
         ];
     }

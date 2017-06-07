@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Http\Requests\Request;
 
-class AddRecrutmentCampaignRequest extends Request
+class AddRecruitmentCampaignRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class AddRecrutmentCampaignRequest extends Request
     public function rules()
     {
         return [
-            // 'link'          =>  'required|unique:recrutement_campaigns,link',
+            // 'link'          =>  'required|unique:recruitment_campaigns,link',
             'start_date'    =>  'required',
             'end_date'      =>  'required'
         ];

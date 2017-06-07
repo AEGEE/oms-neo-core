@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use App\Http\Requests;
@@ -11,11 +11,14 @@ use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
 use App\Models\Auth;
-use App\Models\Antenna;
+use App\Models\Body;
 use App\Models\Fee;
 use App\Models\StudyField;
 use App\Models\StudyType;
-use App\Models\User;
+use App\Models\Member;
+
+use App\Repositories\UserRepository;
+
 
 use Hash;
 use Input;
@@ -25,7 +28,8 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, User $user, Auth $auth, Fee $fee) {
+    public function loginUsingCredentials(LoginRequest $req, Auth $auth, Fee $fee) {
+      Log::debug("Received login request");
     	// Todo: check if oAuth is defined..
     	$oAuthDefined = false;
     	if($oAuthDefined) {
@@ -38,7 +42,7 @@ class LoginController extends Controller
 
     	$auth->ip = $req->ip();
     	$auth->user_agent = $req->header('User-Agent');
-    	
+
     	$rawRequestParams = http_build_query($req->all());
     	$rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
 
@@ -48,30 +52,21 @@ class LoginController extends Controller
     	$password = Input::get('password');
 
     	$toReturn = array(
-			'success'	=>	0,
-			'message'	=>	'Username / password invalid!'
-		);
+  			'success'	=>	0,
+  			'message'	=>	'Username / password invalid!'
+  	    );
 
-    	// Trying to find a user..
-    	// Non oAuth logins are handled by contact_email field..
-    	try {
-    		$user = $user->where('contact_email', $username)
-    					->whereNotNull('password')
-    					->whereNotNull('activated_at') // If its null, then the account was not activated..
-    					->firstOrFail(); // If password is null, then account should be used with oAuth..
-    	} catch(ModelNotFoundException $ex) {
+      $user = UserRepository::getFromCredentials($username, $password);
+
+    	if(!$user) {
+        Log::debug("No user found for credentials");
+    	   // No user found for credentials..
     		$auth->save();
     		return response(json_encode($toReturn), 422);
     	}
 
     	// We found a user..
     	$auth->user_id = $user->id;
-
-    	// Invalid password..
-    	if(!Hash::check($password, $user->password)) {
-    		$auth->save();
-    		return response(json_encode($toReturn), 422);
-    	}
 
     	// all good..
     	$loginKey = Uuid::generate(1);
@@ -81,54 +76,51 @@ class LoginController extends Controller
     	$auth->successful = 1;
     	$auth->save();
 
-        // We check if user has all fees paid, if not, we auto-suspend him..
-        if(empty($user->is_superadmin)) {
-            $fee->checkFeesForSuspention($user);
-        }
+      // We check if user has all fees paid, if not, we auto-suspend him..
+      $user->checkStillValid();
 
     	// We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
+      $userData = $user->getLoginUserArray($loginKey);
 
-		Session::put('userData', $userData);
+      Session::put('userData', $userData);
+      Session::save();
     	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
     	session_start();
     	$_SESSION['userData'] = Session::get('userData');
-    	session_write_close();    	
+    	session_write_close();
 
     	$toReturn = array(
-			'success'	=>	1,
-			'message'	=>	$loginKey
-		);
+  			'success'	=>	1,
+  			'message'	=>	$loginKey
+  		);
 
+      Log::debug("User login: " . $user->getName());
     	// Login successful.. returning data..
-		return response(json_encode($toReturn), 200);
+	    return response(json_encode($toReturn), 200);
     }
 
-    public function getRegistrationFields(Antenna $ant, StudyType $studType, StudyField $studField) {
+    public function getRegistrationFields() {
         $toReturn = array(
             'antennae'      =>  array(),
             'study_type'    =>  array(),
             'study_field'   =>  array()
         );
 
-        $antenna = $ant->all();
-        foreach($antenna as $antX) {
+        foreach(Body::all() as $body) {
             $toReturn['antennae'][] = array(
-                'id'    =>  $antX->id,
-                'name'  =>  $antX->name
+                'id'    =>  $body->id,
+                'name'  =>  $body->name
             );
         }
 
-        $study_types = $studType->all();
-        foreach($study_types as $study_type) {
+        foreach(StudyType::all() as $study_type) {
             $toReturn['study_type'][] = array(
                 'id'    =>  $study_type->id,
                 'name'  =>  $study_type->name
             );
         }
 
-        $study_fields = $studField->all();
-        foreach($study_fields as $study_field) {
+        foreach(StudyField::all() as $study_field) {
             $toReturn['study_field'][] = array(
                 'id'    =>  $study_field->id,
                 'name'  =>  $study_field->name
@@ -138,7 +130,10 @@ class LoginController extends Controller
         return response(json_encode($toReturn), 200);
     }
 
-    public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
+    public function createUser() { //AddUserRequest $req, Member $usr, Auth $auth) {
+        return response()->json('Not supported yet');
+        //TODO: Method seems to already been in a broken state before.
+
         // Checking email for duplicate..
         $email = Input::get('contact_email');
         $emailHash = $usr->getEmailHash($email);
@@ -171,6 +166,7 @@ class LoginController extends Controller
     }
 
     public function loginUsingOauth() {
+        Log::debug("Oauth login attempt detected.");
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
@@ -192,7 +188,7 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Fee $fee, Request $req) {
+    public function oAuthCallback(Member $member, Auth $auth, Fee $fee, Request $req) {
         if(!$this->isOauthDefined()) {
             $toReturn = array(
                 'success'   =>  0,
@@ -204,7 +200,7 @@ class LoginController extends Controller
         // Saving login request..
         $auth->ip = $req->ip();
         $auth->user_agent = $req->header('User-Agent');
-        
+
         $rawRequestParams = http_build_query($req->all());
         $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
 
@@ -228,12 +224,12 @@ class LoginController extends Controller
             return response(json_encode($toReturn), 422);
         }
 
-        // User exists..
+        // Member exists..
         $user->oauth_token = $oAuthUser->token;
         $user->save();
 
         // We found a user..
-        $auth->user_id = $user->id;
+        $auth->member_id = $user->id;
 
         // all good..
         $loginKey = Uuid::generate(1);
@@ -249,13 +245,13 @@ class LoginController extends Controller
         }
 
         // We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
+        $userData = $user->getLoginMemberArray($loginKey);
 
         Session::put('userData', $userData);
         // Mirroring Laravel session data to PHP native session.. For use with angular partials..
         session_start();
         $_SESSION['userData'] = Session::get('userData');
-        session_write_close();      
+        session_write_close();
 
         $toReturn = array(
             'success'   =>  1,

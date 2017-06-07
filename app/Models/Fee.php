@@ -13,12 +13,12 @@ class Fee extends Model
     protected $dates = ['created_at', 'updated_at', 'date_paid', 'expiration_date'];
 
     // Relationships..
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
+    public function FeeMember() {
+    	return $this->hasMany('App\Models\FeeMember');
     }
 
-    public function users() {
-        return $this->belongsToMany('App\Models\User', 'fee_users', 'fee_id', 'user_id')
+    public function members() {
+        return $this->belongsToMany('App\Models\Member', 'fee_members', 'fee_id', 'member_id')
                     ->withPivot('date_paid', 'expiration_date');
     }
 
@@ -131,10 +131,10 @@ class Fee extends Model
         return $endTime;
     }
 
-    public function getUserFees($userId) {
-        return $this->select('fees.name', 'fee_users.id', 'fee_users.date_paid', 'fee_users.expiration_date')
-                    ->join('fee_users', 'fee_users.fee_id', '=', 'fees.id')
-                    ->where('user_id', $userId)
+    public function getMemberFees($memberId) {
+        return $this->select('fees.name', 'fee_members.id', 'fee_members.date_paid', 'fee_members.expiration_date')
+                    ->join('fee_members', 'fee_members.fee_id', '=', 'fees.id')
+                    ->where('member_id', $memberId)
                     ->get();
     }
 
@@ -150,12 +150,12 @@ class Fee extends Model
         return $toReturn;
     }
 
-    public function checkFeesForSuspention(&$user) {
+    public function checkFeesForSuspention(&$member) {
         $existingFeesCache = $this->getCache();
 
         $now = date('Y-m-d');
-        $feeUser = new FeeUser();
-        $feesPaid = $feeUser->getPaidUserFees($user->id, $now);
+        $FeeMember = new FeeMember();
+        $feesPaid = $FeeMember->getPaidMemberFees($member->id, $now);
 
         $hasFeesPaid = true;
         foreach($existingFeesCache as $key => $fee) {
@@ -168,10 +168,10 @@ class Fee extends Model
             }
         }
 
-        if($hasFeesPaid && !empty($user->is_suspended)) { // Everything is paid and user is suspended.. we unsuspend him..
-            $user->unsuspendAccount();
-        } elseif(!$hasFeesPaid && empty($user->is_suspended)) { // Has at least one mandatory fee not paid and he's not suspended, we suspend him..
-            $user->suspendAccount("One or more mandatory fees are unpaid!");
+        if($hasFeesPaid && !empty($member->is_suspended)) { // Everything is paid and member is suspended.. we unsuspend him..
+            $member->unsuspendAccount();
+        } elseif(!$hasFeesPaid && empty($member->is_suspended)) { // Has at least one mandatory fee not paid and he's not suspended, we suspend him..
+            $member->suspendAccount("One or more mandatory fees are unpaid!");
         }
 
         return $hasFeesPaid;
