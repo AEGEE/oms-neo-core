@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Collection;
 
 class ResponseServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,12 @@ class ResponseServiceProvider extends ServiceProvider
     public function boot()
     {
         Response::macro('success', function ($data, $meta = null, $message = null) {
+            if ($data instanceof Collection && $data->count() == 1) {
+                $data = $data[0];
+            } else if (is_array($data) && count($data) == 1) {
+                $data = $data[0];
+            }
+
             $response = array(
                 'success'   => true,
                 'meta'      => $meta,
