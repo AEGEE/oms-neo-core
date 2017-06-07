@@ -24,9 +24,10 @@ class ResponseServiceProvider extends ServiceProvider
             );
             return response()->json($response);
         });
-        Response::macro('failure', function ($message = 'Request failed', $code = 400) {
+        Response::macro('failure', function ($message = 'Request failed', $code = 400, $errors = null) {
             $response = array(
                 'success'   => false,
+                'errors'    => $errors,
                 'message'   => $message
             );
             return response()->json($response, $code);
@@ -42,6 +43,10 @@ class ResponseServiceProvider extends ServiceProvider
         Response::macro('credentialsFailure', function () {
             //TODO add WWW-Authenticate header.
             return response()->failure('Invalid login credentials.', 400);
+        });
+
+        Response::macro('validationErrors', function ($errors) {
+            return response()->failure('Validation error.', 422, $errors->all());
         });
     }
 

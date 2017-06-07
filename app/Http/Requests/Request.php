@@ -7,6 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 
 abstract class Request extends FormRequest
 {
+    public $errors;
     /**
      * {@inheritdoc}
      */
@@ -15,7 +16,8 @@ abstract class Request extends FormRequest
         // TODO Find a better way to display these messages.
         // This at the very least provides a response with errors.
         // (which isn't given without this line.)
-        var_dump($validator->errors()->all());
-        die();
+        $this->errors = $validator->errors();
+        //dd($this->errors);
+        return $this->errors;
     }
 }
