@@ -13,7 +13,7 @@ class AddressController extends Controller
     }
 
     public function getAddress($address_id) {
-        return response()->success(Address::where('id', $address_id)->with('country')->get());
+        return response()->success(Address::where('id', $address_id)->with('country')->first());
     }
 
     public function createAddress(CreateAddressRequest $req) {
