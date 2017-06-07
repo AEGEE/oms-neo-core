@@ -41,18 +41,18 @@ class UserController extends Controller
 
         $users = User::filterArray($search)->get();
 
-        return response()->json($users);
+        return response()->success($users);
     }
 
     public function getUser($id) {
         $user = User::where('id', $id)->with('address', 'bodies')->get();
-        return response()->json($user);
+        return response()->success($user);
     }
 
     public function getBodies($user_id) {
         //TODO Decide what (if) should be eager loaded.
         $bodies = User::findOrFail($user_id)->bodies;
-        return response()->json($bodies);
+        return response()->success($bodies);
     }
 
     public function getUserByToken() {
@@ -98,23 +98,19 @@ class UserController extends Controller
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 
         $user->save();
-        return response()->json($user);
+        return response()->success($user);
     }
 
     public function addBodyToUser($user_id, AddBodyToUserRequest $req) {
         $user = User::findOrFail($user_id);
 
-        $membership = BodyMembership::firstOrCreate([
-            'user_id'       =>  $user->user_id,
+        $membership = BodyMembership::create([
+            'user_id'       =>  $user->id,
             'body_id'       =>  $req->body_id,
+            'start_date'    =>  $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s'),
+            'end_date'      =>  $req->has('end_date') ? $req->end_date : null,
         ]);
-
-        $membership->start_date = $req->has('start_date') ? $req->start_date : date('Y-m-d H:i:s');
-        $membership->end_date = $req->has('end_date') ? $req->end_date : null;
-
-        $membership->save();
-
-        return response()->json($membership);
+        return response()->success($membership);
     }
 
     public function activateUser($user_id, Role $role, Request $req) {
