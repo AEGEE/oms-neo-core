@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Database\Eloquent\Collection;
 
 class ResponseServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,14 @@ class ResponseServiceProvider extends ServiceProvider
         });
         Response::macro('unauthorized', function () {
             //TODO add WWW-Authenticate header.
-            return response()->json('Unauthorized', 401);
+            return response()->failure('Unauthorized', 401);
+        });
+        Response::macro('credentialsFailure', function () {
+            //TODO add WWW-Authenticate header.
+            return response()->failure('Invalid login credentials.', 400);
+        });
+        Response::macro('notImplemented', function () {
+            return response()->failure('Not Implemented', 501);
         });
     }
 

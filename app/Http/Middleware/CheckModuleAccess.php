@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\ModulePage;
 use App\Models\RoleModulePage;
 
+use Auth;
 use DB;
 
 class CheckModuleAccess
@@ -22,7 +23,7 @@ class CheckModuleAccess
      */
     public function handle($request, Closure $next, $moduleCode)
     {
-        $userData = $request->get('userData');
+        $userData = Auth::user();
         if(!empty($userData->is_suspended)) {
             return response()->forbidden();
         }

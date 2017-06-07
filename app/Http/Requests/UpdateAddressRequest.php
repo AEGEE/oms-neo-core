@@ -24,7 +24,6 @@ class UpdateAddressRequest extends Request
     public function rules()
     {
         return [
-            'id'            =>  'required|integer|exists:addresses,id',
             'country_id'    =>  'integer|exists:countries,id',
             'street'        =>  'max:255',
             'zipcode'       =>  'max:255',

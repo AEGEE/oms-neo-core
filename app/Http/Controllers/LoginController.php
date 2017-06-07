@@ -10,11 +10,12 @@ use App\Http\Requests;
 use App\Http\Requests\AddUserRequest;
 use App\Http\Requests\LoginRequest;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 use App\Models\StudyField;
 use App\Models\StudyType;
 use App\Models\User;
 
+use Auth;
 use Hash;
 use Input;
 use Session;
@@ -23,163 +24,28 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req, Auth $auth) {
-    	// TODO: check if oAuth is defined..
-    	$oAuthDefined = false;
-    	if($oAuthDefined) {
-    		$toReturn = array(
-    			'success'	=>	0,
-    			'message'	=>	'Please use the oAuth endpoint!'
-    		);
-    		return response(json_encode($toReturn), 422);
-    	}
+    public function loginUsingCredentials(LoginRequest $req) {
+        $auth = $this->generateAuthToken($req);
 
-    	$auth->ip_address = $req->ip();
-    	$auth->user_agent = $req->header('User-Agent');
+        if (!Auth::once(['contact_email' => $req->username, 'password' => $req->password])) {
+            return response()->credentialsFailure();
+        }
+        $user = Auth::user();
+        if ($user->activated_at == null) {
+            return response()->failure('User not activated.');
+        }
+        $loginKey = Uuid::generate(1)->string;
 
-    	$rawRequestParams = http_build_query($req->all());
-    	$rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
+        $this->completeAuthToken($auth, $user->id, $loginKey);
+        $auth->save();
 
-    	$auth->raw_request_params = $rawRequestParams;
-
-    	$username = Input::get('username');
-    	$password = Input::get('password');
-
-    	$toReturn = array(
-			'success'	=>	0,
-			'message'	=>	'Username / password invalid!'
-		);
-
-    	// Trying to find a user..
-    	// Non oAuth logins are handled by contact_email field..
-    	try {
-    		$user = User::where('contact_email', $username)
-    					->whereNotNull('password')
-    					->whereNotNull('activated_at') // If its null, then the account was not activated..
-    					->firstOrFail(); // If password is null, then account should be used with oAuth..
-    	} catch(ModelNotFoundException $ex) {
-    		$auth->save();
-    		return response(json_encode($toReturn), 422);
-    	}
-
-    	// We found a user..
-    	$auth->user_id = $user->id;
-
-    	// Invalid password..
-    	if(!Hash::check($password, $user->password)) {
-    		$auth->save();
-    		return response(json_encode($toReturn), 422);
-    	}
-
-    	// all good..
-    	$loginKey = Uuid::generate(1);
-    	$loginKey = $loginKey->string;
-
-    	$auth->token_generated = $loginKey;
-    	$auth->successful = 1;
-    	$auth->save();
-
-    	// We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
-
-		Session::put('userData', $userData);
-    	// Mirroring Laravel session data to PHP native session.. For use with angular partials..
-    	session_start();
-    	$_SESSION['userData'] = Session::get('userData');
-    	session_write_close();
-
-    	$toReturn = array(
-			'success'	=>	1,
-			'message'	=>	$loginKey
-		);
-
-    	// Login successful.. returning data..
-		return response(json_encode($toReturn), 200);
+        // Login successful.. returning data..
+        return response()->success($loginKey, null, "User login token");
     }
 
-    public function getRegistrationFields(Antenna $ant, StudyType $studType, StudyField $studField) {
-        //TODO Rewrite getting the registration fields.
-
-        /*
-        $toReturn = array(
-            'antennae'      =>  array(),
-            'study_type'    =>  array(),
-            'study_field'   =>  array()
-        );
-
-        $antenna = $ant->all();
-        foreach($antenna as $antX) {
-            $toReturn['antennae'][] = array(
-                'id'    =>  $antX->id,
-                'name'  =>  $antX->name
-            );
-        }
-
-        $study_types = $studType->all();
-        foreach($study_types as $study_type) {
-            $toReturn['study_type'][] = array(
-                'id'    =>  $study_type->id,
-                'name'  =>  $study_type->name
-            );
-        }
-
-        $study_fields = $studField->all();
-        foreach($study_fields as $study_field) {
-            $toReturn['study_field'][] = array(
-                'id'    =>  $study_field->id,
-                'name'  =>  $study_field->name
-            );
-        }
-
-        return response(json_encode($toReturn), 200);
-        */
-    }
-
-    public function createUser(AddUserRequest $req, User $usr, Auth $auth) {
-        //TODO Rewrite creating a user.
-        /*
-        // Checking email for duplicate..
-        $email = Input::get('contact_email');
-        $emailHash = $usr->getEmailHash($email);
-        if($usr->checkEmailHash($emailHash, 0)) {
-            $toReturn['success'] = 0;
-            $toReturn['message'] = "Email already exists!";
-            return response(json_encode($toReturn), 200);
-        }
-
-        $usr->first_name = Input::get('first_name');
-        $usr->last_name = Input::get('last_name');
-        $usr->date_of_birth = Input::get('date_of_birth');
-        $usr->gender = Input::get('gender');
-        $usr->contact_email = $email;
-        $usr->phone = Input::get('phone');
-        $usr->address = Input::get('address');
-        $usr->city = Input::get('city');
-        $usr->antenna_id = Input::get('antenna_id');
-        $usr->university = Input::get('university');
-        $usr->studies_type_id = Input::get('studies_type');
-        $usr->studies_field_id = Input::get('study_field');
-        $usr->email_hash = $emailHash;
-        $usr->save();
-
-        $toReturn = array(
-            'success'   =>  1,
-        );
-
-        return response(json_encode($toReturn), 200);
-        */
-    }
-
-    public function loginUsingOauth() {
-        if(!$this->isOauthDefined()) {
-            $toReturn = array(
-                'success'   =>  0,
-                'message'   =>  'Please use the credentials login endpoint!'
-            );
-            return response(json_encode($toReturn), 422);
-        }
-        $provider = $this->getOAuthProvider();
-        $allowedDomain = $this->getOAuthAllowedDomain();
+    public function loginUsingOauth(Request $req) {
+        $provider = $req->provider;
+        $allowedDomain = $this->allowedDomain;
         if($provider == 'google' && !empty($allowedDomain)) { // Google supports single domain
             return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://www.googleapis.com/auth/admin.directory.user'])->redirect();
         }
@@ -192,72 +58,55 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, Auth $auth, Request $req) {
-        if(!$this->isOauthDefined()) {
-            $toReturn = array(
-                'success'   =>  0,
-                'message'   =>  'Please use the credentials login endpoint!'
-            );
-            return response(json_encode($toReturn), 422);
+    public function oAuthCallback(User $user, AuthToken $auth, Request $req) {
+        // Saving login request..
+        $auth = generateAuthToken();
+
+        $provider = $req->provider;
+        $oAuthUser = Socialite::driver($provider)->user();
+        $userEmail = $oAuthUser->getEmail();
+
+        try {
+            //TODO internal_email is no longer a thing.
+            $user = $user->where('internal_email', $userEmail)
+                            ->whereNotNull('activated_at') // If its null, then the account was not activated..
+                            ->firstOrFail();
+        } catch(ModelNotFoundException $ex) {
+            $auth->save();
+            return response()->failure('User not found.');
         }
 
-        // Saving login request..
-        $auth->ip = $req->ip();
+        // User exists..
+        $user->oauth_token = $oAuthUser->token;
+        $user->save();
+        //TODO login user?
+
+        $loginKey = Uuid::generate(1)->string;
+
+        $this->completeAuthToken($auth, $user->id, $loginKey);
+        $auth->save();
+
+        // Login successful.. returning data..
+        return response()->success($loginKey, null, 'User login token');
+    }
+
+    //TODO Move these methods to AuthToken.php?
+    public function generateAuthToken(Request $req){
+        $auth = new AuthToken;
+        $auth->ip_address = $req->ip();
         $auth->user_agent = $req->header('User-Agent');
 
         $rawRequestParams = http_build_query($req->all());
         $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
 
         $auth->raw_request_params = $rawRequestParams;
+        return $auth;
+    }
 
-        $toReturn = array(
-            'success'   =>  0,
-            'message'   =>  'Account does not exist!'
-        );
-
-        $provider = $this->getOAuthProvider();
-        $oAuthUser = Socialite::driver($provider)->user();
-        $userEmail = $oAuthUser->getEmail();
-
-        try {
-            $user = $user->where('internal_email', $userEmail)
-                            ->whereNotNull('activated_at') // If its null, then the account was not activated..
-                            ->firstOrFail();
-        } catch(ModelNotFoundException $ex) {
-            $auth->save();
-            return response(json_encode($toReturn), 422);
-        }
-
-        // User exists..
-        $user->oauth_token = $oAuthUser->token;
-        $user->save();
-
-        // We found a user..
-        $auth->user_id = $user->id;
-
-        // all good..
-        $loginKey = Uuid::generate(1);
-        $loginKey = $loginKey->string;
-
-        $auth->token_generated = $loginKey;
+    public function completeAuthToken(AuthToken &$auth, $user_id, $token) {
+        $auth->user_id = $user_id;
+        $auth->token_generated = $token;
         $auth->successful = 1;
-        $auth->save();
-
-        // We try to also add it to session..
-        $userData = $user->getLoginUserArray($loginKey);
-
-        Session::put('userData', $userData);
-        // Mirroring Laravel session data to PHP native session.. For use with angular partials..
-        session_start();
-        $_SESSION['userData'] = Session::get('userData');
-        session_write_close();
-
-        $toReturn = array(
-            'success'   =>  1,
-            'message'   =>  $loginKey
-        );
-
-        // Login successful.. returning data..
-        return Redirect('/');
+        return $auth;
     }
 }
