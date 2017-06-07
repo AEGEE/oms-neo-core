@@ -12,6 +12,7 @@ use App\Models\GlobalOption;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\UserRole;
+use App\Http\Middleware\LoginMethodMiddleware;
 
 use Session;
 use Auth;
@@ -144,7 +145,7 @@ class GenericController extends Controller
     		return view('loggedIn', $addToView);
     	}
 
-        $addToView['oAuthDefined'] = $this->isOauthDefined();
+        $addToView['oAuthDefined'] = LoginMethodMiddleware::isOauthDefined();
 		return view('notLogged', $addToView);
     }
 

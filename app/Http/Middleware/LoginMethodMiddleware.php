@@ -22,7 +22,7 @@ class LoginMethodMiddleware
 
                 $request->provider = $this->getOAuthProvider();
                 $request->allowedDomain = $this->getOAuthAllowedDomain();
-                
+
                 return $next($request);
             } else {
                 return response()->failure("Please use credentials as login method.");
@@ -33,7 +33,7 @@ class LoginMethodMiddleware
         }
     }
 
-    protected function isOauthDefined() {
+    public static function isOauthDefined() {
     	$oAuth = config('oauth.oAuthProvider');
         $oAuthDefined = false;
         if(!empty($oAuth)) {
