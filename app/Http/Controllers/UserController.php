@@ -26,15 +26,24 @@ class UserController extends Controller
     public function getUsers(User $user, Request $req) {
         $max_permission = $req->get('max_permission');
 
-        //TODO: rewrite search (filtering)
-        $users = $user->getFiltered();
+        // Extract URL arguments to filter on.
+        $search = [
+            'name'          => $req->name,
+            'date_of_birth' => $req->date_of_birth,
+            'contact_email' => $req->contact_email,
+            'gender'        => $req->gender,
+            'status'        => $req->status,
+            'body_id'       => $req->body_id,
+            'body_name'     => $req->body_name,
+            ];
+
+        $users = User::filterArray($search)->get();
 
         return response()->json($users);
     }
 
-    public function getUser($user_id) {
-        //TODO Decide what (if) should be eager loaded.
-        $user = User::findOrFail($user_id)->with('address', 'bodies')->get();
+    public function getUser($id) {
+        $user = User::findOrFail($id)->with('address', 'bodies')->get();
         return response()->json($user);
     }
 

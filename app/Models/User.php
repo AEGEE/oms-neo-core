@@ -124,9 +124,90 @@ class User extends Model
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
-    public function getFiltered($search = array()) {
-        //TODO rework filtering.
-        return User::all();
+    public function scopeFilterName($query, $name) {
+        if (!empty($name)) {
+            return $query->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($name).'%');
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterDateOfBirth($query, $date_of_birth) {
+        if (!empty($date_of_birth)) {
+            return $query->whereDate('date_of_birth', $date_of_birth);
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterContactEmail($query, $contact_email) {
+        if (!empty($date_of_birth)) {
+            return $query->where('contact_email', $contact_email);
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterGender($query, $gender) {
+        if (!empty($gender)) {
+            return $query->where('gender', $gender);
+        } else {
+            return $query;
+        }
+    }
+
+
+    public function scopeFilterStatus($query, $status) {
+        if (!empty($status)) {
+            switch ($status) {
+                case '1':
+                    return $query->whereNull('is_suspended')->whereNotNull('activated_at');
+                case '2':
+                    return $query->whereNull('activated_at');
+                case '3':
+                    return $query->whereNotNull('is_suspended');
+            }
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterBodyID($query, $body_id) {
+        if (!empty($body_id)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->where('body_memberships.body_id', $body_id);
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterBodyName($query, $body_name) {
+        if (!empty($body_name)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->rightJoin('bodies', 'body_memberships.body_id', '=', 'bodies.id')
+            ->where(DB::raw('LOWER(bodies.name)'), 'LIKE', '%'.strtolower($body_name).'%');
+        } else {
+            return $query;
+        }
+    }
+
+    public function scopeFilterArray($query, $search = array()) {
+        $query //->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
+            ->filterName($search['name'] ?? '')
+            ->filterDateOfBirth($search['date_of_birth'] ?? '')
+            ->filterContactEmail($search['contact_email'] ?? '')
+            ->filterGender($search['gender'] ?? '')
+            ->filterStatus($search['status'] ?? '')
+            ->filterBodyID($search['body_id'] ?? '')
+            ->filterBodyName($search['body_name'] ?? '');
+        //TODO add study filters
+
+        return $query;
     }
 
     public function generateRandomPassword($max_length = 8) {
@@ -275,5 +356,50 @@ class User extends Model
         }
 
         return $response->getStatusCode();
+    }
+
+    public function getAllColumnsNames()
+    {
+        switch (DB::connection()->getConfig('driver')) {
+            case 'pgsql':
+                $query = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$this->getTable()."'";
+                $column_name = 'column_name';
+                $reverse = true;
+                break;
+
+            case 'mysql':
+                $query = 'SHOW COLUMNS FROM '.$this->getTable();
+                $column_name = 'Field';
+                $reverse = false;
+                break;
+
+            case 'sqlsrv':
+                $parts = explode('.', $this->getTable());
+                $num = (count($parts) - 1);
+                $table = $parts[$num];
+                $query = "SELECT column_name FROM ".DB::connection()->getConfig('database').".INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$table."'";
+                $column_name = 'column_name';
+                $reverse = false;
+                break;
+
+            default:
+                $error = 'Database driver not supported: '.DB::connection()->getConfig('driver');
+                throw new Exception($error);
+                break;
+        }
+
+        $columns = array();
+
+        foreach(DB::select($query) as $column)
+        {
+            $columns[$column->$column_name] = $column->$column_name; // setting the column name as key too
+        }
+
+        if($reverse)
+        {
+            $columns = array_reverse($columns);
+        }
+
+        return $columns;
     }
 }
