@@ -11,14 +11,14 @@
 |
 */
 
-// Login route..
-//Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
-//Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
-
-Route::post('/api/login', 'LoginController@loginUsingCredentials');
-//Route::get('/api/registration/fields', 'LoginController@getRegistrationFields'); TODO
-
-//Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
+// Login routes..
+Route::group(['middleware' => 'login:credentials'], function() {
+    Route::post('/api/login', 'LoginController@loginUsingCredentials');
+});
+Route::group(['middleware' => 'login:oauth'], function() {
+    //Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
+    //Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
+});
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
@@ -49,19 +49,18 @@ Route::group(['middleware' => 'api'], function() {
 
     // Users..
     Route::group(['middleware' => 'checkAccess:users'], function() {
-        // GET - request
         Route::get('/api/users', 'UserController@getUsers');
+        Route::post('/api/users', 'UserController@createUser');
+        //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
         Route::group(['middleware' => 'seoURL:user'], function() {
             Route::get('/api/users/{user}', 'UserController@getUser')->where('user', '[a-zA-Z0-9_]+');
             Route::get('/api/users/{user}/bodies', 'UserController@getBodies')->where('user', '[a-zA-Z0-9_]+');
 
-            // PUT - update
             // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
             Route::put('/api/users/{user}/suspended', 'UserController@suspendUnsuspendAccount')->where('user', '[a-zA-Z0-9_]+');
             Route::put('/api/users/{user}/activated', 'UserController@activateUser')->where('user', '[a-zA-Z0-9_]+');
             Route::put('/api/users/{user}/impersonated', 'UserController@impersonateUser')->where('user', '[a-zA-Z0-9_]+');
 
-            // POST - create
             //Route::post('/api/users', 'LoginController@createUser'); TODO
             //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
             Route::post('/api/users/{user}/bodies', 'UserController@addBodyToUser')->where('user', '[a-zA-Z0-9_]+');
@@ -125,6 +124,5 @@ Route::group(['middleware' => 'microServiceAuth'], function() {
 Route::any('/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
-
 Route::any('/api/{all}', function() { return response()->failure("Incorrect API URL");})->where('all', '.*');
 Route::any('{all}', array('uses' => 'GenericController@defaultRoute'))->where('all', '.*');

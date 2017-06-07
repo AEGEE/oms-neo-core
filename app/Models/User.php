@@ -3,24 +3,34 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 use DB;
 
-class User extends Model
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
+    use Authenticatable, Authorizable, CanResetPassword;
+
     protected $table = "users";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
 
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
+    protected $guarded = ['id', 'oauth_token', 'oauth_token', 'oauth_expiration', 'is_superadmin', 'is_suspended', 'suspended_reason', 'activated_at'];
+
     // Relationships..
     public function bodies() {
     	return $this->belongsToMany('App\Models\Body', 'body_memberships', 'user_id', 'body_id');
     }
 
-    public function auth() {
-    	return $this->hasMany('App\Models\Auth');
+    public function authToken() {
+    	return $this->hasMany('App\Models\AuthToken');
     }
 
     public function address() {

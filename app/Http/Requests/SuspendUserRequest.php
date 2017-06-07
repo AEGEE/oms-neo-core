@@ -25,7 +25,8 @@ class SuspendUserRequest extends Request
     {
         return [
             'suspend'       =>  'required|boolean',
-            'unsuspend'     =>  'required|boolean'
+            'unsuspend'     =>  'required|boolean',
+            'reason'        =>  'max:255',
         ];
     }
 }

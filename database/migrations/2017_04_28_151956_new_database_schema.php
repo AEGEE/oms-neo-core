@@ -58,6 +58,7 @@ class NewDatabaseSchema extends Migration
             $table->string('phone')->nullable();
             $table->text('description')->nullable();
             $table->string('password');
+            $table->rememberToken();
             $table->integer('is_superadmin')->nullable();
             $table->integer('is_suspended')->nullable();
             $table->string('suspended_reason')->nullable();
@@ -69,7 +70,7 @@ class NewDatabaseSchema extends Migration
             $table->foreign('address_id')->references('id')->on('addresses')->onDelete('restrict');
         });
 
-        Schema::create('auths', function (Blueprint $table) {
+        Schema::create('auth_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('ip_address', 45);

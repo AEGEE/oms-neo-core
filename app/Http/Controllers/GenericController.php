@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\GlobalOption;
 use App\Models\MenuItem;
@@ -14,11 +14,12 @@ use App\Models\ModulePage;
 use App\Models\UserRole;
 
 use Session;
+use Auth;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt, Auth $auth, MenuItem $menuItem) {
-    	$userData = Session::get('userData');
+    public function defaultRoute(GlobalOption $opt, AuthToken $auth, MenuItem $menuItem) {
+    	$userData = Auth::user();
         $addToView = array();
 
         // Options..
@@ -36,7 +37,7 @@ class GenericController extends Controller
         if($auth->isUserLogged($userData['authToken'])) {
             $systemRolesAccess = array();
 
-            $addToView['userData'] = $userData;
+            $addToView['userData'] = Auth::user();
             $addToView['countries'] = "";
             $addToView['modulesSrc'] = "";
             $addToView['baseUrlRepo'] = "";
@@ -147,8 +148,9 @@ class GenericController extends Controller
 		return view('notLogged', $addToView);
     }
 
-    public function logout(Auth $auth) {
-        $userData = Session::get('userData');
+    public function logout(AuthToken $auth) {
+        $userData = Auth::user();
+        Auth::logout();
         // Invalidating api key if exists..
         if(!empty($userData)) {
             $auth = $auth->where('token_generated', $userData['authToken'])->firstOrFail();
