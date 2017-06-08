@@ -16,12 +16,13 @@ class RespondErrorsMiddleware {
     public function handle($request, Closure $next, $guard = null)
     {
         $result = $next($request);
-        $errors = $request->session()->get('errors')->default;
-        //dd($errors);
-        if (!empty($errors)) {
-            return response()->validationErrors($errors);
+        $errors = $request->session()->get('errors');
+        if ($errors != null) {
+            $errors = $errors->default;
+            if (!empty($errors)) {
+                return response()->validationErrors($errors->getMessages());
+            }
         }
-
         return $result;
     }
 }

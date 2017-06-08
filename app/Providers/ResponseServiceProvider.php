@@ -46,7 +46,7 @@ class ResponseServiceProvider extends ServiceProvider
         });
 
         Response::macro('validationErrors', function ($errors) {
-            return response()->failure('Validation error.', 422, $errors->all());
+            return response()->failure('Validation error.', 422, $errors);
         });
     }
 
