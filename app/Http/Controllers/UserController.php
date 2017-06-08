@@ -64,7 +64,7 @@ class UserController extends Controller
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');
                         })->firstOrFail();
-        return response()->success($auth->user()->first());
+        return $this->getUser($auth->user_id);
     }
 
     public function createUser(CreateUserRequest $req) {
