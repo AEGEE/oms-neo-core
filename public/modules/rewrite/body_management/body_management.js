@@ -71,8 +71,8 @@
             var params = {};
             if(vm.query)
                 params["name"] = vm.query;
-            if(active_types.length > 0)
-                params["type_id"] = active_types;
+            //if(active_types.length > 0)
+            //    params["type_id"] = active_types;
 
             $http({
                 method: 'GET',
@@ -138,14 +138,16 @@
                     vm.getBodies();
                 }).catch(function(err) {
                     if(err.status == 422)
-                        vm.errors = err.data.errors;
+                        vm.errors = err.data;
                     else
                         showError(err);
                 });
 
             }).catch(function(err) {
                 if(err.status == 422)
-                    vm.errors = err.data.errors;
+                    vm.errors = {
+                        address: err.data
+                    };
                 else
                     showError(err);
             });
@@ -164,35 +166,14 @@
             edit_circles: true
         };
 
-        vm.getBodyType = function(id) {
-            $http({
-                method: 'GET',
-                url: '/api/bodies/types/' + id
-            })
-            .then(function successCallback(response) {
-                vm.body.type = response.data.data;
-            }).catch(function(err) {showError(err);});
-        }
-
-        vm.getBodyAddress = function(id) {
-            $http({
-                method: 'GET',
-                url: '/api/addresses/' + id
-            })
-            .then(function successCallback(response) {
-                vm.body.address = response.data.data;
-            }).catch(function(err) {showError(err);});
-        }
-
         vm.getBody = function(id) {
             $http({
                 method: 'GET',
                 url: '/api/bodies/' + id
             })
             .then(function successCallback(response) {
-                vm.body = response.data.data[0];
-                vm.getBodyType(vm.body.type_id);
-                vm.getBodyAddress(vm.body.address_id);
+                vm.body = response.data.data;
+
             }).catch(function(err) {showError(err);});
         };
         vm.getBody($stateParams.id);

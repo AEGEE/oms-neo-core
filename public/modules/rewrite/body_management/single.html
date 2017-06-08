@@ -16,7 +16,7 @@
 			</tr>
 			<tr>
 				<td>Email</td>
-				<td>{{ vm.body.email }}</td>
+				<td><a href="mailto:{{ vm.body.email }}">{{ vm.body.email }}</a></td>
 			</tr>
 			<tr>
 				<td>Phone</td>
@@ -34,7 +34,7 @@
 				<td>Address</td>
 				<td>
 					{{ vm.body.address.street }}&nbsp;{{ vm.body.address.city }}<br>
-					{{ vm.body.address.zipcode }}&nbsp;{{ vm.body.country.name }}
+					{{ vm.body.address.zipcode }}&nbsp;{{ vm.body.address.country.name }}
 				</td>
 			</tr>
 		</table>
