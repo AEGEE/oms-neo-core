@@ -99,7 +99,8 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            'oc.lazyLoad',
 	            'angularFileUpload',
 	            'bootstrap3-typeahead',
-	            'btford.markdown'
+	            'btford.markdown',
+	            'infinite-scroll',
 	            @yield('modules')  
 	        ])
 	        .config(appConfig)
@@ -134,11 +135,11 @@ $isProduction = App::environment() == 'production' ? true : false;
 			                    title: 'Permission error!',
 			                    text: "Not enough permissions!",
 			                    sticky: true,
-			                    time: '',
+			                    time: 8000,
 			                    class_name: 'my-sticky-class'
 			                });
 			                break;
-			            case 422:
+			            /**case 422:
 			                var messages = "";
 			                $.each(errorResponse.data, function(key, val) {
 			                    $.each(val, function(key2, val2) {
@@ -149,16 +150,16 @@ $isProduction = App::environment() == 'production' ? true : false;
 			                    title: 'Validation error!',
 			                    text: "The following errors occoured:"+messages,
 			                    sticky: true,
-			                    time: '',
+			                    time: 8000,
 			                    class_name: 'my-sticky-class'
 			                });
-		            		break;
+		            		break;**/
 		            	case 500:
 		            		$.gritter.add({
 			                    title: 'Error!',
 			                    text: "Please try again later",
 			                    sticky: true,
-			                    time: '',
+			                    time: 8000,
 			                    class_name: 'testClass'
 			                });
 		            		break;

@@ -1,0 +1,21 @@
+<table class="edit-circles-table">
+	<thead>
+		<tr>
+			<th class="edit-circles-table-usercol">Users</th>
+			<th colspan="{{ vm.body.circles.length }}">Circles</th>
+		</tr>
+		<tr>
+			<th class="edit-circles-table-usercol"></th>
+			<th ng-repeat="circle in vm.body.circles">{{circle.name}}</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="user in vm.users">
+			<td class="edit-circles-table-usercol">{{user.name}}</td>
+			<td ng-repeat="circle in user.circles_fullarray">
+				<button type="button" class="btn btn-primary" ng-show="!circle.checked"><i class="fa fa-plus"></i>Add</button>
+				<button type="button" class="btn btn-danger" ng-show="circle.checked"><i class="fa fa-minus"></i>Remove</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

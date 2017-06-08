@@ -1,0 +1,72 @@
+
+<!-- #modal-dialog -->
+<div class="modal fade" id="editBodyModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Body add/edit</h4>
+            </div>
+            <div class="alert alert-danger" ng-show="vm.errors">
+                Errors, the backend responded: {{ vm.errors.general_message }}
+            </div>
+            <form name="bodyForm" ng-submit="vm.saveBodyForm()" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="form-group m-b-20">
+                        <label for="name">Name*</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.body.name" placeholder="Body name" required/>
+                        <p class="label label-danger" ng-show="vm.errors.name">{{ vm.errors.name }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="name">Description</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.body.description" placeholder="Body Description"/>
+                        <p class="label label-danger" ng-show="vm.errors.description">{{ vm.errors.description }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="email">Email*</label>
+                        <input type="email" id="email" class="form-control" ng-model="vm.body.email" placeholder="Body email" required/>
+                        <p class="label label-danger" ng-show="vm.errors.email">{{ vm.errors.email }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" class="form-control" ng-model="vm.body.phone" placeholder="Body phone"/>
+                        <p class="label label-danger" ng-show="vm.errors.phone">{{ vm.errors.phone }}</p>
+
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="type">Type*</label>
+                        <select ng-model="vm.body.type_id" ng-options="type.id as type.name for type in vm.body_types" class="form-control" id="countries" required>
+                        </select>
+                        <p class="label label-danger" ng-show="vm.errors.type_id">{{ vm.errors.type_id }}</p>
+                    </div>                    
+                    <hr>
+                    <div class="form-group m-b-20">
+                        <label for="street">Street*</label>
+                        <input type="text" id="street" class="form-control" ng-model="vm.body.address.street" placeholder="Body street" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.street">{{ vm.errors.address.street }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="city">City*</label>
+                        <input type="text" id="city" class="form-control" ng-model="vm.body.address.city" placeholder="Body city" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.city">{{ vm.errors.address.city }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="zipcode">Zipcode*</label>
+                        <input type="text" id="zipcode" class="form-control" ng-model="vm.body.address.zipcode" placeholder="Zipcode" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.zipcode">{{ vm.errors.address.zipcode }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="countries">Country*</label>
+                        <select ng-model="vm.body.address.country_id" ng-options="country.id as country.name for country in vm.countries" class="form-control" id="countries" required>
+                        </select>
+                        <p class="label label-danger" ng-show="vm.errors.address.country_id">{{ vm.errors.address.country_id }}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--<button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>-->
+                    <button class="btn btn-sm btn-success" type="submit"><i class="fa fa-save"></i> Save body</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
