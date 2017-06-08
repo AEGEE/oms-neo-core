@@ -27,11 +27,12 @@ class LoginController extends Controller
     public function loginUsingCredentials(LoginRequest $req) {
         $auth = $this->generateAuthToken($req);
 
-        if (!Auth::once(['contact_email' => $req->username, 'password' => $req->password])) {
+        if (!Auth::attempt(['contact_email' => $req->username, 'password' => $req->password])) {
             return response()->credentialsFailure();
         }
         $user = Auth::user();
         if ($user->activated_at == null) {
+            Auth::logout();
             return response()->failure('User not activated.');
         }
         $loginKey = Uuid::generate(1)->string;

@@ -14,14 +14,12 @@ use App\Models\ModulePage;
 use App\Models\UserRole;
 use App\Models\User;
 use App\Http\Middleware\LoginMethodMiddleware;
-use Illuminate\Support\Facades\Log;
 use Session;
 use Auth;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt, AuthToken $auth, MenuItem $menuItem) {
-        Auth::login(User::find(1));
+    public function defaultRoute(GlobalOption $opt, MenuItem $menuItem) {
     	$userData = Auth::user();
         $addToView = array();
 
@@ -38,7 +36,6 @@ class GenericController extends Controller
 
         $addToView['appName'] = $optionsArr['app_name'];
         if(Auth::check()) {
-            Log::debug("User logged in!");
             $systemRolesAccess = array();
 
             $addToView['userData'] = Auth::user();
@@ -147,8 +144,6 @@ class GenericController extends Controller
 
     		return view('loggedIn', $addToView);
     	}
-
-        Log::debug("User not logged in");
 
         $addToView['oAuthDefined'] = LoginMethodMiddleware::isOauthDefined();
 		return view('notLogged', $addToView);
