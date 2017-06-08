@@ -18,7 +18,6 @@ class UserSeeder extends Seeder
     public function run()
     {
         User::create([
-            'id'                =>  1,
             'address_id'        =>  1,
 			'contact_email' 	=> 	'admin@aegee.org',
 			'first_name'		=>	'Super',
@@ -32,7 +31,6 @@ class UserSeeder extends Seeder
 		]);
 
         User::create([
-            'id'                =>  2,
             'address_id'        =>  2,
 			'contact_email' 	=> 	'derk.snijders@aegee.org',
 			'first_name'		=>	'Derk',
@@ -46,7 +44,6 @@ class UserSeeder extends Seeder
 		]);
 
         User::create([
-            'id'                =>  3,
             'address_id'        =>  1,
 			'contact_email' 	=> 	'nico.westerbeck@aegee.org',
 			'first_name'		=>	'Nico',
@@ -60,7 +57,6 @@ class UserSeeder extends Seeder
 		]);
 
         User::create([
-            'id'                =>  4,
             'address_id'        =>  1,
 			'contact_email' 	=> 	'sergey.peshkov@aegee.org',
 			'first_name'		=>	'Sergey',
@@ -74,7 +70,6 @@ class UserSeeder extends Seeder
 		]);
 
         User::create([
-            'id'                =>  5,
             'address_id'        =>  1,
 			'contact_email' 	=> 	'fabrizio.bellicano@aegee.org',
 			'first_name'		=>	'Grace',
@@ -88,7 +83,6 @@ class UserSeeder extends Seeder
 		]);
 
         User::create([
-            'id'                =>  6,
             'address_id'        =>  1,
 			'contact_email' 	=> 	'headoffice@aegee.org',
 			'first_name'		=>	'Big',
