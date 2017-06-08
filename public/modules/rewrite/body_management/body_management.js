@@ -56,7 +56,8 @@
         };
 
         vm.query = "";
-
+        vm.bodies = [];
+        vm.body_types = [];
         vm.querytoken = 0;
 
         vm.getBodies = function() {
@@ -83,6 +84,7 @@
         vm.getBodies();
 
         vm.getBodyTypes = function() {
+
             $http({
                 method: 'GET',
                 url: '/api/bodies/types'
