@@ -57,6 +57,7 @@
 
         vm.query = "";
         vm.bodies = [];
+        vm.body = {};
         vm.body_types = [];
         vm.querytoken = 0;
 
@@ -165,6 +166,9 @@
             edit_body: true,
             edit_circles: true
         };
+        vm.body = {};
+        vm.countries = [];
+        vm.body_types = [];
 
         vm.getBody = function(id) {
             $http({
@@ -189,11 +193,23 @@
         }
         vm.getCountries();
 
+        vm.getBodyTypes = function() {
+
+            $http({
+                method: 'GET',
+                url: '/api/bodies/types'
+            })
+            .then(function successCallback(response) {
+                vm.body_types = response.data.data;
+            }).catch(function(err) {showError(err);});
+        }
+        vm.getBodyTypes();
+
         vm.saveBodyForm = function() {
             // First submit the address, then the body
             $http({
                 method: 'PUT',
-                url: '/api/addresses/' + vm.body.addess.id,
+                url: '/api/addresses/' + vm.body.address.id,
                 data: vm.body.address
             })
             .then(function successCallback(response) {
@@ -213,17 +229,19 @@
                         time: 8000,
                         class_name: 'my-sticky-class',
                       });
-                    vm.getBodies();
+                    vm.getBody($stateParams.id);
                 }).catch(function(err) {
                     if(err.status == 422)
-                        vm.errors = err.data.errors;
+                        vm.errors = err.data;
                     else
                         showError(err);
                 });
 
             }).catch(function(err) {
                 if(err.status == 422)
-                    vm.errors = err.data.errors;
+                    vm.errors = {
+                        address: err.data
+                    };
                 else
                     showError(err);
             });
