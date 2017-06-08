@@ -15,6 +15,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
 use App\Http\Requests\SuspendUserRequest;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\GetUserByTokenRequest;
 use App\Models\BodyMembership;
 use App\Models\User;
 use App\Models\Role;
@@ -56,21 +57,14 @@ class UserController extends Controller
         return response()->success($bodies);
     }
 
-    public function getUserByToken() {
-        $token = Input::get('token');
-        if(empty($token)) {
-            $toReturn['success'] = 0;
-            return response(json_encode($toReturn), 200);
-        }
-
+    public function getUserByToken(GetUserByTokenRequest $req) {
         $now = date('Y-m-d H:i:s');
-        $auth = AuthToken::where('token_generated', $token)
+        $auth = AuthToken::where('token_generated', $req->token)
                         ->where(function($query) use($now) {
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');
                         })->firstOrFail();
-
-        return $this->getUser($auth->user_id);
+        return response()->success($auth->user()->first());
     }
 
     public function createUser(CreateUserRequest $req) {
