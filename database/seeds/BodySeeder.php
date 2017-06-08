@@ -18,21 +18,18 @@ class BodySeeder extends Seeder
     public function run()
     {
         Address::create([
-            'id'            =>  1,
             'country_id'    =>  21,
             'street'        =>  'Notelaarsstraat 55',
             'zipcode'       =>  '1000',
             'city'          =>  'Brussels',
         ]);
         Address::create([
-            'id'            =>  2,
             'country_id'    =>  153,
             'street'        =>  'Oude Markt 24',
             'zipcode'       =>  '7511 GB',
             'city'          =>  'Enschede',
         ]);
         Address::create([
-            'id'            =>  3,
             'country_id'    =>  81,
             'street'        =>  'Bergstraße 66c',
             'zipcode'       =>  '01069',
@@ -40,17 +37,14 @@ class BodySeeder extends Seeder
         ]);
 
         BodyType::create([
-            'id'            =>  1,
             'name'          =>  'local',
         ]);
 
         BodyType::create([
-            'id'            =>  2,
             'name'          =>  'special',
         ]);
 
         BodyType::create([
-            'id'            =>  3,
             'name'          =>  'commission-european',
         ]);
 
