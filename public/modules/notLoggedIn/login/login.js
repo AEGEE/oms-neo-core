@@ -43,6 +43,9 @@
             })
             .then(function successCallback(response) {
                 if(response.data.success == 1) {
+                    // Store in local storage
+                    window.localStorage.setItem("X-Auth-Token", response.data.data);
+                    
                     location.reload();
                 } else {
                     $('#loginError').show();

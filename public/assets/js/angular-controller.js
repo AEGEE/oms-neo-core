@@ -273,8 +273,8 @@ omsApp.controller('headerController', function($scope, $rootScope, $state, $http
     }
 
     ////
-    vm.checkNotifications(); // Checking once when loaded and afterwards every 2 minutes..
-    setInterval(vm.checkNotifications, 120000); // We execute once every 2 minutes..
+    //vm.checkNotifications(); // Checking once when loaded and afterwards every 2 minutes..
+    //setInterval(vm.checkNotifications, 120000); // We execute once every 2 minutes..
 });
 
 

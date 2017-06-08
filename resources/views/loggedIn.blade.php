@@ -32,7 +32,7 @@
 @stop
 
 @section('otherConfig')
-    $http.defaults.headers.common['X-Auth-Token'] = '{!!$authToken!!}';
+    $http.defaults.headers.common['X-Auth-Token'] = window.localStorage.getItem("X-Auth-Token");
 @stop
 
 @section('modulesSrc')
@@ -44,7 +44,7 @@
 
     <script type="text/javascript">
         $.ajaxSetup({
-            headers: {'X-Auth-Token': '{!!$authToken!!}'}
+            headers: {'X-Auth-Token': window.localStorage.getItem("X-Auth-Token")}
         });
         var countries = {
             {!!$countries!!}

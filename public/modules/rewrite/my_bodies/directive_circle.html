@@ -1,0 +1,29 @@
+<div class="panel panel-inverse">
+	<div class="panel-heading">
+		<div class="panel-heading-btn">
+			<button type="button" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-collapse"><i class="fa fa-minus"></i></button>
+		</div>
+		<h4 class="panel-title">{{ circle.name }}</h4>
+	</div>
+
+	<div class="panel-body">
+		<input class="form-control" ng-model="query" />
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Name</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="user in filteredCircles = (circle.users | filter:query)">
+					<td>{{ user.name }}</td>
+				</tr>
+				<tr ng-hide="filteredCircles.length">
+					<td ng-show="query">Unfortunately there are no users in this circle matching your search {{ query }}</td>
+					<td ng-show="!query">No users in this circle</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+</div>

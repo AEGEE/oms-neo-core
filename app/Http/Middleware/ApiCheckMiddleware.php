@@ -5,8 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 use Closure;
+use Auth;
 
-use App\Models\Auth;
+use App\Models\AuthToken;
 
 class ApiCheckMiddleware
 {
@@ -23,23 +24,24 @@ class ApiCheckMiddleware
         $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
 
         if(empty($xAuthToken)) {
-            return response('Forbidden', 403);
+            return response()->unauthorized();
         }
 
         $now = date('Y-m-d H:i:s');
 
         try {
-            $auth = Auth::where('token_generated', $xAuthToken)
+            $auth = AuthToken::where('token_generated', $xAuthToken)
                         ->where(function($query) use($now) {
                             $query->where('expiration', '>', $now)
                                     ->orWhereNull('expiration');
                         })
                         ->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            return response('Forbidden', 403); 
+            return response()->forbidden();
         }
-        
-        $request->attributes->add(['userData' => $auth->user]);
+
+        Auth::logout(); //Just to be safe, should not be necessary.
+        Auth::onceUsingId($auth->user->id);
 
         return $next($request);
     }
