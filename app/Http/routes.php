@@ -51,20 +51,20 @@ Route::group(['middleware' => 'api'], function() {
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
         Route::post('/api/users', 'UserController@createUser');
-        Route::put('/api/users/{user_id}', 'UserController@updateUser');
+        Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
         Route::group(['middleware' => 'seoURL:user'], function() {
-            Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user', '[a-zA-Z0-9_]+');
-            Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user', '[a-zA-Z0-9_]+');
+            Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
 
             // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
-            Route::put('/api/users/{user_id}/suspended', 'UserController@suspendUnsuspendAccount')->where('user', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/activated', 'UserController@activateUser')->where('user', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/impersonated', 'UserController@impersonateUser')->where('user', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/suspended', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/activated', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/impersonated', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
 
             //Route::post('/api/users', 'LoginController@createUser'); TODO
             //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
-            Route::post('/api/users/{user_id}/bodies', 'UserController@addBodyToUser')->where('user', '[a-zA-Z0-9_]+');
+            Route::post('/api/users/{user_id}/bodies', 'UserController@addBodyToUser')->where('user_id', '[a-zA-Z0-9_]+');
         });
 
         // DELETE - remove
