@@ -21,7 +21,7 @@ class ApiCheckMiddleware
     public function handle($request, Closure $next)
     {
         // Checking user data and api key..
-        $xAuthToken = isset($_SERVER['HTTP_X_AUTH_TOKEN']) ? $_SERVER['HTTP_X_AUTH_TOKEN'] : '';
+        $xAuthToken = $request->headers->get('x-auth-token');
 
         if(empty($xAuthToken)) {
             return response()->unauthorized();
