@@ -12,14 +12,14 @@ use App\Models\GlobalOption;
 use App\Models\MenuItem;
 use App\Models\ModulePage;
 use App\Models\UserRole;
+use App\Models\User;
 use App\Http\Middleware\LoginMethodMiddleware;
-
 use Session;
 use Auth;
 
 class GenericController extends Controller
 {
-    public function defaultRoute(GlobalOption $opt, AuthToken $auth, MenuItem $menuItem) {
+    public function defaultRoute(GlobalOption $opt, MenuItem $menuItem) {
     	$userData = Auth::user();
         $addToView = array();
 
@@ -35,7 +35,7 @@ class GenericController extends Controller
         session_write_close();
 
         $addToView['appName'] = $optionsArr['app_name'];
-        if($auth->isUserLogged($userData['authToken'])) {
+        if(Auth::check()) {
             $systemRolesAccess = array();
 
             $addToView['userData'] = Auth::user();
