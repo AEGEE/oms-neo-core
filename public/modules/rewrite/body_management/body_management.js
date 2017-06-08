@@ -68,13 +68,16 @@
             vm.querytoken += 1;
             var mytoken = vm.querytoken;
 
+            var params = {};
+            if(vm.query)
+                params["name"] = vm.query;
+            if(active_types.length > 0)
+                params["type_id"] = active_types;
+
             $http({
                 method: 'GET',
                 url: '/api/bodies',
-                params: {
-                    "name": vm.query,
-                    "body_id": active_types
-                }
+                params: params
             })
             .then(function successCallback(response) {
                 if(mytoken == vm.querytoken) // Make sure no request has surpassed us
