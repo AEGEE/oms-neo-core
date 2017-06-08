@@ -24,6 +24,7 @@ Route::group(['middleware' => 'login:oauth'], function() {
 Route::group(['middleware' => 'api'], function() {
     // Routes go in here..
     Route::put('/session', 'GenericController@noSessionTimeout');
+    Route::post('/api/tokens/user', 'UserController@getUserByToken'); // TODO restrict access to this?
     //Route::get('/api/notifications', 'GenericController@getNotifications'); TODO
     //Route::put('/api/notifications', 'GenericController@markNotificationsAsRead'); TODO
 
@@ -115,11 +116,6 @@ Route::group(['middleware' => 'api'], function() {
 // Microservice routes..
 //Route::post('/api/microservice/register', 'ModuleController@registerMicroservice'); TODO
 
-// Microservice group..
-Route::group(['middleware' => 'microServiceAuth'], function() {
-    //TODO Should be GET method, but token should not be in URL.
-    Route::post('/api/tokens/user', 'UserController@getUserByToken');
-});
 
 // Generic routes..
 Route::any('/logout', 'GenericController@logout');
