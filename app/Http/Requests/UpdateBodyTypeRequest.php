@@ -24,7 +24,6 @@ class UpdateBodyTypeRequest extends Request
     public function rules()
     {
         return [
-            'id'            =>  'required|integer|exists:body_types,id',
             'name'          =>  'max:255|unique:body_types,name',
         ];
     }

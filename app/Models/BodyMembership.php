@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BodyMembership extends Model
 {
     protected $table = "body_memberships";
+    protected $guarded = ["id"];
 
     // Relationships..
     public function user() {
