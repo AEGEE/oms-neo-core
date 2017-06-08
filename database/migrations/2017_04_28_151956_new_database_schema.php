@@ -270,6 +270,7 @@ class NewDatabaseSchema extends Migration
     public function down()
     {
         Schema::dropIfExists('auths');
+        Schema::dropIfExists('auth_tokens');
 
         Schema::dropIfExists('studies');
         Schema::dropIfExists('study_fields');
