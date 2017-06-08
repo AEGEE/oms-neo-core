@@ -14,7 +14,7 @@
 		<button type="button" class="btn btn-white pull-left" ng-if="vm.permissions.create_body" ng-click="vm.showBodyModal()">Create new body</button>
 		<div class="pull-left">
 			<label class="checkbox-inline" ng-repeat="type in vm.body_types">
-				<input type="checkbox" ng-model="type.filter_active" />
+				<input type="checkbox" ng-model="type.filter_active" data-render="switchery" data-theme="default" />
 				{{ type.name }}
 			</label>
 		</div>

@@ -3,9 +3,6 @@ require_once('../../scripts/template_scripts.php');
 $omsObj = new omsHelperScript();
 ?>
 
-<!-- TODO find out how to really include CSS files -->
-<link rel="stylesheet" type="text/css" href="assets/css/own.css" />
-
 <!-- begin #header -->
 <div ui-view="header"></div>
 <!-- end #header -->

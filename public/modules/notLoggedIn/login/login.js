@@ -43,6 +43,11 @@
             })
             .then(function successCallback(response) {
                 if(response.data.success == 1) {
+                    $http.defaults.headers.common['X-Auth-Token'] = response.data.data;
+                    $.ajaxSetup({
+                        headers: {'X-Auth-Token': response.data.data}
+                    });
+                    document.cookie = 'oms-session=' + response.data.data;
                     location.reload();
                 } else {
                     $('#loginError').show();

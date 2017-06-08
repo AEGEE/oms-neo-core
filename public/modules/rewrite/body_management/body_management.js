@@ -203,6 +203,46 @@
         }
         vm.getCountries();
 
+        vm.saveBodyForm = function() {
+            // First submit the address, then the body
+            $http({
+                method: 'PUT',
+                url: '/api/addresses/' + vm.body.addess.id,
+                data: vm.body.address
+            })
+            .then(function successCallback(response) {
+                // Create the body
+                $http({
+                    method: 'PUT',
+                    url: '/api/bodies/' + vm.body.id,
+                    data: vm.body
+                })
+                .then(function successCallback(response) {
+                    // Successfully saved that body
+                    $('#editBodyModal').modal('hide');
+                    $.gritter.add({
+                        title: 'Success',
+                        text: `Successfully edited body`,
+                        sticky: false,
+                        time: 8000,
+                        class_name: 'my-sticky-class',
+                      });
+                    vm.getBodies();
+                }).catch(function(err) {
+                    if(err.status == 422)
+                        vm.errors = err.data.errors;
+                    else
+                        showError(err);
+                });
+
+            }).catch(function(err) {
+                if(err.status == 422)
+                    vm.errors = err.data.errors;
+                else
+                    showError(err);
+            });
+        };
+
         vm.showBodyModal = function() {
             $('#editBodyModal').modal('show');
         }

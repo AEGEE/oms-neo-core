@@ -28,15 +28,16 @@
         // Data
         var vm = this;
 
-        vm.body_types = [
-        {
-            name: "Contact"
-        }, {
-            name: "Contact Antenna"
-        }, {
-            name: "Full Antenna"
+         vm.getBodyTypes = function() {
+            $http({
+                method: 'GET',
+                url: '/api/bodies/types'
+            })
+            .then(function successCallback(response) {
+                vm.body_types = response.data.data;
+            }).catch(function(err) {showError(err);});
         }
-        ];
+        vm.getBodyTypes();
 
         vm.global_circles = [
             {

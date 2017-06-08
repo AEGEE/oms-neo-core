@@ -12,10 +12,12 @@
                     <div class="form-group m-b-20">
                         <label for="name">Name*</label>
                         <input type="text" id="name" class="form-control" ng-model="vm.body.name" placeholder="Body name" required/>
+                        <p class="label label-danger" ng-show="vm.errors.name">{{ vm.errors.name }}</p>
                     </div>
                     <div class="form-group m-b-20">
                         <label for="name">Description</label>
                         <input type="text" id="name" class="form-control" ng-model="vm.body.description" placeholder="Body Description"/>
+                        <p class="label label-danger">Testerror - let's see how this looks like</p>
                     </div>
                     <div class="form-group m-b-20">
                         <label for="email">Email*</label>
