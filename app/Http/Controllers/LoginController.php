@@ -27,6 +27,8 @@ class LoginController extends Controller
     public function loginUsingCredentials(LoginRequest $req) {
         $auth = $this->generateAuthToken($req);
 
+        //By using Auth::attempt instead of Auth::once the login endpoint is no longer stateless.
+        //This is a workaround until the frontend is capable of keeping its own sessions.
         if (!Auth::attempt(['contact_email' => $req->username, 'password' => $req->password])) {
             return response()->credentialsFailure();
         }
