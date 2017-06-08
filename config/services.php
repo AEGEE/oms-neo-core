@@ -56,4 +56,6 @@ return [
         'client_secret' => env('OAUTH_SECRET', ''),
         'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
     ], 
+
+    'google_maps'   =>  env('G_MAPS_API_KEY', ''),
 ];

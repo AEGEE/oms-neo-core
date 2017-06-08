@@ -290,4 +290,9 @@ class UserController extends Controller
         $response->header("Content-Type", $type);
         return $response;
     }
+
+    public function getUserById(User $user) {
+        $user = $user->findOrFail(Input::get('id'));
+        return json_encode($user);
+    }
 }

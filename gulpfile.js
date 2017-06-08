@@ -62,7 +62,8 @@ elixir(function(mix) {
 		'../bower_components/showdown/compressed/Showdown.min.js',
 		'../bower_components/angular-markdown-directive/markdown.js',
 		'../otherLibs/nestable/jquery.nestable.js',
-		'../otherLibs/nestable/jquery.nestable++.js'
+		'../otherLibs/nestable/jquery.nestable++.js',
+		'../bower_components/angucomplete-alt/dist/angucomplete-alt.min.js'
 	],
 	'public/vendor/vendor.js');
 

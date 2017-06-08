@@ -1108,7 +1108,7 @@
                     active: 1,
                     sord: 'module_name',
                     with_hidden: 1,
-                    limit: 10000
+                    rows: 10000
                 }
             }).then(function successCallback(response) {
                 $.each(response.data.rows, function(key, val) {

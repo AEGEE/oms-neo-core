@@ -29,4 +29,14 @@ class Controller extends BaseController
         }
         return $arr;
     }
+
+    protected function isMapsDefined() {
+        $mapsKey = config('services.google_maps');
+
+        if(!empty($mapsKey)) {
+            return $mapsKey;
+        }
+
+        return false;
+    }
 }

@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.modules', {
-                url: '/moduleMangement',
+                url: '/moduleManagement',
                 data: {'pageTitle': 'Modules'},
                 views   : {
                     'pageContent@app': {
