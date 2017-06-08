@@ -32,6 +32,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            'returnErrors',
             'checkKey',
         ],
     ];
@@ -55,5 +56,6 @@ class Kernel extends HttpKernel
         'checkSpecialRoles'     => \App\Http\Middleware\CheckSpecialRoles::class,
         'seoURL'                => \App\Http\Middleware\SeoURLMiddleware::class,
         'login'                 => \App\Http\Middleware\LoginMethodMiddleware::class,
+        'returnErrors'          => \App\Http\Middleware\RespondErrorsMiddleware::class,
     ];
 }
