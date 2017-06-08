@@ -47,7 +47,7 @@ class ResponseServiceProvider extends ServiceProvider
         });
         Response::macro('validationErrors', function ($errors) {
             return response()->failure('Validation error.', 422, $errors);
-
+        });
         Response::macro('notImplemented', function () {
             return response()->failure('Not Implemented', 501);
         });
