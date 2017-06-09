@@ -16,8 +16,8 @@ Route::group(['middleware' => 'login:credentials'], function() {
     Route::post('/api/login', 'LoginController@loginUsingCredentials');
 });
 Route::group(['middleware' => 'login:oauth'], function() {
-    //Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
-    //Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
+    Route::any('/oauth/login', 'LoginController@loginUsingOauth');
+    Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
 
 // Core api routes..

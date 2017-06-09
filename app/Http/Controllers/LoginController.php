@@ -48,7 +48,7 @@ class LoginController extends Controller
 
     public function loginUsingOauth(Request $req) {
         $provider = $req->provider;
-        $allowedDomain = $this->allowedDomain;
+        $allowedDomain = $req->allowedDomain;
         if($provider == 'google' && !empty($allowedDomain)) { // Google supports single domain
             return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://www.googleapis.com/auth/admin.directory.user'])->redirect();
         }
