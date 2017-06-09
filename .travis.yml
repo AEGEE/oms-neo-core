@@ -19,8 +19,6 @@ before_script:
     - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
     - cd AEGEE/oms-docker/docker
     - docker-compose up -d
-    - sudo docker exec -it docker_omscore_1 bash
-    - phpunit
 
 script:
-    - vendor/bin/phpunit
+    - sudo docker exec -it docker_omscore_1 /var/www/vendor/bin/phpunit
