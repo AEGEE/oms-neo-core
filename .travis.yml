@@ -19,10 +19,6 @@ before_script:
     - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
     - cd AEGEE/oms-docker/docker
     - docker-compose up -d
-    - sudo docker-compose exec omscore wget https://phar.phpunit.de/phpunit-6.1.phar
-    - sudo docker-compose exec omscore chmod +x phpunit-6.1.phar
-    - sudo docker-compose exec omscore sudo mv phpunit-6.1.phar /usr/local/bin/phpunit
-    - sudo docker-compose exec omscore phpunit --version
 
 script:
     - sudo docker-compose exec omscore find . -name phpunit
