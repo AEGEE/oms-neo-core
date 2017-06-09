@@ -7,7 +7,7 @@ before_script:
     - cp .env.testing .env
     - git clone https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
     - rm -Rf AEGEE/oms-docker/oms-core
-    - mv AEGEE/oms-docker AEGEE/oms-docker/oms-core
+    - mv AEGEE/oms-core AEGEE/oms-docker/oms-core
     - docker-compose up -d
     - sudo docker exec -it docker_omscore_1 bash
     - phpunit
