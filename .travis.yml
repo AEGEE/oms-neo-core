@@ -23,6 +23,6 @@ before_script:
     - docker-compose up -d
 
 script:
-    - sudo docker-compose exec omscore composer update
-    - sudo docker-compose exec omscore composer install
-    - sudo docker-compose exec omscore /var/www/vendor/bin/phpunit
+    - sudo docker-compose exec -T omscore composer update
+    - sudo docker-compose exec -T omscore composer install
+    - sudo docker-compose exec -T omscore ./vendor/bin/phpunit
