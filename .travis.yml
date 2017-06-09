@@ -1,4 +1,6 @@
 language: php
+php:
+    - '7.0'
 dist: trusty
 sudo: required
 
@@ -23,5 +25,4 @@ before_script:
 script:
     - sudo docker-compose exec omscore composer update
     - sudo docker-compose exec omscore composer install
-    - sudo docker-compose exec omscore find ~ -name phpunit
     - sudo docker-compose exec omscore /var/www/vendor/bin/phpunit
