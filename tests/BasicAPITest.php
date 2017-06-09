@@ -28,7 +28,7 @@ class BasicAPITest extends TestCase
         $this->helperGETSuccess('api/users');
         $this->helperGETSuccess('api/users/1');
         $this->helperGETSuccess('api/users/i3anaan');
-        $this->helperGETSuccess('api/users/1/bodies');
+        $this->helperGETSuccess('api/use2rs/1/bodies');
         $this->helperGETSuccess('api/bodies/types');
         $this->helperGETSuccess('api/bodies/types/1');
         $this->helperGETSuccess('api/addresses');
