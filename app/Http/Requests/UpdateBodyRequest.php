@@ -27,7 +27,7 @@ class UpdateBodyRequest extends Request
             'name'          =>  'max:255',
             'type_id'       =>  'integer|exists:body_types,id',
             'address_id'    =>  'integer|exists:addresses,id',
-            'email'         =>  'email|unique:users,contact_email',
+            'email'         =>  'email|unique:bodies,email',
             'phone'         =>  'numeric',
             'description'   =>  'max:1024',
         ];

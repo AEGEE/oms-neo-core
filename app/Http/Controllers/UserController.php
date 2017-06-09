@@ -32,13 +32,13 @@ class UserController extends Controller
 
         // Extract URL arguments to filter on.
         $search = [
-            'name'          => $req->name,
-            'date_of_birth' => $req->date_of_birth,
-            'contact_email' => $req->contact_email,
-            'gender'        => $req->gender,
-            'status'        => $req->status,
-            'body_id'       => $req->body_id,
-            'body_name'     => $req->body_name,
+            'name'              => $req->name,
+            'date_of_birth'     => $req->date_of_birth,
+            'personal_email'    => $req->personal_email,
+            'gender'            => $req->gender,
+            'status'            => $req->status,
+            'body_id'           => $req->body_id,
+            'body_name'         => $req->body_name,
             ];
 
         $users = User::filterArray($search)->get();
@@ -68,7 +68,7 @@ class UserController extends Controller
     }
 
     public function createUser(CreateUserRequest $req) {
-        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'contact_email', 'gender', 'phone', 'description', 'password']);
+        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'personal_email', 'gender', 'phone', 'description', 'password']);
         $arr['password'] = Hash::make($req->password);
         $user = User::create($arr);
         return response()->success($user, null, 'User created');
@@ -85,7 +85,7 @@ class UserController extends Controller
         $user->seo_url = $req->has('seo_url') ? $req->seo_url : $user->seo_url;
         $user->password = $req->has('password') ? Hash::make($req->password) : $user->password;
         $user->description = $req->has('description') ? nl2br($req->description) : $user->description;
-        $user->contact_email = $req->has('contact_email') ? $req->contact_email : $user->contact_email;
+        $user->personal_email = $req->has('personal_email') ? $req->personal_email : $user->personal_email;
 
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 

@@ -152,9 +152,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
 
-    public function scopeFilterContactEmail($query, $contact_email) {
+    public function scopefilterPersonalEmail($query, personal_email) {
         if (!empty($date_of_birth)) {
-            return $query->where('contact_email', $contact_email);
+            return $query->where('personal_email', personal_email);
         } else {
             return $query;
         }
@@ -210,7 +210,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         $query //->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
             ->filterName($search['name'] ?? '')
             ->filterDateOfBirth($search['date_of_birth'] ?? '')
-            ->filterContactEmail($search['contact_email'] ?? '')
+            ->filterPersonalEmail($search['personal_email'] ?? '')
             ->filterGender($search['gender'] ?? '')
             ->filterStatus($search['status'] ?? '')
             ->filterBodyID($search['body_id'] ?? '')
@@ -278,7 +278,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function getLoginUserArray($authToken) {
         return array(
             'id'                =>  $this->id,
-            'username'          =>  empty($this->internal_email) ? $this->contact_email : $this->internal_email,
+            'username'          =>  empty($this->internal_email) ? $this->personal_email : $this->internal_email,
             'fullname'          =>  $this->first_name." ".$this->last_name,
             'is_superadmin'     =>  $this->is_superadmin,
             'department_id'     =>  $this->department_id,

@@ -24,12 +24,12 @@ use Uuid;
 
 class LoginController extends Controller
 {
-    public function loginUsingCredentials(LoginRequest $req) {
-        $auth = $this->generateAuthToken($req);
+    public function loginUsingCredentials(LoginRequest $req, AuthToken $auth) {
+        $auth->prepareAuthToken($req);
 
         //By using Auth::attempt instead of Auth::once the login endpoint is no longer stateless.
         //This is a workaround until the frontend is capable of keeping its own sessions.
-        if (!Auth::attempt(['contact_email' => $req->username, 'password' => $req->password])) {
+        if (!Auth::attempt(['personal_email' => $req->username, 'password' => $req->password])) {
             return response()->credentialsFailure();
         }
         $user = Auth::user();
@@ -39,12 +39,14 @@ class LoginController extends Controller
         }
         $loginKey = Uuid::generate(1)->string;
 
-        $this->completeAuthToken($auth, $user->id, $loginKey);
+        $this->completeAuthToken($user->id, $loginKey);
         $auth->save();
 
         // Login successful.. returning data..
         return response()->success($loginKey, null, "User login token");
     }
+
+
 
     public function loginUsingOauth(Request $req) {
         $provider = $req->provider;
@@ -61,55 +63,39 @@ class LoginController extends Controller
         return Socialite::driver($provider)->redirect();
     }
 
-    public function oAuthCallback(User $user, AuthToken $auth, Request $req) {
+    public function oAuthCallback(AuthToken $auth, Request $req) {
         // Saving login request..
-        $auth = generateAuthToken();
+        $auth->prepareAuthToken($req);
 
         $provider = $req->provider;
         $oAuthUser = Socialite::driver($provider)->user();
+
+        //dd($oAuthUser);
+
         $userEmail = $oAuthUser->getEmail();
 
         try {
-            //TODO internal_email is no longer a thing.
-            $user = $user->where('internal_email', $userEmail)
+            $user = User::where('internal_email', $userEmail)
                             ->whereNotNull('activated_at') // If its null, then the account was not activated..
                             ->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            $auth->save();
             return response()->failure('User not found.');
         }
 
         // User exists..
         $user->oauth_token = $oAuthUser->token;
+        // TODO Might need to be adjusted for timezones.
+        $expires = time() + $oAuthUser->expiresIn;
+        $user->oauth_expiration = date('Y-m-d H:i:s', $expires);
         $user->save();
-        //TODO login user?
 
         $loginKey = Uuid::generate(1)->string;
 
-        $this->completeAuthToken($auth, $user->id, $loginKey);
-        $auth->save();
+        $auth->completeAuthToken($user->id, $loginKey);
+
+        Auth::login($user);
 
         // Login successful.. returning data..
         return response()->success($loginKey, null, 'User login token');
-    }
-
-    //TODO Move these methods to AuthToken.php?
-    public function generateAuthToken(Request $req){
-        $auth = new AuthToken;
-        $auth->ip_address = $req->ip();
-        $auth->user_agent = $req->header('User-Agent');
-
-        $rawRequestParams = http_build_query($req->all());
-        $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);
-
-        $auth->raw_request_params = $rawRequestParams;
-        return $auth;
-    }
-
-    public function completeAuthToken(AuthToken &$auth, $user_id, $token) {
-        $auth->user_id = $user_id;
-        $auth->token_generated = $token;
-        $auth->successful = 1;
-        return $auth;
     }
 }
