@@ -21,4 +21,5 @@ before_script:
     - docker-compose up -d
 
 script:
+    - sudo docker-compose exec omscore find . -name phpunit
     - sudo docker-compose exec omscore /var/www/vendor/bin/phpunit
