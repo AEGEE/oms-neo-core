@@ -5,11 +5,11 @@
                 <img src="assets/img/profile-cover.jpg">
                 <i class="fa fa-user hide"></i>
             </div>
-            <div class="m-b-10">
-                <a href="#" class="btn btn-warning btn-block btn-sm">Change Picture</a>
+            <div class="m-b-10" ng-show="vm.permissions.edit_profile">
+                <button type="button" ng-click="vm.changePicture()" class="btn btn-warning btn-block btn-sm">Change Picture</a>
             </div>
-            <div class="m-b-10">
-                <a href="#" class="btn btn-warning btn-block btn-sm">Edit Profile</a>
+            <div class="m-b-10" ng-show="vm.permissions.edit_profile">
+                <button type="button" ng-click="vm.showEditProfileModal()" class="btn btn-warning btn-block btn-sm">Edit Profile</a>
             </div>
         </div>
 
@@ -26,6 +26,10 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr class="highlight">
+                                <td class="field">Username</td>
+                                <td>{{ vm.user.seo_url }}</a></td>
+                            </tr>
                             <tr>
                                 <td class="field">Email</td>
                                 <td><a href="mailto:{{ vm.user.contact_email }}">{{ vm.user.contact_email }}</a></td>
@@ -87,3 +91,6 @@
         </div>
     </div>
 </div>
+
+<!-- ########################### Body types edit modal ###################### -->
+<ng-include src="'modules/loggedIn/profile/edit_profile_form.html'"></ng-include>

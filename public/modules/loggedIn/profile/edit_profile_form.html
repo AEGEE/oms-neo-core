@@ -1,0 +1,78 @@
+
+<!-- #modal-dialog -->
+<div class="modal fade" id="editProfileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Edit Profile</h4>
+            </div>
+            <form name="profileForm" ng-submit="vm.saveProfile()" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="form-group m-b-20">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" class="form-control" ng-model="vm.user.first_name" placeholder="First Name" required/>
+                        <p class="label label-danger" ng-show="vm.errors.first_name">{{ vm.errors.first_name }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" class="form-control" ng-model="vm.user.last_name" placeholder="Last Name" required/>
+                        <p class="label label-danger" ng-show="vm.errors.last_name">{{ vm.errors.last_name }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="email">Email</label>
+                        <input type="text" id="email" class="form-control" ng-model="vm.user.contact_email" placeholder="Email" required/>
+                        <p class="label label-danger" ng-show="vm.errors.contact_email">{{ vm.errors.contact_email }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="email">Phone</label>
+                        <input type="text" id="phone" class="form-control" ng-model="vm.user.phone" placeholder="Phone" />
+                        <p class="label label-danger" ng-show="vm.errors.phone">{{ vm.errors.phone }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="email">Gender</label>
+                        <input type="text" id="gender" class="form-control" ng-model="vm.user.gender" placeholder="Gender" />
+                        <p class="label label-danger" ng-show="vm.errors.gender">{{ vm.errors.gender }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" class="form-control" ng-model="vm.user.seo_url" placeholder="Username" required/>
+                        <p class="label label-danger" ng-show="vm.errors.username">{{ vm.errors.username }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="description">About me</label>
+                        <input type="text" id="description" class="form-control" ng-model="vm.user.description" placeholder="About me"/>
+                        <p class="label label-danger" ng-show="vm.errors.description">{{ vm.errors.description }}</p>
+                    </div>
+                    <hr>
+                    <hr>
+                    <div class="form-group m-b-20">
+                        <label for="street">Street*</label>
+                        <input type="text" id="street" class="form-control" ng-model="vm.user.address.street" placeholder="Street" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.street">{{ vm.errors.address.street }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="city">City*</label>
+                        <input type="text" id="city" class="form-control" ng-model="vm.user.address.city" placeholder="City" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.city">{{ vm.errors.address.city }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="zipcode">Zipcode*</label>
+                        <input type="text" id="zipcode" class="form-control" ng-model="vm.user.address.zipcode" placeholder="Zipcode" required/>
+                        <p class="label label-danger" ng-show="vm.errors.address.zipcode">{{ vm.errors.address.zipcode }}</p>
+                    </div>
+                    <div class="form-group m-b-20">
+                        <label for="countries">Country*</label>
+                        <select ng-model="vm.user.address.country_id" ng-options="country.id as country.name for country in vm.countries" class="form-control" id="countries" required>
+                        </select>
+                        <p class="label label-danger" ng-show="vm.errors.address.country_id">{{ vm.errors.address.country_id }}</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <!--<button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>-->
+                    <button ng-disabled="bodyForm.$pristine || bodyForm.$invalid" class="btn btn-sm btn-success" type="submit"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
