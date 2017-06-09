@@ -1,0 +1,28 @@
+language: php
+php:
+    - '7.0'
+dist: trusty
+sudo: required
+
+before_install:
+    - sudo apt-get update
+    - sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - sudo apt-get update || true
+    - sudo apt-get install docker-ce
+    - sudo docker run hello-world
+
+
+before_script:
+    - cd ../../
+    - git clone https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
+    - rm -Rf AEGEE/oms-docker/oms-core
+    - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
+    - cd AEGEE/oms-docker/docker
+    - docker-compose up -d
+
+script:
+    - sudo docker-compose exec -T omscore composer update
+    - sudo docker-compose exec -T omscore composer install
+    - sudo docker-compose exec -T omscore ./vendor/bin/phpunit
