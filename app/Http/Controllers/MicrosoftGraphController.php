@@ -31,13 +31,17 @@ class MicrosoftGraphController extends Controller
             ]
             }}";
 
-        $response = $client->request('POST', 'https://graph.microsoft.com/v1.0/me/sendmail', [
+        $response = $client->request('GET', 'https://graph.microsoft.com/v1.0/me', [
             'headers' => [
                 'Authorization' => 'Bearer ' . Auth::user()->oauth_token,
                 'Content-Type' => 'application/json;odata.metadata=minimal;odata.streaming=true'
             ],
-            'body' => $email
+            //'body' => $email
         ]);
+
+        //dd($response->getBody()->read(1024));
+        $stream = Psr7\stream_for($response->getBody());
+        dd(json_decode($stream->getContents()));
         if($response->getStatusCode() === 201) {
             exit('Email sent, check your inbox');
         } else {
