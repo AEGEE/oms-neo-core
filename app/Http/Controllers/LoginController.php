@@ -40,7 +40,7 @@ class LoginController extends Controller
         }
         $loginKey = Uuid::generate(1)->string;
 
-        $this->completeAuthToken($user->id, $loginKey);
+        $auth->completeAuthToken($user->id, $loginKey);
         $auth->save();
 
         // Login successful.. returning data..

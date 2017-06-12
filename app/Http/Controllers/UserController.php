@@ -24,6 +24,7 @@ use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use App\Contracts\OnlineBusinessEnvironment as OBE;
 
 class UserController extends Controller
 {
@@ -65,6 +66,10 @@ class UserController extends Controller
                                     ->orWhereNull('expiration');
                         })->firstOrFail();
         return $this->getUser($auth->user_id);
+    }
+
+    public function getEBOUsers(OBE $obe) {
+        return response()->success($obe->getUsers());
     }
 
     public function createUser(CreateUserRequest $req) {

@@ -20,7 +20,6 @@ Route::group(['middleware' => 'login:oauth'], function() {
     Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
 
-Route::get('/api/graph/users', 'MicrosoftGraphController@getUsers');
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
 
@@ -54,6 +53,7 @@ Route::group(['middleware' => 'api'], function() {
     // Users..
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
+        Route::get('/api/graph/users', 'UserController@getEBOUsers');
         Route::post('/api/users', 'UserController@createUser');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
