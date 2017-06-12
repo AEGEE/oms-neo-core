@@ -22,8 +22,6 @@ Route::group(['middleware' => 'login:oauth'], function() {
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
-
-    //Testing
     // Routes go in here..
     Route::put('/session', 'GenericController@noSessionTimeout');
     Route::post('/api/tokens/user', 'UserController@getUserByToken'); // TODO restrict access to this?
