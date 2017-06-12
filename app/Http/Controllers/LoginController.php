@@ -21,6 +21,7 @@ use Input;
 use Session;
 use Socialite;
 use Uuid;
+use Log;
 
 class LoginController extends Controller
 {
@@ -70,7 +71,7 @@ class LoginController extends Controller
         $provider = $req->provider;
         $oAuthUser = Socialite::driver($provider)->user();
 
-        //dd($oAuthUser);
+        Log::debug($oAuthUser->token);
 
         $userEmail = $oAuthUser->getEmail();
 

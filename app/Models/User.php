@@ -152,9 +152,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
 
-    public function scopefilterPersonalEmail($query, personal_email) {
+    public function scopefilterPersonalEmail($query, $personal_email) {
         if (!empty($date_of_birth)) {
-            return $query->where('personal_email', personal_email);
+            return $query->where('personal_email', $personal_email);
         } else {
             return $query;
         }
