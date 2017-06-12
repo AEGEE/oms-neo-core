@@ -61,6 +61,9 @@ class LoginController extends Controller
         if ($provider == 'azure') {
             return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://graph.microsoft.com/Directory.ReadWrite.All'])->redirect();
         }
+        if ($provider == 'graph') {
+            return Socialite::driver($provider)->with(['hd' => $allowedDomain])->scopes(['https://graph.microsoft.com/Directory.ReadWrite.All', 'https://graph.microsoft.com/User.Read.All', 'https://graph.microsoft.com/Group.Read.All', 'https://graph.microsoft.com/Mail.Send'])->redirect();
+        }
         return Socialite::driver($provider)->redirect();
     }
 
@@ -70,6 +73,8 @@ class LoginController extends Controller
 
         $provider = $req->provider;
         $oAuthUser = Socialite::driver($provider)->user();
+
+        //dd($oAuthUser);
 
         Log::debug($oAuthUser->token);
 

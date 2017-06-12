@@ -20,6 +20,7 @@ class EventServiceProvider extends ServiceProvider
             // add your listeners (aka providers) here
             'SocialiteProviders\Live\LiveExtendSocialite@handle',
             'SocialiteProviders\Azure\AzureExtendSocialite@handle',
+            'SocialiteProviders\Graph\GraphExtendSocialite@handle',
         ],
     ];
 
@@ -29,9 +30,9 @@ class EventServiceProvider extends ServiceProvider
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      * @return void
      */
-    public function boot(DispatcherContract $events)
+    public function boot()
     {
-        parent::boot($events);
+        parent::boot();
 
         //
     }
