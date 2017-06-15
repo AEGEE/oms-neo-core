@@ -76,8 +76,8 @@ class CircleSeeder extends Seeder
         ]);
 
         BodyMembershipCircle::create([
-            'membership_id'     =>  5,
-            'circle_id'         =>  3,
+            'membership_id'     =>  8,
+            'circle_id'         =>  4,
         ]);
     }
 }
