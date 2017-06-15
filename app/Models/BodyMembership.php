@@ -19,7 +19,7 @@ class BodyMembership extends Model
     }
 
     public function bodyCircles() {
-        return $this->belongsToMany('App\Model\BodyCircle', 'body_membership_circles', 'membership_id', 'circle_id');
+        return $this->belongsToMany('App\Models\BodyCircle', 'body_membership_circles', 'membership_id', 'circle_id');
     }
 
     // Model methods go down here..

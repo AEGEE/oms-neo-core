@@ -10,12 +10,10 @@ class GlobalCircle extends Model
 
     // Relationships..
     public function bodyCircles() {
-    	return $this->hasMany('App\Models\BodyCircle');
+    	return $this->hasMany('App\Models\BodyCircle', 'global_circle_id');
     }
 
     public function bodies() {
     	return $this->belongsToMany('App\Models\Body', 'body_circles', 'global_circle_id', 'body_id');
     }
-
-    // Model methods go down here..
 }

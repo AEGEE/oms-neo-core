@@ -34,7 +34,7 @@ class Body extends Model
     }
 
     public function globalCircles() {
-        return $this->hasMany('App\Models\GlobalCircle', 'body_circles', 'body_id', 'global_circle_id');
+        return $this->belongsToMany('App\Models\GlobalCircle', 'body_circles', 'body_id', 'global_circle_id');
     }
 
 

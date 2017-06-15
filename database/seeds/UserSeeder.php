@@ -150,5 +150,13 @@ class UserSeeder extends Seeder
             'start_date'  =>  date('Y-m-d H:i:s'),
             'end_date'  =>  date('Y-m-d H:i:s'),
         ]);
+
+        BodyMembership::create([
+            'user_id'       =>  6,
+            'body_id'       =>  1,
+            'status'        =>  1,
+            'start_date'  =>  date('Y-m-d H:i:s'),
+            'end_date'  =>  date('Y-m-d H:i:s'),
+        ]);
     }
 }
