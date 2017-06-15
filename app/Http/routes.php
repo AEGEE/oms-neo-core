@@ -89,14 +89,14 @@ Route::group(['middleware' => 'api'], function() {
     // Modules..
     Route::group(['middleware' => 'checkAccess:modules'], function() {
         //TODO all of the below.
-        //Route::get('/api/modules', 'ModuleController@getModules');
-        //Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
-        //Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
-        //Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
-        //Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
-        //Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
-        //Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
-        //Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
+        Route::get('/api/modules', 'ModuleController@getModules');
+        Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+        Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
+        Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
+        Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
+        Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
     });
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
