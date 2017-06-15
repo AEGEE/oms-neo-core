@@ -16,6 +16,4 @@ class GlobalCircle extends Model
     public function bodies() {
     	return $this->belongsToMany('App\Models\Body', 'body_circles', 'global_circle_id', 'body_id');
     }
-
-    // Model methods go down here..
 }

@@ -20,8 +20,9 @@ class DatabaseSeeder extends Seeder
     		'OptionsSeeder',
             'BodySeeder',
             'UserSeeder',
+            'CircleSeeder',
     	);
-        
+
     	$seeders = SeederLog::all()->pluck('code')->toArray();
     	$seededSomething = false;
     	foreach($seedersToRun as $seeder) {

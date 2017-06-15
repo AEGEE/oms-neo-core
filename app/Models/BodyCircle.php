@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BodyCircle extends Model
 {
     protected $table = "body_circles";
+    protected $guarded = ["id"];
 
     // Relationships..
     public function body() {
@@ -14,12 +15,10 @@ class BodyCircle extends Model
     }
 
     public function memberships() {
-    	return $this->belongsToMany('App\Models\MembershipCircle', 'body_membership_circles', 'circle_id', 'membership_id');
+    	return $this->belongsToMany('App\Models\BodyMembership', 'body_membership_circles', 'circle_id', 'membership_id');
     }
 
     public function globalCircle() {
-        return $this->belongsTo('App\Models\GlobalCircle')
+        return $this->belongsTo('App\Models\GlobalCircle');
     }
-
-    // Model methods go down here..
 }

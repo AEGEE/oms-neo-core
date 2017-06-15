@@ -168,7 +168,7 @@ class NewDatabaseSchema extends Migration
             $table->increments('id');
             $table->integer('body_id')->unsigned();
             $table->integer('global_circle_id')->unsigned()->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();;
             $table->text('description')->nullable();
             $table->timestamps();
 
