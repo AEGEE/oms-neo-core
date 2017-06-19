@@ -65,6 +65,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     	return $this->hasMany('App\Models\UserRole');
     }
 
+    public function getUsernameSlug() {
+        return $this->first_name . '.' . str_replace(' ', '-', $this->last_name);
+    }
+
+    public function getDisplayName() {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
     // Accessors..
     public function getGenderTextAttribute($value) {
         $genderText = "";

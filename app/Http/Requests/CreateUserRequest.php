@@ -28,7 +28,7 @@ class CreateUserRequest extends Request
             'first_name'        => 'required|max:255',
             'last_name'         => 'required|max:255',
             'date_of_birth'     => 'required|date',
-            'personal_email'     => 'required|email|unique:users,personal_email',
+            'personal_email'    => 'required|email|unique:users,personal_email',
             'gender'            => 'required|in:male,female,other',
             'phone'             => 'numeric',
             'description'       => 'max:1024',

@@ -68,14 +68,21 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
-    public function getEBOUsers(OBE $obe) {
+    public function getOBEUsers(OBE $obe) {
         return response()->success($obe->getUsers());
     }
 
+    public function createOBEUser(OBE $obe, $user_id) {
+        $user = User::findOrFail($user_id);
+        return response()->success($obe->createAccountForUser($user));
+    }
+
     public function createUser(CreateUserRequest $req) {
+        //dump($req->session()->get('errors'));
         $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'personal_email', 'gender', 'phone', 'description', 'password']);
         $arr['password'] = Hash::make($req->password);
         $user = User::create($arr);
+        //dump($req->session()->get('errors'));
         return response()->success($user, null, 'User created');
     }
 
@@ -110,66 +117,18 @@ class UserController extends Controller
         return response()->success($membership);
     }
 
-    public function activateUser($user_id, Role $role, Request $req) {
+    public function activateUser($user_id, OBE $obe) {
         $user = User::findOrFail($user_id);
         $currentUser = Auth::user();
 
-        if ($req->activate != $req->deactivate) {
-            if ($req->activate) {
-                if(!empty($user->activated_at)) {
-                    return response()->failure("User already activated");
-                }
-
-                $user->seo_url = $user->generateSeoUrl();
-                $user->activated_at = date('Y-m-d H:i:s');
-
-                //TODO restructure oAuth implementation.
-                $oAuthActive = false; //$this->isOauthDefined();
-                if($oAuthActive) {
-                    $domain = $this->getOAuthAllowedDomain();
-                    $username = $user->seo_url."@".$domain;
-
-                    $success = $user->oAuthCreateAccount(
-                        $this->getOAuthProvider(),
-                        $this->getDelegatedAdmin(),
-                        $this->getOauthCredentials($currentUser['id']),
-                        $domain,
-                        $user->seo_url,
-                        $userPass
-                    );
-
-                    $user->internal_email = $username;
-
-                    if($success !== true) {
-                        die("oAuth problem! Error code:".$success);
-                    }
-                }
-
-                $user->save();
-
-                $rolesCache = $role->getCache();
-
-                // Now for roles..
-                $roles = Input::get('roles', array());
-                foreach($roles as $key => $val) {
-                    if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
-                        continue;
-                    }
-                    $tmpRole = new UserRole();
-                    $tmpRole->user_id = $user->id;
-                    $tmpRole->role_id = $key;
-                    $tmpRole->save();
-                }
-
-                //TODO Email user with all data..
-
-                return response()->success($user, null, 'User activated');
-            } else {
-                return response()->notImplemented();
-            }
-        } else {
-            return response()->failure("Ambigious action");
+        if(!empty($user->activated_at)) {
+            return response()->failure("User already activated");
         }
+
+        $user->seo_url = $user->generateSeoUrl();
+        $user->activated_at = date('Y-m-d H:i:s');
+
+        return response()->success($obe->createAccountForUser($user));
     }
 
     public function addUserRoles(Role $role, AddRoleRequest $req) {

@@ -51,7 +51,6 @@ Route::group(['middleware' => 'api'], function() {
     // Users..
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
-        Route::get('/api/graph/users', 'UserController@getEBOUsers');
         Route::post('/api/users', 'UserController@createUser');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
@@ -62,6 +61,7 @@ Route::group(['middleware' => 'api'], function() {
             // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
             Route::put('/api/users/{user_id}/suspended', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
             Route::put('/api/users/{user_id}/activated', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/activate', 'UserController@createOBEUser');
             Route::put('/api/users/{user_id}/impersonated', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
 
             //Route::post('/api/users', 'LoginController@createUser'); TODO
