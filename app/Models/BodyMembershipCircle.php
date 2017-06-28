@@ -17,4 +17,8 @@ class BodyMembershipCircle extends Model
     public function circle() {
     	return $this->belongsTo('App\Models\BodyCircle');
     }
+
+    public function position() {
+        return $this->belongsTo('App\Models\Position');
+    }
 }
