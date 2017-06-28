@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-class BodyCircle extends Model
+class Circle extends Model
 {
-    protected $table = "body_circles";
+    protected $table = "circles";
     protected $guarded = ["id"];
 
     // Relationships..
@@ -25,7 +25,11 @@ class BodyCircle extends Model
         });
     }
 
-    public function globalCircle() {
-        return $this->belongsTo('App\Models\GlobalCircle');
+    public function parentCircle() {
+        return $this->belongsTo('App\Models\Circle');
+    }
+
+    public function childrenCircles() {
+        return $this->hasMany('App\Models\Circle');
     }
 }

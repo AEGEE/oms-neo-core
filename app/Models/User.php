@@ -67,7 +67,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function getCircles() {
     	return $this->bodyMemberships()->get()->flatMap(function ($membership) {
-            return $membership->bodyCircles;
+            return $membership->circles;
         });
     }
 
