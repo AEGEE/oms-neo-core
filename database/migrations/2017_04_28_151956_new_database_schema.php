@@ -176,13 +176,13 @@ class NewDatabaseSchema extends Migration
             $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict'); //Maybe simply unlink instead of restricting?
         });
 
-        Schema::create('body_membership_circles', function (Blueprint $table) {
+        Schema::create('circle_memberships', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('membership_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->integer('circle_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('membership_id')->references('id')->on('body_memberships')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('circle_id')->references('id')->on('body_circles')->onDelete('restrict');
         });
 
