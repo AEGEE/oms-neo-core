@@ -9,7 +9,7 @@ class CircleController extends Controller
 {
     //LOCAL
     public function getCircles() {
-        return response()->success(Models\BodyCircle::get());
+        return response()->success(Models\Circle::get());
     }
 
     public function getCircle($circle_id) {
@@ -17,7 +17,12 @@ class CircleController extends Controller
     }
 
     public function getCircleMembers($circle_id) {
-        return response()->success(Models\Circle::findOrFail($circle_id)->getUsers());
+        $circles = Models\Circle::findOrFail($circle_id);
+        if (Input::get('recursive', 'false') == 'true') {
+            $circles = $circles->getChildrenRecursive();
+        }
+
+        return response()->success($circles->flatMap(function ($circle) { return $circle->getUsers();}));
     }
 
     public function getCirclesOfBody($body_id) {

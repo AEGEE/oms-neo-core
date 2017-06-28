@@ -32,4 +32,9 @@ class Circle extends Model
     public function childrenCircles() {
         return $this->hasMany('App\Models\Circle');
     }
+
+
+    public function getChildrenRecursive() {
+        return collect($this)->merge($this->childrenCircles->flatMap(function ($circle) { return $circle->getChildrenRecursive(); }));
+    }
 }
