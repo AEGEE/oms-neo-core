@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Models;
+use Input;
 
 class CircleController extends Controller
 {
@@ -17,11 +18,10 @@ class CircleController extends Controller
     }
 
     public function getCircleMembers($circle_id) {
-        $circles = Models\Circle::findOrFail($circle_id);
+        $circles = collect([Models\Circle::findOrFail($circle_id)]);
         if (Input::get('recursive', 'false') == 'true') {
-            $circles = $circles->getChildrenRecursive();
+            $circles = $circles->get(0)->getChildrenRecursive();
         }
-
         return response()->success($circles->flatMap(function ($circle) { return $circle->getUsers();}));
     }
 

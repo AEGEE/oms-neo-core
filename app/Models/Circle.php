@@ -35,6 +35,6 @@ class Circle extends Model
 
 
     public function getChildrenRecursive() {
-        return collect($this)->merge($this->childrenCircles->flatMap(function ($circle) { return $circle->getChildrenRecursive(); }));
+        return collect([$this])->merge($this->childrenCircles->flatMap(function ($circle) { return $circle->getChildrenRecursive(); }));
     }
 }
