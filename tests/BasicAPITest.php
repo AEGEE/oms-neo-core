@@ -12,7 +12,7 @@ class BasicAPITest extends TestCase
     public function setUp() {
         parent::setUp();
         $this->json('POST', '/api/login', ['username' => 'admin@aegee.org', 'password' => '1234']);
-        $this->token = $this->response->getData(true)['data'];
+        $this->token = json_decode($this->response->getContent())->data;
     }
 
     public function testLogin() {
