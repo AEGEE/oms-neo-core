@@ -25,6 +25,7 @@ use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use App\Contracts\OnlineBusinessEnvironment as OBE;
+use App\Proxies\MailProxy;
 
 class UserController extends Controller
 {
@@ -68,22 +69,24 @@ class UserController extends Controller
         return $this->getUser($auth->user_id);
     }
 
-    public function getOBEUsers(OBE $obe) {
-        return response()->success($obe->getUsers());
-    }
-
-    public function createOBEUser(OBE $obe, $user_id) {
-        $user = User::findOrFail($user_id);
-        return response()->success($obe->createAccountForUser($user));
-    }
-
     public function createUser(CreateUserRequest $req) {
-        //dump($req->session()->get('errors'));
         $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'personal_email', 'gender', 'phone', 'description', 'password']);
+
+        if (empty($req->password)) {
+            $req->password = str_random(8);
+        }
         $arr['password'] = Hash::make($req->password);
+
         $user = User::create($arr);
-        //dump($req->session()->get('errors'));
-        return response()->success($user, null, 'User created');
+
+        $mailProxy = new MailProxy();
+        $response = $mailProxy->sendLoginDetails($user->personal_email, $user->personal_email, $req->password);
+        if ($response === false) {
+            $user->delete();
+            return response()->failure();
+        } else {
+            return response()->success($user, null, 'User created');
+        }
     }
 
     public function updateUser($user_id, UpdateUserRequest $req) {
@@ -119,7 +122,6 @@ class UserController extends Controller
 
     public function activateUser($user_id, OBE $obe) {
         $user = User::findOrFail($user_id);
-        $currentUser = Auth::user();
 
         if(!empty($user->activated_at)) {
             return response()->failure("User already activated");
@@ -128,7 +130,13 @@ class UserController extends Controller
         $user->seo_url = $user->generateSeoUrl();
         $user->activated_at = date('Y-m-d H:i:s');
 
-        return response()->success($obe->createAccountForUser($user));
+        $response = $obe->createAccountForUser($user);
+        if ($response === false) {
+            return response()->failure();
+        } else {
+            $user->save();
+            return response()->success($user, null, 'User activated!');
+        }
     }
 
     public function addUserRoles(Role $role, AddRoleRequest $req) {

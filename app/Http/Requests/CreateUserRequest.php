@@ -32,7 +32,7 @@ class CreateUserRequest extends Request
             'gender'            => 'required|in:male,female,other',
             'phone'             => 'numeric',
             'description'       => 'max:1024',
-            'password'          => 'required',
+            'password'          => '', //Not required, empty = random generated.
         ];
     }
 }

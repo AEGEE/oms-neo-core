@@ -59,10 +59,9 @@ Route::group(['middleware' => 'api'], function() {
             Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
 
             // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
-            Route::put('/api/users/{user_id}/suspended', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/activated', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/activate', 'UserController@createOBEUser');
-            Route::put('/api/users/{user_id}/impersonated', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/suspend', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/activate', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/impersonate', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
 
             //Route::post('/api/users', 'LoginController@createUser'); TODO
             //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
