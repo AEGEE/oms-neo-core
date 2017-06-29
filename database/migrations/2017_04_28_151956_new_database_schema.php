@@ -156,24 +156,16 @@ class NewDatabaseSchema extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
         });
-
-        Schema::create('global_circles', function (Blueprint $table) {
+        Schema::create('circles', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->timestamps();
-        });
-
-        Schema::create('body_circles', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('body_id')->unsigned();
-            $table->integer('global_circle_id')->unsigned()->nullable();
+            $table->integer('body_id')->unsigned()->nullable();
+            $table->integer('circle_id')->unsigned()->nullable();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
-            $table->foreign('global_circle_id')->references('id')->on('global_circles')->onDelete('restrict'); //Maybe simply unlink instead of restricting?
+            $table->foreign('circle_id')->references('id')->on('circles')->onDelete('restrict');
         });
 
         Schema::create('circle_memberships', function (Blueprint $table) {
@@ -183,7 +175,7 @@ class NewDatabaseSchema extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('circle_id')->references('id')->on('body_circles')->onDelete('restrict');
+            $table->foreign('circle_id')->references('id')->on('circles')->onDelete('restrict');
         });
 
 
@@ -282,8 +274,7 @@ class NewDatabaseSchema extends Migration
         Schema::dropIfExists('body_memberships');
 
         Schema::dropIfExists('users');
-        Schema::dropIfExists('body_circles');
-        Schema::dropIfExists('global_circles');
+        Schema::dropIfExists('circles');
         Schema::dropIfExists('bodies');
 
         Schema::dropIfExists('addresses');
