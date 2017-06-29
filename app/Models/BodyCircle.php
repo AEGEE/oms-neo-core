@@ -10,7 +10,7 @@ class BodyCircle extends Model
     protected $table = "body_circles";
 
     public function setNameAttribute($value) {
-        $this->attributes['name_simple'] = Util::encodeSimple($value);
+        $this->attributes['name_slug'] = Util::slugify($value);
         $this->attributes['name'] = $value;
     }
 

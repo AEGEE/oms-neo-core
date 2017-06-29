@@ -231,7 +231,11 @@ return [
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        /*
+         * Custom Aliases..
+         */
         'Util' => App\Facades\Util::class,
+        'OBE' => App\Contracts\OnlineBusinessEnvironment::class,
     ],
 
 ];

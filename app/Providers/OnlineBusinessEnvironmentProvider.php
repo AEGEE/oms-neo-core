@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Contracts\OnlineBusinessEnvironment;
+use OBE;
 use App\Proxies\MicrosoftGraphProxy;
 
 class OnlineBusinessEnvironmentProvider extends ServiceProvider
@@ -32,7 +32,7 @@ class OnlineBusinessEnvironmentProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(OnlineBusinessEnvironment::class, function ($app) {
+        $this->app->singleton(OBE::class, function ($app) {
             return new MicrosoftGraphProxy($app);
         });
     }

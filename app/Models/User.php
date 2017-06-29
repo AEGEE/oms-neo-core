@@ -26,12 +26,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $guarded = ['id', 'oauth_token', 'oauth_token', 'oauth_expiration', 'is_superadmin', 'is_suspended', 'suspended_reason', 'activated_at'];
 
     public function setFirstNameAttribute($value) {
-        $this->attributes['first_name_simple'] = Util::encodeSimple($value);
+        $this->attributes['first_name_slug'] = Util::slugify($value);
         $this->attributes['first_name'] = $value;
     }
 
     public function setLastNameAttribute($value) {
-        $this->attributes['last_name_simple'] = Util::encodeSimple($value);
+        $this->attributes['last_name_slug'] = Util::slugify($value);
         $this->attributes['last_name'] = $value;
     }
 
@@ -78,7 +78,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     public function getUsernameSlug() {
-        return str_replace(' ', '-', $this->first_name_simple) . '.' . str_replace(' ', '-', $this->last_name_simple);
+        return $this->first_name_slug . '.' . $this->last_name_slug;
     }
 
     public function getDisplayName() {

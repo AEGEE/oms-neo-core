@@ -10,6 +10,7 @@ use Excel;
 use Session;
 use Response;
 use Auth;
+use OBE;
 use App\Http\Requests;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
@@ -24,7 +25,6 @@ use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
-use App\Contracts\OnlineBusinessEnvironment as OBE;
 use App\Proxies\MailProxy;
 
 class UserController extends Controller
@@ -77,14 +77,14 @@ class UserController extends Controller
         }
         $arr['password'] = Hash::make($req->password);
 
-        $user = User::create($arr);
+        $user = new User($arr);
 
         $mailProxy = new MailProxy();
         $response = $mailProxy->sendLoginDetails($user->personal_email, $user->personal_email, $req->password);
         if ($response === false) {
-            $user->delete();
             return response()->failure();
         } else {
+            $user->save();
             return response()->success($user, null, 'User created');
         }
     }

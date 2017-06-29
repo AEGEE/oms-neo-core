@@ -11,11 +11,10 @@ use Guzzle\Stream\PhpStreamRequestFactory;
 use App\Models\User;
 
 use Log;
-
-use App\Contracts\OnlineBusinessEnvironment as EBO;
+use OBE;
 use App\Proxies\MailProxy;
 
-class MicrosoftGraphProxy implements EBO
+class MicrosoftGraphProxy implements OBE
 {
 
     public function sendEmail($receiver, $subject, $content) {
