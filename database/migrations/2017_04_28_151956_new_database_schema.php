@@ -159,13 +159,13 @@ class NewDatabaseSchema extends Migration
         Schema::create('circles', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('body_id')->unsigned()->nullable();
-            $table->integer('circle_id')->unsigned()->nullable();
+            $table->integer('parent_id')->unsigned()->nullable();
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
 
             $table->foreign('body_id')->references('id')->on('bodies')->onDelete('cascade');
-            $table->foreign('circle_id')->references('id')->on('circles')->onDelete('restrict');
+            $table->foreign('parent_id')->references('id')->on('circles')->onDelete('restrict');
         });
 
         Schema::create('circle_memberships', function (Blueprint $table) {

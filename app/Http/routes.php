@@ -116,6 +116,8 @@ Route::group(['middleware' => 'api'], function() {
 
     Route::get('api/circles/', 'CircleController@getCircles');
     Route::get('api/circles/{circle_id}', 'CircleController@getCircle')->where('circle_id', '[0-9]+');
+    Route::get('api/circles/{circle_id}/children', 'CircleController@getCircleChildren')->where('circle_id', '[0-9]+');
+    Route::get('api/circles/{circle_id}/parents', 'CircleController@getCircleParents')->where('circle_id', '[0-9]+');
     Route::get('api/circles/{circle_id}/members', 'CircleController@getCircleMembers')->where('circle_id', '[0-9]+');
 
     Route::get('api/bodies/{body_id}/circles', 'CircleController@getCirclesOfBody')->where('body_id', '[0-9]+');

@@ -32,25 +32,25 @@ class CircleSeeder extends Seeder
             'name'              =>  'COT',
             'description'       =>  'Computer Operating Team',
             'body_id'           =>  2,
-            'circle_id'         =>  1
+            'parent_id'         =>  1
         ]);
 
         Circle::create([
             'name'              =>  'Lia & Derk',
             'description'       =>  'IT people in da house',
             'body_id'           =>  4,
-            'circle_id'         =>  1,
+            'parent_id'         =>  1,
         ]);
 
         Circle::create([
             'name'              =>  'IT Germany',
             'body_id'           =>  3,
-            'circle_id'         =>  1,
+            'parent_id'         =>  1,
         ]);
 
         Circle::create([
             'body_id'           =>  1,
-            'circle_id'         =>  2,
+            'parent_id'         =>  2,
         ]);
 
 
@@ -60,22 +60,22 @@ class CircleSeeder extends Seeder
         ]);
 
         CircleMembership::create([
-            'user_id'     =>  2,
+            'user_id'           =>  2,
             'circle_id'         =>  3,
         ]);
 
         CircleMembership::create([
-            'user_id'     =>  2,
+            'user_id'           =>  2,
             'circle_id'         =>  4,
         ]);
 
         CircleMembership::create([
-            'user_id'     =>  3,
+            'user_id'           =>  3,
             'circle_id'         =>  5,
         ]);
 
         CircleMembership::create([
-            'user_id'     =>  6,
+            'user_id'           =>  6,
             'circle_id'         =>  6,
         ]);
     }
