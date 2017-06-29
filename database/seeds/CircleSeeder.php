@@ -2,8 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Models\GlobalCircle;
-use App\Models\BodyCircle;
+use App\Models\Circle;
 use App\Models\BodyMembershipCircle;
 
 class CircleSeeder extends Seeder
@@ -15,13 +14,13 @@ class CircleSeeder extends Seeder
      */
     public function run()
     {
-        GlobalCircle::create([
+        Circle::create([
         	'name'			=>	'IT Circle',
         	'description'	=>	'The official group of IT people within AEGEE'
         ]);
 
 
-        GlobalCircle::create([
+        Circle::create([
         	'name'			=>	'Shitty people',
         	'description'	=>	'The official group of shitty people people within AEGEE'
         ]);
@@ -29,55 +28,55 @@ class CircleSeeder extends Seeder
 
 
 
-        BodyCircle::create([
+        Circle::create([
             'name'              =>  'COT',
             'description'       =>  'Computer Operating Team',
             'body_id'           =>  2,
-            'global_circle_id'  =>  1
+            'circle_id'         =>  1
         ]);
 
-        BodyCircle::create([
+        Circle::create([
             'name'              =>  'Lia & Derk',
             'description'       =>  'IT people in da house',
             'body_id'           =>  4,
-            'global_circle_id'  =>  1,
+            'circle_id'         =>  1,
         ]);
 
-        BodyCircle::create([
+        Circle::create([
             'name'              =>  'IT Germany',
             'body_id'           =>  3,
-            'global_circle_id'  =>  1,
+            'circle_id'         =>  1,
         ]);
 
-        BodyCircle::create([
+        Circle::create([
             'body_id'           =>  1,
-            'global_circle_id'  =>  2,
+            'circle_id'         =>  2,
         ]);
 
 
         BodyMembershipCircle::create([
             'membership_id'     =>  1,
-            'circle_id'         =>  2,
+            'circle_id'         =>  4,
         ]);
 
         BodyMembershipCircle::create([
             'membership_id'     =>  2,
-            'circle_id'         =>  1,
-        ]);
-
-        BodyMembershipCircle::create([
-            'membership_id'     =>  3,
-            'circle_id'         =>  2,
-        ]);
-
-        BodyMembershipCircle::create([
-            'membership_id'     =>  4,
             'circle_id'         =>  3,
         ]);
 
         BodyMembershipCircle::create([
-            'membership_id'     =>  8,
+            'membership_id'     =>  3,
             'circle_id'         =>  4,
+        ]);
+
+        BodyMembershipCircle::create([
+            'membership_id'     =>  4,
+            'circle_id'         =>  5,
+        ]);
+
+        BodyMembershipCircle::create([
+            'membership_id'     =>  8,
+            'circle_id'         =>  6,
         ]);
     }
 }

@@ -114,15 +114,9 @@ Route::group(['middleware' => 'api'], function() {
     Route::put('api/countries/{country_id}', 'CountryController@updateCountry')->where('country_id', '[0-9]+');
     Route::post('api/countries', 'CountryController@createCountry');
 
-
-    Route::get('api/circles/global', 'CircleController@getGlobalCircles');
-    Route::get('api/circles/global/{circle_id}', 'CircleController@getGlobalCircle')->where('circle_id', '[0-9]+');
-    Route::get('api/circles/global/{circle_id}/children', 'CircleController@getChildrenOfGlobalCircle')->where('circle_id', '[0-9]+');
-    Route::get('api/circles/global/{circle_id}/members', 'CircleController@getMembersOfGlobalCircle')->where('circle_id', '[0-9]+');
-
-    Route::get('api/circles/bodies', 'CircleController@getBodyCircles');
-    Route::get('api/circles/bodies/{circle_id}', 'CircleController@getBodyCircle')->where('circle_id', '[0-9]+');
-    Route::get('api/circles/bodies/{circle_id}/members', 'CircleController@getMembersOfBodyCircle')->where('circle_id', '[0-9]+');
+    Route::get('api/circles/', 'CircleController@getCircles');
+    Route::get('api/circles/{circle_id}', 'CircleController@getCircle')->where('circle_id', '[0-9]+');
+    Route::get('api/circles/{circle_id}/members', 'CircleController@getCircleMembers')->where('circle_id', '[0-9]+');
 
     Route::get('api/bodies/{body_id}/circles', 'CircleController@getCirclesOfBody')->where('body_id', '[0-9]+');
     Route::group(['middleware' => 'seoURL:user_id'], function() {

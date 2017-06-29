@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BodyMembershipCircle extends Model
+class CircleMembership extends Model
 {
-    protected $table = "body_membership_circles";
+    protected $table = "circle_memberships";
     protected $guarded = ["id"];
 
     // Relationships..
-    public function membership() {
-    	return $this->belongsTo('App\Models\BodyMembershipCircle');
+    public function user() {
+    	return $this->belongsTo('App\Models\User');
     }
 
     public function circle() {

@@ -4,45 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use App\Models;
+use Input;
 
 class CircleController extends Controller
 {
-    //GLOBAL
-    public function getGlobalCircles() {
-        return response()->success(Models\GlobalCircle::get());
-    }
-
-    public function getGlobalCircle($circle_id) {
-        return response()->success(Models\GlobalCircle::where('id', $circle_id)->with(['bodyCircles'])->first());
-    }
-
-    public function getChildrenOfGlobalCircle($circle_id) {
-        return response()->success(Models\GlobalCircle::findOrFail($circle_id)->bodyCircles);
-    }
-
-    public function getMembersOfGlobalCircle($circle_id) {
-        return response()->success(Models\GlobalCircle::findOrFail($circle_id)->bodyCircles->flatMap(function($bodyCircle) {
-            return $bodyCircle->getUsers();
-        })->unique());
-    }
-
-
-
     //LOCAL
-    public function getBodyCircles() {
-        return response()->success(Models\BodyCircle::get());
+    public function getCircles() {
+        return response()->success(Models\Circle::get());
     }
 
-    public function getBodyCircle($circle_id) {
-        return response()->success(Models\BodyCircle::where('id', $circle_id)->with(['body', 'globalCircle'])->first());
+    public function getCircle($circle_id) {
+        return response()->success(Models\Circle::where('id', $circle_id)->with(['body', 'childrenCircles'])->first());
     }
 
-    public function getMembersOfBodyCircle($circle_id) {
-        return response()->success(Models\BodyCircle::findOrFail($circle_id)->getUsers());
+    public function getCircleMembers($circle_id) {
+        $circles = collect([Models\Circle::findOrFail($circle_id)]);
+        if (Input::get('recursive', 'false') == 'true') {
+            $circles = $circles->get(0)->getChildrenRecursive();
+        }
+        return response()->success($circles->flatMap(function ($circle) { return $circle->getUsers();}));
     }
 
     public function getCirclesOfBody($body_id) {
-        return response()->success(Models\Body::findOrFail($body_id)->bodyCircles);
+        return response()->success(Models\Body::findOrFail($body_id)->circles);
     }
 
     public function getCirclesOfUser($user_id) {
