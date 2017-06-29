@@ -3,10 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Util;
 
 class BodyCircle extends Model
 {
     protected $table = "body_circles";
+
+    public function setNameAttribute($value) {
+        $this->attributes['name_simple'] = Util::encodeSimple($value);
+        $this->attributes['name'] = $value;
+    }
 
     // Relationships..
     public function body() {

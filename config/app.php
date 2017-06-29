@@ -231,6 +231,7 @@ return [
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        'Util' => App\Facades\Util::class,
     ],
 
 ];

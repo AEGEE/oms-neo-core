@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
+use Util;
 
 class Body extends Model
 {
@@ -15,6 +16,11 @@ class Body extends Model
      * @var array
      */
     protected $guarded = ['id'];
+
+    public function setNameAttribute($value) {
+        $this->attributes['name_simple'] = Util::encodeSimple($value);
+        $this->attributes['name'] = $value;
+    }
 
     // Relationships..
     public function address() {

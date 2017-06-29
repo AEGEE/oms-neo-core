@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 use DB;
+use Util;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
@@ -23,6 +24,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
     protected $guarded = ['id', 'oauth_token', 'oauth_token', 'oauth_expiration', 'is_superadmin', 'is_suspended', 'suspended_reason', 'activated_at'];
+
+    public function setFirstNameAttribute($value) {
+        $this->attributes['first_name_simple'] = Util::encodeSimple($value);
+        $this->attributes['first_name'] = $value;
+    }
+
+    public function setLastNameAttribute($value) {
+        $this->attributes['last_name_simple'] = Util::encodeSimple($value);
+        $this->attributes['last_name'] = $value;
+    }
+
 
     // Relationships..
     public function bodies() {
@@ -66,7 +78,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     public function getUsernameSlug() {
-        return $this->first_name . '.' . str_replace(' ', '-', $this->last_name);
+        return str_replace(' ', '-', $this->first_name_simple) . '.' . str_replace(' ', '-', $this->last_name_simple);
     }
 
     public function getDisplayName() {
