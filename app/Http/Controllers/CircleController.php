@@ -22,7 +22,7 @@ class CircleController extends Controller
         if (Input::get('recursive', 'false') == 'true') {
             $circles = $circles->get(0)->getChildrenRecursive();
         }
-        return response()->success($circles->flatMap(function ($circle) { return $circle->getUsers();}));
+        return response()->success($circles->flatMap(function ($circle) { return $circle->users;}));
     }
 
     public function getCirclesOfBody($body_id) {
@@ -30,6 +30,6 @@ class CircleController extends Controller
     }
 
     public function getCirclesOfUser($user_id) {
-        return response()->success(Models\User::findOrFail($user_id)->getCircles());
+        return response()->success(Models\User::findOrFail($user_id)->circles);
     }
 }

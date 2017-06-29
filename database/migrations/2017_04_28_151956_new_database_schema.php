@@ -270,7 +270,7 @@ class NewDatabaseSchema extends Migration
         Schema::dropIfExists('universities');
 
         Schema::dropIfExists('user_roles');
-        Schema::dropIfExists('body_membership_circles');
+        Schema::dropIfExists('circle_memberships');
         Schema::dropIfExists('body_memberships');
 
         Schema::dropIfExists('users');

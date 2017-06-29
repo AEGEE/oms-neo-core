@@ -16,13 +16,11 @@ class Circle extends Model
     }
 
     public function memberships() {
-    	return $this->belongsToMany('App\Models\BodyMembership', 'body_membership_circles', 'circle_id', 'membership_id');
+    	return $this->hasMany('App\Models\CircleMembership');
     }
 
-    public function getUsers() {
-    	return $this->memberships()->get()->map(function ($membership) {
-            return $membership->user;
-        });
+    public function users() {
+        return $this->belongsToMany('App\Models\User', 'circle_memberships', 'circle_id', 'user_id');
     }
 
     public function parentCircle() {

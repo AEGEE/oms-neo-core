@@ -20,7 +20,7 @@ class AddCirclePositions extends Migration
             $table->timestamps();
         });
 
-        Schema::table('body_membership_circles', function (Blueprint $table) {
+        Schema::table('circle_memberships', function (Blueprint $table) {
             $table->integer('position_id')->unsigned()->nullable();
             $table->foreign('position_id')->references('id')->on('positions')->onDelete('restrict');
         });
@@ -33,10 +33,10 @@ class AddCirclePositions extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('positions');
-
-        Schema::table('body_membership_circles', function (Blueprint $table) {
+        Schema::table('circle_memberships', function (Blueprint $table) {
             $table->dropColumn('position_id');
         });
+        
+        Schema::dropIfExists('positions');
     }
 }

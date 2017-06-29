@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 
 use App\Models\Circle;
-use App\Models\BodyMembershipCircle;
+use App\Models\CircleMembership;
 
 class CircleSeeder extends Seeder
 {
@@ -54,28 +54,28 @@ class CircleSeeder extends Seeder
         ]);
 
 
-        BodyMembershipCircle::create([
-            'membership_id'     =>  1,
+        CircleMembership::create([
+            'user_id'           =>  1,
             'circle_id'         =>  4,
         ]);
 
-        BodyMembershipCircle::create([
-            'membership_id'     =>  2,
+        CircleMembership::create([
+            'user_id'     =>  2,
             'circle_id'         =>  3,
         ]);
 
-        BodyMembershipCircle::create([
-            'membership_id'     =>  3,
+        CircleMembership::create([
+            'user_id'     =>  2,
             'circle_id'         =>  4,
         ]);
 
-        BodyMembershipCircle::create([
-            'membership_id'     =>  4,
+        CircleMembership::create([
+            'user_id'     =>  3,
             'circle_id'         =>  5,
         ]);
 
-        BodyMembershipCircle::create([
-            'membership_id'     =>  8,
+        CircleMembership::create([
+            'user_id'     =>  6,
             'circle_id'         =>  6,
         ]);
     }
