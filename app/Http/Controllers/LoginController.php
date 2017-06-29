@@ -102,6 +102,7 @@ class LoginController extends Controller
         Auth::login($user);
 
         // Login successful.. returning data..
-        return response()->success($loginKey, null, 'User login token');
+        //return response()->success($loginKey, null, 'User login token');
+        return redirect('/')->with('X-Auth-Token', $loginKey);
     }
 }
