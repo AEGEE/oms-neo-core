@@ -58,7 +58,40 @@
         }
 
         vm.saveBodyType = function() {
-            alert("Not implemented");
+            // If it has an id, PUT to that id, otherwise POST a new one
+            var request = {};
+            if(vm.edited_body_type.id) {
+                request = {
+                    method: 'PUT',
+                    url: '/api/bodies/types/' + vm.edited_body_type.id,
+                    data: vm.edited_body_type
+                };
+            }
+            else {
+                request = {
+                    method: 'POST',
+                    url: '/api/bodies/types/',
+                    data: vm.edited_body_type
+                };
+            }
+
+            $http(request)
+            .then(function successCallback(response) {
+                $('#editBodyTypeModal').modal('hide');
+                $.gritter.add({
+                    title: 'Success',
+                    text: `Successfully updated bodytype`,
+                    sticky: false,
+                    time: 8000,
+                    class_name: 'my-sticky-class',
+                });
+                vm.getBodyTypes();
+            }).catch(function(err) {
+                if(err.status == 422)
+                    vm.edited_body_type_errors = err.data; // TODO might change soon
+                else
+                    showError(err);
+            });
         }
 
         vm.saveGlobalCircle = function() {
