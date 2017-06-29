@@ -65,10 +65,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     	return $this->hasMany('App\Models\UserRole');
     }
 
-    public function getCircles() {
-    	return $this->bodyMemberships()->get()->flatMap(function ($membership) {
-            return $membership->bodyCircles;
-        });
+    public function circleMemberships() {
+    	return $this->hasMany('App\Models\CircleMembership');
     }
 
     // Accessors..
