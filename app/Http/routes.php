@@ -20,6 +20,9 @@ Route::group(['middleware' => 'login:oauth'], function() {
     Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
 
+//TODO Prevent spam, let user have guest token.
+Route::post('/api/users', 'UserController@createUser');
+
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
     // Routes go in here..
@@ -51,7 +54,6 @@ Route::group(['middleware' => 'api'], function() {
     // Users..
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
-        Route::post('/api/users', 'UserController@createUser');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
         Route::group(['middleware' => 'seoURL:user'], function() {

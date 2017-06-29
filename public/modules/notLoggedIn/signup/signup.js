@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.signup', {
-                url: '/register/:link',
+                url: '/register',
                 data: {'pageTitle': 'Signup'},
                 views   : {
                     'main@'         : {
@@ -31,18 +31,7 @@
 
         vm.customFields = [];
 
-        vm.genderTypes = [
-            {
-                id: 1,
-                name: 'Male'
-            }, {
-                id: 2,
-                name: 'Female'
-            }, {
-                id: 3,
-                name: 'Other'
-            }
-        ];
+        vm.genderTypes = [ 'male', 'female', 'other'];
 
         vm.registrationFields = {};
 
@@ -80,7 +69,7 @@
 
         vm.initControls = function() {
             // $("#wizard").bwizard();
-            $("#wizard").bwizard({ validating: function (e, ui) { 
+            $("#wizard").bwizard({ validating: function (e, ui) {
                     if (ui.index == 0) {
                         // step-1 validation
                         if (false === $('form[name="signupWizard"]').parsley().validate('wizard-step-1')) {
@@ -97,7 +86,7 @@
                             return false;
                         }
                     }
-                } 
+                }
             });
 
             $('#date_of_birth').datepicker({
@@ -114,19 +103,21 @@
 
             vm.user.studies_type = $('#studies_type').val();
             vm.user.study_field = $('#study_field').val();
-            vm.user.date_of_birth = $('#date_of_birth').val();
+            vm.user.date_of_birth = '1990-05-25';
+            vm.user.address_id = 1;
 
             vm.user.fields = vm.customFields;
             vm.user.link = $stateParams.link;
 
             $('#loadingOverlay').show();
+            console.log(vm.user);
             $http({
                 method: 'POST',
-                url: '/api/recruitUser',
+                url: '/api/users',
                 data: vm.user
             })
             .then(function successCallback(response) {
-                if(response.data.success == 1) {
+                if(response.data.success == true) {
                     // all good
                     $('#signupWizardForm').hide();
                     $('#signupSuccessful').show();
@@ -141,10 +132,13 @@
                     });
                     $('#loadingOverlay').hide();
                 }
-            });
+            }, function errorCallback(response) {
+                // called asynchronously if an error occurs
+                // or server returns response with an error status.
+                console.log(response);
+          });
         }
 
-        vm.checkCampaignExists();
         vm.getRegistrationFields();
         $("#antenna, #studies_type, #study_field").select2({width: '100%'});
 
