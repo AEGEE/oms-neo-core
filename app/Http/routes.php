@@ -12,9 +12,10 @@
 */
 
 // Login routes..
-Route::group(['middleware' => 'login:credentials'], function() {
+Route::group(['middleware' => 'login:credentials', 'middleware' => 'returnErrors'], function() {
     Route::post('/api/login', 'LoginController@loginUsingCredentials');
 });
+
 Route::group(['middleware' => 'login:oauth'], function() {
     Route::any('/oauth/login', 'LoginController@loginUsingOauth');
     Route::any('/oauth/callback', 'LoginController@oAuthCallback');
@@ -25,6 +26,7 @@ Route::post('/api/users', 'UserController@createUser');
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
+
     // Routes go in here..
     Route::put('/session', 'GenericController@noSessionTimeout');
     Route::post('/api/tokens/user', 'UserController@getUserByToken'); // TODO restrict access to this?
@@ -56,7 +58,7 @@ Route::group(['middleware' => 'api'], function() {
         Route::get('/api/users', 'UserController@getUsers');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
-        Route::group(['middleware' => 'seoURL:user'], function() {
+        Route::group(['middleware' => 'seoURL:user_id'], function() {
             Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user_id', '[a-zA-Z0-9_]+');
             Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
 
@@ -89,14 +91,14 @@ Route::group(['middleware' => 'api'], function() {
     // Modules..
     Route::group(['middleware' => 'checkAccess:modules'], function() {
         //TODO all of the below.
-        //Route::get('/api/modules', 'ModuleController@getModules');
-        //Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
-        //Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
-        //Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
-        //Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
-        //Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
-        //Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
-        //Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
+        Route::get('/api/modules', 'ModuleController@getModules');
+        Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+        Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
+        Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
+        Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
+        Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
+        Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
     });
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
