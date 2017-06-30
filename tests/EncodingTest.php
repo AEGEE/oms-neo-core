@@ -24,10 +24,5 @@ class EncodingTest extends TestCase
         $this->assertEquals("Oguz Ucukoglu", Util::limitCharacters("Oğuz Uçukoğlu"));
         $this->assertEquals("Katarzyna Kasia Sokolowska", Util::limitCharacters("Katarzyna Kasia Sokołowska"));
         $this->assertEquals("Elina Borkovskaa", Util::limitCharacters("Элина Борковская"));
-
-
-
-
     }
-
 }
