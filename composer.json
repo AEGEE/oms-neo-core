@@ -5,7 +5,8 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
+        "php": "^7.0",
+        "ext-intl": "^7.0",
         "laravel/framework": "5.4.*",
         "illuminate/pipeline": "5.4.*",
         "illuminate/container": "5.4.*",

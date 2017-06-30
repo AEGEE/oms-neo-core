@@ -18,7 +18,7 @@ class Body extends Model
     protected $guarded = ['id'];
 
     public function setNameAttribute($value) {
-        $this->attributes['name_slug'] = Util::slugify($value);
+        $this->attributes['name_simple'] = Util::limitCharacters($value);
         $this->attributes['name'] = $value;
     }
 

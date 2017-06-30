@@ -14,16 +14,16 @@ class AddSimpleNames extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('first_name_slug');
-            $table->string('last_name_slug');
+            $table->string('first_name_simple');
+            $table->string('last_name_simple');
         });
 
         Schema::table('bodies', function (Blueprint $table) {
-            $table->string('name_slug');
+            $table->string('name_simple');
         });
 
         Schema::table('body_circles', function (Blueprint $table) {
-            $table->string('name_slug');
+            $table->string('name_simple');
         });
     }
 

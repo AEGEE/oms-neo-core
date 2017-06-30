@@ -26,12 +26,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $guarded = ['id', 'oauth_token', 'oauth_token', 'oauth_expiration', 'is_superadmin', 'is_suspended', 'suspended_reason', 'activated_at'];
 
     public function setFirstNameAttribute($value) {
-        $this->attributes['first_name_slug'] = Util::slugify($value);
+        $this->attributes['first_name_simple'] = Util::limitCharacters($value);
         $this->attributes['first_name'] = $value;
     }
 
     public function setLastNameAttribute($value) {
-        $this->attributes['last_name_slug'] = Util::slugify($value);
+        $this->attributes['last_name_simple'] = Util::limitCharacters($value);
         $this->attributes['last_name'] = $value;
     }
 
