@@ -7,6 +7,20 @@ use Log;
 class Util
 {
     public static function slugify($string) {
+        return toASCII($string);
+    }
+
+
+    public static function limitCharacters($string) {
+        setlocale(LC_CTYPE, 'en_US.UTF8');
+        //return self::limitCharacters_replace($string);
+        //return self::limitCharacters_slugify($string);
+        //return self::limitCharacters_transliterate($string);
+        //return self::limitCharacters_iconv($string);
+        return self::limitCharacters_iconv(self::limitCharacters_transliterate($string));
+    }
+
+    public static function limitCharacters_replace($string) {
         $replace = [
             '&lt;' => '', '&gt;' => '', '&#039;' => '', '&amp;' => '',
             '&quot;' => '', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'Ae',
@@ -56,34 +70,40 @@ class Util
         ];
 
         return str_replace(array_keys($replace), $replace, $string);
+    }
 
-        /*
-        $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+    public static function limitCharacters_slugify($string, $strict = false) {
+        $string = html_entity_decode($string, ENT_QUOTES, 'UTF-8');
         // replace non letter or digits by -
-        $text = preg_replace('~[^\\pL\d.]+~u', '-', $text);
+        $string = preg_replace('~[^\\pL\d.]+~u', '-', $string);
 
         // trim
-        $text = trim($text, '-');
+        $string = trim($string, '-');
         setlocale(LC_CTYPE, 'en_GB.utf8');
         // transliterate
         if (function_exists('iconv')) {
-           $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+           $string = iconv('utf-8', 'us-ascii//TRANSLIT', $string);
         }
 
         // lowercase
-        $text = strtolower($text);
+        $string = strtolower($string);
         // remove unwanted characters
-        $text = preg_replace('~[^-\w.]+~', '', $text);
-        if (empty($text)) {
+        $string = preg_replace('~[^-\w.]+~', '', $string);
+        if (empty($string)) {
            return 'empty_$';
         }
         if ($strict) {
-            $text = str_replace(".", "_", $text);
+            $string = str_replace(".", "_", $string);
         }
-        return $text;
-        */
-        //$string = transliterator_transliterate("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove; Lower();", $string);
-        //$string = preg_replace('/[-\s]+/', '-', $string);
-        //return trim($string, '-');
+        return $string;
+    }
+
+    public static function limitCharacters_transliterate($string) {
+        $string = transliterator_transliterate("Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC;", $string);
+        return trim($string, '-');
+    }
+
+    public static function limitCharacters_iconv($string) {
+        return iconv("UTF-8", "us-ascii//TRANSLIT", $string);
     }
 }
