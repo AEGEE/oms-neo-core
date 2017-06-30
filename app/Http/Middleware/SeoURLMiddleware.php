@@ -19,9 +19,9 @@ class SeoURLMiddleware
         $seourls = array_except(func_get_args(), [0,1]);
         $route = $request->route();
         foreach($seourls as $seourl) {
-            if ($route->hasParameter($seourl) && !$this->isInteger($route->getParameter($seourl))) {
+            if ($route->hasParameter($seourl) && !$this->isInteger($route->parameter($seourl))) {
                 // argument is not an integer, thus not an ID, might be seourl.
-                $new = $this->seoSearch($route->getParameter($seourl));
+                $new = $this->seoSearch($route->parameter($seourl));
                 $route->setParameter($seourl, $new);
             }
         }
