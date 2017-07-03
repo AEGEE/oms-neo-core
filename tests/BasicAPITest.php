@@ -35,6 +35,20 @@ class BasicAPITest extends TestCase
         $this->helperGETSuccess('api/addresses/1');
         $this->helperGETSuccess('api/countries');
         $this->helperGETSuccess('api/countries/1');
+
+        $this->helperGETSuccess('api/circles');
+        $this->helperGETSuccess('api/circles/1');
+        $this->helperGETSuccess('api/circles/1/members');
+        $this->helperGETSuccess('api/circles/1/members?recursive=true');
+        $this->helperGETSuccess('api/circles/1/members?recursive=false');
+        $this->helperGETSuccess('api/circles/3/parents');
+        $this->helperGETSuccess('api/circles/3/parents?recursive=true');
+        $this->helperGETSuccess('api/circles/1/parents?recursive=false');
+        $this->helperGETSuccess('api/circles/1/children');
+        $this->helperGETSuccess('api/circles/1/parents?recursive=true');
+        $this->helperGETSuccess('api/circles/3/parents?recursive=false');
+        $this->helperGETSuccess('api/bodies/1/circles');
+        $this->helperGETSuccess('api/users/2/circles');
     }
 
     public function helperGETSuccess($url) {
