@@ -8,6 +8,7 @@
         "php": "^7.1",
         "ext-intl": "^7.1",
         "laravel/framework": "5.4.*",
+        "laravel/tinker": "5.4.*",
         "illuminate/pipeline": "5.4.*",
         "illuminate/container": "5.4.*",
         "illuminate/support": "5.4.*",
@@ -27,7 +28,7 @@
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
+        "phpunit/phpunit": "~5.7",
         "symfony/css-selector": "^3.1",
         "symfony/dom-crawler": "^3.1"
     },
@@ -36,7 +37,8 @@
             "database"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Tests\\": "tests/"
         }
     },
     "autoload-dev": {
