@@ -112,6 +112,20 @@ return [
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Laravel 5.3
+    |--------------------------------------------------------------------------
+    |
+    | These are added after upgrading from 5.2 > 5.3
+    |
+    */
+
+    'name' => env('APP_NAME', 'OMS'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -163,6 +177,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
         App\Providers\OnlineBusinessEnvironmentProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
 
         /*
          * Other providers..
