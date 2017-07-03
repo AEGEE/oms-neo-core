@@ -116,7 +116,7 @@ Route::group(['middleware' => 'api'], function() {
 });
 
 // Microservice routes..
-//Route::post('/api/microservice/register', 'ModuleController@registerMicroservice'); TODO
+Route::post('/api/microservice/register', 'ModuleController@registerMicroservice');
 
 
 // Generic routes..
