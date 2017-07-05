@@ -6,9 +6,9 @@
     "type": "project",
     "require": {
         "php": "^7.1",
-        "ext-intl": "^7.1",
+        "ext-intl": "^1.1",
         "laravel/framework": "5.4.*",
-        "laravel/tinker": "5.4.*",
+        "laravel/tinker": "^1.0",
         "illuminate/pipeline": "5.4.*",
         "illuminate/container": "5.4.*",
         "illuminate/support": "5.4.*",
@@ -23,7 +23,8 @@
         "socialiteproviders/microsoft-live": "^3.0",
         "socialiteproviders/microsoft-azure": "^3.0",
         "socialiteproviders/microsoft-graph": "^2.0@dev",
-        "guzzlehttp/guzzle": "^6.0"
+        "guzzlehttp/guzzle": "^6.0",
+        "pusher/pusher-php-server": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
