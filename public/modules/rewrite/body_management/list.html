@@ -26,9 +26,7 @@
 
 <div class="row">
 	<div class="row" ng-repeat="body in vm.bodies">
-		<a ui-sref="app.body_management.single({id: body.id})">
-			<bodytile body="body"></bodytile>
-		</a>
+		<bodytile body="body"></bodytile>
 	</div>
 </div>
 

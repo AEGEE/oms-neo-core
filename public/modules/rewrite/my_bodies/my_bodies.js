@@ -50,16 +50,20 @@
         // Data
         var vm = this;
 
-        // TODO replace with real http requests
-        vm.bodies = [
-            {
-                title: "AEGEE-Dresden",
-                subtitle: "The best local ever"
-            }, {
-                title: "ITC",
-                subtitle: "Nerds and stuff"
-            }
-        ];
+        // Use the get by token endpoint to get the bodies
+        vm.getUserBodies = function() {
+            $http({
+                method: 'POST',
+                url: '/api/tokens/user',
+                data: {
+                    token: localStorage.getItem("X-Auth-Token")
+                }
+            })
+            .then(function successCallback(response) {
+                vm.bodies = response.data.data.bodies;
+            }).catch(function(err) {showError(err);});
+        }
+        vm.getUserBodies();
     }
 
     function EditCirclesController() {

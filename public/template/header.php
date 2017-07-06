@@ -62,21 +62,7 @@ $omsObj = new omsHelperScript();
                     
                 </ul>
             </li>
-            <li class="dropdown navbar-language" ng-if="setting.layout.pageLanguageBar === true">
-                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-                    <span class="flag-icon flag-icon-us" title="us"></span>
-                    <span class="name">EN</span> <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu animated fadeInRight p-b-0">
-                    <li class="arrow"></li>
-                    <li><a href="javascript:;"><span class="flag-icon flag-icon-us" title="us"></span> English</a></li>
-                    <li><a href="javascript:;"><span class="flag-icon flag-icon-cn" title="cn"></span> Chinese</a></li>
-                    <li><a href="javascript:;"><span class="flag-icon flag-icon-jp" title="jp"></span> Japanese</a></li>
-                    <li><a href="javascript:;"><span class="flag-icon flag-icon-be" title="be"></span> Belgium</a></li>
-                    <li class="divider m-b-0"></li>
-                    <li class="text-center"><a href="javascript:;">more options</a></li>
-                </ul>
-            </li>
+            
             <li class="dropdown navbar-user">
                 <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="/api/getUserAvatar/<?=$omsObj->userData['id']?>" alt="" /> 
@@ -84,7 +70,7 @@ $omsObj = new omsHelperScript();
                 </a>
                 <ul class="dropdown-menu animated fadeInLeft">
                     <li class="arrow"></li>
-                    <li><a href="javascript:;" ui-sref="app.profile({seo: '<?=$omsObj->userData['seo_url']?>'})">Edit Profile</a></li>
+                    <li><a href="javascript:;" ui-sref="app.profile">My Profile</a></li>
                     <li class="divider"></li>
                     <li><a href="javascript:;" ng-click="vm.logout()">Log Out</a></li>
                 </ul>
