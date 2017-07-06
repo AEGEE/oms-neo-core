@@ -10,6 +10,7 @@ use Excel;
 use Session;
 use Response;
 use Auth;
+use OBE;
 use App\Http\Requests;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\AddBodyToUserRequest;
@@ -24,6 +25,7 @@ use App\Models\AuthToken;
 use App\Models\Country;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
+use App\Proxies\MailProxy;
 
 class UserController extends Controller
 {
@@ -32,13 +34,13 @@ class UserController extends Controller
 
         // Extract URL arguments to filter on.
         $search = [
-            'name'          => $req->name,
-            'date_of_birth' => $req->date_of_birth,
-            'contact_email' => $req->contact_email,
-            'gender'        => $req->gender,
-            'status'        => $req->status,
-            'body_id'       => $req->body_id,
-            'body_name'     => $req->body_name,
+            'name'              => $req->name,
+            'date_of_birth'     => $req->date_of_birth,
+            'personal_email'    => $req->personal_email,
+            'gender'            => $req->gender,
+            'status'            => $req->status,
+            'body_id'           => $req->body_id,
+            'body_name'         => $req->body_name,
             ];
 
         $users = User::filterArray($search)->get();
@@ -68,10 +70,23 @@ class UserController extends Controller
     }
 
     public function createUser(CreateUserRequest $req) {
-        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'contact_email', 'gender', 'phone', 'description', 'password']);
+        $arr = $this->getUpdateArray($req, ['address_id', 'first_name', 'last_name', 'date_of_birth', 'personal_email', 'gender', 'phone', 'description', 'password']);
+
+        if (empty($req->password)) {
+            $req->password = str_random(8);
+        }
         $arr['password'] = Hash::make($req->password);
-        $user = User::create($arr);
-        return response()->success($user, null, 'User created');
+
+        $user = new User($arr);
+
+        $mailProxy = new MailProxy();
+        $response = $mailProxy->sendLoginDetails($user->personal_email, $user->personal_email, $req->password);
+        if ($response === false) {
+            return response()->failure();
+        } else {
+            $user->save();
+            return response()->success($user, null, 'User created');
+        }
     }
 
     public function updateUser($user_id, UpdateUserRequest $req) {
@@ -85,7 +100,7 @@ class UserController extends Controller
         $user->seo_url = $req->has('seo_url') ? $req->seo_url : $user->seo_url;
         $user->password = $req->has('password') ? Hash::make($req->password) : $user->password;
         $user->description = $req->has('description') ? nl2br($req->description) : $user->description;
-        $user->contact_email = $req->has('contact_email') ? $req->contact_email : $user->contact_email;
+        $user->personal_email = $req->has('personal_email') ? $req->personal_email : $user->personal_email;
 
         $user->address_id = $req->has('address_id') ? Address::findOrFail($req->address_id)->id : $user->address_id;
 
@@ -105,65 +120,22 @@ class UserController extends Controller
         return response()->success($membership);
     }
 
-    public function activateUser($user_id, Role $role, Request $req) {
+    public function activateUser($user_id, OBE $obe) {
         $user = User::findOrFail($user_id);
-        $currentUser = Auth::user();
 
-        if ($req->activate != $req->deactivate) {
-            if ($req->activate) {
-                if(!empty($user->activated_at)) {
-                    return response()->failure("User already activated");
-                }
+        if(!empty($user->activated_at)) {
+            return response()->failure("User already activated");
+        }
 
-                $user->seo_url = $user->generateSeoUrl();
-                $user->activated_at = date('Y-m-d H:i:s');
+        $user->seo_url = $user->generateSeoUrl();
+        $user->activated_at = date('Y-m-d H:i:s');
 
-                //TODO restructure oAuth implementation.
-                $oAuthActive = false; //$this->isOauthDefined();
-                if($oAuthActive) {
-                    $domain = $this->getOAuthAllowedDomain();
-                    $username = $user->seo_url."@".$domain;
-
-                    $success = $user->oAuthCreateAccount(
-                        $this->getOAuthProvider(),
-                        $this->getDelegatedAdmin(),
-                        $this->getOauthCredentials($currentUser['id']),
-                        $domain,
-                        $user->seo_url,
-                        $userPass
-                    );
-
-                    $user->internal_email = $username;
-
-                    if($success !== true) {
-                        die("oAuth problem! Error code:".$success);
-                    }
-                }
-
-                $user->save();
-
-                $rolesCache = $role->getCache();
-
-                // Now for roles..
-                $roles = Input::get('roles', array());
-                foreach($roles as $key => $val) {
-                    if(!$val || !isset($rolesCache[$key])) { // Role set as false or does not exist..
-                        continue;
-                    }
-                    $tmpRole = new UserRole();
-                    $tmpRole->user_id = $user->id;
-                    $tmpRole->role_id = $key;
-                    $tmpRole->save();
-                }
-
-                //TODO Email user with all data..
-
-                return response()->success($user, null, 'User activated');
-            } else {
-                return response()->notImplemented();
-            }
+        $response = $obe->createAccountForUser($user);
+        if ($response === false) {
+            return response()->failure();
         } else {
-            return response()->failure("Ambigious action");
+            $user->save();
+            return response()->success($user, null, 'User activated!');
         }
     }
 

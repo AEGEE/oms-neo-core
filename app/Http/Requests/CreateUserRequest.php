@@ -28,11 +28,11 @@ class CreateUserRequest extends Request
             'first_name'        => 'required|max:255',
             'last_name'         => 'required|max:255',
             'date_of_birth'     => 'required|date',
-            'contact_email'     => 'required|email|unique:users,contact_email',
+            'personal_email'    => 'required|email|unique:users,personal_email',
             'gender'            => 'required|in:male,female,other',
             'phone'             => 'numeric',
             'description'       => 'max:1024',
-            'password'          => 'required',
+            'password'          => '', //Not required, empty = random generated.
         ];
     }
 }

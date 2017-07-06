@@ -1,5 +1,7 @@
 <?php
 
+namespace Tests;
+
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -11,13 +13,14 @@ class BasicAPITest extends TestCase
 
     public function setUp() {
         parent::setUp();
-        $this->json('POST', '/api/login', ['username' => 'admin@aegee.org', 'password' => '1234']);
-        $this->token = $this->response->getData(true)['data'];
+        $response = $this->json('POST', '/api/login', ['username' => 'admin@aegee.org', 'password' => '1234']);
+        //dd($response);
+        $this->token = $response->getData(true)['data'];
     }
 
     public function testLogin() {
         $this->json('POST', '/api/login', ['username' => 'derk.snijders@aegee.org', 'password' => '1234'])
-            ->seeJson([
+            ->assertJson([
                 'success' => true,
              ]);
     }
@@ -53,7 +56,7 @@ class BasicAPITest extends TestCase
 
     public function helperGETSuccess($url) {
         $this->json('GET', $url, [], ['HTTP_X_AUTH_TOKEN' => $this->token])
-            ->seeJson([
+            ->assertJson([
                 'success' => true,
         ]);
     }

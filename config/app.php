@@ -112,6 +112,20 @@ return [
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Laravel 5.3
+    |--------------------------------------------------------------------------
+    |
+    | These are added after upgrading from 5.2 > 5.3
+    |
+    */
+
+    'name' => env('APP_NAME', 'OMS'),
+
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers
@@ -130,7 +144,6 @@ return [
          */
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
-        Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
@@ -153,7 +166,8 @@ return [
         /*
          * Package Service Providers...
          */
-
+         Laravel\Tinker\TinkerServiceProvider::class,
+         // Laravel\Socialite\SocialiteServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -163,15 +177,15 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseServiceProvider::class,
+        App\Providers\OnlineBusinessEnvironmentProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
 
         /*
          * Other providers..
          */
         Barryvdh\Cors\ServiceProvider::class,
-        Collective\Bus\BusServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
-        // Laravel\Socialite\SocialiteServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
 
     ],
@@ -232,6 +246,11 @@ return [
         'Uuid' => Webpatser\Uuid\Uuid::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
+        /*
+         * Custom Aliases..
+         */
+        'Util' => App\Facades\Util::class,
+        'OBE' => App\Contracts\OnlineBusinessEnvironment::class,
     ],
 
 ];

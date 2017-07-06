@@ -4,11 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Util;
 
 class Circle extends Model
 {
     protected $table = "circles";
     protected $guarded = ["id"];
+
+    public function setNameAttribute($value) {
+        $this->attributes['name_simple'] = Util::limitCharacters($value);
+        $this->attributes['name'] = $value;
+    }
 
     // Relationships..
     public function body() {

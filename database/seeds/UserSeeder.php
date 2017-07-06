@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     {
         User::create([
             'address_id'        =>  1,
-			'contact_email' 	=> 	'admin@aegee.org',
+			'personal_email' 	=> 	'admin@aegee.org',
 			'first_name'		=>	'Super',
 			'last_name'			=>	'Admin',
 			'date_of_birth'		=>	'1985-04-16',
@@ -32,20 +32,21 @@ class UserSeeder extends Seeder
 
         User::create([
             'address_id'        =>  2,
-			'contact_email' 	=> 	'derk.snijders@aegee.org',
+			'personal_email' 	=> 	'derk.snijders@aegee.org',
+            'internal_email'    =>  'derk.snijders@aegee.eu',
 			'first_name'		=>	'Derk',
 			'last_name'			=>	'Snijders',
 			'date_of_birth'		=>	'1993-10-31',
 			'gender'			=>	'male',
 			'password'			=>	Hash::make('1234'),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
+			'is_superadmin'		=>	1,
             'seo_url'           =>  'i3anaan'
 		]);
 
         User::create([
             'address_id'        =>  1,
-			'contact_email' 	=> 	'nico.westerbeck@aegee.org',
+			'personal_email' 	=> 	'nico.westerbeck@aegee.org',
 			'first_name'		=>	'Nico',
 			'last_name'			=>	'Westerbeck',
 			'date_of_birth'		=>	'1985-04-16',
@@ -58,7 +59,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'address_id'        =>  1,
-			'contact_email' 	=> 	'sergey.peshkov@aegee.org',
+			'personal_email' 	=> 	'sergey.peshkov@aegee.org',
 			'first_name'		=>	'Sergey',
 			'last_name'			=>	'Peshkov',
 			'date_of_birth'		=>	'1985-04-16',
@@ -71,7 +72,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'address_id'        =>  1,
-			'contact_email' 	=> 	'fabrizio.bellicano@aegee.org',
+			'personal_email' 	=> 	'fabrizio.bellicano@aegee.org',
 			'first_name'		=>	'Grace',
 			'last_name'			=>	'Hopper',
 			'date_of_birth'		=>	'1985-04-16',
@@ -84,7 +85,7 @@ class UserSeeder extends Seeder
 
         User::create([
             'address_id'        =>  1,
-			'contact_email' 	=> 	'headoffice@aegee.org',
+			'personal_email' 	=> 	'headoffice@aegee.org',
 			'first_name'		=>	'Big',
 			'last_name'			=>	'Boobs',
 			'date_of_birth'		=>	'1998-04-16',

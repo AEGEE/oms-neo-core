@@ -17,9 +17,12 @@ Route::group(['middleware' => 'login:credentials', 'middleware' => 'returnErrors
 });
 
 Route::group(['middleware' => 'login:oauth'], function() {
-    //Route::any('/oauth/login', 'LoginController@loginUsingOauth'); TODO
-    //Route::any('/oauth/callback', 'LoginController@oAuthCallback'); TODO
+    Route::any('/oauth/login', 'LoginController@loginUsingOauth');
+    Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
+
+//TODO Prevent spam, let user have guest token.
+Route::post('/api/users', 'UserController@createUser');
 
 // Core api routes..
 Route::group(['middleware' => 'api'], function() {
@@ -53,7 +56,6 @@ Route::group(['middleware' => 'api'], function() {
     // Users..
     Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
-        Route::post('/api/users', 'UserController@createUser');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
         Route::group(['middleware' => 'seoURL:user_id'], function() {
@@ -61,9 +63,9 @@ Route::group(['middleware' => 'api'], function() {
             Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
 
             // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
-            Route::put('/api/users/{user_id}/suspended', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/activated', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/impersonated', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/suspend', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/activate', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
+            Route::put('/api/users/{user_id}/impersonate', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
 
             //Route::post('/api/users', 'LoginController@createUser'); TODO
             //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
