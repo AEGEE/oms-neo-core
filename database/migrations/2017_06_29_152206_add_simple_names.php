@@ -22,7 +22,7 @@ class AddSimpleNames extends Migration
             $table->string('name_simple');
         });
 
-        Schema::table('body_circles', function (Blueprint $table) {
+        Schema::table('circles', function (Blueprint $table) {
             $table->string('name_simple');
         });
     }
@@ -43,7 +43,7 @@ class AddSimpleNames extends Migration
             $table->dropColumn('name_simple');
         });
 
-        Schema::table('body_circles', function (Blueprint $table) {
+        Schema::table('circles', function (Blueprint $table) {
             $table->dropColumn('name_simple');
         });
     }
