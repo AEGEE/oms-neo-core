@@ -23,7 +23,7 @@ class AddSimpleNames extends Migration
         });
 
         Schema::table('circles', function (Blueprint $table) {
-            $table->string('name_simple');
+            $table->string('name_simple')->nullable();
         });
     }
 
