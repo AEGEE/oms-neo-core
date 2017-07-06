@@ -35,14 +35,9 @@ class Body extends Model
         return $this->belongsTo('App\Models\BodyType', 'type_id');
     }
 
-    public function bodyCircles() {
-        return $this->hasMany('App\Models\BodyCircle', 'body_id', 'id');
+    public function circles() {
+        return $this->hasMany('App\Models\Circle', 'body_id', 'id');
     }
-
-    public function globalCircles() {
-        return $this->hasMany('App\Models\GlobalCircle', 'body_circles', 'body_id', 'global_circle_id');
-    }
-
 
     public function scopeFilterName($query, $name) {
         if (!empty($name)) {

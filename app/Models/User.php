@@ -85,6 +85,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->first_name . ' ' . $this->last_name;
     }
 
+    public function circleMemberships() {
+    	return $this->hasMany('App\Models\CircleMembership');
+    }
+
+    public function circles() {
+        return $this->belongsToMany('App\Models\Circle', 'circle_memberships', 'user_id', 'circle_id');
+    }
+
     // Accessors..
     public function getGenderTextAttribute($value) {
         $genderText = "";
