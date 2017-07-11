@@ -24,7 +24,6 @@ before_script:
 
 
 script:
-    - sudo docker-compose run -T omscore composer update
     - sudo docker-compose run -T omscore composer install
     - sudo docker-compose run -T omscore php artisan key:generate
     - sudo docker-compose run -T omscore php artisan config:cache
