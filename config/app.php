@@ -138,6 +138,9 @@ return [
     */
 
     'providers' => [
+        // Go! Aspect Service Provider
+        // IMPORTANT: Needs to be first in the array!
+        Go\Laravel\GoAopBridge\GoAopServiceProvider::class,
 
         /*
          * Laravel Framework Service Providers...
@@ -179,6 +182,7 @@ return [
         App\Providers\ResponseServiceProvider::class,
         App\Providers\OnlineBusinessEnvironmentProvider::class,
         App\Providers\BroadcastServiceProvider::class,
+        App\Providers\AopServiceProvider::class,
 
         /*
          * Other providers..
