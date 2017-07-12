@@ -11,7 +11,7 @@ else
   sleep 15 #give time to postgres container to startup
     cp /var/scripts/.env /var/www/.env
 	cd /var/www
-    composer install || { echo "Error at composer install"; exit 10; }
+    composer install --quiet || { echo "Error at composer install"; exit 10; }
 	php artisan config:cache || { echo "Error at config:cache"; exit 11; }
 	php artisan migrate      || { echo "Error at migrate"; exit 12; }
 	php artisan key:generate || { echo "Error at key:generate"; exit 13; }
