@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 return [
     /*
@@ -12,7 +12,7 @@ return [
      | For production mode, no extra filemtime checks and better integration with opcache
      |
      */
-    'debug' => env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', true),
 
     /*
      |--------------------------------------------------------------------------
@@ -79,5 +79,5 @@ return [
      |
      | This option can be useful for extension and fine-tuning of services
      */
-    'containerClass' => GoAspectContainer::class,
-]
+    'containerClass' => Go\Core\GoAspectContainer::class,
+];

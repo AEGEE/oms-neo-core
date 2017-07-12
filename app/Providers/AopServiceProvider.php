@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Aspect\PermissionAspect;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Foundation\Application;
+
+use Log;
 
 class AopServiceProvider extends ServiceProvider
 {
@@ -23,10 +27,10 @@ class AopServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(LoggingAspect::class, function (Application $app) {
-            return new LoggingAspect($app->make(LoggerInterface::class));
+        $this->app->singleton(PermissionAspect::class, function (Application $app) {
+            return new PermissionAspect();
         });
 
-        $this->app->tag([LoggingAspect::class], 'goaop.aspect');
+        $this->app->tag([PermissionAspect::class], 'goaop.aspect');
     }
 }
