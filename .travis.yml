@@ -1,6 +1,4 @@
-language: php
-php:
-    - '7.1'
+language: shell
 dist: trusty
 sudo: required
 
