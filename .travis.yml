@@ -17,7 +17,7 @@ before_script:
     - git clone --recursive --branch dev https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
     - rm -Rf AEGEE/oms-docker/oms-core
     - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
-    - cd AEGEE/oms-docker/docker-dev
+    - cd AEGEE/oms-docker/docker
     - docker-compose up -d
     - docker-compose logs
 
