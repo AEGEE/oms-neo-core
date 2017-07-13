@@ -14,7 +14,7 @@ before_install:
 
 before_script:
     - cd ../../
-    - git clone --recursive --branch stabilize-derk https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
+    - git clone --recursive --branch dev https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
     - rm -Rf AEGEE/oms-docker/oms-core
     - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
     - cd AEGEE/oms-docker/docker-dev
