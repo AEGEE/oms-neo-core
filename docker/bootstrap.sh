@@ -9,7 +9,7 @@ then
 else
 	echo "Bootstrapping..."
   sleep 15 #give time to postgres container to startup
-    cp /var/scripts/.env /var/www/.env
+    cp /var/www/example.env /var/www/.env
 	cd /var/www
     composer install --quiet || { echo "Error at composer install"; exit 10; }
 	php artisan config:cache || { echo "Error at config:cache"; exit 11; }
