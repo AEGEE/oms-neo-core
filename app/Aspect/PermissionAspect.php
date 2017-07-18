@@ -17,10 +17,10 @@ class PermissionAspect implements Aspect
      * Writes a log info before method execution
      *
      * @param MethodInvocation $invocation
-     * @Before("execution(public App\Models\User->method(*))")
+     * @Before("execution(public App\Models\*->_*(*))")
      */
     public function beforeMethod(MethodInvocation $invocation)
     {
-        Log::debug("AOP: " . $invocation->getArguments());
+        Log::info(get_class($invocation->getThis()) . " :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
     }
 }
