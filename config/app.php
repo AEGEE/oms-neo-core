@@ -255,6 +255,7 @@ return [
          */
         'Util' => App\Facades\Util::class,
         'OBE' => App\Contracts\OnlineBusinessEnvironment::class,
+        'Restrict' => App\Aspect\Restrict::class,
     ],
 
 ];

@@ -5,9 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Util;
+use Log;
+use Restrict;
+
+use App\Traits\RequiresPermission;
 
 class Body extends Model
 {
+    use RequiresPermission;
+
+    //TODO: Move this down.
+    public function getPermissions($user) {
+        $permissions = collect([]); //Default permissions go here.
+
+        //TODO No clue why $user->bodies result in all bodies...
+        if ($user->bodies->contains($this->id) || true) {
+            $permissions->push("address");
+        }
+        Log::debug("Found permissions: " . $permissions);
+        return $permissions;
+    }
+
+
+
     protected $table = "bodies";
 
     /**
@@ -22,7 +42,12 @@ class Body extends Model
         $this->attributes['name'] = $value;
     }
 
-    // Relationships..
+
+    /**
+     * Test cacheable by annotation
+     *
+     * @Restrict
+     */
     public function address() {
         return $this->belongsTo('App\Models\Address');
     }
