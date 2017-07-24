@@ -17,19 +17,28 @@ class BodySeeder extends Seeder
      */
     public function run()
     {
-	BodyType::create([
-            'name'          =>  'local',
+	    BodyType::create([
+            'name'          =>  'antenna', //1
         ]);
 
         BodyType::create([
-            'name'          =>  'special',
+            'name'          =>  'contact antenna', //2
         ]);
 
         BodyType::create([
-            'name'          =>  'commission-european',
+            'name'          =>  'contact', //3
         ]);
 
-	Address::create([ //TODO: Validate address
+	    BodyType::create([
+	        'name'	    =>  'commission', //4
+	    ]);
+
+	    BodyType::create([
+	        'name'	    =>  'special', //5
+	    ]);
+	
+
+	    Address::create([ //TODO: Validate address
             'country_id'    =>  202,
             'street'        =>  'Campus de Elviña',
             'zipcode'       =>  '15071',
@@ -39,11 +48,12 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  1,
-    	    'name'	    =>	'AEGEE-A Coruna',
+    	    'name'	        =>	'AEGEE-A Coruna',
             'email'         =>  'aegee.coruna@gmail.com',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
+
 	
         Address::create([
             'country_id'    =>  81,
@@ -55,45 +65,48 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  2,
-    	    'name'	    =>	'AEGEE-Aachen',
+    	    'name'	        =>	'AEGEE-Aachen',
             'email'         =>  'info@aegee-aachen.org',
-	    'phone'	    =>  '+49 2418097121',
+	        'phone'	        =>  '2418097121',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([ //TODO: Address unknown
+
+	    Address::create([ //TODO: Address unknown
             'country_id'    =>  220,
-            'street'        =>  '',
-            'zipcode'       =>  '',
+            //'street'      =>  '',
+            //'zipcode'     =>  '',
             'city'          =>  'Adana',
         ]);
 
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  3,
-    	    'name'	    =>	'AEGEE-Adana',
+    	    'name'	        =>	'AEGEE-Adana',
             'email'         =>  'adanaaegee@gmail.com',
-	    'phone'	    =>  '+90 5071378919',
+	        'phone'	        =>  '5071378919',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([ //TODO: Address unknown
+
+	    Address::create([ //TODO: Address unknown
             'country_id'    =>  106,
-            'street'        =>  '',
-            'zipcode'       =>  '',
+            //'street'      =>  '',
+            //'zipcode'     =>  '',
             'city'          =>  'Agrigento',
         ]);
 
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  4,
-    	    'name'	    =>	'AEGEE-Agrigento',
+    	    'name'	        =>	'AEGEE-Agrigento',
             'email'         =>  'aegee92100@gmail.com',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  202,
             'street'        =>  'Carretera de San Vicente',
             'zipcode'       =>  '03690',
@@ -103,13 +116,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  5,
-    	    'name'	    =>	'AEGEE-Alicante',
+    	    'name'	        =>	'AEGEE-Alicante',
             'email'         =>  'info@aegeealicante.org',
-	    'phone'	    =>  '+34 644111358',
+	        'phone'	        =>  '644111358',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  153,
             'street'        =>  'Nieuwe Achtergracht 170',
             'zipcode'       =>  '1018 WV',
@@ -119,13 +133,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  6,
-    	    'name'	    =>	'AEGEE-Amsterdam',
+    	    'name'	        =>	'AEGEE-Amsterdam',
             'email'         =>  'office@aegee-amsterdam.nl',
-	    'phone'	    =>  '+31 205252496',
+	        'phone'	        =>  '205252496',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  220,
             'street'        =>  'Engineering Center Building MM-120',
             'zipcode'       =>  'TR-06800',
@@ -135,13 +150,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  7,
-    	    'name'	    =>	'AEGEE-Ankara',
+    	    'name'	        =>	'AEGEE-Ankara',
             'email'         =>  'yk@aegee-ankara.org',
-	    'phone'	    =>  '+90 3122103625',
+	        'phone'	        =>  '3122103625',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  84,
             'street'        =>  '28is Oktovriou 80',
             'zipcode'       =>  '10434',
@@ -151,13 +167,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  8,
-    	    'name'	    =>	'AEGEE-Athina',
+    	    'name'	        =>	'AEGEE-Athina',
             'email'         =>  'info@aegee-athina.gr',
-	    'phone'	    =>  '+30 2108203711',
+	        'phone'	        =>  '2108203711',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  15,
             'street'        =>  'Boyuk Gala Kucasi 24',
             'zipcode'       =>  '1000',
@@ -167,13 +184,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  9,
-    	    'name'	    =>	'AEGEE-Baki',
+    	    'name'	        =>	'AEGEE-Baki',
             'email'         =>  'baki@aegee.org',
-	    'phone'	    =>  '+994 124921543',
+	        'phone'	        =>  '124921543',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  81,
             'street'        =>  'Feldkirchenstrasse 21',
             'zipcode'       =>  '96052',
@@ -183,13 +201,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  10,
-    	    'name'	    =>	'AEGEE-Bamberg',
+    	    'name'	        =>	'AEGEE-Bamberg',
             'email'         =>  'bamberg@aegee.org',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  27,
             'street'        =>  'Bulevar vojvode Petra Bojovica 1A',
             'zipcode'       =>  '78000',
@@ -199,13 +218,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  11,
-    	    'name'	    =>	'AEGEE-Banja Luka',
+    	    'name'	        =>	'AEGEE-Banja Luka',
             'email'         =>  'aegee.banjaluka@gmail.com',
-	    'phone'	    =>  '+387 65699557',
+	        'phone'	        =>  '65699557',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  202,
             'street'        =>  'Gran Via de les Corts Catalanes 585',
             'zipcode'       =>  '08007',
@@ -215,29 +235,31 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  12,
-    	    'name'	    =>	'AEGEE-Barcelona',
+    	    'name'	        =>	'AEGEE-Barcelona',
             'email'         =>  'president@aegeebarcelona.org',
-	    'phone'	    =>  '+34 616237339',
+	        'phone'	        =>  '616237339',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([ //TODO: Address unknown
+
+    	Address::create([ //TODO: Address unknown
             'country_id'    =>  106,
-            'street'        =>  '',
-            'zipcode'       =>  '',
+            //'street'      =>  '',
+            //'zipcode'     =>  '',
             'city'          =>  'Bari',
         ]);
 
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  13,
-    	    'name'	    =>	'AEGEE-Bari',
+    	    'name'	        =>	'AEGEE-Bari',
             'email'         =>  'bari@aegee.org',
-	    'phone'	    =>  '+39 3423892968',
+	        'phone'	        =>  '3423892968',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  192,
             'street'        =>  'Djusina 7',
             'zipcode'       =>  '11000',
@@ -247,13 +269,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  14,
-    	    'name'	    =>	'AEGEE-Beograd',
+    	    'name'	        =>	'AEGEE-Beograd',
             'email'         =>  'aegee.beograd@gmail.com',
-	    'phone'	    =>  '+381 669399551',
+	        'phone'	        =>  '669399551',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  106,
             'street'        =>  'Via San Bernardino, 72/e',
             'zipcode'       =>  '24127',
@@ -263,13 +286,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  15,
-    	    'name'	    =>	'AEGEE-Bergamo',
+    	    'name'	        =>	'AEGEE-Bergamo',
             'email'         =>  'info@aegeebergamo.eu',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  81,
             'street'        =>  'Unter den Linden 6',
             'zipcode'       =>  '10099',
@@ -279,13 +303,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  16,
-    	    'name'	    =>	'AEGEE-Berlin',
+    	    'name'	        =>	'AEGEE-Berlin',
             'email'         =>  'info@aegee-berlin.org',
-	    'phone'	    =>  '+49 1784042916',
+	        'phone'	        =>  '1784042916',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  174,
             'street'        =>  'ul. M. Sklodowskiej-Curie 14 pok.307',
             'zipcode'       =>  '15-097',
@@ -295,29 +320,31 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  17,
-    	    'name'	    =>	'AEGEE-Bialystok',
+    	    'name'	        =>	'AEGEE-Bialystok',
             'email'         =>  'bxaegee@yahoo.com',
-	    'phone'	    =>  '+48 857447678',
+	        'phone'	        =>  '857447678',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([ //TODO: Address unknown
+
+	    Address::create([ //TODO: Address unknown
             'country_id'    =>  202,
-            'street'        =>  '',
-            'zipcode'       =>  '',
+            //'street'      =>  '',
+            //'zipcode'     =>  '',
             'city'          =>  'Bilbao',
         ]);
 
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  18,
-    	    'name'	    =>	'AEGEE-Bilbao',
+    	    'name'	        =>	'AEGEE-Bilbao',
             'email'         =>  'aegeebilbao@gmail.com',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  106,
             'street'        =>  'Via San Donato 146 2/C presso AICS',
             'zipcode'       =>  '40127',
@@ -327,13 +354,14 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  19,
-    	    'name'	    =>	'AEGEE-Bologna',
+    	    'name'	        =>	'AEGEE-Bologna',
             'email'         =>  'aegeebologna1@gmail.com',
-	    'phone'	    =>  '+39 3737232954',
+	        'phone'	        =>  '3737232954',
             'legacy_key'    =>  'TMP' //TODO
     	]);
 
-	Address::create([
+
+	    Address::create([
             'country_id'    =>  196,
             'street'        =>  'Stare Grunty 36',
             'zipcode'       =>  '84225',
@@ -343,9 +371,9 @@ class BodySeeder extends Seeder
     	Body::create([
             'type_id'       =>  1,
             'address_id'    =>  20,
-    	    'name'	    =>	'AEGEE-Bratislava',
+    	    'name'	        =>	'AEGEE-Bratislava',
             'email'         =>  'info@aegee-bratislava.sk',
-	    'phone'	    =>  '',
+	        //'phone'	    =>  '',
             'legacy_key'    =>  'TMP' //TODO
     	]);
     }
