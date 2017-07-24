@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Util;
 use Log;
-use Restrict;
+use App\Aspect\Cacheable;
 
 use App\Traits\RequiresPermission;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Body extends Model
 {
@@ -46,9 +47,12 @@ class Body extends Model
     /**
      * Test cacheable by annotation
      *
-     * @Restrict
+     * @Cacheable
+     *
+     * @return BelongsTo
      */
     public function address() {
+        dump("address()");
         return $this->belongsTo('App\Models\Address');
     }
 

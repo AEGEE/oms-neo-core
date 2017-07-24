@@ -8,6 +8,6 @@ use Doctrine\Common\Annotations\Annotation;
  * @Annotation
  * @Target("METHOD")
  */
-class Restrict extends Annotation
+class Cacheable extends Annotation
 {
 }
