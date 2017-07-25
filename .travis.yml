@@ -1,6 +1,4 @@
-language: php
-php:
-    - '7.0'
+language: shell
 dist: trusty
 sudo: required
 
@@ -16,13 +14,17 @@ before_install:
 
 before_script:
     - cd ../../
-    - git clone https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
+    - git clone --recursive --branch dev https://github.com/AEGEE/oms-docker.git AEGEE/oms-docker
     - rm -Rf AEGEE/oms-docker/oms-core
     - mv AEGEE/oms-neo-core AEGEE/oms-docker/oms-core
     - cd AEGEE/oms-docker/docker
     - docker-compose up -d
+    - docker-compose logs
+
 
 script:
-    - sudo docker-compose exec -T omscore composer update
-    - sudo docker-compose exec -T omscore composer install
-    - sudo docker-compose exec -T omscore ./vendor/bin/phpunit
+    - sudo docker-compose run -T omscore composer install
+    - sudo docker-compose run -T omscore php artisan key:generate
+    - sudo docker-compose run -T omscore php artisan config:cache
+    - sudo docker-compose run -T omscore php artisan migrate:refresh --seed
+    - sudo docker-compose run -T omscore ./vendor/bin/phpunit
