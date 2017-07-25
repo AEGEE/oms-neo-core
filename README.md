@@ -5,7 +5,7 @@
 The core service repository for the [Online Member System (OMS)](https://github.com/AEGEE/oms-docker), an open-source project of student association [AEGEE-Europe](http://aegee.org/).
 
 OMS-core Handles Authentication, Users, Bodies and Circles.
-OMS-core Is build upon Laravel, a PHP framework.
+OMS-core Is built upon Laravel, a PHP framework.
 
 [Read more about OMS-core.](https://oms-project.atlassian.net/wiki/spaces/OMSCORE/overview)
 
