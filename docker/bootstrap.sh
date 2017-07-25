@@ -8,8 +8,13 @@ then
 	echo "Bootstrap-file found, not executing bootstrap script"
 else
 	echo "Bootstrapping..."
-  sleep 15 #give time to postgres container to startup
-    cp /var/www/example.env /var/www/.env
+    sleep 15 #give time to postgres container to startup
+
+    if [ ! -f /var/www/.env ]; then
+      echo "No .env file found, copying from .env.example"
+      cp /var/www/.env.example /var/www/.env
+    fi
+
 	cd /var/www
     composer install --quiet || { echo "Error at composer install"; exit 10; }
 	php artisan config:cache || { echo "Error at config:cache"; exit 11; }
