@@ -34,8 +34,12 @@ class BodySeeder extends Seeder
 	    ]);
 
 	    BodyType::create([
-	        'name'	    =>  'special', //5
-	    ]);
+	        'name'	    =>  'committee', //5
+        ]);
+
+        BodyType::create([
+            'name'      =>  'special', //6
+        ]);
 	
 
 	    Address::create([ //TODO: Validate address
@@ -74,8 +78,8 @@ class BodySeeder extends Seeder
 
 	    Address::create([ //TODO: Address unknown
             'country_id'    =>  220,
-            //'street'      =>  '',
-            //'zipcode'     =>  '',
+            'street'      =>  '',
+            'zipcode'     =>  '',
             'city'          =>  'Adana',
         ]);
 
@@ -91,8 +95,8 @@ class BodySeeder extends Seeder
 
 	    Address::create([ //TODO: Address unknown
             'country_id'    =>  106,
-            //'street'      =>  '',
-            //'zipcode'     =>  '',
+            'street'      =>  '',
+            'zipcode'     =>  '',
             'city'          =>  'Agrigento',
         ]);
 
@@ -244,8 +248,8 @@ class BodySeeder extends Seeder
 
     	Address::create([ //TODO: Address unknown
             'country_id'    =>  106,
-            //'street'      =>  '',
-            //'zipcode'     =>  '',
+            'street'      =>  '',
+            'zipcode'     =>  '',
             'city'          =>  'Bari',
         ]);
 
@@ -329,8 +333,8 @@ class BodySeeder extends Seeder
 
 	    Address::create([ //TODO: Address unknown
             'country_id'    =>  202,
-            //'street'      =>  '',
-            //'zipcode'     =>  '',
+            'street'      =>  '',
+            'zipcode'     =>  '',
             'city'          =>  'Bilbao',
         ]);
 
