@@ -54,6 +54,7 @@ class AuthToken extends Model
         $this->user_id = $user_id;
         $this->token_generated = $token;
         $this->successful = 1;
+        $this->expiration = date('Y-m-d H:i:s', time() + 60 * 60 * 1); //valid for 1 hour.
         $this->save();
 
         return $this;
