@@ -1,0 +1,70 @@
+version: '2'
+
+services:
+
+### OMS CORE        #######################################
+### Applications Code Container #############################
+
+    omscore-data:
+        image: tianon/true
+        volumes:
+            - "../:/var/www"
+            - shared:/var/shared
+
+
+### Workspace Utilities Container ###########################
+
+    omscore:
+        image: aegee/omscore:dev
+        volumes_from:
+            - omscore-data
+
+
+### PHP-FPM Container #######################################
+
+    php-fpm:
+        image: aegee/php-fpm:dev
+        volumes_from:
+            - omscore-data
+        expose:
+            - "9000"
+
+### Nginx Server Container ##################################
+
+    omscore-nginx:
+        image: aegee/omscore-nginx:dev
+        volumes_from:
+            - omscore-data
+        links:
+            - php-fpm
+        ports:
+            - "80:80"
+
+### PostgreSQL Container ####################################
+
+    postgres:
+        image: postgres:latest
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        expose:
+            - "5432"
+        environment:
+            POSTGRES_DB: homestead
+            POSTGRES_USER: homestead
+            POSTGRES_PASSWORD: secret
+
+### pgAdmin Container #######################################
+
+    pgadmin:
+        image: fenglc/pgadmin4
+        ports:
+            - "8081:5050"
+        links:
+            - postgres
+### Volumes Setup ###########################################
+
+volumes:
+    postgres:
+        driver: "local"
+    shared:
+        driver: "local"
