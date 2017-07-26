@@ -15,6 +15,9 @@ services:
 ### Workspace Utilities Container ###########################
 
     omscore:
+        build:
+          context: ./oms-core/
+          dockerfile: ./Dockerfile.dev
         image: aegee/omscore:dev
         volumes_from:
             - omscore-data
@@ -23,6 +26,9 @@ services:
 ### PHP-FPM Container #######################################
 
     php-fpm:
+        build:
+          context: ./php-fpm/
+          dockerfile: ./Dockerfile.dev
         image: aegee/php-fpm:dev
         volumes_from:
             - omscore-data
@@ -32,6 +38,9 @@ services:
 ### Nginx Server Container ##################################
 
     omscore-nginx:
+        build:
+          context: ./omscore-nginx/
+          dockerfile: ./Dockerfile.dev
         image: aegee/omscore-nginx:dev
         volumes_from:
             - omscore-data
