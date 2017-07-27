@@ -19,13 +19,9 @@ use Auth;
 class PermissionAspect implements Aspect
 {
     /**
-     * Writes a log info before method execution
-     *
-     * @param MethodInvocation $invocation
-     * Before("@within(App\Aspect\Restrict)") //TODO why does this not work?
-     * @Around("execution(public App\Models\Body->address|circles(*))")
+     * @Around("@execution(App\Aspect\Restrict)")
      */
-    public function beforeMethod(MethodInvocation $invocation)
+    public function aroundCacheable(MethodInvocation $invocation)
     {
         //Log the pointcut.
         Log::debug("Pointcut: " . get_class($invocation->getThis()) . " :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
@@ -44,31 +40,5 @@ class PermissionAspect implements Aspect
             //TODO: Do this in a way that the database query can be skipped entirely.
         }
         return $result;
-    }
-
-
-    /**
-     * Cacheable methods
-     *
-     * @param MethodInvocation $invocation Invocation
-     *
-     * @Around("@execution(Annotation\Cacheable)")
-     */
-    public function aroundCacheable(MethodInvocation $invocation)
-    {
-        dd("aroundCacheable()");
-        static $memoryCache = array();
-
-        $time  = microtime(true);
-
-        $obj   = $invocation->getThis();
-        $class = is_object($obj) ? get_class($obj) : $obj;
-        $key   = $class . ':' . $invocation->getMethod()->name;
-        if (!isset($memoryCache[$key])) {
-            $memoryCache[$key] = $invocation->proceed();
-        }
-
-        echo "Take ", sprintf("%0.3f", (microtime(true) - $time) * 1e3), "ms to call method<br>", PHP_EOL;
-        return $memoryCache[$key];
     }
 }

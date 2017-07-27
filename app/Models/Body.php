@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use DB;
 use Util;
 use Log;
-use App\Aspect\Cacheable;
+use App\Aspect\Restrict;
 
 use App\Traits\RequiresPermission;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,6 +22,7 @@ class Body extends Model
         //TODO No clue why $user->bodies result in all bodies...
         if ($user->bodies->contains($this->id) || true) {
             $permissions->push("address");
+            $permissions->push("bodyType");
         }
         Log::debug("Found permissions: " . $permissions);
         return $permissions;
@@ -45,25 +46,29 @@ class Body extends Model
 
 
     /**
-     * Test cacheable by annotation
-     *
-     * @Cacheable
-     *
-     * @return BelongsTo
+     * @Restrict
      */
     public function address() {
-        dump("address()");
         return $this->belongsTo('App\Models\Address');
     }
 
+    /**
+     * @Restrict
+     */
     public function users() {
     	return $this->belongsToMany('App\Models\User', 'body_memberships', 'body_id', 'user_id');
     }
 
+    /**
+     * @Restrict
+     */
     public function bodyType() {
         return $this->belongsTo('App\Models\BodyType', 'type_id');
     }
 
+    /**
+     * @Restrict
+     */
     public function circles() {
         return $this->hasMany('App\Models\Circle', 'body_id', 'id');
     }
