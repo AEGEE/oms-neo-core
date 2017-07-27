@@ -18,12 +18,18 @@ class Body extends Model
 
     //TODO: Move this down.
     public function getPermissions($user) {
-        $permissions = collect([]); //Default permissions go here.
-        dd($user->bodies);
-        //TODO No clue why $user->bodies result in all bodies...
-        if ($user->bodies->contains($this->id) || true) {
-            $permissions->push("address");
-            $permissions->push("bodyType");
+        $permissions = collect(["address", "bodyType"]); //Default permissions go here.
+        $user->load('bodies'); //Needed to not query *all* bodies, might be Laravel bug.
+        $this->load('users');
+        $this->refresh();
+        //dump($user->bodies()->pluck('bodies.id'));
+        //dump($this->id);
+        //dump($this);
+        $this->syncOriginal();
+        //dump($this->getHidden());
+        if ($user->bodies()->pluck('bodies.id')->contains($this->id)) {
+            $permissions->push("circles");
+            $permissions->push("users");
         }
         Log::debug("Found permissions: " . $permissions);
         return $permissions;
@@ -47,33 +53,10 @@ class Body extends Model
 
 
     /**
-     * Restrict
+     * @Restrict
      */
     public function address() {
-        dump(Auth::user()->bodies()->getQuery()->toSql());
-        dump(Auth::user()->bodies->count());
-        $user = User::find(Auth::user()->id)->first();
-        dump($user->bodies()->getQuery()->toSql());
-        dump($user->bodies->count());
-        $user = User::find(Auth::user()->id)->with('bodies')->first();
-        dump($user->bodies()->getQuery()->toSql());
-        dump($user->bodies->count());
-        /* RESULT:
-        "select * from "bodies" inner join "body_memberships" on "bodies"."id" = "body_memberships"."body_id""
-        8
-        "select * from "bodies" inner join "body_memberships" on "bodies"."id" = "body_memberships"."body_id""
-        8
-        "select * from "bodies" inner join "body_memberships" on "bodies"."id" = "body_memberships"."body_id""
-        2
-        */
-        /*EXPECTED QUERY:
-        "select * from "bodies" inner join "body_memberships" on "bodies"."id" = "body_memberships"."body_id" where "body_memberships"."user_id" = ?"
-        gotten from calling `dump(Auth::user()->bodies()->getQuery()->toSql());` in App\Http\Controllers\UserController::getUser()
-        */
-        die();
-        $this->getPermissions(Auth::user());
-
-        return $this->belongsTo('App\Models\Address');
+        return $this->belongsTo('App\Models\Address', 'address_id');
     }
 
     /**
@@ -84,14 +67,14 @@ class Body extends Model
     }
 
     /**
-     * Restrict
+     * @Restrict
      */
     public function bodyType() {
         return $this->belongsTo('App\Models\BodyType', 'type_id');
     }
 
     /**
-     * Restrict
+     * @Restrict
      */
     public function circles() {
         return $this->hasMany('App\Models\Circle', 'body_id', 'id');

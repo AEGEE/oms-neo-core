@@ -1,0 +1,94 @@
+User {#2301
+  #table: "users"
+  #dates: array:4 [
+    0 => "created_at"
+    1 => "updated_at"
+    2 => "date_of_birth"
+    3 => "activated_at"
+  ]
+  #hidden: array:3 [
+    0 => "password"
+    1 => "oauth_token"
+    2 => "oauth_expiration"
+  ]
+  #guarded: array:8 [
+    0 => "id"
+    1 => "oauth_token"
+    2 => "oauth_token"
+    3 => "oauth_expiration"
+    4 => "is_superadmin"
+    5 => "is_suspended"
+    6 => "suspended_reason"
+    7 => "activated_at"
+  ]
+  #connection: "pgsql"
+  #primaryKey: "id"
+  #keyType: "int"
+  +incrementing: true
+  #with: []
+  #withCount: []
+  #perPage: 15
+  +exists: true
+  +wasRecentlyCreated: false
+  #attributes: array:23 [
+    "id" => 1
+    "address_id" => 1
+    "oauth_token" => null
+    "oauth_expiration" => null
+    "personal_email" => "admin@aegee.org"
+    "first_name" => "Super"
+    "last_name" => "Admin"
+    "date_of_birth" => "1985-04-16 00:00:00"
+    "gender" => "other"
+    "phone" => null
+    "description" => null
+    "password" => "$2y$10$65xoIrtQDDy1hQmfOliEFeUoRGQ23LQdnDaaw/Icj9Z8h.SiFOQpK"
+    "remember_token" => "e4CpXsFRQXglwzvbUWSpuLU8P9UuobMYdunBN5ah31uqolKCCZkKs154hG00"
+    "is_superadmin" => 1
+    "is_suspended" => null
+    "suspended_reason" => null
+    "seo_url" => "superadmin"
+    "activated_at" => "2017-07-27 12:49:07"
+    "created_at" => "2017-07-27 12:49:07"
+    "updated_at" => "2017-07-27 12:49:07"
+    "internal_email" => null
+    "first_name_simple" => "Super"
+    "last_name_simple" => "Admin"
+  ]
+  #original: array:23 [
+    "id" => 1
+    "address_id" => 1
+    "oauth_token" => null
+    "oauth_expiration" => null
+    "personal_email" => "admin@aegee.org"
+    "first_name" => "Super"
+    "last_name" => "Admin"
+    "date_of_birth" => "1985-04-16 00:00:00"
+    "gender" => "other"
+    "phone" => null
+    "description" => null
+    "password" => "$2y$10$65xoIrtQDDy1hQmfOliEFeUoRGQ23LQdnDaaw/Icj9Z8h.SiFOQpK"
+    "remember_token" => "e4CpXsFRQXglwzvbUWSpuLU8P9UuobMYdunBN5ah31uqolKCCZkKs154hG00"
+    "is_superadmin" => 1
+    "is_suspended" => null
+    "suspended_reason" => null
+    "seo_url" => "superadmin"
+    "activated_at" => "2017-07-27 12:49:07"
+    "created_at" => "2017-07-27 12:49:07"
+    "updated_at" => "2017-07-27 12:49:07"
+    "internal_email" => null
+    "first_name_simple" => "Super"
+    "last_name_simple" => "Admin"
+  ]
+  #casts: []
+  #dateFormat: null
+  #appends: []
+  #events: []
+  #observables: []
+  #relations: []
+  #touches: []
+  +timestamps: true
+  #visible: []
+  #fillable: []
+  #rememberTokenName: "remember_token"
+}

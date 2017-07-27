@@ -19,19 +19,22 @@ use Auth;
 class PermissionAspect implements Aspect
 {
     /**
-     * @Around("@execution(App\Aspect\Restrict)")
+     *
+     * Around("execution(public App\Models\Body->address(*))")
+     * Before("execution(public App\Models\Body->getRelationValue(*))")
      */
     public function aroundCacheable(MethodInvocation $invocation)
     {
         //Log the pointcut.
         Log::debug("Pointcut: " . get_class($invocation->getThis()) . " :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
-
         //Check if permission should be granted.
         $permission = $invocation->getThis()->requiresPermission($invocation->getMethod()->name);
         Log::debug("Permission " . ($permission ? "GRANTED" : "DENIED"));
+        //dump($invocation->getThis());
 
         //Execute the action
         $result = $invocation->proceed();
+        dd($result);
         //TODO: Return empty result without having to proceed.
         if (!$permission) {
             //No permission, alter result -> return an empty result.
@@ -41,4 +44,21 @@ class PermissionAspect implements Aspect
         }
         return $result;
     }
+
+    /**
+     * @Around("execution(public App\Models\Body->*(*))")
+     */
+     public function logMethodCall(MethodInvocation $invocation)
+     {
+         Log::debug("Pointcut: " . get_class($invocation->getThis()) . "(" . spl_object_hash($invocation->getThis()) . ") :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
+
+         //Log the pointcut.
+         if($invocation->getMethod()->name == "getAttribute") {
+             dump("Pointcut: " . get_class($invocation->getThis()) . "(" . spl_object_hash($invocation->getThis()) . ") :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
+
+             $result = $invocation->proceed();
+             dump($result);
+         }
+         return $invocation->proceed();
+     }
 }
