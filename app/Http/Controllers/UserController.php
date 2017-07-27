@@ -49,6 +49,8 @@ class UserController extends Controller
     }
 
     public function getUser($user_id) {
+        dump(Auth::user()->bodies()->getQuery()->toSql());
+        die();
         $user = User::where('id', $user_id)->with('address', 'bodies', 'circles')->first();
         return response()->success($user);
     }
