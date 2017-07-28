@@ -14,16 +14,30 @@ trait RequiresPermission {
     }
 
     function askPermission($user, $permission) {
-        //Ask parent GPO if you have, in that case overload method.
-        //If you do not have anyone else to ask, return false.
-        return $this->checkPermission($permission, $this->getPermissions($user));
+        //First check if the object can allow the action on his own.
+        if ($this->checkPermission($permission, $this->getUserPermissions($user))) {
+            return true;
+        } else {
+            //If not, allow parents to give the access.
+            foreach ($this->getGrantingParents() as $parent) {
+                if ($parent->askPermission($user, $permission)) {
+                    return true;
+                }
+            }
+        }
+        //If none could give access, return false.
+        return false;
     }
 
     function checkPermission($needle, $permissions) {
         return $permissions->contains($needle);
     }
 
-    function getPermissions($user) {
+    function getUserPermissions($user) {
         return null;
+    }
+
+    function getGrantingParents() {
+        return [];
     }
 }

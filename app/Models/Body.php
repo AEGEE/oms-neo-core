@@ -17,22 +17,20 @@ class Body extends Model
     use RequiresPermission;
 
     //TODO: Move this down.
-    public function getPermissions($user) {
-        $permissions = collect(["address", "bodyType"]); //Default permissions go here.
-        $user->load('bodies'); //Needed to not query *all* bodies, might be Laravel bug.
-        $this->load('users');
-        $this->refresh();
-        //dump($user->bodies()->pluck('bodies.id'));
-        //dump($this->id);
-        //dump($this);
-        $this->syncOriginal();
-        //dump($this->getHidden());
+    public function getUserPermissions($user) {
+        $permissions = collect(["App\Models\Body.address", "App\Models\Body.bodyType", "App\Models\Body.pivot"]);
         if ($user->bodies()->pluck('bodies.id')->contains($this->id)) {
-            $permissions->push("circles");
-            $permissions->push("users");
+            //If member
+            $permissions->push("App\Models\Body.circles");
+            $permissions->push("App\Models\Body.users");
+            $permissions->push("App\Models\User.circles");
         }
         Log::debug("Found permissions: " . $permissions);
         return $permissions;
+    }
+
+    public function getGrantingParents() {
+        return [];
     }
 
 

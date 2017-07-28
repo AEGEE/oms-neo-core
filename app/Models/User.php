@@ -12,10 +12,28 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 use DB;
 use Util;
+use Log;
+
+use App\Traits\RequiresPermission;
 
 class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable, Authorizable, CanResetPassword, RequiresPermission;
+
+    //TODO: Move this down.
+    public function getUserPermissions($user) {
+        $permissions = collect(["App\Models\User.bodies", "App\Models\User.pivot"]);
+        if ($user->getDisplayName() == $this->getDisplayName()) {
+            //If same name
+            $permissions->push("App\Models\User.address");
+        }
+        Log::debug("Found permissions: " . $permissions);
+        return $permissions;
+    }
+
+    public function getGrantingParents() {
+        return $this->bodies;
+    }
 
     protected $table = "users";
 

@@ -29,14 +29,14 @@ class BodyController extends Controller
             'country_name'  => $req->country_name,
             ];
 
-        $bodies = Body::filterArray($search)->get();
+        $bodies = Body::filterArray($search)->with(['bodyType', 'address.country', 'circles', 'users'])->get();
 
         return response()->success($bodies);
     }
 
     public function getBody($body_id) {
         //TODO Decide what (if) should be eager loaded.
-        return response()->success(Body::where('id', $body_id)->with(['bodyType', 'address' => function ($q) { $q->with('country');}, 'circles'])->first());
+        return response()->success(Body::where('id', $body_id)->with(['bodyType', 'address.country', 'circles', 'users'])->first());
     }
 
     public function updateBody($body_id, UpdateBodyRequest $req) {
