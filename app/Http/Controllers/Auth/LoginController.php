@@ -54,6 +54,25 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        return response()->success(Auth::user(), null, "User logged in successfully!");
+        return response()->success(Auth::getToken()->get(), null, "User logged in successfully!");
+    }
+
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        //Won't return the token unless remember = true;
+        $attempt = $this->guard()->attempt($this->credentials($request), true);//, $request->has('remember'));
+        if ($attempt != false) { //$attempt contains the token instead of true.
+            $request->JWTtoken = $attempt;
+            Auth::setToken($attempt);
+            return true;
+        }
+
+        return false;
     }
 }
