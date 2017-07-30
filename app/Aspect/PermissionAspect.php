@@ -37,4 +37,44 @@ class PermissionAspect implements Aspect
          }
          return $invocation->getThis();
      }
+
+     /**
+      * @Around("execution(public App\Models\Body->getUserPermissions(*))")
+      */
+      public function bodyGetUserPermissions(MethodInvocation $invocation) {
+          $user = $invocation->getArguments()[0];
+
+          $permissions = collect(["App\Models\Body.address", "App\Models\Body.bodyType", "App\Models\Body.pivot"]);
+          if ($user->bodies()->pluck('bodies.id')->contains($invocation->getThis()->id)) {
+              //If member
+              $permissions->push("App\Models\Body.circles");
+              $permissions->push("App\Models\Body.users");
+              $permissions->push("App\Models\User.circles");
+          }
+          Log::debug("Found permissions: " . $permissions);
+          return $permissions;
+      }
+
+
+      /**
+       * @Around("execution(public App\Models\User->getUserPermissions(*))")
+       */
+      public function userGetUserPermissions(MethodInvocation $invocation) {
+          $user = $invocation->getArguments()[0];
+
+          $permissions = collect(["App\Models\User.bodies", "App\Models\User.pivot"]);
+          if ($user->id == $invocation->getThis()->id) {
+              //If same user
+              $permissions->push("App\Models\User.address");
+          }
+          Log::debug("Found permissions: " . $permissions);
+          return $permissions;
+      }
+
+      /**
+       * @Around("execution(public App\Models\User->getGrantingParents(*))")
+       */
+      public function userGetGrantingParents(MethodInvocation $invocation) {
+          return $invocation->getThis()->bodies;
+      }
 }

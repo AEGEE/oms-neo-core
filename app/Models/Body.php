@@ -16,25 +16,6 @@ class Body extends Model
 {
     use RequiresPermission;
 
-    //TODO: Move this down.
-    public function getUserPermissions($user) {
-        $permissions = collect(["App\Models\Body.address", "App\Models\Body.bodyType", "App\Models\Body.pivot"]);
-        if ($user->bodies()->pluck('bodies.id')->contains($this->id)) {
-            //If member
-            $permissions->push("App\Models\Body.circles");
-            $permissions->push("App\Models\Body.users");
-            $permissions->push("App\Models\User.circles");
-        }
-        Log::debug("Found permissions: " . $permissions);
-        return $permissions;
-    }
-
-    public function getGrantingParents() {
-        return [];
-    }
-
-
-
     protected $table = "bodies";
 
     /**
