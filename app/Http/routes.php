@@ -10,10 +10,15 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::post('/login', 'Auth\LoginController@login');
+Route::any('/logout', 'Auth\LoginController@logout');
+
+Route::group(['middleware' => 'api'], function() {
+    Route::get('/api/bodies', 'BodyController@getBodies');
+});
 
 // Login routes..
 Route::group(['middleware' => 'login:credentials', 'middleware' => 'returnErrors'], function() {
-    Route::post('/api/login', 'LoginController@loginUsingCredentials');
 });
 
 Route::group(['middleware' => 'login:oauth'], function() {
@@ -38,7 +43,6 @@ Route::group(['middleware' => 'api'], function() {
 
     // Antennae management..
     Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-        Route::get('/api/bodies', 'BodyController@getBodies');
         Route::get('/api/bodies/{body_id}', 'BodyController@getBody')->where('body_id', '[0-9]+');
         Route::put('/api/bodies/{body_id}', 'BodyController@updateBody')->where('body_id', '[0-9]+');
         Route::post('/api/bodies/', 'BodyController@createBody');
@@ -133,7 +137,6 @@ Route::post('/api/microservice/register', 'ModuleController@registerMicroservice
 
 
 // Generic routes..
-Route::any('/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
 Route::any('/api/{all}', function() { return response()->failure("Incorrect API URL");})->where('all', '.*');

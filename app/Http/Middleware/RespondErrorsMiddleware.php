@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class RespondErrorsMiddleware {
     /**
@@ -17,8 +18,11 @@ class RespondErrorsMiddleware {
     {
         //TODO might need to have a better look at this hotfix.
         $request->session()->forget('errors');
-        
+        //dump("RespondErrorsMiddleware 1");
+        //dump(Auth::user());
         $result = $next($request);
+        //dump("RespondErrorsMiddleware 2");
+        //dump(Auth::user());
         $errors = $request->session()->get('errors');
         if ($errors != null) {
             $errors = $errors->default;
