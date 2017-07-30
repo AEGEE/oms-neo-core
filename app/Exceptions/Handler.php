@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
+        //AuthorizationException::class,
         HttpException::class,
         ModelNotFoundException::class,
         TokenMismatchException::class,
@@ -66,7 +66,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return response()->unauthorized();
         }
 
         return redirect()->guest('login');

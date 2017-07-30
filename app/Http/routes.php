@@ -10,15 +10,12 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-Route::post('/login', 'Auth\LoginController@login');
 Route::any('/logout', 'Auth\LoginController@logout');
-
-Route::group(['middleware' => 'api'], function() {
-    Route::get('/api/bodies', 'BodyController@getBodies');
-});
+Route::post('/api/users', 'Auth\RegisterController@create');
 
 // Login routes..
 Route::group(['middleware' => 'login:credentials', 'middleware' => 'returnErrors'], function() {
+    Route::post('/login', 'Auth\LoginController@login');
 });
 
 Route::group(['middleware' => 'login:oauth'], function() {
@@ -26,11 +23,8 @@ Route::group(['middleware' => 'login:oauth'], function() {
     Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
 
-//TODO Prevent spam, let user have guest token.
-Route::post('/api/users', 'UserController@createUser');
-
 // Core api routes..
-Route::group(['middleware' => 'api'], function() {
+Route::group(['middleware' => 'api', 'middleware' => 'seoURL:user_id'], function() {
 
     // Routes go in here..
     Route::put('/session', 'GenericController@noSessionTimeout');
@@ -42,68 +36,57 @@ Route::group(['middleware' => 'api'], function() {
     //Route::post('/api/users/{user_id}/avatars', 'UserController@uploadUserAvatar'); TODO
 
     // Antennae management..
-    Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
-        Route::get('/api/bodies/{body_id}', 'BodyController@getBody')->where('body_id', '[0-9]+');
-        Route::put('/api/bodies/{body_id}', 'BodyController@updateBody')->where('body_id', '[0-9]+');
-        Route::post('/api/bodies/', 'BodyController@createBody');
-    });
+    Route::get('/api/bodies', 'BodyController@getBodies');
+    Route::get('/api/bodies/{body_id}', 'BodyController@getBody')->where('body_id', '[0-9]+');
+    Route::put('/api/bodies/{body_id}', 'BodyController@updateBody')->where('body_id', '[0-9]+');
+    Route::post('/api/bodies/', 'BodyController@createBody');
 
     // Roles..
-    Route::group(['middleware' => 'checkAccess:roles'], function() {
-        //TODO roles rework.
-        //Route::get('/api/getRoles', 'RoleController@getRoles');
-        //Route::get('/api/getModulePages', 'ModuleController@getModulePages');
-        //Route::post('/api/saveRole', 'RoleController@saveRole');
-        //Route::get('/api/getRole', 'RoleController@getRole');
-    });
+    //TODO roles rework.
+    //Route::get('/api/getRoles', 'RoleController@getRoles');
+    //Route::get('/api/getModulePages', 'ModuleController@getModulePages');
+    //Route::post('/api/saveRole', 'RoleController@saveRole');
+    //Route::get('/api/getRole', 'RoleController@getRole');
 
     // Users..
-    Route::group(['middleware' => 'checkAccess:users'], function() {
-        Route::get('/api/users', 'UserController@getUsers');
-        Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
-        //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
-        Route::group(['middleware' => 'seoURL:user_id'], function() {
-            Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
+    Route::get('/api/users', 'UserController@getUsers');
+    Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
+    //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
+    Route::get('/api/users/{user_id}', 'UserController@getUser')->where('user_id', '[a-zA-Z0-9_]+');
+    Route::get('/api/users/{user_id}/bodies', 'UserController@getBodies')->where('user_id', '[a-zA-Z0-9_]+');
 
-            // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
-            Route::put('/api/users/{user_id}/suspend', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/activate', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
-            Route::put('/api/users/{user_id}/impersonate', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
+    // Route::put('/api/users/{id}', 'UserController@updateUser')->where('id', '[0-9]+'); TODO
+    Route::put('/api/users/{user_id}/suspend', 'UserController@suspendUnsuspendAccount')->where('user_id', '[a-zA-Z0-9_]+');
+    Route::put('/api/users/{user_id}/activate', 'UserController@activateUser')->where('user_id', '[a-zA-Z0-9_]+');
+    Route::put('/api/users/{user_id}/impersonate', 'UserController@impersonateUser')->where('user_id', '[a-zA-Z0-9_]+');
 
-            //Route::post('/api/users', 'LoginController@createUser'); TODO
-            //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
-            Route::post('/api/users/{user_id}/bodies', 'UserController@addBodyToUser')->where('user_id', '[a-zA-Z0-9_]+');
-        });
+    //Route::post('/api/users', 'LoginController@createUser'); TODO
+    //Route::post('/api/users/{user_id}/roles', 'UserController@addUserRoles'); TODO
+    Route::post('/api/users/{user_id}/bodies', 'UserController@addBodyToUser')->where('user_id', '[a-zA-Z0-9_]+');
 
-        // DELETE - remove
-        //Route::delete('/api/roles/{role_id}', 'UserController@deleteRole'); TODO
-    });
+    // DELETE - remove
+    //Route::delete('/api/roles/{role_id}', 'UserController@deleteRole'); TODO
 
     // Settings..
-    Route::group(['middleware' => 'checkAccess:settings'], function() {
-        // Global..
-        Route::get('/api/options', 'OptionController@getOptions');
-        Route::get('/api/options/{option}', 'OptionController@getOption')->where('option', '[0-9]+');
-        Route::put('/api/options/{option}', 'OptionController@updateOption')->where('option', '[0-9]+');
+    // Global..
+    Route::get('/api/options', 'OptionController@getOptions');
+    Route::get('/api/options/{option}', 'OptionController@getOption')->where('option', '[0-9]+');
+    Route::put('/api/options/{option}', 'OptionController@updateOption')->where('option', '[0-9]+');
 
-        // Menu..
-        //Route::get('/api/menu', 'MenuController@getMenu'); TODO
-        //Route::put('/api/menu', 'MenuController@saveMenu'); TODO
-    });
+    // Menu..
+    //Route::get('/api/menu', 'MenuController@getMenu'); TODO
+    //Route::put('/api/menu', 'MenuController@saveMenu'); TODO
 
     // Modules..
-    Route::group(['middleware' => 'checkAccess:modules'], function() {
-        //TODO all of the below.
-        Route::get('/api/modules', 'ModuleController@getModules');
-        Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
-        Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
-        Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
-        Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
-        Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
-        Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
-        Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
-    });
+    //TODO all of the below.
+    Route::get('/api/modules', 'ModuleController@getModules');
+    Route::get('/api/subrid/modules', 'ModuleController@getModulePages'); // Duplicate route from /api/getModulePages but with other middleware
+    Route::post('/api/page/{id}/activate', 'ModuleController@activateDeactivatePage');
+    Route::post('/api/page/{id}/deactivate', 'ModuleController@activateDeactivatePage');
+    Route::post('/api/module/{id}/activate', 'ModuleController@activateDeactivateModule');
+    Route::post('/api/module/{id}/deactivate', 'ModuleController@activateDeactivateModule');
+    Route::get('/api/secret/shared', 'ModuleController@getSharedSecret');
+    Route::post('/api/secret/shared', 'ModuleController@generateNewSharedSecret');
 
     Route::get('api/bodies/types', 'BodyTypeController@getBodyTypes');
     Route::get('api/bodies/types/{body_type_id}', 'BodyTypeController@getBodyType')->where('body_type_id', '[0-9]+');
@@ -127,9 +110,7 @@ Route::group(['middleware' => 'api'], function() {
     Route::get('api/circles/{circle_id}/members', 'CircleController@getCircleMembers')->where('circle_id', '[0-9]+');
 
     Route::get('api/bodies/{body_id}/circles', 'CircleController@getCirclesOfBody')->where('body_id', '[0-9]+');
-    Route::group(['middleware' => 'seoURL:user_id'], function() {
-        Route::get('api/users/{user_id}/circles', 'CircleController@getCirclesOfUser')->where('user_id', '[a-zA-Z0-9_]+');
-    });
+    Route::get('api/users/{user_id}/circles', 'CircleController@getCirclesOfUser')->where('user_id', '[a-zA-Z0-9_]+');
 });
 
 // Microservice routes..
