@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Auth;
+use Auth;
 use Illuminate\Auth\Middleware\Authenticate as BaseAuthenticate;
 
-class Authenticate extends BaseAuthenticate;
+class Authenticate extends BaseAuthenticate
 {
     /**
      * Handle an incoming request.
@@ -16,16 +16,8 @@ class Authenticate extends BaseAuthenticate;
      * @param  string|null  $guard
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle($request, Closure $next, ...$guards)
     {
-        if (Auth::guard($guard)->guest()) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->unauthorized();
-            }
-
-            return redirect()->guest('login');
-        }
-
-        return $next($request);
+        return parent::handle($request, $next, $guards);
     }
 }

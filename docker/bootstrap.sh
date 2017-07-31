@@ -23,6 +23,8 @@ else
 	php artisan config:cache || { echo "Error at config:cache (2)"; exit 14; }
 	php artisan db:seed      || { echo "Error at db:seed"; exit 15; }
 	php artisan config:cache || { echo "Error at config:cache (3)"; exit 16; }
+	php artisan jwt:secret   || { echo "Error at jwt:secret"; exit 17; }
+	php artisan config:cache || { echo "Error at config:cache (4)"; exit 18; }
 
 	# Make omscore write out the api-key
     echo "Write out API Key:"

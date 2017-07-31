@@ -23,8 +23,9 @@ Route::group(['middleware' => 'login:oauth'], function() {
     Route::any('/oauth/callback', 'LoginController@oAuthCallback');
 });
 
+
 // Core api routes..
-Route::group(['middleware' => 'api', 'middleware' => 'seoURL:user_id'], function() {
+Route::group(['middleware' => ['api', 'seoURL:user_id']], function() {
 
     // Routes go in here..
     Route::put('/session', 'GenericController@noSessionTimeout');
