@@ -16,7 +16,7 @@ class RespondErrorsMiddleware {
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        //TODO might need to have a better look at this hotfix.
+        //TODO This needs to *not* use the session() on $request.
         $request->session()->forget('errors');
         //dump("RespondErrorsMiddleware 1");
         //dump(Auth::user());

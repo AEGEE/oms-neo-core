@@ -14,7 +14,7 @@ Route::any('/logout', 'Auth\LoginController@logout');
 Route::post('/api/users', 'Auth\RegisterController@create');
 
 // Login routes..
-Route::group(['middleware' => 'login:credentials', 'middleware' => 'returnErrors'], function() {
+Route::group(['middleware' => ['login:credentials', 'returnErrors']], function() {
     Route::post('/login', 'Auth\LoginController@login');
 });
 
