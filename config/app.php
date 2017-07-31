@@ -188,7 +188,6 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         \SocialiteProviders\Manager\ServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        Irazasyed\JwtAuthGuard\JwtAuthGuardServiceProvider::class,
 
     ],
 
