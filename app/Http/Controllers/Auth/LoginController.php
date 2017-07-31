@@ -68,11 +68,9 @@ class LoginController extends Controller
         //Won't return the token unless remember = true;
         $attempt = $this->guard()->attempt($this->credentials($request), true);//, $request->has('remember'));
         if ($attempt != false) { //$attempt contains the token instead of true.
-            $request->JWTtoken = $attempt;
             Auth::setToken($attempt);
             return true;
         }
-
-        return false;
+        return $attempt != false;
     }
 }

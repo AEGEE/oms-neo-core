@@ -14,6 +14,7 @@ use App\Models\Address;
 
 use Excel;
 use Input;
+use Auth;
 
 class BodyController extends Controller
 {
