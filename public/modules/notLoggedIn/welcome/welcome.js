@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('public.welcome', {
-                url: '/welcome',
+                url: '/',
                 data: {'pageTitle': 'Welcome to OMS'},
                 views   : {
                     'main@'         : {

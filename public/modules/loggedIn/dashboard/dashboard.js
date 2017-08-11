@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.dashboard', {
-                url: '/',
+                url: '/dashboard',
                 data: {'pageTitle': 'Dashboard'},
                 views   : {
                     'pageContent@app': {
