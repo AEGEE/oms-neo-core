@@ -34,11 +34,6 @@
 
         vm.what = "Preview";
 
-        vm.suspended = suspended;
-        if(vm.suspended) {
-            vm.suspendedFor = suspendedFor;
-        }
-
         // Methods
         vm.getDashboardData = function() {
             $('#loadingOverlay').show();

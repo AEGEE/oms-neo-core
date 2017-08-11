@@ -169,13 +169,16 @@ omsApp.controller('headerController', function($scope, $rootScope, $state, $http
     vm.logout = function() {
       var token = window.localStorage.getItem("X-Auth-Token");
       window.localStorage.removeItem("X-Auth-Token");
+      $rootScope.currentUser = undefined;
       $http({
           method: 'POST',
           url: '/api/login'
       }).then((result) => {
         $state.go('public.welcome');
+        $window.location.reload();
       }).catch((err) => {
         $state.go('public.welcome');
+        $window.location.reload();
       })
     }
 });

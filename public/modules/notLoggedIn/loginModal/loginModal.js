@@ -74,7 +74,7 @@
             }).catch((err) => {
                 $.gritter.add({
                     title: 'Login error!',
-                    text: 'Could not fetch user data',
+                    text: 'Username / password invalid',
                     sticky: true,
                     time: 3600,
                     class_name: 'my-sticky-class'
