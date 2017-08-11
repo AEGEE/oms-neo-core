@@ -200,22 +200,20 @@ omsApp.controller('sidebarController', function($scope, $rootScope, $state) {
 ------------------------------- */
 omsApp.controller('headerController', function($scope, $rootScope, $state, $http, $q, $location) {
     var vm = this;
-    vm.user = {};
+    vm.user = $rootScope.currentUser;
 
-    // Get own user
-    vm.getUser = function() {
-        $http({
-            method: 'POST',
-            url: '/api/tokens/user',
-            data: {
-                token: localStorage.getItem("X-Auth-Token")
-            }
-        })
-        .then(function successCallback(response) {
-            vm.user = response.data.data;
-        }).catch(function(err) {showError(err);});
+    vm.logout = function() {
+      var token = window.localStorage.getItem("X-Auth-Token");
+      window.localStorage.removeItem("X-Auth-Token");
+      $http({
+          method: 'POST',
+          url: '/api/login'
+      }).then((result) => {
+        $state.go('public.welcome');
+      }).catch((err) => {
+        $state.go('public.welcome');
+      })
     }
-    vm.getUser();
 });
 
 

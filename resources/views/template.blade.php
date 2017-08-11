@@ -44,7 +44,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 </head>
 <body ng-controller="appController" ng-class="{'pace-top': setting.layout.paceTop, 'boxed-layout': setting.layout.pageBoxedLayout, 'bg-white': setting.layout.pageBgWhite }">
 	<!-- begin #page-loader -->
-	<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>
+	<!--<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>-->
 	<!-- end #page-loader -->
 	
 	<!-- begin #page-container -->
@@ -101,11 +101,33 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            'bootstrap3-typeahead',
 	            'btford.markdown',
 	            'infinite-scroll',
-	            @yield('modules')  
+	            'app.dashboard',
+			    'app.profile',
+			    'app.news',
+			    'public.login',
+			    'public.signup',
+			    'public.welcome',
+    			{!!$modulesNames!!} 
 	        ])
 	        .config(appConfig)
 	        .factory(responseObserver)
-	        .run(appRun);
+	        .run(appRun)
+	        .service('loginModal', function ($modal, $rootScope) {
+
+				function assignCurrentUser (user) {
+					$rootScope.currentUser = user;
+					return user;
+				}
+
+				return function() {
+					var instance = $modal.open({
+					  templateUrl: 'modules/notLoggedIn/loginModal/loginModal.html',
+					  controller: 'LoginModalController as vm'
+					});
+
+					return instance.result.then(assignCurrentUser);
+				};
+			});
 	        
 
 	    /** @ngInject */
@@ -114,22 +136,131 @@ $isProduction = App::environment() == 'production' ? true : false;
 	    	$httpProvider.interceptors.push(responseObserver);
 	        $locationProvider.html5Mode(true);
 
-	        @yield('routeConfig')
-	    }
+	        $urlRouterProvider.otherwise('/');
+
+			$stateProvider.state('app', {
+		    	abstract: true,
+		    	views: {
+		    		'main@': {
+		    			templateUrl: 'template/loggedInTemplate.php'
+		    		},
+		    		'header@app': {
+		    			templateUrl: 'template/header.php',
+		                controller: "headerController as vm"
+		    		},
+		            'sidebar@app': {
+		                templateUrl: 'template/sidebar.php'
+		            }
+
+		    	},
+		    	data: {
+		    		requireLogin: true
+		    	}
+		    })
+		    .state('public', {
+		        abstract: true,
+		        data: {
+		        	requireLogin: false
+		        }
+		    });
+    	}
 
 	    /** @ngInject */
-	    function appRun($rootScope, $state, setting, $http) {
+	    function appRun($rootScope, $state, setting, $http, loginModal) {
 	    	$rootScope.$state = $state;
 		    $rootScope.setting = setting;
-		    @yield('otherConfig')
+		    $rootScope.currentUser = undefined;
+
+		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
+				var requireLogin = toState.data.requireLogin;
+
+				console.log("Changing to state " + toState.name);
+
+				// On a route which requires login, check if we know user data
+				if (requireLogin && typeof $rootScope.currentUser === 'undefined') {
+					event.preventDefault();
+					console.log("Not logged in");
+
+					// If we still have a token, try if it's valid to fetch the user data
+					var token = window.localStorage.getItem("X-Auth-Token");
+				    if(token) {
+				    	// We still have a token, attemp to fetch data
+				    	$http({
+			                method: 'POST',
+			                url: '/api/tokens/user',
+			                data: {
+			                    token: token
+			                },
+			                headers: {
+			                    "X-Auth-Token": token
+			                }
+			            }).then((response) => {
+			            	// Worked, we are still logged in from the last time
+
+			            	$http.defaults.headers.common['X-Auth-Token'] = token;
+			                $rootScope.currentUser = response.data.data;
+			                $state.go(toState.name, toParams)
+			            }).catch((err) => {
+			            	console.log("asdasd")
+			                // Didn't work, we need to show the login modal
+			                window.localStorage.removeItem("X-Auth-Token");
+			                loginModal()
+							.then(function () {
+								// Successful login
+								return $state.go(toState.name, toParams);
+							})
+							.catch(function () {
+								// Unsuccessful login
+								return $state.go('public.welcome');
+							});
+				    	});
+			        } else {
+			        	// Otherwise we will have to log in anyways
+			        	loginModal()
+						.then(function () {
+							// Successful login
+							return $state.go(toState.name, toParams);
+						})
+						.catch(function () {
+							// Unsuccessful login
+							return $state.go('public.welcome');
+						});
+			        }
+				}
+			});
 	    }
 
+	    
 	    /** @ngInject */
-	    function responseObserver($q, $window) {
+	    function responseObserver($q, $window, $timeout, $injector) {
+	    	var loginModal, $http, $state;
+
+			// this trick must be done so that we don't receive
+			// `Uncaught Error: [$injector:cdep] Circular dependency found`
+			$timeout(function () {
+				loginModal = $injector.get('loginModal');
+				$http = $injector.get('$http');
+				$state = $injector.get('$state');
+			});
+
 		    return {
 		        'responseError': function(errorResponse) {
 	            	$('#loadingOverlay').hide();
 		            switch (errorResponse.status) {
+		            	case 401: // Trust the backend to only send this upon invalid access token
+
+							var deferred = $q.defer();
+
+							loginModal()
+							.then(function () {
+								deferred.resolve( $http(rejection.config) );
+							})
+							.catch(function () {
+								$state.go('public.welcome');
+								deferred.reject(rejection);
+							});
+
+							return deferred.promise;
 			            case 403:
 			                $.gritter.add({
 			                    title: 'Permission error!',
@@ -168,6 +299,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 		        }
 		    };
 		}
+
 	</script>
 
     <script src="vendor/template.js"></script>
@@ -178,6 +310,34 @@ $isProduction = App::environment() == 'production' ? true : false;
 	<script type="text/javascript" src="vendor/tinymce/tinymce.min.js"></script>
 
 	<!-- ================== END PAGE LEVEL JS ================== -->
-	@yield('modulesSrc')
+
+	 @if(isset($maps_key) && $maps_key !== false)
+        <!-- ================== GOOGLE MAPS KEY ================== -->
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key={{$maps_key}}" type="text/javascript"></script>
+        <!-- ================== END GOOGLE MAPS KEY ================== -->
+    @endif
+
+    <script type="text/javascript">
+        
+        var baseUrlRepository = {
+            {!!$baseUrlRepo!!}
+        };
+  
+    </script>
+    <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/profile/profile.js"></script>
+    <script type="text/javascript" src="modules/loggedIn/news/news.js"></script>
+
+    @if(!$oAuthDefined)
+        <script type="text/javascript" src="modules/notLoggedIn/login/login.js"></script>
+        <script type="text/javascript" src="modules/notLoggedIn/loginModal/loginModal.js"></script>
+    @else
+        <script type="text/javascript" src="modules/notLoggedIn/oAuthLogin/oAuthLogin.js"></script>
+    @endif
+    <script type="text/javascript" src="modules/notLoggedIn/signup/signup.js"></script>
+    <script type="text/javascript" src="modules/notLoggedIn/welcome/welcome.js"></script>
+
+    {!!$modulesSrc!!}
 </body>
 </html>

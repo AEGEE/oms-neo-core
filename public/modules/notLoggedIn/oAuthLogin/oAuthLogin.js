@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.login', [])
+        .module('public.login', [])
         .config(config)
         .controller('LoginController', LoginController);
 
@@ -12,7 +12,7 @@
     {
         // State
          $stateProvider
-            .state('app.login', {
+            .state('public.login', {
                 url: '/',
                 data: {'pageTitle': 'Login'},
                 views   : {

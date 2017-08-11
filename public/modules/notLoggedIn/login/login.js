@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.login', [])
+        .module('public.login', [])
         .config(config)
         .controller('LoginController', LoginController);
 
@@ -12,8 +12,12 @@
     {
         // State
          $stateProvider
-            .state('app.login', {
-                url: '/',
+            .state('public.login', {
+                url: '/login',
+                params: {
+                    redirect: null,
+                    redirect_params: null
+                },
                 data: {'pageTitle': 'Login'},
                 views   : {
                     'main@'         : {
@@ -24,7 +28,7 @@
             });
     }
 
-    function LoginController($http) {
+    function LoginController($http, $stateParams, $state) {
         // Data
         var vm = this;
         vm.user = {};
@@ -45,8 +49,31 @@
                 if(response.data.success == 1) {
                     // Store in local storage
                     window.localStorage.setItem("X-Auth-Token", response.data.data);
+                    $http({
+                        method: 'POST',
+                        url: '/api/tokens/user',
+                        data: {
+                            token: localStorage.getItem("X-Auth-Token")
+                        },
+                        headers: {
+                            "X-Auth-Token": localStorage.getItem("X-Auth-Token")
+                        }
+                    })
+                    .then(function successCallback(response) {
+                        $rootScope.currentUser = response.data.data;
+                    }).catch(function(err) {
+                        $state.go('public.login');
+                    });
                     
-                    location.reload();
+                    $('#loadingOverlay').hide();
+                    if($stateParams.redirect != null) {
+                        console.log("Logged in, redirecting to ", $stateParams.redirect);
+                        $state.go($stateParams.redirect, $stateParams.redirect_params);
+                    }
+                    else {
+                        console.log("Logged in, going to start page");
+                        $state.go('app.dashboard');
+                    }
                 } else {
                     $('#loginError').show();
                     $('#loadingOverlay').hide();
