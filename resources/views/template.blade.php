@@ -174,12 +174,9 @@ $isProduction = App::environment() == 'production' ? true : false;
 		    $rootScope.$on('$stateChangeStart', function (event, toState, toParams) {
 				var requireLogin = toState.data.requireLogin;
 
-				console.log("Changing to state " + toState.name);
-
 				// On a route which requires login, check if we know user data
 				if (requireLogin && typeof $rootScope.currentUser === 'undefined') {
 					event.preventDefault();
-					console.log("Not logged in");
 
 					// If we still have a token, try if it's valid to fetch the user data
 					var token = window.localStorage.getItem("X-Auth-Token");
@@ -201,7 +198,6 @@ $isProduction = App::environment() == 'production' ? true : false;
 			                $rootScope.currentUser = response.data.data;
 			                $state.go(toState.name, toParams)
 			            }).catch((err) => {
-			            	console.log("asdasd")
 			                // Didn't work, we need to show the login modal
 			                window.localStorage.removeItem("X-Auth-Token");
 			                loginModal()
@@ -324,7 +320,7 @@ $isProduction = App::environment() == 'production' ? true : false;
         };
   
     </script>
-    <script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>
+    <!--<script type="text/javascript" src="assets/js/noSessionTimeout.js"></script>-->
     <script type="text/javascript" src="modules/loggedIn/dashboard/dashboard.js"></script>
     <script type="text/javascript" src="modules/loggedIn/profile/profile.js"></script>
     <script type="text/javascript" src="modules/loggedIn/news/news.js"></script>
