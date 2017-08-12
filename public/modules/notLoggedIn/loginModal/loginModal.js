@@ -42,6 +42,7 @@
                     // Store in local storage
                     window.localStorage.setItem("X-Auth-Token", response.data.data);
                     $http.defaults.headers.common['X-Auth-Token'] = response.data.data;
+                    $.ajaxSetup({headers: { 'X-Auth-Token': token }});
 
                     $http({
                         method: 'POST',

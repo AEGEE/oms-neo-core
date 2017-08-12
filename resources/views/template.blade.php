@@ -195,6 +195,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 			            	// Worked, we are still logged in from the last time
 
 			            	$http.defaults.headers.common['X-Auth-Token'] = token;
+			            	$.ajaxSetup({headers: { 'X-Auth-Token': token }});
 			                $rootScope.currentUser = response.data.data;
 			                $state.go(toState.name, toParams)
 			            }).catch((err) => {
@@ -244,7 +245,7 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            	$('#loadingOverlay').hide();
 		            switch (errorResponse.status) {
 		            	case 401: // Trust the backend to only send this upon invalid access token
-
+		            		console.log("401 error detected");
 							var deferred = $q.defer();
 
 							loginModal()
