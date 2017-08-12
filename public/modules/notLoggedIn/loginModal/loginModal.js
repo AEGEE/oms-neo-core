@@ -8,25 +8,6 @@
 
     function LoginModalController($scope, $http) {
 
-        /* In case we already have a token, try if we can use that one
-        if(window.localStorage.getItem('X-Auth-Token')) {
-            $http({
-                method: 'POST',
-                url: '/api/tokens/user',
-                data: {
-                    token: window.localStorage.getItem("X-Auth-Token")
-                },
-                headers: {
-                    "X-Auth-Token": window.localStorage.getItem("X-Auth-Token")
-                }
-            }).then((response) => {
-                $scope.$close(response.data.data);
-            }).catch((err) => {
-                // didn't work, do nothing and proceed with the form
-                window.localStorage.removeItem("X-Auth-Token");
-            });
-        }*/
-
         this.cancel = $scope.$dismiss;
 
         this.submit = function (email, password) {
@@ -42,7 +23,7 @@
                     // Store in local storage
                     window.localStorage.setItem("X-Auth-Token", response.data.data);
                     $http.defaults.headers.common['X-Auth-Token'] = response.data.data;
-                    $.ajaxSetup({headers: { 'X-Auth-Token': token }});
+                    $.ajaxSetup({headers: { 'X-Auth-Token': response.data.data }});
 
                     $http({
                         method: 'POST',

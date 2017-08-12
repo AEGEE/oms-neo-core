@@ -104,7 +104,6 @@ $isProduction = App::environment() == 'production' ? true : false;
 	            'app.dashboard',
 			    'app.profile',
 			    'app.news',
-			    'public.login',
 			    'public.signup',
 			    'public.welcome',
     			{!!$modulesNames!!} 
@@ -327,7 +326,6 @@ $isProduction = App::environment() == 'production' ? true : false;
     <script type="text/javascript" src="modules/loggedIn/news/news.js"></script>
 
     @if(!$oAuthDefined)
-        <script type="text/javascript" src="modules/notLoggedIn/login/login.js"></script>
         <script type="text/javascript" src="modules/notLoggedIn/loginModal/loginModal.js"></script>
     @else
         <script type="text/javascript" src="modules/notLoggedIn/oAuthLogin/oAuthLogin.js"></script>

@@ -211,54 +211,15 @@ omsApp.controller('headerController', function($scope, $rootScope, $state, $http
           url: '/api/login'
       }).then((result) => {
         $state.go('public.welcome');
-        $window.location.reload();
+        //window.location.reload();
       }).catch((err) => {
         $state.go('public.welcome');
-        $window.location.reload();
+        //window.location.reload();
       })
     }
 });
 
 
-
-/* -------------------------------
-   5.0 CONTROLLER - Top Menu
-------------------------------- */
-omsApp.controller('topMenuController', function($scope, $rootScope, $state) {
-    setTimeout(function() {
-        App.initTopMenu();
-    }, 0);
-});
-
-
-
-/* -------------------------------
-   6.0 CONTROLLER - Page Loader
-------------------------------- */
-omsApp.controller('pageLoaderController', function($scope, $rootScope, $state) {
-    App.initPageLoad();
-});
-
-
-
-/* -------------------------------
-   7.0 CONTROLLER - Theme Panel
-------------------------------- */
-omsApp.controller('themePanelController', function($scope, $rootScope, $state) {
-    App.initThemePanel();
-});
-
-
-
-
-
-/* -------------------------------
-   57.0 CONTROLLER - 404 Error
-------------------------------- */
-omsApp.controller('errorController', function($scope, $rootScope, $state) {
-    $rootScope.setting.layout.pageWithoutHeader = true;
-    $rootScope.setting.layout.paceTop = true;
-});
 
 /*
 Template Name: Color Admin - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.6
