@@ -10,7 +10,7 @@ before_script:
     - docker network create OMS
     - docker-compose up -d
     - docker-compose logs
-    - sleep 60
+    - sleep 120
     - sudo docker-compose logs
 
 
