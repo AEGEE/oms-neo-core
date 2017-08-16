@@ -16,7 +16,7 @@ services:
 
     omscore:
         build:
-          context: ./oms-core/
+          context: ./omscore/
           dockerfile: ./Dockerfile.dev
         image: aegee/omscore:dev
         volumes_from:
