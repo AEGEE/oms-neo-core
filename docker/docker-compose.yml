@@ -1,37 +1,36 @@
-version: '2'
+version: '3.3'
 
 services:
 
 ### OMS CORE        #######################################
-### Applications Code Container #############################
-
-    omscore-data:
-        image: tianon/true
-        volumes:
-            - "../:/var/www"
-            - shared:/var/shared
-
-
 ### Workspace Utilities Container ###########################
 
     omscore:
         build:
-          context: ./omscore/
+          context: ./$PATH_OMS_CORE/omscore/
           dockerfile: ./Dockerfile.dev
         image: aegee/omscore:dev
-        volumes_from:
-            - omscore-data
+        volumes:
+            - type: bind
+              source: ./$PATH_OMS_CORE/../
+              target: /var/www
+            - type: volume
+              source: shared
+              target: /var/shared
+
 
 
 ### PHP-FPM Container #######################################
 
     php-fpm:
         build:
-          context: ./php-fpm/
+          context: ./$PATH_OMS_CORE/php-fpm/
           dockerfile: ./Dockerfile.dev
         image: aegee/php-fpm:dev
-        volumes_from:
-            - omscore-data
+        volumes:
+            - type: bind
+              source: ./$PATH_OMS_CORE/../
+              target: /var/www
         expose:
             - "9000"
 
@@ -39,11 +38,13 @@ services:
 
     omscore-nginx:
         build:
-          context: ./omscore-nginx/
+          context: ./$PATH_OMS_CORE/omscore-nginx/
           dockerfile: ./Dockerfile.dev
         image: aegee/omscore-nginx:dev
-        volumes_from:
-            - omscore-data
+        volumes:
+            - type: bind
+              source: ./$PATH_OMS_CORE/../
+              target: /var/www
         links:
             - php-fpm
         expose:
