@@ -9,9 +9,8 @@ before_script:
     - cd docker
     - docker network create OMS
     - docker-compose up -d
-    - docker-compose logs
     - sleep 120
-    - sudo docker-compose logs
+    - docker-compose logs
 
 
 script:
