@@ -16,17 +16,19 @@ else
     fi
 
 	cd /var/www
-    composer install --quiet || { echo "Error at composer install"; exit 10; }
-	php artisan config:cache || { echo "Error at config:cache"; exit 11; }
-	php artisan migrate      || { echo "Error at migrate"; exit 12; }
-	php artisan key:generate || { echo "Error at key:generate"; exit 13; }
-	php artisan config:cache || { echo "Error at config:cache (2)"; exit 14; }
-	php artisan db:seed      || { echo "Error at db:seed"; exit 15; }
-	php artisan config:cache || { echo "Error at config:cache (3)"; exit 16; }
+    composer install --quiet   || { echo "Error at composer install"; exit 10; }
+	php artisan config:clear   || { echo "Error at config:clear"; exit 11; }
+	php artisan clear-compiled || { echo "Error at clear-compiled"; exit 12; }
+	php artisan config:cache   || { echo "Error at config:cache (1)"; exit 13; }
+	php artisan migrate        || { echo "Error at migrate"; exit 14; }
+	php artisan key:generate   || { echo "Error at key:generate"; exit 15; }
+	php artisan config:cache   || { echo "Error at config:cache (2)"; exit 16; }
+	php artisan db:seed        || { echo "Error at db:seed"; exit 17; }
+	php artisan config:cache   || { echo "Error at config:cache (3)"; exit 18; }
 
 	# Make omscore write out the api-key
     echo "Write out API Key:"
-	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], []);" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
+	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], [])->original;" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
 
 
 	npm install
