@@ -58,7 +58,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
-                    hidden: moduleAccess.modules == 0,
+                    hidden: false,
                     sortable: false,
                     width: 50
                 }, {
@@ -139,7 +139,7 @@
                     {
                         name: 'actions',
                         index: 'actions',
-                        hidden: moduleAccess.modules == 0,
+                        hidden: false,
                         sortable: false,
                         width: 25
                     }, {

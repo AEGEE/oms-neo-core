@@ -35,118 +35,77 @@ class GenericController extends Controller
         session_write_close();
 
         $addToView['appName'] = $optionsArr['app_name'];
-        if(Auth::check()) {
-            $systemRolesAccess = array();
+        $systemRolesAccess = array();
 
-            $addToView['userData'] = Auth::user();
-            $addToView['countries'] = "";
-            $addToView['modulesSrc'] = "";
-            $addToView['baseUrlRepo'] = "";
-            $addToView['modulesNames'] = "";
-            $addToView['moduleAccess'] = "";
-            $addToView['authToken'] = $userData['authToken'];
+        $addToView['countries'] = "";
+        $addToView['modulesSrc'] = "";
+        $addToView['baseUrlRepo'] = "";
+        $addToView['modulesNames'] = "";
+        $addToView['moduleAccess'] = "";
 
-            // Adding modules to which he has access..
-            if($userData['is_superadmin'] == 1) {
-                // Has access to all modules, regardless of roles assigned..
-                $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                        ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
-                                        ->orderBy('module_pages.name', 'ASC')->get();
-            } else {
-                if($userData['is_suspended']) {
-                    $addToView['suspention'] = $userData['suspended_reason'];
-                    return view('loggedIn', $addToView);
-                }
-                // Getting module pages ids to which it has access to..
-                $userRolesObj = new UserRole();
-                $modulePageIds = $userRolesObj->getModulePagesIdForUser($userData['id']);
-                $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                        ->whereIn('module_pages.id', array_keys($modulePageIds))
-                                        ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
-                                        ->orderBy('module_pages.name', 'ASC')->get();
+      
+        // Render all possible modules, TODO decide in the frontend which ones the user can see
+        $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
+                                ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
+                                ->orderBy('module_pages.name', 'ASC')->get();
+        
+        $lastModuleId = 0;
+        $menuMarkUp = "";
+        $moduleAccess = array();
+        foreach($modules as $module) {
+            $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
 
-                $systemRoles = UserRole::distinct('code')
-                                        ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-                                        ->where('user_id', $userData['id'])
-                                        ->whereNull('is_disabled')
-                                        ->get();
-
-                foreach($systemRoles as $roleX) {
-                    $systemRolesAccess[] = $roleX->code;
-                }
-
+            if(!empty($module->module_id) && empty($module->module->is_active)) {
+                continue;
             }
 
-            $lastModuleId = 0;
-            $menuMarkUp = "";
-            $moduleAccess = array();
-            foreach($modules as $module) {
-                $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
+            $addToView['modulesSrc'] .= "<script type='text/javascript' src='".$moduleBase.$module->module_link."'></script>";
+            $addToView['modulesNames'] .= ", 'app.".$module->code."'";
 
-                if(!empty($module->module_id) && empty($module->module->is_active)) {
-                    continue;
+            if($lastModuleId != $module->module_id) {
+                if(strlen($addToView['baseUrlRepo']) > 0) {
+                    $addToView['baseUrlRepo'] .= ",";
                 }
 
-                $addToView['modulesSrc'] .= "<script type='text/javascript' src='".$moduleBase.$module->module_link."'></script>";
-                $addToView['modulesNames'] .= ", 'app.".$module->code."'";
-
-                if($lastModuleId != $module->module_id) {
-                    if(strlen($addToView['baseUrlRepo']) > 0) {
-                        $addToView['baseUrlRepo'] .= ",";
-                    }
-
-                    $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
-                    $lastModuleId = $module->module_id;
-                    $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
-                }
-
-                $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
-
-                if(strlen($addToView['moduleAccess']) > 0) {
-                    $addToView['moduleAccess'] .= ", ";
-                }
-
-                if($userData['is_superadmin'] == 1) {
-                    $addToView['moduleAccess'] .= $module->code.": 1";
-                    $moduleAccess[$module->code] = 1;
-                } else {
-                    $addToView['moduleAccess'] .= $module->code.": ".$modulePageIds[$module->id];
-                    $moduleAccess[$module->code] = $modulePageIds[$module->id]; // todo get highest access level..
-                }
+                $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
+                $lastModuleId = $module->module_id;
+                $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
             }
 
-            $menuMarkUpNew = $menuItem->getMenuMarkup($moduleAccess);
+            $menuMarkUp .= '<li ui-sref-active="active"><a ui-sref="app.'.$module->code.'"><i class="'.$module->icon.'"></i> <span>'.$module->name.'</span></a></li>';
 
-            // Mirroring links accessible to session so they can be accessed in partials..
-            session_start();
-            $_SESSION['moduleMarkup'] = $menuMarkUp;
-
-            if(strlen($menuMarkUpNew) > 0) {
-                $_SESSION['moduleMarkup'] = $menuMarkUpNew;
+            if(strlen($addToView['moduleAccess']) > 0) {
+                $addToView['moduleAccess'] .= ", ";
             }
 
-            $_SESSION['moduleAccess'] = $moduleAccess;
-            $_SESSION['systemRoles'] = $systemRolesAccess;
-            session_write_close();
 
-            Session::put('moduleAccess', $moduleAccess);
+            $addToView['moduleAccess'] .= $module->code.": 1";
+            $moduleAccess[$module->code] = 1;
 
-            // Countries..
-            $countries = Country::all();
-            $countriesMarkup = "";
-            foreach($countries as $country) {
-                if(strlen($countriesMarkup) > 0) {
-                    $countriesMarkup .= ",";
-                }
-                $countriesMarkup .= $country->id.':"'.$country->name.'"'."\n";
-            }
-            $addToView['countries'] = $countriesMarkup;
+        }
 
-    		return view('loggedIn', $addToView);
-    	}
+        $menuMarkUpNew = $menuItem->getMenuMarkup($moduleAccess);
 
+        // Mirroring links accessible to session so they can be accessed in partials..
+        session_start();
+        $_SESSION['moduleMarkup'] = $menuMarkUp;
+
+        if(strlen($menuMarkUpNew) > 0) {
+            $_SESSION['moduleMarkup'] = $menuMarkUpNew;
+        }
+
+        $_SESSION['moduleAccess'] = $moduleAccess;
+        $_SESSION['systemRoles'] = $systemRolesAccess;
+        session_write_close();
+
+        Session::put('moduleAccess', $moduleAccess);
+
+        
+        // TODO is this still used?
         $addToView['oAuthDefined'] = LoginMethodMiddleware::isOauthDefined();
-		return view('notLogged', $addToView);
+
+        // Always return the loggedIn view, the frontend will check if it finds a valid access token in the localStorage of the client and if not, log in
+		return view('template', $addToView);
     }
 
     public function logout(AuthToken $auth) {

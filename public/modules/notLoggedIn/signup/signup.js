@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('app.signup', [])
+        .module('public.signup', [])
         .config(config)
         .controller('SignupController', SignupController);
 
@@ -12,7 +12,7 @@
     {
         // State
          $stateProvider
-            .state('app.signup', {
+            .state('public.signup', {
                 url: '/register',
                 data: {'pageTitle': 'Signup'},
                 views   : {
