@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateCountryRequest;
 class CountryController extends Controller
 {
     public function getCountries() {
-        return response()->success(Country::All());
+        return response()->success(Country::query());
     }
 
     public function getCountry(Country $country_id) {

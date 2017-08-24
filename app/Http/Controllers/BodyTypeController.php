@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateBodyTypeRequest;
 class BodyTypeController extends Controller
 {
     public function getBodyTypes() {
-        return response()->success(BodyType::All());
+        return response()->success(BodyType::query());
     }
 
     public function getBodyType(BodyType $body_type_id) {
