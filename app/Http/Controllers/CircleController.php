@@ -9,7 +9,7 @@ use Input;
 class CircleController extends Controller
 {
     public function getCircles() {
-        return response()->success(Models\Circle::get());
+        return response()->success(Models\Circle);
     }
 
     public function getCircle($circle_id) {

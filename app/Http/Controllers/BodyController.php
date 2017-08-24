@@ -29,7 +29,7 @@ class BodyController extends Controller
             'country_name'  => $req->country_name,
             ];
 
-        $bodies = Body::filterArray($search)->get();
+        $bodies = Body::filterArray($search);
 
         return response()->success($bodies);
     }

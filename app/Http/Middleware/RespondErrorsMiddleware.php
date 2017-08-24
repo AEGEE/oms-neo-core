@@ -17,7 +17,7 @@ class RespondErrorsMiddleware {
     {
         //TODO might need to have a better look at this hotfix.
         $request->session()->forget('errors');
-        
+
         $result = $next($request);
         $errors = $request->session()->get('errors');
         if ($errors != null) {
