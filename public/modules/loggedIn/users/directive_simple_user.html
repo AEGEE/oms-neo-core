@@ -1,0 +1,8 @@
+<!-- example usage: <oms-simple-user userid="{{vm.recipe.created_by}}"></oms-simple-user> -->
+
+<span ng-show="!message">
+{{ fetched_user.first_name }} {{ fetched_user.last_name }}
+</span>
+<span ng-show="message">
+{{ message }}
+</span>

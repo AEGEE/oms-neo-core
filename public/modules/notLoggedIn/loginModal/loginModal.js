@@ -4,7 +4,45 @@
     
     // Not a ui-router state but a service, thus missing a config
     omsApp
-        .controller('LoginModalController', LoginModalController);
+    .controller('LoginModalController', LoginModalController)
+    .service('loginModal', LoginModalService);
+
+    function LoginModalService($modal, $rootScope) {
+        
+        var loginModalConfig = {
+            loading: false,
+            promise: undefined
+        };
+
+        var assignCurrentUser = function(user) {
+            $rootScope.currentUser = user;
+            loginModalConfig.loading = false;
+            return user;
+        };
+        
+        return function() {
+            // Either return promise of already created modal
+            if(loginModalConfig.loading) {
+                return loginModalConfig.promise.then(function(user) {
+                    return user;
+                });
+            }
+            // Or create a new modal
+            else {
+
+                loginModalConfig.loading = true;
+
+                var instance = $modal.open({
+                    templateUrl: 'modules/notLoggedIn/loginModal/loginModal.html',
+                    controller: 'LoginModalController as vm'
+                });
+
+                loginModalConfig.promise = instance.result;
+
+                return instance.result.then(assignCurrentUser);
+            }
+        };
+    };
 
     function LoginModalController($scope, $http) {
 
