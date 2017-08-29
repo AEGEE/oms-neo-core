@@ -31,6 +31,10 @@ else
 	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], [])->original;" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
 
 
+	# Copy the key into the volume mount so other 
+	mkdir -p /var/shared
+	cp /var/www/storage/key /var/shared/api-key
+
 	npm install
 
 	mkdir -p storage
