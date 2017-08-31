@@ -6,6 +6,7 @@
         .module('app.users', [])
         .config(config)
         .directive('userpreview', UserPreviewDirective)
+        .directive('omsSimpleUser', SimpleUserDirective)
         .controller('UserController', UserController);
 
     /** @ngInject */
@@ -32,6 +33,33 @@
                 user: '='
             },
             templateUrl: 'modules/loggedIn/users/directive_userpreview.html'
+        };
+    }
+
+    function SimpleUserDirective($http) {
+
+        function link(scope, elements, attrs) {
+            scope.message = "Fetching user";
+            attrs.$observe('userid', function(value) {
+                $http({
+                    url: '/api/users/' + value,
+                    method: 'GET'
+                }).then(function(response) {
+                    scope.fetched_user=response.data.data;
+                    scope.message = "";
+                }).catch(function(error) {
+                    scope.message="Could not fetch"
+                });
+            })
+        }
+
+        return {
+            templateUrl: 'modules/loggedIn/users/directive_simple_user.html',
+            restrict: 'E',
+            scope: {
+                userid: '@'
+            },
+            link: link,
         };
     }
 
