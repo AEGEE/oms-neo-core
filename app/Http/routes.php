@@ -132,7 +132,7 @@ Route::group(['middleware' => 'api'], function() {
 Route::post('/api/microservice/register', 'ModuleController@registerMicroservice');
 
 // Standardized service routes
-Route::get('/service/health/ping', function() { return response()->success(null, null, 'The service is up and running.'); });
+Route::get('/service/health/ping', 'ServiceController@ping');
 
 // Generic routes..
 Route::any('/logout', 'GenericController@logout');

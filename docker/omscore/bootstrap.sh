@@ -3,7 +3,7 @@
 #better safe than sorry - I still have to read about permissions for volumes
 # in overlay-fs
 
-if [ -f "/var/strapstate/omscore" ]
+if [ -f "/var/private/omscore.bootstrapped" ]
 then
 	echo "Bootstrap-file found, not executing bootstrap script"
 else
@@ -31,7 +31,7 @@ else
 	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], [])->original;" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
 
 
-	# Copy the key into the volume mount so other 
+	# Copy the key into the volume mount so other
 	mkdir -p /var/shared
 	cp /var/www/storage/key /var/shared/api-key
 
@@ -41,7 +41,7 @@ else
 	mkdir -p /var/shared/strapstate
 
 	# Create a file on strapstate to indicate we do not need to run this again
-	touch /var/shared/strapstate/omscore
+	touch /var/private/omscore.bootstrapped
 
 	echo "Bootstrap finished"
 fi

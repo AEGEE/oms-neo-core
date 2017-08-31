@@ -84,6 +84,8 @@ RUN . ~/.bashrc
 # omscore bootstrap
 #####################################
 
+RUN mkdir -p /var/private
+
 ADD ./bootstrap.sh /var/scripts/bootstrap.sh
 
 RUN chown -R laradock:laradock /var/scripts/
@@ -95,5 +97,5 @@ WORKDIR /var/www
 CMD chown -R laradock:laradock /var/www \
     && touch /var/shared/api-key \
     && chown -R laradock:laradock /var/shared \
-    && su - laradock -c 'sh /var/scripts/bootstrap.sh' \
+    && sh /var/scripts/bootstrap.sh \
     && gulp watch # TODO: also run this as laradock
