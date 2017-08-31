@@ -24,12 +24,16 @@ class PaginatorMiddleware {    /**
         $response = $result->getOriginalContent();
 
         if (isset($response['data'])) {
+            $paginator = null;
             if (is_a($response['data'], 'Illuminate\Database\Eloquent\Builder')) {
-                $response['data'] = $response['data']->paginate($per_page);
-                $response = json_encode($response);
-                $result->setContent($response);
+                $paginator = $response['data']->paginate($per_page);
             } else if(is_a($response['data'], 'Illuminate\Support\Collection')) {
-                $response['data'] = $this->paginateCollection($request, $response['data'], $per_page, $page);
+                $paginator = $this->paginateCollection($request, $response['data'], $per_page, $page);
+            }
+
+            if ($paginator) {
+                $response['data'] = $paginator->items();
+                $response['meta'] = $this->appendMeta($request, $response, $paginator);
                 $response = json_encode($response);
                 $result->setContent($response);
             }
@@ -47,5 +51,21 @@ class PaginatorMiddleware {    /**
             $page, // Current page
             ['path' => $request->url(), 'query' => $request->query()] // We need this so we can keep all old query parameters from the url
         );
+    }
+
+
+    private function appendMeta($request, $response, $paginator) {
+
+        $response['meta']['pagination'] =
+        [   "current_page"  => $paginator->currentPage(),
+            "from"          => $paginator->firstItem(),
+            "last_page"     => $paginator->lastPage(),
+            "next_page_url" => $paginator->nextPageUrl(),
+            "path"          => $request->url(),
+            "per_page"      => $paginator->perPage(),
+            "prev_page_url" => $paginator->previousPageUrl(),
+            "to"            => $paginator->lastItem(),
+            "total"         => $paginator->total(), ];
+        return $response['meta'];
     }
 }
