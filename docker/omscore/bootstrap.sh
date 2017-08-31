@@ -3,7 +3,7 @@
 #better safe than sorry - I still have to read about permissions for volumes
 # in overlay-fs
 
-if [ -f "/var/private/omscore.bootstrapped" ]
+if [ -f "/var/shared/strapstate/omscore" ]
 then
 	echo "Bootstrap-file found, not executing bootstrap script"
 else
@@ -41,7 +41,7 @@ else
 	mkdir -p /var/shared/strapstate
 
 	# Create a file on strapstate to indicate we do not need to run this again
-	touch /var/private/omscore.bootstrapped
+	touch /var/shared/strapstate/omscore
 
 	echo "Bootstrap finished"
 fi

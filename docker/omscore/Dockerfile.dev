@@ -84,8 +84,6 @@ RUN . ~/.bashrc
 # omscore bootstrap
 #####################################
 
-RUN mkdir -p /var/private
-
 ADD ./bootstrap.sh /var/scripts/bootstrap.sh
 
 RUN chown -R laradock:laradock /var/scripts/
