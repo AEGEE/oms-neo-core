@@ -95,5 +95,5 @@ WORKDIR /var/www
 CMD chown -R laradock:laradock /var/www \
     && touch /var/shared/api-key \
     && chown -R laradock:laradock /var/shared \
-    && su - laradock -c 'sh /var/scripts/bootstrap.sh' \
+    && sh /var/scripts/bootstrap.sh \
     && gulp watch # TODO: also run this as laradock

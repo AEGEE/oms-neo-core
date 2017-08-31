@@ -27,9 +27,10 @@ else
 	php artisan config:cache   || { echo "Error at config:cache (3)"; exit 18; }
 
 	# Make omscore write out the api-key
-    echo "Write out API Key:"
+  echo "Write out API Key:"
 	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], [])->original;" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
 
+  cp /var/www/storage/key /var/shared/api-key
 
 	# Copy the key into the volume mount so other 
 	mkdir -p /var/shared
