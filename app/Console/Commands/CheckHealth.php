@@ -38,10 +38,10 @@ class CheckHealth extends Command
     public function handle()
     {
         if (!\DatabaseSeeder::isSeeded()) {
-            $this->error("OMS-CORE Service is unhealthy");
+            $this->error("Service is unhealthy");
             exit(1);
         } else {
-            $this->info("OMS-CORE Service is healthy");
+            $this->info("Service is healthy");
             exit(0);
         }
     }
