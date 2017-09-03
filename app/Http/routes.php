@@ -131,6 +131,8 @@ Route::group(['middleware' => 'api'], function() {
 // Microservice routes..
 Route::post('/api/microservice/register', 'ModuleController@registerMicroservice');
 
+// Standardized service routes
+Route::get('/service/health/ping', 'ServiceController@ping');
 
 // Generic routes..
 Route::any('/logout', 'GenericController@logout');

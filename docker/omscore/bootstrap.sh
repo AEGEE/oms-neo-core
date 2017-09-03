@@ -3,7 +3,7 @@
 #better safe than sorry - I still have to read about permissions for volumes
 # in overlay-fs
 
-if [ -f "/var/strapstate/omscore" ]
+if [ -f "/var/shared/strapstate/omscore" ]
 then
 	echo "Bootstrap-file found, not executing bootstrap script"
 else
@@ -32,7 +32,7 @@ else
 
   cp /var/www/storage/key /var/shared/api-key
 
-	# Copy the key into the volume mount so other 
+	# Copy the key into the volume mount so other
 	mkdir -p /var/shared
 	cp /var/www/storage/key /var/shared/api-key
 

@@ -58,6 +58,7 @@ services:
             - "registry.categories=(users, 10);(antennae, 10);(notifications, 0)"
             - "registry.backend=/api"
             - "registry.description=The core module with both backend and frontend"
+            - "registry.status=/service/health/ping"
 
 ### PostgreSQL Container ####################################
 

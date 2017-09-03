@@ -31,6 +31,10 @@ MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 #--------------------------------------------------------------------------
 #
 
+#php-fpm is the omscore interpretor, therefore it should be able to execute the service command
+HEALTHCHECK --interval=30s --timeout=3s\
+  CMD php artisan service:health
+
 RUN apt-get update \
   && apt-get install -y zlib1g-dev libicu-dev g++ \
   && docker-php-ext-configure intl \
