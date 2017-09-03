@@ -1,0 +1,37 @@
+
+<!-- ########################### Global circles table ###################### -->
+<div class="panel panel-inverse">
+  <div class="panel-heading">
+    <div class="panel-heading-btn">
+      <button type="button" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-collapse"><i class="fa fa-minus"></i></button>
+    </div>
+    <h4 class="panel-title">Global Circles ({{vm.global_circles.length}})</h4>
+  </div>
+
+  <div class="panel-body">
+    <button type="button" class="btn btn-primary" ng-click="vm.showGlobalCircleModal()"><i class="fa fa-plus"></i>Add new</button>
+
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="circle in vm.global_circles">
+          <td>{{ circle.name }}</td>
+          <td>
+            <button type="button" class="btn btn-primary" ng-click="vm.showGlobalCircleModal(circle)"><i class="fa fa-pencil"></i>Edit</button>
+            <!--<button type="button" class="btn btn-danger"><i class="fa fa-minus"></i>Remove</button>-->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- ########################### Global circles edit modal ###################### -->
+<ng-include src="'modules/rewrite/admin/edit_globalcircle_form.html'"></ng-include>
+

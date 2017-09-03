@@ -172,7 +172,7 @@ omsApp.controller('headerController', function($scope, $rootScope, $state, $http
       $rootScope.currentUser = undefined;
       $http({
           method: 'POST',
-          url: '/api/login'
+          url: '/api/logout'
       }).then((result) => {
         $state.go('public.welcome');
         //window.location.reload();

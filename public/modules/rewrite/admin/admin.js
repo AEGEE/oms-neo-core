@@ -3,28 +3,75 @@
     'use strict';
 
     angular
-        .module('app.body_admin', [])
+        .module('app.admin', [])
         .config(config)
-        .controller('BodyAdminController', BodyAdminController);
+        .controller('BodyAdminController', BodyAdminController)
+        .controller('AdminController', AdminController)
+        .controller('CircleAdminController', CircleAdminController);
 
     /** @ngInject */
     function config($stateProvider)
     {
         // State
          $stateProvider
-            .state('app.body_admin', {
-                url: '/body_admin',
-                data: {'pageTitle': 'Body Admin'},
+            .state('app.admin', {
+                url: '/admin',
+                data: {'pageTitle': 'Admin'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/rewrite/body_admin/body_admin.html',
+                        templateUrl: 'modules/rewrite/admin/admin.html',
+                        controller: 'AdminController as vm'
+                    }
+                }
+            })
+            .state('app.admin.body_types', {
+                url: '/body_types',
+                data: {'pageTitle': 'Body Types'},
+                views   : {
+                    'pageContent@app': {
+                        templateUrl: 'modules/rewrite/admin/body_admin.html',
                         controller: 'BodyAdminController as vm'
+                    }
+                }
+            })
+            .state('app.admin.circles', {
+                url: '/circles',
+                data: {'pageTitle': 'Circles'},
+                views   : {
+                    'pageContent@app': {
+                        templateUrl: 'modules/rewrite/admin/circle_admin.html',
+                        controller: 'CircleAdminController as vm'
                     }
                 }
             });
     }
 
-    function BodyAdminController($http, $compile, $scope, $window, $httpParamSerializer) {
+    function AdminController($http) {
+        var vm = this;
+    }
+
+    function CircleAdminController($http) {
+        var vm = this;
+
+
+        vm.showGlobalCircleModal = function(circle = undefined) {
+            vm.edited_global_circle = circle;
+            $('#editGlobalCircleModal').modal('show');
+        }
+
+        vm.saveGlobalCircle = function() {
+            alert("Not implemented");
+        }
+
+        vm.injectParams = (params) => {
+          params.name = vm.query
+          params.recursive = vm.recursive;
+          return params;
+        }
+        infiniteScroll($http, vm, '/api/circles', vm.injectParams);
+    }
+
+    function BodyAdminController($http, $scope) {
         // Data
         var vm = this;
 
@@ -39,22 +86,9 @@
         }
         vm.getBodyTypes();
 
-        vm.global_circles = [
-            {
-                name: "Board"
-            }, {
-                name: "Member"
-            }
-        ];
-
         vm.showBodyTypeModal = function(bodytype = undefined) {
             vm.edited_body_type = bodytype;
             $('#editBodyTypeModal').modal('show');
-        }
-
-        vm.showGlobalCircleModal = function(circle = undefined) {
-            vm.edited_global_circle = circle;
-            $('#editGlobalCircleModal').modal('show');
         }
 
         vm.saveBodyType = function() {
@@ -92,10 +126,6 @@
                 else
                     showError(err);
             });
-        }
-
-        vm.saveGlobalCircle = function() {
-            alert("Not implemented");
         }
     }
 
