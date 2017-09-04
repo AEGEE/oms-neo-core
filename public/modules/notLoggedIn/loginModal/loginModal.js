@@ -61,7 +61,7 @@
                     window.localStorage.setItem("X-Auth-Token", response.data.data);
                     $http.defaults.headers.common['X-Auth-Token'] = response.data.data;
                     $.ajaxSetup({headers: { 'X-Auth-Token': response.data.data }});
-
+                    console.log('loginModal');
                     $http({
                         method: 'POST',
                         url: '/api/tokens/user',

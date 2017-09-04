@@ -192,6 +192,8 @@ omsApp.controller('sidebarController', function($scope, $rootScope, $state) {
     vm.goToLink = function(url) {
         location.href = url;
     }
+
+    vm.user = $rootScope.currentUser;
 });
 
 
@@ -1427,6 +1429,7 @@ const showError = (err, description = "Could not process action: ") => {
 };
 
 
+
 const showSuccess = (message) => {
   $.gritter.add({
     title: 'Success',
@@ -1435,6 +1438,39 @@ const showSuccess = (message) => {
     time: 8000,
     class_name: 'my-sticky-class',
   });
+}
+
+const convertToCsv = (data) => {
+  const escape = (str) => {
+    if(!str)
+      return "";
+    var result = str.toString().replace(/"/g, '""');
+    if (result.search(/("|,|\n)/g) >= 0)
+      result = '"' + result + '"';
+    return result;
+  }
+
+  var labels = [];
+  data.forEach((obj) => {
+    for(var key in obj) {
+      if(obj.hasOwnProperty(key) && !labels.find((label) => {return label == key;})) {
+        labels.push(key);
+      }
+    }
+  });
+
+  var csvContent = "";
+
+  csvContent += labels.map(escape).join(',') + "\n";
+
+  csvContent += data.map((obj) => {
+    var tmp = [];
+    labels.forEach((label) => {
+      tmp.push(escape(obj[label]));
+    });
+    return tmp.join(',');
+  }).join('\n');
+  return csvContent;
 }
 
 const infiniteScroll = ($http, vm, url, paramInjector) => {

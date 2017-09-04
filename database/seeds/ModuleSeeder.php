@@ -22,13 +22,13 @@ class ModuleSeeder extends Seeder
             'is_active'     =>  1
         ]);
 
-        ModulePage::create([
+        /*ModulePage::create([
             'name'          =>  'Settings',
             'code'          =>  'settings',
             'module_link'   =>  'modules/loggedIn/settings/settings.js',
             'icon'          =>  'fa fa-cog',
             'is_active'     =>  1
-        ]);
+        ]);*/
 
         ModulePage::create([
             'name'          =>  'Modules',

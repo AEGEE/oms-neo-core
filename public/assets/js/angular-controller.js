@@ -156,6 +156,8 @@ omsApp.controller('sidebarController', function($scope, $rootScope, $state) {
     vm.goToLink = function(url) {
         location.href = url;
     }
+
+    vm.user = $rootScope.currentUser;
 });
 
 
