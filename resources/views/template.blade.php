@@ -167,7 +167,6 @@ $isProduction = App::environment() == 'production' ? true : false;
           var token = window.localStorage.getItem("X-Auth-Token");
           if(token) {
             // We still have a token, attemp to fetch data
-            console.log('stateChangeStart');
             $http({
               method: 'POST',
               url: '/api/tokens/user',
