@@ -16270,6 +16270,739 @@ angular.module('bootstrap3-typeahead')
   return module.name
 }));
 
+/**
+ * Angular directive/filter/service for formatting date so that it displays how long ago the given time was compared to now.
+ * @version v0.4.6 - 2017-08-16
+ * @link https://github.com/yaru22/angular-timeago
+ * @author Brian Park <yaru22@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+'use strict';
+
+angular.module('yaru22.angular-timeago', []);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ca_ES'] = {
+    prefixAgo: 'fa',
+    prefixFromNow: 'd\'aquí',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menys d\'un minut',
+    minute: 'prop d\'un minut',
+    minutes: '%d minuts',
+    hour: 'prop d\'una hora',
+    hours: 'prop de %d hores',
+    day: 'un dia',
+    days: '%d dies',
+    month: 'prop d\'un mes',
+    months: '%d mesos',
+    year: 'prop d\'un any',
+    years: '%d anys',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+
+  /**
+   * Czech language uses 2 different versions for future based on the digit being
+   * lower than 5 or not.
+   */
+  function resolvePastAndFuture(past, future, future5) {
+    return function(d, millis) {
+      var isFuture = millis < 0;
+
+      if (!isFuture) {
+        return past;
+      } else {
+        if (d <= 4) {
+          return future;
+        } else {
+          return future5;
+        }
+      }
+    };
+  }
+
+  timeAgoSettings.strings['cs_CZ'] = {
+    prefixAgo: 'prěd',
+    prefixFromNow: 'za',
+    suffixAgo: null,
+    suffixFromNow: null,
+
+    //the below works for past
+    seconds: resolvePastAndFuture('méně než minutou', 'méne než minutu', 'méne než minutu'),
+    minute: resolvePastAndFuture('minutou', 'minutu', 'minutu'),
+    minutes: resolvePastAndFuture('%d minutami', '%d minuty', '%d minút'),
+    hour: resolvePastAndFuture('hodinou', 'hodinu', 'hodinu'),
+    hours: resolvePastAndFuture('%d hodinama', '%d hodiny', '%d hodin'),
+    day: resolvePastAndFuture('dnem', 'den', 'den'),
+    days: resolvePastAndFuture('%d dny', '%d dny', '%d dnů'),
+    month: resolvePastAndFuture('měsícem', 'měsíc', 'měsíc'),
+    months: resolvePastAndFuture('%d měsíci', '%d měsíce', '%d měsíců'),
+    year: resolvePastAndFuture('rokem', 'rok', 'rok'),
+    years: resolvePastAndFuture('%d lety', '%d roky', '%d let'),
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['da_DK'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'siden',
+    suffixFromNow: null,
+    seconds: 'mindre end et minut',
+    minute: 'omkring et minut',
+    minutes: '%d minuter',
+    hour: 'omkring en time',
+    hours: 'omkring %d timer',
+    day: 'en dag',
+    days: '%d dage',
+    month: 'omkring en m\xe5ned',
+    months: '%d m\xe5neder',
+    year: 'omkring et \xe5r',
+    years: '%d \xe5r',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['de_DE'] = {
+    prefixAgo: 'vor',
+    prefixFromNow: 'in',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'weniger als einer Minute',
+    minute: 'ca. einer Minute',
+    minutes: '%d Minuten',
+    hour: 'ca. einer Stunde',
+    hours: 'ca. %d Stunden',
+    day: 'einem Tag',
+    days: '%d Tagen',
+    month: 'ca. einem Monat',
+    months: '%d Monaten',
+    year: 'ca. einem Jahr',
+    years: '%d Jahren',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['en_US'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'ago',
+    suffixFromNow: 'from now',
+    seconds: 'less than a minute',
+    minute: 'about a minute',
+    minutes: '%d minutes',
+    hour: 'about an hour',
+    hours: 'about %d hours',
+    day: 'a day',
+    days: '%d days',
+    month: 'about a month',
+    months: '%d months',
+    year: 'about a year',
+    years: '%d years',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['es_ES'] = {
+    prefixAgo: 'hace',
+    prefixFromNow: 'dentro de',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menos de un minuto',
+    minute: 'un minuto',
+    minutes: '%d minutos',
+    hour: 'una hora',
+    hours: '%d horas',
+    day: 'un día',
+    days: '%d días',
+    month: 'un mes',
+    months: '%d meses',
+    year: 'un año',
+    years: '%d años',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['es_LA'] = {
+    prefixAgo: 'hace',
+    prefixFromNow: 'en',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menos de un minuto',
+    minute: 'un minuto',
+    minutes: '%d minutos',
+    hour: 'una hora',
+    hours: '%d horas',
+    day: 'un día',
+    days: '%d días',
+    month: 'un mes',
+    months: '%d meses',
+    year: 'un año',
+    years: '%d años',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['fr_FR'] = {
+    prefixAgo: 'il y a',
+    prefixFromNow: 'dans',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'moins d\'une minute',
+    minute: 'environ une minute',
+    minutes: '%d minutes',
+    hour: 'environ une heure',
+    hours: 'environ %d heures',
+    day: 'un jour',
+    days: '%d jours',
+    month: 'environ un mois',
+    months: '%d mois',
+    year: 'environ un an',
+    years: '%d ans',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['he_IL'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'לפני',
+    suffixFromNow: 'מעכשיו',
+    seconds: 'פחות מדקה',
+    minute: 'כדקה',
+    minutes: '%d דקות',
+    hour: 'כשעה',
+    hours: 'כ %d שעות',
+    day: 'יום',
+    days: '%d ימים',
+    month: 'כחודש',
+    months: '%d חודשים',
+    year: 'כשנה',
+    years: '%d שנים',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['hu_HU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'kevesebb mint egy perce',
+    minute: 'körülbelül egy perce',
+    minutes: '%d perce',
+    hour: 'körülbelül egy órája',
+    hours: 'körülbelül %d órája',
+    day: 'egy napja',
+    days: '%d napja',
+    month: 'körülbelül egy hónapja',
+    months: '%d hónapja',
+    year: 'körülbelül egy éve',
+    years: '%d éve',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['it_IT'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'fa',
+    suffixFromNow: 'da ora',
+    seconds: 'meno di un minuto',
+    minute: 'circa un minuto',
+    minutes: '%d minuti',
+    hour: 'circa un\'ora',
+    hours: 'circa %d ore',
+    day: 'un giorno',
+    days: '%d giorni',
+    month: 'circa un mese',
+    months: '%d mesi',
+    year: 'circa un anno',
+    years: '%d anni',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['nl_NL'] = {
+    prefixAgo: null,
+    prefixFromNow: 'over',
+    suffixAgo: 'geleden',
+    suffixFromNow: 'vanaf nu',
+    seconds: 'een paar seconden',
+    minute: 'ongeveer een minuut',
+    minutes: '%d minuten',
+    hour: 'een uur',
+    hours: '%d uur',
+    day: 'een dag',
+    days: '%d dagen',
+    month: 'een maand',
+    months: '%d maanden',
+    year: 'een jaar',
+    years: '%d jaar',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['pl_PL'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'temu',
+    suffixFromNow: 'od teraz',
+    seconds: 'mniej niż minuta',
+    minute: 'około minuty',
+    minutes: '%d minut',
+    hour: 'około godziny',
+    hours: 'około %d godzin',
+    day: 'dzień',
+    days: '%d dni',
+    month: 'około miesiąca',
+    months: '%d miesięcy',
+    year: 'około roku',
+    years: '%d lat',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['pt_BR'] = {
+    prefixAgo: null,
+    prefixFromNow: 'daqui a',
+    suffixAgo: 'atrás',
+    suffixFromNow: null,
+    seconds: 'menos de um minuto',
+    minute: 'cerca de um minuto',
+    minutes: '%d minutos',
+    hour: 'cerca de uma hora',
+    hours: 'cerca de %d horas',
+    day: 'um dia',
+    days: '%d dias',
+    month: 'cerca de um mês',
+    months: '%d meses',
+    year: 'cerca de um ano',
+    years: '%d anos',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ru_RU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'назад',
+    suffixFromNow: 'с текущего момента',
+    seconds: 'менее минуты',
+    minute: 'около минуты',
+    minutes: '%d мин.',
+    hour: 'около часа',
+    hours: 'около %d ч.',
+    day: 'день',
+    days: '%d дн.',
+    month: 'около месяца',
+    months: '%d мес.',
+    year: 'около года',
+    years: '%d года',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ru_RU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'назад',
+    suffixFromNow: null,
+    seconds: 'меньше минуты',
+    minute: 'около минуты',
+    minutes: '%d мин.',
+    hour: 'около часа',
+    hours: 'около %d час.',
+    day: 'день',
+    days: '%d дн.',
+    month: 'около месяца',
+    months: '%d мес.',
+    year: 'около года',
+    years: '%d г.',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+
+  /*
+   * Czech language uses 2 different versions for future based on the digit being lower then 5 or not.
+   */
+  function resolvePastAndFuture(past, future, future5) {
+    return function(d, millis) {
+      var isFuture = millis < 0;
+
+      if (!isFuture) {
+        return past;
+      } else {
+        if (d <= 4) {
+          return future;
+        } else {
+          return future5;
+        }
+      }
+    };
+  }
+
+  timeAgoSettings.strings['sk_SK'] = {
+    prefixAgo: 'pred',
+    prefixFromNow: 'za',
+    suffixAgo: null,
+    suffixFromNow: null,
+
+    //the below works for past
+    seconds: resolvePastAndFuture('menej ako minútou', 'menej ako minútu', 'menej ako minútu'),
+    minute: resolvePastAndFuture('minútou', 'minútu', 'minútu'),
+    minutes: resolvePastAndFuture('%d minútami', '%d minúty', '%d minút'),
+    hour: resolvePastAndFuture('hodinou', 'hodinu', 'hodinu'),
+    hours: resolvePastAndFuture('%d hodinami', '%d hodiny', '%d hodín'),
+    day: resolvePastAndFuture('dňom', 'deň', 'deň'),
+    days: resolvePastAndFuture('%d dňami', '%d dni', '%d dní'),
+    month: resolvePastAndFuture('mesiacom', 'mesiac', 'mesiac'),
+    months: resolvePastAndFuture('%d mesiacmi', '%d mesiace', '%d mesiacov'),
+    year: resolvePastAndFuture('rokom', 'rok', 'rok'),
+    years: resolvePastAndFuture('%d rokmi', '%d roky', '%d rokov'),
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['sv_SE'] = {
+    prefixAgo: null,
+    prefixFromNow: 'om',
+    suffixAgo: 'sen',
+    suffixFromNow: null,
+    seconds: 'mindre än en minut',
+    minute: 'cirka en minut',
+    minutes: '%d minuter',
+    hour: 'cirka en timme',
+    hours: 'cirka %d timmar',
+    day: 'en dag',
+    days: '%d dagar',
+    month: 'cirka en månad',
+    months: '%d månader',
+    year: 'cirka ett år',
+    years: '%d år',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['tr_TR'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'önce',
+    suffixFromNow: 'şu andan itibaren',
+    seconds: 'bir dakikadan daha az',
+    minute: 'bir dakika gibi',
+    minutes: '%d dakika',
+    hour: 'bir saat gibi',
+    hours: '%d saat gibi',
+    day: 'bir gün',
+    days: '%d gün',
+    month: 'bir ay gibi',
+    months: '%d ay',
+    year: 'bir yıl gibi',
+    years: '%d yıl',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['zh_CN'] = {
+    wordSeparator: '',
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: '前',
+    suffixFromNow: '后',
+    seconds: '1分钟',
+    minute: '1分钟',
+    minutes: '%d分钟',
+    hour: '1小时',
+    hours: '%d小时',
+    day: '1天',
+    days: '%d天',
+    month: '1个月',
+    months: '%d个月',
+    year: '1年',
+    years: '%d年',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['zh_TW'] = {
+    wordSeparator: '',
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: '前',
+    suffixFromNow: '後',
+    seconds: '少於一分鐘',
+    minute: '一分鐘',
+    minutes: '%d分鐘',
+    hour: '一小時',
+    hours: '%d小時',
+    day: '一日',
+    days: '%d日',
+    month: '一個月',
+    months: '%d個月',
+    year: '一年',
+    years: '%d年',
+    numbers: [
+      '零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+      '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+      '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十',
+      '卅一', '卅二', '卅三', '卅四', '卅五', '卅六', '卅七', '卅八', '卅九', '四十',
+      '卌一', '卌二', '卌三', '卌四', '卌五', '卌六', '卌七', '卌八', '卌九', '五十',
+      '五十一', '五十二', '五十三', '五十四', '五十五', '五十六', '五十七', '五十八', '五十九', '六十',
+      '六十一', '六十二', '六十三', '六十四', '六十五', '六十六', '六十七', '六十八', '六十九', '七十',
+      '七十一', '七十二', '七十三', '七十四', '七十五', '七十六', '七十七', '七十八', '七十九', '八十',
+      '八十一', '八十二', '八十三', '八十四', '八十五', '八十六', '八十七', '八十八', '八十九', '九十',
+      '九十一', '九十二', '九十三', '九十四', '九十五', '九十六', '九十七', '九十八', '九十九', '一百',
+    ]
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').factory('nowTime', ["$interval", "timeAgo", "timeAgoSettings", function($interval, timeAgo, timeAgoSettings) {
+  var nowTime;
+
+  function updateTime() {
+    nowTime = Date.now();
+  }
+  updateTime();
+  $interval(updateTime, timeAgoSettings.refreshMillis);
+
+  return function() {
+    return nowTime;
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').constant('timeAgoSettings', {
+  refreshMillis: 1000,
+  allowFuture: false,
+  overrideLang: null,
+  fullDateAfterSeconds: null,
+  strings: {},
+  breakpoints: {
+    secondsToMinute: 45, // in seconds
+    secondsToMinutes: 90, // in seconds
+    minutesToHour: 45, // in minutes
+    minutesToHours: 90, // in minutes
+    hoursToDay: 24, // in hours
+    hoursToDays: 42, // in hours
+    daysToMonth: 30, // in days
+    daysToMonths: 45, // in days
+    daysToYear: 365, // in days
+    yearToYears: 1.5 // in year
+  }
+});
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').directive('timeAgo', ["timeAgo", "nowTime", function(timeAgo, nowTime) {
+  return {
+    scope: {
+      fromTime: '@',
+      format: '@'
+    },
+    restrict: 'EA',
+    link: function(scope, elem) {
+      var fromTime;
+
+      // Track changes to fromTime
+      scope.$watch('fromTime', function() {
+        fromTime = timeAgo.parse(scope.fromTime);
+      });
+
+      // Track changes to time difference
+      scope.$watch(function() {
+        return nowTime() - fromTime;
+      }, function(value) {
+        angular.element(elem).text(timeAgo.inWords(value, fromTime, scope.format));
+      });
+    }
+  };
+}]);
+
+'use strict';
+/*global moment */
+
+angular.module('yaru22.angular-timeago').factory('timeAgo', ["$filter", "timeAgoSettings", function($filter, timeAgoSettings) {
+  var service = {};
+
+  service.inWords = function(distanceMillis, fromTime, format, timezone) {
+
+    var fullDateAfterSeconds = parseInt(timeAgoSettings.fullDateAfterSeconds, 10);
+
+    if (!isNaN(fullDateAfterSeconds)) {
+      var fullDateAfterMillis = fullDateAfterSeconds * 1000;
+      if ((distanceMillis >= 0 && fullDateAfterMillis <= distanceMillis) ||
+        (distanceMillis < 0 && fullDateAfterMillis >= distanceMillis)) {
+        if (format) {
+          return $filter('date')(fromTime, format, timezone);
+        }
+        return fromTime;
+      }
+    }
+
+    var overrideLang = timeAgoSettings.overrideLang;
+    var documentLang = document.documentElement.lang;
+    var sstrings = timeAgoSettings.strings;
+    var lang, $l;
+
+    if (typeof sstrings[overrideLang] !== 'undefined') {
+      lang = overrideLang;
+      $l = sstrings[overrideLang];
+    } else if (typeof sstrings[documentLang] !== 'undefined') {
+      lang = documentLang;
+      $l = sstrings[documentLang];
+    } else {
+      lang = 'en_US';
+      $l = sstrings[lang];
+    }
+
+    var prefix = $l.prefixAgo;
+    var suffix = $l.suffixAgo;
+    if (timeAgoSettings.allowFuture) {
+      if (distanceMillis < 0) {
+        prefix = $l.prefixFromNow;
+        suffix = $l.suffixFromNow;
+      }
+    }
+
+    var seconds = Math.abs(distanceMillis) / 1000;
+    var minutes = seconds / 60;
+    var hours = minutes / 60;
+    var days = hours / 24;
+    var years = days / 365;
+
+    function substitute(stringOrFunction, number) {
+      number = Math.round(number);
+      var string = angular.isFunction(stringOrFunction) ?
+        stringOrFunction(number, distanceMillis) : stringOrFunction;
+      var value = ($l.numbers && $l.numbers[number]) || number;
+      return string.replace(/%d/i, value);
+    }
+
+    var breakpoints = timeAgoSettings.breakpoints;
+    var words = seconds < breakpoints.secondsToMinute && substitute($l.seconds, seconds) ||
+      seconds < breakpoints.secondsToMinutes && substitute($l.minute, 1) ||
+      minutes < breakpoints.minutesToHour && substitute($l.minutes, minutes) ||
+      minutes < breakpoints.minutesToHours && substitute($l.hour, 1) ||
+      hours < breakpoints.hoursToDay && substitute($l.hours, hours) ||
+      hours < breakpoints.hoursToDays && substitute($l.day, 1) ||
+      days < breakpoints.daysToMonth && substitute($l.days, days) ||
+      days < breakpoints.daysToMonths && substitute($l.month, 1) ||
+      days < breakpoints.daysToYear && substitute($l.months, days / 30) ||
+      years < breakpoints.yearToYears && substitute($l.year, 1) ||
+      substitute($l.years, years);
+
+    var separator = $l.wordSeparator === undefined ? ' ' : $l.wordSeparator;
+    if (lang === 'he_IL') {
+      return [prefix, suffix, words].join(separator).trim();
+    } else {
+      return [prefix, words, suffix].join(separator).trim();
+    }
+  };
+
+  service.parse = function(input) {
+    if (input instanceof Date) {
+      return input;
+    } else if ((typeof moment !== 'undefined') && moment.isMoment(input)) {
+      return input.toDate();
+    } else if (angular.isNumber(input)) {
+      return new Date(input);
+    } else if (/^\d+$/.test(input)) {
+      return new Date(parseInt(input, 10));
+    } else {
+      var s = (input || '').trim();
+      s = s.replace(/\.\d+/, ''); // remove milliseconds
+      s = s.replace(/-/, '/').replace(/-/, '/');
+      s = s.replace(/T/, ' ').replace(/Z/, ' UTC');
+      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/, ' $1$2'); // -04:00 -> -0400
+      return new Date(s);
+    }
+  };
+
+  return service;
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').filter('timeAgo', ["nowTime", "timeAgo", function(nowTime, timeAgo) {
+  function timeAgoFilter(value, format, timezone) {
+    var fromTime = timeAgo.parse(value);
+    var diff = nowTime() - fromTime;
+    return timeAgo.inWords(diff, fromTime, format, timezone);
+  }
+  timeAgoFilter.$stateful = true;
+  return timeAgoFilter;
+}]);
+
+!function(){function t(e){var n=t.modules[e];if(!n)throw new Error('failed to require "'+e+'"');return"exports"in n||"function"!=typeof n.definition||(n.client=n.component=!0,n.definition.call(this,n.exports={},n),delete n.definition),n.exports}t.loader="component",t.helper={},t.helper.semVerSort=function(t,e){for(var n=t.version.split("."),i=e.version.split("."),o=0;o<n.length;++o){var r=parseInt(n[o],10),s=parseInt(i[o],10);if(r!==s)return r>s?1:-1;var c=n[o].substr((""+r).length),a=i[o].substr((""+s).length);if(""===c&&""!==a)return 1;if(""!==c&&""===a)return-1;if(""!==c&&""!==a)return c>a?1:-1}return 0},t.latest=function(e,n){function i(t){throw new Error('failed to find latest module of "'+t+'"')}var o=/(.*)~(.*)@v?(\d+\.\d+\.\d+[^\/]*)$/,r=/(.*)~(.*)/;r.test(e)||i(e);for(var s=Object.keys(t.modules),c=[],a=[],l=0;l<s.length;l++){var h=s[l];if(new RegExp(e+"@").test(h)){var u=h.substr(e.length+1),d=o.exec(h);null!=d?c.push({version:u,name:h}):a.push({version:u,name:h})}}if(0===c.concat(a).length&&i(e),c.length>0){var p=c.sort(t.helper.semVerSort).pop().name;return n===!0?p:t(p)}var p=a.sort(function(t,e){return t.name>e.name})[0].name;return n===!0?p:t(p)},t.modules={},t.register=function(e,n){t.modules[e]={definition:n}},t.define=function(e,n){t.modules[e]={exports:n}},t.register("abpetkov~transitionize@0.0.3",function(t,e){function n(t,e){return this instanceof n?(this.element=t,this.props=e||{},void this.init()):new n(t,e)}e.exports=n,n.prototype.isSafari=function(){return/Safari/.test(navigator.userAgent)&&/Apple Computer/.test(navigator.vendor)},n.prototype.init=function(){var t=[];for(var e in this.props)t.push(e+" "+this.props[e]);this.element.style.transition=t.join(", "),this.isSafari()&&(this.element.style.webkitTransition=t.join(", "))}}),t.register("ftlabs~fastclick@v0.6.11",function(t,e){function n(t){"use strict";var e,i=this;if(this.trackingClick=!1,this.trackingClickStart=0,this.targetElement=null,this.touchStartX=0,this.touchStartY=0,this.lastTouchIdentifier=0,this.touchBoundary=10,this.layer=t,!t||!t.nodeType)throw new TypeError("Layer must be a document node");this.onClick=function(){return n.prototype.onClick.apply(i,arguments)},this.onMouse=function(){return n.prototype.onMouse.apply(i,arguments)},this.onTouchStart=function(){return n.prototype.onTouchStart.apply(i,arguments)},this.onTouchMove=function(){return n.prototype.onTouchMove.apply(i,arguments)},this.onTouchEnd=function(){return n.prototype.onTouchEnd.apply(i,arguments)},this.onTouchCancel=function(){return n.prototype.onTouchCancel.apply(i,arguments)},n.notNeeded(t)||(this.deviceIsAndroid&&(t.addEventListener("mouseover",this.onMouse,!0),t.addEventListener("mousedown",this.onMouse,!0),t.addEventListener("mouseup",this.onMouse,!0)),t.addEventListener("click",this.onClick,!0),t.addEventListener("touchstart",this.onTouchStart,!1),t.addEventListener("touchmove",this.onTouchMove,!1),t.addEventListener("touchend",this.onTouchEnd,!1),t.addEventListener("touchcancel",this.onTouchCancel,!1),Event.prototype.stopImmediatePropagation||(t.removeEventListener=function(e,n,i){var o=Node.prototype.removeEventListener;"click"===e?o.call(t,e,n.hijacked||n,i):o.call(t,e,n,i)},t.addEventListener=function(e,n,i){var o=Node.prototype.addEventListener;"click"===e?o.call(t,e,n.hijacked||(n.hijacked=function(t){t.propagationStopped||n(t)}),i):o.call(t,e,n,i)}),"function"==typeof t.onclick&&(e=t.onclick,t.addEventListener("click",function(t){e(t)},!1),t.onclick=null))}n.prototype.deviceIsAndroid=navigator.userAgent.indexOf("Android")>0,n.prototype.deviceIsIOS=/iP(ad|hone|od)/.test(navigator.userAgent),n.prototype.deviceIsIOS4=n.prototype.deviceIsIOS&&/OS 4_\d(_\d)?/.test(navigator.userAgent),n.prototype.deviceIsIOSWithBadTarget=n.prototype.deviceIsIOS&&/OS ([6-9]|\d{2})_\d/.test(navigator.userAgent),n.prototype.needsClick=function(t){"use strict";switch(t.nodeName.toLowerCase()){case"button":case"select":case"textarea":if(t.disabled)return!0;break;case"input":if(this.deviceIsIOS&&"file"===t.type||t.disabled)return!0;break;case"label":case"video":return!0}return/\bneedsclick\b/.test(t.className)},n.prototype.needsFocus=function(t){"use strict";switch(t.nodeName.toLowerCase()){case"textarea":return!0;case"select":return!this.deviceIsAndroid;case"input":switch(t.type){case"button":case"checkbox":case"file":case"image":case"radio":case"submit":return!1}return!t.disabled&&!t.readOnly;default:return/\bneedsfocus\b/.test(t.className)}},n.prototype.sendClick=function(t,e){"use strict";var n,i;document.activeElement&&document.activeElement!==t&&document.activeElement.blur(),i=e.changedTouches[0],n=document.createEvent("MouseEvents"),n.initMouseEvent(this.determineEventType(t),!0,!0,window,1,i.screenX,i.screenY,i.clientX,i.clientY,!1,!1,!1,!1,0,null),n.forwardedTouchEvent=!0,t.dispatchEvent(n)},n.prototype.determineEventType=function(t){"use strict";return this.deviceIsAndroid&&"select"===t.tagName.toLowerCase()?"mousedown":"click"},n.prototype.focus=function(t){"use strict";var e;this.deviceIsIOS&&t.setSelectionRange&&0!==t.type.indexOf("date")&&"time"!==t.type?(e=t.value.length,t.setSelectionRange(e,e)):t.focus()},n.prototype.updateScrollParent=function(t){"use strict";var e,n;if(e=t.fastClickScrollParent,!e||!e.contains(t)){n=t;do{if(n.scrollHeight>n.offsetHeight){e=n,t.fastClickScrollParent=n;break}n=n.parentElement}while(n)}e&&(e.fastClickLastScrollTop=e.scrollTop)},n.prototype.getTargetElementFromEventTarget=function(t){"use strict";return t.nodeType===Node.TEXT_NODE?t.parentNode:t},n.prototype.onTouchStart=function(t){"use strict";var e,n,i;if(t.targetTouches.length>1)return!0;if(e=this.getTargetElementFromEventTarget(t.target),n=t.targetTouches[0],this.deviceIsIOS){if(i=window.getSelection(),i.rangeCount&&!i.isCollapsed)return!0;if(!this.deviceIsIOS4){if(n.identifier===this.lastTouchIdentifier)return t.preventDefault(),!1;this.lastTouchIdentifier=n.identifier,this.updateScrollParent(e)}}return this.trackingClick=!0,this.trackingClickStart=t.timeStamp,this.targetElement=e,this.touchStartX=n.pageX,this.touchStartY=n.pageY,t.timeStamp-this.lastClickTime<200&&t.preventDefault(),!0},n.prototype.touchHasMoved=function(t){"use strict";var e=t.changedTouches[0],n=this.touchBoundary;return Math.abs(e.pageX-this.touchStartX)>n||Math.abs(e.pageY-this.touchStartY)>n?!0:!1},n.prototype.onTouchMove=function(t){"use strict";return this.trackingClick?((this.targetElement!==this.getTargetElementFromEventTarget(t.target)||this.touchHasMoved(t))&&(this.trackingClick=!1,this.targetElement=null),!0):!0},n.prototype.findControl=function(t){"use strict";return void 0!==t.control?t.control:t.htmlFor?document.getElementById(t.htmlFor):t.querySelector("button, input:not([type=hidden]), keygen, meter, output, progress, select, textarea")},n.prototype.onTouchEnd=function(t){"use strict";var e,n,i,o,r,s=this.targetElement;if(!this.trackingClick)return!0;if(t.timeStamp-this.lastClickTime<200)return this.cancelNextClick=!0,!0;if(this.cancelNextClick=!1,this.lastClickTime=t.timeStamp,n=this.trackingClickStart,this.trackingClick=!1,this.trackingClickStart=0,this.deviceIsIOSWithBadTarget&&(r=t.changedTouches[0],s=document.elementFromPoint(r.pageX-window.pageXOffset,r.pageY-window.pageYOffset)||s,s.fastClickScrollParent=this.targetElement.fastClickScrollParent),i=s.tagName.toLowerCase(),"label"===i){if(e=this.findControl(s)){if(this.focus(s),this.deviceIsAndroid)return!1;s=e}}else if(this.needsFocus(s))return t.timeStamp-n>100||this.deviceIsIOS&&window.top!==window&&"input"===i?(this.targetElement=null,!1):(this.focus(s),this.deviceIsIOS4&&"select"===i||(this.targetElement=null,t.preventDefault()),!1);return this.deviceIsIOS&&!this.deviceIsIOS4&&(o=s.fastClickScrollParent,o&&o.fastClickLastScrollTop!==o.scrollTop)?!0:(this.needsClick(s)||(t.preventDefault(),this.sendClick(s,t)),!1)},n.prototype.onTouchCancel=function(){"use strict";this.trackingClick=!1,this.targetElement=null},n.prototype.onMouse=function(t){"use strict";return this.targetElement?t.forwardedTouchEvent?!0:t.cancelable&&(!this.needsClick(this.targetElement)||this.cancelNextClick)?(t.stopImmediatePropagation?t.stopImmediatePropagation():t.propagationStopped=!0,t.stopPropagation(),t.preventDefault(),!1):!0:!0},n.prototype.onClick=function(t){"use strict";var e;return this.trackingClick?(this.targetElement=null,this.trackingClick=!1,!0):"submit"===t.target.type&&0===t.detail?!0:(e=this.onMouse(t),e||(this.targetElement=null),e)},n.prototype.destroy=function(){"use strict";var t=this.layer;this.deviceIsAndroid&&(t.removeEventListener("mouseover",this.onMouse,!0),t.removeEventListener("mousedown",this.onMouse,!0),t.removeEventListener("mouseup",this.onMouse,!0)),t.removeEventListener("click",this.onClick,!0),t.removeEventListener("touchstart",this.onTouchStart,!1),t.removeEventListener("touchmove",this.onTouchMove,!1),t.removeEventListener("touchend",this.onTouchEnd,!1),t.removeEventListener("touchcancel",this.onTouchCancel,!1)},n.notNeeded=function(t){"use strict";var e,i;if("undefined"==typeof window.ontouchstart)return!0;if(i=+(/Chrome\/([0-9]+)/.exec(navigator.userAgent)||[,0])[1]){if(!n.prototype.deviceIsAndroid)return!0;if(e=document.querySelector("meta[name=viewport]")){if(-1!==e.content.indexOf("user-scalable=no"))return!0;if(i>31&&window.innerWidth<=window.screen.width)return!0}}return"none"===t.style.msTouchAction?!0:!1},n.attach=function(t){"use strict";return new n(t)},"undefined"!=typeof define&&define.amd?define(function(){"use strict";return n}):"undefined"!=typeof e&&e.exports?(e.exports=n.attach,e.exports.FastClick=n):window.FastClick=n}),t.register("component~indexof@0.0.3",function(t,e){e.exports=function(t,e){if(t.indexOf)return t.indexOf(e);for(var n=0;n<t.length;++n)if(t[n]===e)return n;return-1}}),t.register("component~classes@1.2.1",function(e,n){function i(t){if(!t)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}var o=t("component~indexof@0.0.3"),r=/\s+/,s=Object.prototype.toString;n.exports=function(t){return new i(t)},i.prototype.add=function(t){if(this.list)return this.list.add(t),this;var e=this.array(),n=o(e,t);return~n||e.push(t),this.el.className=e.join(" "),this},i.prototype.remove=function(t){if("[object RegExp]"==s.call(t))return this.removeMatching(t);if(this.list)return this.list.remove(t),this;var e=this.array(),n=o(e,t);return~n&&e.splice(n,1),this.el.className=e.join(" "),this},i.prototype.removeMatching=function(t){for(var e=this.array(),n=0;n<e.length;n++)t.test(e[n])&&this.remove(e[n]);return this},i.prototype.toggle=function(t,e){return this.list?("undefined"!=typeof e?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this):("undefined"!=typeof e?e?this.add(t):this.remove(t):this.has(t)?this.remove(t):this.add(t),this)},i.prototype.array=function(){var t=this.el.className.replace(/^\s+|\s+$/g,""),e=t.split(r);return""===e[0]&&e.shift(),e},i.prototype.has=i.prototype.contains=function(t){return this.list?this.list.contains(t):!!~o(this.array(),t)}}),t.register("component~event@0.1.4",function(t,e){var n=window.addEventListener?"addEventListener":"attachEvent",i=window.removeEventListener?"removeEventListener":"detachEvent",o="addEventListener"!==n?"on":"";t.bind=function(t,e,i,r){return t[n](o+e,i,r||!1),i},t.unbind=function(t,e,n,r){return t[i](o+e,n,r||!1),n}}),t.register("component~query@0.0.3",function(t,e){function n(t,e){return e.querySelector(t)}t=e.exports=function(t,e){return e=e||document,n(t,e)},t.all=function(t,e){return e=e||document,e.querySelectorAll(t)},t.engine=function(e){if(!e.one)throw new Error(".one callback required");if(!e.all)throw new Error(".all callback required");return n=e.one,t.all=e.all,t}}),t.register("component~matches-selector@0.1.5",function(e,n){function i(t,e){if(!t||1!==t.nodeType)return!1;if(s)return s.call(t,e);for(var n=o.all(e,t.parentNode),i=0;i<n.length;++i)if(n[i]==t)return!0;return!1}var o=t("component~query@0.0.3"),r=Element.prototype,s=r.matches||r.webkitMatchesSelector||r.mozMatchesSelector||r.msMatchesSelector||r.oMatchesSelector;n.exports=i}),t.register("component~closest@0.1.4",function(e,n){var i=t("component~matches-selector@0.1.5");n.exports=function(t,e,n,o){for(t=n?{parentNode:t}:t,o=o||document;(t=t.parentNode)&&t!==document;){if(i(t,e))return t;if(t===o)return}}}),t.register("component~delegate@0.2.3",function(e,n){var i=t("component~closest@0.1.4"),o=t("component~event@0.1.4");e.bind=function(t,e,n,r,s){return o.bind(t,n,function(n){var o=n.target||n.srcElement;n.delegateTarget=i(o,e,!0,t),n.delegateTarget&&r.call(t,n)},s)},e.unbind=function(t,e,n,i){o.unbind(t,e,n,i)}}),t.register("component~events@1.0.9",function(e,n){function i(t,e){if(!(this instanceof i))return new i(t,e);if(!t)throw new Error("element required");if(!e)throw new Error("object required");this.el=t,this.obj=e,this._events={}}function o(t){var e=t.split(/ +/);return{name:e.shift(),selector:e.join(" ")}}var r=t("component~event@0.1.4"),s=t("component~delegate@0.2.3");n.exports=i,i.prototype.sub=function(t,e,n){this._events[t]=this._events[t]||{},this._events[t][e]=n},i.prototype.bind=function(t,e){function n(){var t=[].slice.call(arguments).concat(h);a[e].apply(a,t)}var i=o(t),c=this.el,a=this.obj,l=i.name,e=e||"on"+l,h=[].slice.call(arguments,2);return i.selector?n=s.bind(c,i.selector,l,n):r.bind(c,l,n),this.sub(l,e,n),n},i.prototype.unbind=function(t,e){if(0==arguments.length)return this.unbindAll();if(1==arguments.length)return this.unbindAllOf(t);var n=this._events[t];if(n){var i=n[e];i&&r.unbind(this.el,t,i)}},i.prototype.unbindAll=function(){for(var t in this._events)this.unbindAllOf(t)},i.prototype.unbindAllOf=function(t){var e=this._events[t];if(e)for(var n in e)this.unbind(t,n)}}),t.register("switchery",function(e,n){function i(t,e){if(!(this instanceof i))return new i(t,e);this.element=t,this.options=e||{};for(var n in a)null==this.options[n]&&(this.options[n]=a[n]);null!=this.element&&"checkbox"==this.element.type&&this.init(),this.isDisabled()===!0&&this.disable()}var o=t("abpetkov~transitionize@0.0.3"),r=t("ftlabs~fastclick@v0.6.11"),s=t("component~classes@1.2.1"),c=t("component~events@1.0.9");n.exports=i;var a={color:"#64bd63",secondaryColor:"#dfdfdf",jackColor:"#fff",jackSecondaryColor:null,className:"switchery",disabled:!1,disabledOpacity:.5,speed:"0.4s",size:"default"};i.prototype.hide=function(){this.element.style.display="none"},i.prototype.show=function(){var t=this.create();this.insertAfter(this.element,t)},i.prototype.create=function(){return this.switcher=document.createElement("span"),this.jack=document.createElement("small"),this.switcher.appendChild(this.jack),this.switcher.className=this.options.className,this.events=c(this.switcher,this),this.switcher},i.prototype.insertAfter=function(t,e){t.parentNode.insertBefore(e,t.nextSibling)},i.prototype.setPosition=function(t){var e=this.isChecked(),n=this.switcher,i=this.jack;t&&e?e=!1:t&&!e&&(e=!0),e===!0?(this.element.checked=!0,i.style.left=window.getComputedStyle?parseInt(window.getComputedStyle(n).width)-parseInt(window.getComputedStyle(i).width)+"px":parseInt(n.currentStyle.width)-parseInt(i.currentStyle.width)+"px",this.options.color&&this.colorize(),this.setSpeed()):(i.style.left=0,this.element.checked=!1,this.switcher.style.boxShadow="inset 0 0 0 0 "+this.options.secondaryColor,this.switcher.style.borderColor=this.options.secondaryColor,this.switcher.style.backgroundColor=this.options.secondaryColor!==a.secondaryColor?this.options.secondaryColor:"#fff",this.jack.style.backgroundColor=this.options.jackSecondaryColor!==this.options.jackColor?this.options.jackSecondaryColor:this.options.jackColor,this.setSpeed())},i.prototype.setSpeed=function(){var t={},e={"background-color":this.options.speed,left:this.options.speed.replace(/[a-z]/,"")/2+"s"};t=this.isChecked()?{border:this.options.speed,"box-shadow":this.options.speed,"background-color":3*this.options.speed.replace(/[a-z]/,"")+"s"}:{border:this.options.speed,"box-shadow":this.options.speed},o(this.switcher,t),o(this.jack,e)},i.prototype.setSize=function(){var t="switchery-small",e="switchery-default",n="switchery-large";switch(this.options.size){case"small":s(this.switcher).add(t);break;case"large":s(this.switcher).add(n);break;default:s(this.switcher).add(e)}},i.prototype.colorize=function(){var t=this.switcher.offsetHeight/2;this.switcher.style.backgroundColor=this.options.color,this.switcher.style.borderColor=this.options.color,this.switcher.style.boxShadow="inset 0 0 0 "+t+"px "+this.options.color,this.jack.style.backgroundColor=this.options.jackColor},i.prototype.handleOnchange=function(t){if(document.dispatchEvent){var e=document.createEvent("HTMLEvents");e.initEvent("change",!0,!0),this.element.dispatchEvent(e)}else this.element.fireEvent("onchange")},i.prototype.handleChange=function(){var t=this,e=this.element;e.addEventListener?e.addEventListener("change",function(){t.setPosition()}):e.attachEvent("onchange",function(){t.setPosition()})},i.prototype.handleClick=function(){var t=this.switcher;r(t),this.events.bind("click","bindClick")},i.prototype.bindClick=function(){var t=this.element.parentNode.tagName.toLowerCase(),e="label"===t?!1:!0;this.setPosition(e),this.handleOnchange(this.element.checked)},i.prototype.markAsSwitched=function(){this.element.setAttribute("data-switchery",!0)},i.prototype.markedAsSwitched=function(){return this.element.getAttribute("data-switchery")},i.prototype.init=function(){this.hide(),this.show(),this.setSize(),this.setPosition(),this.markAsSwitched(),this.handleChange(),this.handleClick()},i.prototype.isChecked=function(){return this.element.checked},i.prototype.isDisabled=function(){return this.options.disabled||this.element.disabled||this.element.readOnly},i.prototype.destroy=function(){this.events.unbind()},i.prototype.enable=function(){this.options.disabled&&(this.options.disabled=!1),this.element.disabled&&(this.element.disabled=!1),this.element.readOnly&&(this.element.readOnly=!1),this.switcher.style.opacity=1,this.events.bind("click","bindClick")},i.prototype.disable=function(){this.options.disabled||(this.options.disabled=!0),this.element.disabled||(this.element.disabled=!0),this.element.readOnly||(this.element.readOnly=!0),this.switcher.style.opacity=this.options.disabledOpacity,this.destroy()}}),"object"==typeof exports?module.exports=t("switchery"):"function"==typeof define&&define.amd?define("Switchery",[],function(){return t("switchery")}):(this||window).Switchery=t("switchery")}(),angular.module("NgSwitchery",[]).directive("uiSwitch",["$window","$timeout","$log","$parse",function(t,e,n,i){function o(n,o,r,s){function c(){e(function(){h&&angular.element(h.switcher).remove(),h=new t.Switchery(o[0],a);var e=h.element;e.checked=n.initValue,h.setPosition(!1),e.addEventListener("change",function(t){n.$apply(function(){s.$setViewValue(e.checked)})})},0)}if(!s)return!1;var a={};try{a=i(r.uiSwitch)(n)}catch(l){}var h,u;r.$observe("disabled",function(t){void 0!=t&&t!=u&&(u=t,c())}),c()}return{require:"ngModel",restrict:"AE",scope:{initValue:"=ngModel"},link:o}}]);
 /*! showdown 06-01-2015 */
 var Showdown={extensions:{}},forEach=Showdown.forEach=function(a,b){if("function"==typeof a.forEach)a.forEach(b);else{var c,d=a.length;for(c=0;d>c;c++)b(a[c],c,a)}},stdExtName=function(a){return a.replace(/[_-]||\s/g,"").toLowerCase()};Showdown.converter=function(a){var b,c,d,e=0,f=[],g=[];if("undefined"!=typeof module&&"undefined"!=typeof exports&&"undefined"!=typeof require){var h=require("fs");if(h){var i=h.readdirSync((__dirname||".")+"/extensions").filter(function(a){return~a.indexOf(".js")}).map(function(a){return a.replace(/\.js$/,"")});Showdown.forEach(i,function(a){var b=stdExtName(a);Showdown.extensions[b]=require("./extensions/"+a)})}}if(this.makeHtml=function(a){return b={},c={},d=[],a=a.replace(/~/g,"~T"),a=a.replace(/\$/g,"~D"),a=a.replace(/\r\n/g,"\n"),a=a.replace(/\r/g,"\n"),a="\n\n"+a+"\n\n",a=M(a),a=a.replace(/^[ \t]+$/gm,""),Showdown.forEach(f,function(b){a=l(b,a)}),a=z(a),a=n(a),a=m(a),a=p(a),a=K(a),a=a.replace(/~D/g,"$$"),a=a.replace(/~T/g,"~"),Showdown.forEach(g,function(b){a=l(b,a)}),a},a&&a.extensions){var j=this;Showdown.forEach(a.extensions,function(a){if("string"==typeof a&&(a=Showdown.extensions[stdExtName(a)]),"function"!=typeof a)throw"Extension '"+a+"' could not be loaded.  It was either not found or is not a valid extension.";Showdown.forEach(a(j),function(a){a.type?"language"===a.type||"lang"===a.type?f.push(a):("output"===a.type||"html"===a.type)&&g.push(a):g.push(a)})})}var k,l=function(a,b){if(a.regex){var c=new RegExp(a.regex,"g");return b.replace(c,a.replace)}return a.filter?a.filter(b):void 0},m=function(a){return a+="~0",a=a.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|(?=~0))/gm,function(a,d,e,f,g){return d=d.toLowerCase(),b[d]=G(e),f?f+g:(g&&(c[d]=g.replace(/"/g,"&quot;")),"")}),a=a.replace(/~0/,"")},n=function(a){a=a.replace(/\n/g,"\n\n");return a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\b[^\r]*?\n<\/\2>[ \t]*(?=\n+))/gm,o),a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|style|section|header|footer|nav|article|aside)\b[^\r]*?<\/\2>[ \t]*(?=\n+)\n)/gm,o),a=a.replace(/(\n[ ]{0,3}(<(hr)\b([^<>])*?\/?>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(\n\n[ ]{0,3}<!(--[^\r]*?--\s*)+>[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(?:\n\n)([ ]{0,3}(?:<([?%])[^\r]*?\2>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/\n\n/g,"\n")},o=function(a,b){var c=b;return c=c.replace(/\n\n/g,"\n"),c=c.replace(/^\n/,""),c=c.replace(/\n+$/g,""),c="\n\n~K"+(d.push(c)-1)+"K\n\n"},p=function(a){a=w(a);var b=A("<hr />");return a=a.replace(/^[ ]{0,2}([ ]?\*[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\-[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\_[ ]?){3,}[ \t]*$/gm,b),a=x(a),a=y(a),a=E(a),a=n(a),a=F(a)},q=function(a){return a=B(a),a=r(a),a=H(a),a=u(a),a=s(a),a=I(a),a=G(a),a=D(a),a=a.replace(/  +\n/g," <br />\n")},r=function(a){var b=/(<[a-z\/!$]("[^"]*"|'[^']*'|[^'">])*>|<!(--.*?--\s*)+>)/gi;return a=a.replace(b,function(a){var b=a.replace(/(.)<\/?code>(?=.)/g,"$1`");return b=N(b,"\\`*_")})},s=function(a){return a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,t),a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\]\([ \t]*()<?(.*?(?:\(.*?\).*?)?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,t),a=a.replace(/(\[([^\[\]]+)\])()()()()()/g,t)},t=function(a,d,e,f,g,h,i,j){void 0==j&&(j="");var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(""==n)if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0!=b[m])n=b[m],void 0!=c[m]&&(o=c[m]);else{if(!(k.search(/\(\s*\)$/m)>-1))return k;n=""}n=N(n,"*_");var p='<a href="'+n+'"';return""!=o&&(o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"'),p+=">"+l+"</a>"},u=function(a){return a=a.replace(/(!\[(.*?)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,v),a=a.replace(/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,v)},v=function(a,d,e,f,g,h,i,j){var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(o||(o=""),""==n){if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0==b[m])return k;n=b[m],void 0!=c[m]&&(o=c[m])}l=l.replace(/"/g,"&quot;"),n=N(n,"*_");var p='<img src="'+n+'" alt="'+l+'"';return o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"',p+=" />"},w=function(a){function b(a){return a.replace(/[^\w]/g,"").toLowerCase()}return a=a.replace(/^(.+)[ \t]*\n=+[ \t]*\n+/gm,function(a,c){return A('<h1 id="'+b(c)+'">'+q(c)+"</h1>")}),a=a.replace(/^(.+)[ \t]*\n-+[ \t]*\n+/gm,function(a,c){return A('<h2 id="'+b(c)+'">'+q(c)+"</h2>")}),a=a.replace(/^(\#{1,6})[ \t]*(.+?)[ \t]*\#*\n+/gm,function(a,c,d){var e=c.length;return A("<h"+e+' id="'+b(d)+'">'+q(d)+"</h"+e+">")})},x=function(a){a+="~0";var b=/^(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/gm;return e?a=a.replace(b,function(a,b,c){var d=b,e=c.search(/[*+-]/g)>-1?"ul":"ol";d=d.replace(/\n{2,}/g,"\n\n\n");var f=k(d);return f=f.replace(/\s+$/,""),f="<"+e+">"+f+"</"+e+">\n"}):(b=/(\n\n|^\n?)(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/g,a=a.replace(b,function(a,b,c,d){var e=b,f=c,g=d.search(/[*+-]/g)>-1?"ul":"ol",f=f.replace(/\n{2,}/g,"\n\n\n"),h=k(f);return h=e+"<"+g+">\n"+h+"</"+g+">\n"})),a=a.replace(/~0/,"")};k=function(a){return e++,a=a.replace(/\n{2,}$/,"\n"),a+="~0",a=a.replace(/(\n)?(^[ \t]*)([*+-]|\d+[.])[ \t]+([^\r]+?(\n{1,2}))(?=\n*(~0|\2([*+-]|\d+[.])[ \t]+))/gm,function(a,b,c,d,e){var f=e,g=b;return g||f.search(/\n{2,}/)>-1?f=p(L(f)):(f=x(L(f)),f=f.replace(/\n$/,""),f=q(f)),"<li>"+f+"</li>\n"}),a=a.replace(/~0/g,""),e--,a};var y=function(a){return a+="~0",a=a.replace(/(?:\n\n|^)((?:(?:[ ]{4}|\t).*\n+)+)(\n*[ ]{0,3}[^ \t\n]|(?=~0))/g,function(a,b,c){var d=b,e=c;return d=C(L(d)),d=M(d),d=d.replace(/^\n+/g,""),d=d.replace(/\n+$/g,""),d="<pre><code>"+d+"\n</code></pre>",A(d)+e}),a=a.replace(/~0/,"")},z=function(a){return a+="~0",a=a.replace(/(?:^|\n)```(.*)\n([\s\S]*?)\n```/g,function(a,b,c){var d=b,e=c;return e=C(e),e=M(e),e=e.replace(/^\n+/g,""),e=e.replace(/\n+$/g,""),e="<pre><code"+(d?' class="'+d+'"':"")+">"+e+"\n</code></pre>",A(e)}),a=a.replace(/~0/,"")},A=function(a){return a=a.replace(/(^\n+|\n+$)/g,""),"\n\n~K"+(d.push(a)-1)+"K\n\n"},B=function(a){return a=a.replace(/(^|[^\\])(`+)([^\r]*?[^`])\2(?!`)/gm,function(a,b,c,d){var e=d;return e=e.replace(/^([ \t]*)/g,""),e=e.replace(/[ \t]*$/g,""),e=C(e),b+"<code>"+e+"</code>"})},C=function(a){return a=a.replace(/&/g,"&amp;"),a=a.replace(/</g,"&lt;"),a=a.replace(/>/g,"&gt;"),a=N(a,"*_{}[]\\",!1)},D=function(a){return a=a.replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g,"<strong>$2</strong>"),a=a.replace(/(\*|_)(?=\S)([^\r]*?\S)\1/g,"<em>$2</em>")},E=function(a){return a=a.replace(/((^[ \t]*>[ \t]?.+\n(.+\n)*\n*)+)/gm,function(a,b){var c=b;return c=c.replace(/^[ \t]*>[ \t]?/gm,"~0"),c=c.replace(/~0/g,""),c=c.replace(/^[ \t]+$/gm,""),c=p(c),c=c.replace(/(^|\n)/g,"$1  "),c=c.replace(/(\s*<pre>[^\r]+?<\/pre>)/gm,function(a,b){var c=b;return c=c.replace(/^  /gm,"~0"),c=c.replace(/~0/g,"")}),A("<blockquote>\n"+c+"\n</blockquote>")})},F=function(a){a=a.replace(/^\n+/g,""),a=a.replace(/\n+$/g,"");for(var b=a.split(/\n{2,}/g),c=[],e=b.length,f=0;e>f;f++){var g=b[f];g.search(/~K(\d+)K/g)>=0?c.push(g):g.search(/\S/)>=0&&(g=q(g),g=g.replace(/^([ \t]*)/g,"<p>"),g+="</p>",c.push(g))}e=c.length;for(var f=0;e>f;f++)for(;c[f].search(/~K(\d+)K/)>=0;){var h=d[RegExp.$1];h=h.replace(/\$/g,"$$$$"),c[f]=c[f].replace(/~K\d+K/,h)}return c.join("\n\n")},G=function(a){return a=a.replace(/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/g,"&amp;"),a=a.replace(/<(?![a-z\/?\$!])/gi,"&lt;")},H=function(a){return a=a.replace(/\\(\\)/g,O),a=a.replace(/\\([`*_{}\[\]()>#+-.!])/g,O)},I=function(a){return a=a.replace(/<((https?|ftp|dict):[^'">\s]+)>/gi,'<a href="$1">$1</a>'),a=a.replace(/<(?:mailto:)?([-.\w]+\@[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+)>/gi,function(a,b){return J(K(b))})},J=function(a){var b=[function(a){return"&#"+a.charCodeAt(0)+";"},function(a){return"&#x"+a.charCodeAt(0).toString(16)+";"},function(a){return a}];return a="mailto:"+a,a=a.replace(/./g,function(a){if("@"==a)a=b[Math.floor(2*Math.random())](a);else if(":"!=a){var c=Math.random();a=c>.9?b[2](a):c>.45?b[1](a):b[0](a)}return a}),a='<a href="'+a+'">'+a+"</a>",a=a.replace(/">.+:/g,'">')},K=function(a){return a=a.replace(/~E(\d+)E/g,function(a,b){var c=parseInt(b);return String.fromCharCode(c)})},L=function(a){return a=a.replace(/^(\t|[ ]{1,4})/gm,"~0"),a=a.replace(/~0/g,"")},M=function(a){return a=a.replace(/\t(?=\t)/g,"    "),a=a.replace(/\t/g,"~A~B"),a=a.replace(/~B(.+?)~A/g,function(a,b){for(var c=b,d=4-c.length%4,e=0;d>e;e++)c+=" ";return c}),a=a.replace(/~A/g,"    "),a=a.replace(/~B/g,"")},N=function(a,b,c){var d="(["+b.replace(/([\[\]\\])/g,"\\$1")+"])";c&&(d="\\\\"+d);var e=new RegExp(d,"g");return a=a.replace(e,O)},O=function(a,b){var c=b.charCodeAt(0);return"~E"+c+"E"}},"undefined"!=typeof module&&(module.exports=Showdown),"function"==typeof define&&define.amd&&define("showdown",function(){return Showdown}),"undefined"!=typeof angular&&"undefined"!=typeof Showdown&&!function(a,b){function c(){function a(){var a=new b.converter(c);this.makeHtml=function(b){return a.makeHtml(b)},this.stripHtml=function(a){return String(a).replace(/<[^>]+>/gm,"")}}var c={extensions:[],stripHtml:!0};this.setOption=function(a,b){return c.key=b,this},this.getOption=function(a){return c.hasOwnProperty(a)?c.key:null},this.loadExtension=function(a){return c.extensions.push(a),this},this.$get=function(){return new a}}function d(a){var b=function(b,c){b.$watch("model",function(b){var d;d="string"==typeof b?a.makeHtml(b):typeof b,c.html(d)})};return{restrict:"A",link:b,scope:{model:"=sdModelToHtml"}}}function e(){return function(a){return String(a).replace(/<[^>]+>/gm,"")}}a.provider("$Showdown",c).directive("sdModelToHtml",["$Showdown",d]).filter("sdStripHtml",e)}(angular.module("Showdown",[]),Showdown);
 /*

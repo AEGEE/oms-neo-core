@@ -41,6 +41,8 @@
         function link(scope, elements, attrs) {
             scope.message = "Fetching user";
             attrs.$observe('userid', function(value) {
+                if(!value)
+                    return;
                 $http({
                     url: '/api/users/' + value,
                     method: 'GET'

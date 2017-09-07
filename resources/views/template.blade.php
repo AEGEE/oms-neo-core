@@ -103,6 +103,8 @@ $isProduction = App::environment() == 'production' ? true : false;
       'infinite-scroll',
       'angucomplete-alt',
       'rzModule',                 // Angularjs-slider
+      'NgSwitchery',
+      'yaru22.angular-timeago',
       'app.dashboard',
       'app.profile',
       'public.signup',
@@ -241,7 +243,7 @@ $isProduction = App::environment() == 'production' ? true : false;
               $.gritter.add({
                 title: 'Permission error!',
                 text: "Not enough permissions!",
-                sticky: true,
+                sticky: false,
                 time: 8000,
                 class_name: 'my-sticky-class'
               });
@@ -250,7 +252,7 @@ $isProduction = App::environment() == 'production' ? true : false;
               $.gritter.add({
                 title: 'Error!',
                 text: "Please try again later",
-                sticky: true,
+                sticky: false,
                 time: 8000,
                 class_name: 'testClass'
               });

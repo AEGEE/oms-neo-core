@@ -30,7 +30,8 @@ elixir(function(mix) {
     '../../../public/assets/plugins/parsley/src/parsley.css',
     '../../../public/assets/plugins/bootstrap-eonasdan-datetimepicker/build/css/bootstrap-datetimepicker.min.css',
     '../../../node_modules/angular-bootstrap-datetimepicker/src/css/datetimepicker.css',
-    '../../../node_modules/angularjs-slider/dist/rzslider.css', 
+    '../../../node_modules/angularjs-slider/dist/rzslider.css',
+    '../../../node_modules/ng-switchery/dist/switchery.min.css',
     '../otherLibs/nestable/style.css',
     '../../../public/assets/css/own.css'
   ],
@@ -61,6 +62,8 @@ elixir(function(mix) {
     '../../../node_modules/ng-infinite-scroll/build/ng-infinite-scroll.js',
     '../../../node_modules/angular-bootstrap3-typeahead/angular-bootstrap3-typeahead.js',
     '../../../node_modules/angularjs-slider/dist/rzslider.js',
+    '../../../node_modules/angular-timeago/dist/angular-timeago.js',
+    '../../../node_modules/ng-switchery/dist/ng-switchery.js',
     '../bower_components/showdown/compressed/Showdown.min.js',
     '../bower_components/angular-markdown-directive/markdown.js',
     '../otherLibs/nestable/jquery.nestable.js',
