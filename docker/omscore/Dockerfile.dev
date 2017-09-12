@@ -5,6 +5,10 @@ MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 RUN DEBIAN_FRONTEND=noninteractive
 RUN locale-gen en_US.UTF-8
 
+#oms-core simply serves as a file system, therefore it only needs to check if it can access the files.
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD [ -f /var/www/app/Http/Kernel.php ]
+
 ENV LANGUAGE=en_US.UTF-8
 ENV LC_ALL=en_US.UTF-8
 ENV LC_CTYPE=en_US.UTF-8
@@ -87,6 +91,7 @@ RUN . ~/.bashrc
 ADD ./bootstrap.sh /var/scripts/bootstrap.sh
 
 RUN chown -R laradock:laradock /var/scripts/
+RUN echo "export PS1=\"\[\e[31m\]\u\[\e[m\]@\[\e[32m\][\[\e[m\]\[\e[32m\]omscore\[\e[m\]\[\e[32m\]]\[\e[m\]\[\e[34m\]\H\[\e[m\]:\[\e[33m\]\w\[\e[m\]\\$  \"" >> ~/.bashrc
 
 WORKDIR /var/www
 
@@ -94,5 +99,5 @@ WORKDIR /var/www
 CMD chown -R laradock:laradock /var/www \
     && touch /var/shared/api-key \
     && chown -R laradock:laradock /var/shared \
-    && su - laradock -c 'sh /var/scripts/bootstrap.sh' \
+    && sh /var/scripts/bootstrap.sh \
     && gulp watch # TODO: also run this as laradock

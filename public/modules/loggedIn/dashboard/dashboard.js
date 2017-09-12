@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.dashboard', {
-                url: '/',
+                url: '/dashboard',
                 data: {'pageTitle': 'Dashboard'},
                 views   : {
                     'pageContent@app': {
@@ -33,11 +33,6 @@
         vm.news = {};
 
         vm.what = "Preview";
-
-        vm.suspended = suspended;
-        if(vm.suspended) {
-            vm.suspendedFor = suspendedFor;
-        }
 
         // Methods
         vm.getDashboardData = function() {

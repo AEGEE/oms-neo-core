@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
+
         User::create([
             'address_id'        =>  1,
 			'personal_email' 	=> 	'admin@aegee.org',
@@ -24,11 +25,12 @@ class UserSeeder extends Seeder
 			'last_name'			=>	'Admin',
 			'date_of_birth'		=>	'1985-04-16',
 			'gender'			=>	'other',
-			'password'			=>	Hash::make('1234'),
+			'password'			=>	Hash::make(config('auth.admin_password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
 			'is_superadmin'		=>	1,
             'seo_url'           =>  'superadmin'
 		]);
+
 
         User::create([
             'address_id'        =>  2,
@@ -38,7 +40,7 @@ class UserSeeder extends Seeder
 			'last_name'			=>	'Snijders',
 			'date_of_birth'		=>	'1993-10-31',
 			'gender'			=>	'male',
-			'password'			=>	Hash::make('1234'),
+			'password'			=>	Hash::make(config('auth.admin_password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
 			'is_superadmin'		=>	1,
             'seo_url'           =>  'i3anaan'

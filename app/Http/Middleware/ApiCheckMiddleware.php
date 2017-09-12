@@ -37,7 +37,7 @@ class ApiCheckMiddleware
                         })
                         ->firstOrFail();
         } catch(ModelNotFoundException $ex) {
-            return response()->forbidden();
+            return response()->unauthorized();
         }
 
         Auth::logout(); //Just to be safe, should not be necessary.

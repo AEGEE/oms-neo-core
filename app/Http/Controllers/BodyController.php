@@ -29,7 +29,7 @@ class BodyController extends Controller
             'country_name'  => $req->country_name,
             ];
 
-        $bodies = Body::filterArray($search)->with(['bodyType', 'address.country', 'circles', 'users'])->get();
+        $bodies = Body::filterArray($search)->with(['bodyType', 'address.country', 'circles', 'users']);
 
         return response()->success($bodies);
     }
