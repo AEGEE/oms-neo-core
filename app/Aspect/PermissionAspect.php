@@ -20,6 +20,9 @@ use Auth;
 class PermissionAspect implements Aspect
 {
     /**
+     * Main permission interception.
+     * Pointcuts on a relation of a Model being edited and initialises the permission lookup.
+     *
      * @Around("execution(public App\Models\Body->setRelation(*)) || execution(public App\Models\User->setRelation(*))")
      */
      public function logMethodCall(MethodInvocation $invocation)
