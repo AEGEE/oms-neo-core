@@ -14,4 +14,4 @@ before_script:
 
 
 script:
-    - sudo docker-compose run -T omscore ./vendor/bin/phpunit
+    - sudo docker-compose run -T php-fpm ./vendor/bin/phpunit
