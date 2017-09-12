@@ -41,6 +41,30 @@ class PermissionAspect implements Aspect
          return $invocation->getThis();
      }
 
+     /*
+        The below is an initial example implemenation of permissions.
+        It defines default permissions (that everyone has) for both Users and Bodies.
+        Additionally it grants Users the ability to see their own address,
+        as well as granting same-body members to see each other's address + circles.
+
+        This should eventually be changed in a database query,
+        this would allow each Object to set it's own permissions for others,
+        as well as the (authorization) delegates it trusts.
+
+        (Authorization) delegates work as follows:
+        A delegate is an object that you (the object) grant the (full!) power
+        to grant users permission over you (the object).
+        Trusting an object to be a delegate, means you trust all the delegate's delegates as well.
+
+        Right now it is not possible to declare permissions contextual
+        on an object's instance, you can only apply it contextual to an object's class.
+        However, once permissions (and delegates) are dynamic, ie the DB query as above,
+        the system already is capable of some highly complex systems.
+
+        Permissions currently do not work on atributes YET, only (eloquent) relations.
+      */
+
+
      /**
       * @Around("execution(public App\Models\Body->getUserPermissions(*))")
       */
@@ -52,12 +76,26 @@ class PermissionAspect implements Aspect
               //If member
               $permissions->push("App\Models\Body.circles");
               $permissions->push("App\Models\Body.users");
-              $permissions->push("App\Models\User.circles");
           }
           Log::debug("Found permissions: " . $permissions);
           return $permissions;
       }
 
+       /**
+        * @Around("execution(public App\Models\Body->getCascadingUserPermissions(*))")
+        */
+        public function bodyGetCascadingUserPermissions(MethodInvocation $invocation) {
+            $user = $invocation->getArguments()[0];
+
+            $permissions = collect([]);
+            if ($user->bodies()->pluck('bodies.id')->contains($invocation->getThis()->id)) {
+                //If member
+                $permissions->push("App\Models\User.circles");
+                $permissions->push("App\Models\User.address");
+            }
+            Log::debug("Found permissions: " . $permissions);
+            return $permissions;
+        }
 
       /**
        * @Around("execution(public App\Models\User->getUserPermissions(*))")
@@ -75,9 +113,9 @@ class PermissionAspect implements Aspect
       }
 
       /**
-       * @Around("execution(public App\Models\User->getGrantingParents(*))")
+       * @Around("execution(public App\Models\User->getAuthorizationDelegates(*))")
        */
-      public function userGetGrantingParents(MethodInvocation $invocation) {
+      public function userGetAuthorizationDelegates(MethodInvocation $invocation) {
           return $invocation->getThis()->bodies;
       }
 }

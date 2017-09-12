@@ -17,7 +17,7 @@ trait RequiresPermission {
      * @return Boolean            True if granted, false otherwise
      */
     function requiresPermission($permission) {
-        Log::info("User " . Auth::user()->getDisplayName() . " requires permission to do $permission on target " . get_class($this));
+        Log::info("User (" . Auth::user()->getDisplayName() . ") requires permission to do ($permission) on target (" . get_class($this) . ")");
         $result = $this->askPermission(Auth::user(), $permission);
         return $result;
     }
@@ -31,15 +31,22 @@ trait RequiresPermission {
      */
     function askPermission($user, $permission, $cascading = false) {
         //First check if the object can allow the action on his own.
-        if (!$cascading && $this->checkPermission($permission, $this->getUserPermissions($user))) {
-            //This object can grant this permission by itself
-            return true;
+        if ($cascading) {
+            if ($this->checkPermission($permission, $this->getCascadingUserPermissions($user))) {
+                //This object can grant this (cascading) permission by itself
+                return true;
+            }
         } else {
-            //Ask the authorization delegates if they can grant this permission
-            foreach ($this->getAuthorizationDelegates() as $parent) {
-                if ($parent->askPermission($user, $permission, true)) {
-                    return true;
-                }
+            if ($this->checkPermission($permission, $this->getUserPermissions($user))) {
+                //This object can grant this permission by itself
+                return true;
+            }
+        }
+        //This object cannot provide this, ask if some delegate can
+        foreach ($this->getAuthorizationDelegates() as $parent) {
+            Log::debug("Asking ($permission) to authorization delegate: ($parent)");
+            if ($parent->askPermission($user, $permission, true)) {
+                return true;
             }
         }
         //If none could give access, return false.
