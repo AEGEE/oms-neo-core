@@ -31,12 +31,14 @@ class PermissionAspect implements Aspect
          Log::debug("Pointcut: " . get_class($invocation->getThis()) . "(" . spl_object_hash($invocation->getThis()) . ") :: " . $invocation->getMethod()->name . " (" . json_encode($invocation->getArguments()) . ")");
 
          //Check if permission should be granted.
-         $permission = $invocation->getThis()->requiresPermission(get_class($invocation->getThis()) . "." . $invocation->getArguments()[0]);
-         Log::debug("Permission " . ($permission ? "GRANTED" : "DENIED"));
+         $permission = get_class($invocation->getThis()) . "." . $invocation->getArguments()[0];
+         $granted = $invocation->getThis()->requiresPermission($permission);
+         Log::debug("Permission ($permission)" . $granted ? "GRANTED" : "DENIED");
 
 
-         if ($permission) {
-             $result = $invocation->proceed();
+         if ($granted) {
+             $invocation->getThis()->addAcquiredPermission($permission);
+             return $invocation->proceed();
          }
          return $invocation->getThis();
      }
@@ -103,7 +105,7 @@ class PermissionAspect implements Aspect
       public function userGetUserPermissions(MethodInvocation $invocation) {
           $user = $invocation->getArguments()[0];
 
-          $permissions = collect(["App\Models\User.bodies", "App\Models\User.pivot"]);
+          $permissions = $invocation->proceed();
           if ($user->id == $invocation->getThis()->id) {
               //If same user
               $permissions->push("App\Models\User.address");
@@ -111,6 +113,13 @@ class PermissionAspect implements Aspect
           Log::debug("Found permissions: " . $permissions);
           return $permissions;
       }
+
+    /**
+     * @Around("execution(public App\Models\User->getDefaultPermissions(*))")
+     */
+    public function userGetDefaultPermissions(MethodInvocation $invocation) {
+        return collect(["App\Models\User.bodies", "App\Models\User.pivot"]);
+    }
 
       /**
        * @Around("execution(public App\Models\User->getAuthorizationDelegates(*))")

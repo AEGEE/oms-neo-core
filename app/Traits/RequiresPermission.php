@@ -10,6 +10,8 @@ use Auth;
 
 trait RequiresPermission {
 
+    public $acquiredPermissions;
+
     /**
      * Called whenever a permission is required, checking if the current user has this permission.
      * Typically the first method in a permission lookup, often called after being intercepted by an Advice.
@@ -69,7 +71,7 @@ trait RequiresPermission {
      * @return Collection        A collection of permissions the user has over this object
      */
     function getUserPermissions($user) {
-        return null;
+        return $this->getDefaultPermissions();
     }
 
     /**
@@ -90,4 +92,24 @@ trait RequiresPermission {
     function getAuthorizationDelegates() {
         return [];
     }
+
+    function getDefaultPermissions() {
+        return collect();
+    }
+
+    function addAcquiredPermission($permission) {
+        if (!$this->acquiredPermissions) {
+            $this->acquiredPermissions = $this->getDefaultPermissions();
+        }
+        $this->acquiredPermissions->push($permission);
+    }
+
+    function getAcquiredPermissions() {
+        if (!$this->acquiredPermissions) {
+            return collect(); //If no acquired permissions, return an empty collection;
+        }
+        $this->acquiredPermissions = $this->acquiredPermissions->unique()->values();
+        return $this->acquiredPermissions;
+    }
+
 }

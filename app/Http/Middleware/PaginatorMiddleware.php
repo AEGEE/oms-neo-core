@@ -21,7 +21,8 @@ class PaginatorMiddleware {    /**
 
         $page = Input::get('page', 1);
         $per_page = Input::get('per_page', 10);
-        $response = $result->getOriginalContent();
+        $data = $result->getOriginalContent()['data'];
+        $meta = [];
 
         if (isset($response['data'])) {
             $paginator = null;
@@ -33,7 +34,7 @@ class PaginatorMiddleware {    /**
 
             if ($paginator) {
                 $response['data'] = $paginator->items();
-                $response['meta'] = $this->appendMeta($request, $response, $paginator);
+                $this->appendMeta($request, $response, $paginator);
                 $response = json_encode($response);
                 $result->setContent($response);
             }
@@ -54,7 +55,7 @@ class PaginatorMiddleware {    /**
     }
 
 
-    private function appendMeta($request, $response, $paginator) {
+    private function appendMeta($request, &$response, $paginator) {
 
         $response['meta']['pagination'] =
         [   "current_page"  => $paginator->currentPage(),
@@ -66,6 +67,5 @@ class PaginatorMiddleware {    /**
             "prev_page_url" => $paginator->previousPageUrl(),
             "to"            => $paginator->lastItem(),
             "total"         => $paginator->total(), ];
-        return $response['meta'];
     }
 }

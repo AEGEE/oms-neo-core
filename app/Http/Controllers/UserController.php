@@ -43,7 +43,7 @@ class UserController extends Controller
             'body_name'         => $req->body_name,
             ];
 
-        $users = User::filterArray($search);
+        $users = User::filterArray($search)->with('address', 'bodies', 'circles');
 
         return response()->success($users);
     }
