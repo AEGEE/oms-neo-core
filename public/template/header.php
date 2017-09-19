@@ -5,7 +5,10 @@
     <div class="container-fluid">
         <!-- begin mobile sidebar expand / collapse button -->
         <div class="navbar-header">
-            <a ui-sref="app.dashboard" class="navbar-brand" style="width:250px"><span class="navbar-logo"></span> OMS</a>
+            <a ui-sref="app.dashboard" class="navbar-brand" style="width:250px">
+                <img src="assets/img/logo.png" alt="logo" style="height: 30px; float: left; padding-right: 5px;" />
+                    OMS
+            </a>
             <button type="button" class="navbar-toggle" data-click="sidebar-toggled">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>

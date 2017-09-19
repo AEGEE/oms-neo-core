@@ -202,13 +202,15 @@ omsApp.controller('headerController', function($rootScope, $state, $http) {
     } 
 
     vm.getNotifications = () => {
-      if(!vm.notifications_enabled)
+      if(!vm.notifications_enabled || vm.busy)
         return;
 
+      vm.busy = true;
       $http({
         url: '/services/oms-notification-onscreen/api/notifications',
         method: 'GET'
       }).then((response) => {
+        vm.busy = false;
         if(response && response.data && response.data.data && response.data.success) {
           vm.notifications = response.data.data;
           vm.unreadCount = vm.notifications.reduce((acc, cur) => {
@@ -220,6 +222,7 @@ omsApp.controller('headerController', function($rootScope, $state, $http) {
           vm.notifications_enabled = false;
         }
       }).catch((error) => {
+        vm.busy = false;
         showError(error);
         vm.notifications_enabled = false;
       });
