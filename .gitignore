@@ -1,5 +1,4 @@
 /vendor
-resources/views/vendor
 /node_modules
 /public/storage
 /storage/userAvatars
