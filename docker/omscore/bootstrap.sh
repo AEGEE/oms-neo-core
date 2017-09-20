@@ -37,6 +37,7 @@ else
 	cp /var/www/storage/key /var/shared/api-key
 
 	npm install
+  gulp
 
 	mkdir -p storage
 	mkdir -p /var/shared/strapstate

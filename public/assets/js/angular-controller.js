@@ -164,9 +164,75 @@ omsApp.controller('sidebarController', function($scope, $rootScope, $state) {
 /* -------------------------------
    4.0 CONTROLLER - Header
 ------------------------------- */
-omsApp.controller('headerController', function($scope, $rootScope, $state, $http, $q, $location) {
+omsApp.controller('headerController', function($rootScope, $state, $http) {
     var vm = this;
     vm.user = $rootScope.currentUser;
+    vm.notifications_enabled = true;
+
+    vm.markRead = (notification) => {
+      if(vm.notifications) {
+
+        vm.notifications.forEach((notification) => {
+          if(notification.read)
+            return;
+
+          $http({
+            url: '/services/oms-notification-onscreen/api/notifications/' + notification.id,
+            method: 'PUT',
+            data: {
+              read: true
+            }
+          }).then((response) => {
+            // do nothing...
+          }).catch((error) => {
+            console.log(error);
+          });
+        });
+        vm.unreadCount = 0;
+      }
+
+      vm.notifications_enabled = true;
+      vm.getNotifications();
+    }
+
+    vm.goToLink = (notification) => {
+      if(notification.heading_link) {
+        $state.go(notification.heading_link, notification.heading_link_params);
+      }
+    } 
+
+    vm.getNotifications = () => {
+      if(!vm.notifications_enabled || vm.busy)
+        return;
+
+      vm.busy = true;
+      $http({
+        url: '/services/oms-notification-onscreen/api/notifications',
+        method: 'GET'
+      }).then((response) => {
+        vm.busy = false;
+        if(response && response.data && response.data.data && response.data.success) {
+          vm.notifications = response.data.data;
+          vm.unreadCount = vm.notifications.reduce((acc, cur) => {
+            if(cur.read)
+              return acc;
+            return acc + 1;
+          }, 0);
+        } else {
+          vm.notifications_enabled = false;
+        }
+      }).catch((error) => {
+        vm.busy = false;
+        showError(error);
+        vm.notifications_enabled = false;
+      });
+    }
+    if($rootScope.notification_update_interval) { // For some reason the controller code gets called twice
+      clearInterval($rootScope.notification_update_interval);
+    }
+    vm.getNotifications();
+    $rootScope.notification_update_interval = setInterval(vm.getNotifications, 60000);
+  
 
     vm.logout = function() {
       var token = window.localStorage.getItem("X-Auth-Token");

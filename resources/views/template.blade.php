@@ -14,7 +14,7 @@ $isProduction = App::environment() == 'production' ? true : false;
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
   <meta content="OMS" name="description" />
   <meta content="" name="author" />
-  
+
   <!-- ================== BEGIN BASE CSS STYLE ================== -->
   <link href="//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <link href="vendor/vendor.css" rel="stylesheet" />
@@ -46,7 +46,7 @@ $isProduction = App::environment() == 'production' ? true : false;
   <!-- begin #page-loader -->
   <!--<div id="page-loader" ng-controller="pageLoaderController" class="fade in"><span class="spinner"></span></div>-->
   <!-- end #page-loader -->
-  
+
   <!-- begin #page-container -->
   <div id="page-container" class="page-container page-sidebar-fixed page-header-fixed fade"
   ng-class="{
@@ -103,11 +103,13 @@ $isProduction = App::environment() == 'production' ? true : false;
       'infinite-scroll',
       'angucomplete-alt',
       'rzModule',                 // Angularjs-slider
+      'NgSwitchery',
+      'yaru22.angular-timeago',
       'app.dashboard',
       'app.profile',
       'public.signup',
       'public.welcome',
-      {!!$modulesNames!!} 
+      {!!$modulesNames!!}
     ])
     .config(appConfig)
     .factory(responseObserver)
@@ -241,7 +243,7 @@ $isProduction = App::environment() == 'production' ? true : false;
               $.gritter.add({
                 title: 'Permission error!',
                 text: "Not enough permissions!",
-                sticky: true,
+                sticky: false,
                 time: 8000,
                 class_name: 'my-sticky-class'
               });
@@ -250,7 +252,7 @@ $isProduction = App::environment() == 'production' ? true : false;
               $.gritter.add({
                 title: 'Error!',
                 text: "Please try again later",
-                sticky: true,
+                sticky: false,
                 time: 8000,
                 class_name: 'testClass'
               });
