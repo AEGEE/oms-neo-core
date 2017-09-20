@@ -1,5 +1,4 @@
 /vendor
-public/vendor
 resources/views/vendor
 /node_modules
 /public/storage
