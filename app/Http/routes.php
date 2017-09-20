@@ -135,7 +135,7 @@ Route::post('/api/microservice/register', 'ModuleController@registerMicroservice
 Route::get('/service/health/ping', 'ServiceController@ping');
 
 // Generic routes..
-Route::any('/logout', 'GenericController@logout');
+Route::any('/api/logout', 'GenericController@logout');
 
 // ALL ROUTES SHOULD GO BEFORE THIS ONE!
 Route::any('/api/{all}', function() { return response()->failure("Incorrect API URL");})->where('all', '.*');
