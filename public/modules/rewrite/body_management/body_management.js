@@ -56,36 +56,17 @@
         };
 
         vm.query = "";
-        vm.bodies = [];
+        
+        vm.injectParams = (params) => {
+            params.name = vm.query
+            return params;
+        }
+        infiniteScroll($http, vm, '/api/bodies', vm.injectParams);
+
+
         vm.body = {};
         vm.body_types = [];
         vm.querytoken = 0;
-
-        vm.getBodies = function() {
-            var active_types = vm.body_types
-                .filter(function(item) {return item.filter_active;})
-                .map(function(item) {return item.id});
-
-            vm.querytoken += 1;
-            var mytoken = vm.querytoken;
-
-            var params = {};
-            if(vm.query)
-                params["name"] = vm.query;
-            //if(active_types.length > 0)
-            //    params["type_id"] = active_types;
-
-            $http({
-                method: 'GET',
-                url: '/api/bodies',
-                params: params
-            })
-            .then(function successCallback(response) {
-                if(mytoken == vm.querytoken) // Make sure no request has surpassed us
-                    vm.bodies = response.data.data;
-            }).catch(function(err) {showError(err);});
-        }
-        vm.getBodies();
 
         vm.getBodyTypes = function() {
 
@@ -164,7 +145,8 @@
 
         vm.permissions = {
             edit_body: true,
-            edit_circles: true
+            edit_circles: true,
+            request_join: true
         };
         vm.body = {};
         vm.countries = [];
