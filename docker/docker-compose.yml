@@ -78,7 +78,7 @@ services:
     pgadmin:
         image: fenglc/pgadmin4
         ports:
-            - "8081:5050"
+            - "5050:5050"
         links:
             - postgres
 ### Volumes Setup ###########################################
