@@ -66,6 +66,7 @@ RUN apt-get update && \
     npm cache clean --force && \
     ln -s /usr/bin/nodejs /usr/bin/node
 
+#TODO: remove the --force from above npm cache?
 #####################################
 # Composer:
 #####################################
