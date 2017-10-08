@@ -35,8 +35,8 @@ class Kernel extends HttpKernel
         'api' => [
             'finalize',
             'returnErrors',
-            'paginate',
             'permissions',
+            'paginate',
             'checkKey',
         ],
     ];

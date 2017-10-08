@@ -6,14 +6,16 @@ use Illuminate\Http\JsonResponse;
 class APIResponse extends JsonResponse {
 
     private $innerData;
+    private $innerErrors;
     private $innerSuccess;
     private $innerMeta = array();
     private $innerMessage;
 
-    public function __construct($success = false, $meta = null, $data = null, $message = null, $status = 200, $headers = [], $options = 0)
+    public function __construct($success = false, $meta = null, $data = null, $errors = null, $message = null, $status = 200, $headers = [], $options = 0)
     {
         $this->innerSuccess = $success;
         $this->innerData = $data;
+        $this->innerErrors = $errors;
         $this->innerMeta = $meta;
         $this->innerMessage = $message;
         parent::__construct('ERROR - Should not be shown', $status, $headers, $options);
@@ -24,7 +26,11 @@ class APIResponse extends JsonResponse {
         $fullContent = array();
         $fullContent['success'] = $this->innerSuccess;
         $fullContent['meta'] = $this->innerMeta;
-        $fullContent['data'] = method_exists($this->innerData, "get") ? $this->innerData->get() : $this->innerData;
+        if ($this->innerSuccess) {
+            $fullContent['data'] = method_exists($this->innerData, "get") ? $this->innerData->get() : $this->innerData;
+        } else {
+            $fullContent['errors'] = $this->innerErrors;
+        }
         $fullContent['message'] = $this->innerMessage;
        return json_encode($fullContent);
     }
@@ -60,6 +66,14 @@ class APIResponse extends JsonResponse {
 
     public function getInnerData() {
         return $this->innerData;
+    }
+
+    public function setInnerErrors($errors) {
+        $this->innerErrors = $errors;
+    }
+
+    public function getInnerErrors() {
+        return $this->innerErrors;
     }
 
     public function setInnerMessage($message) {

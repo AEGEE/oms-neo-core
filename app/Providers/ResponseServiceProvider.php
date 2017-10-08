@@ -20,15 +20,10 @@ class ResponseServiceProvider extends ServiceProvider
     public function boot()
     {
         Response::macro('success', function ($data, $meta = null, $message = null) {
-            return new APIResponse(true, $meta, $data, $message);
+            return new APIResponse(true, $meta, $data, null, $message);
         });
         Response::macro('failure', function ($message = 'Request failed', $code = 400, $errors = null) {
-            $response = array(
-                'success'   => false,
-                'errors'    => $errors,
-                'message'   => $message
-            );
-            return response()->json($response, $code);
+            return new APIResponse(false, null, null, $errors, $message);
         });
 
         Response::macro('forbidden', function () {

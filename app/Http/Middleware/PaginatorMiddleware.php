@@ -7,7 +7,7 @@ use Input;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class PaginatorMiddleware {
-    
+
     public function handle($request, Closure $next, $guard = null)
     {
         $result = $next($request);

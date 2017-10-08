@@ -17,7 +17,9 @@ class FinalizeResponseMiddleware
     {
         $result = $next($request);
         //TODO: Find a better APIResponse implementation / solution to this problem
-        $result->finalize();
+        if (method_exists($result, "finalize")) {
+            $result->finalize();
+        }
         return $result;
     }
 }
