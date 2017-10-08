@@ -14,6 +14,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        \App\Http\Middleware\FinalizeResponseMiddleware::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         'Barryvdh\Cors\HandleCors',
     ];
@@ -25,7 +26,6 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            'finalize',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -33,7 +33,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'finalize',
             'returnErrors',
             'permissions',
             'paginate',
@@ -61,6 +60,5 @@ class Kernel extends HttpKernel
         'returnErrors'          => \App\Http\Middleware\RespondErrorsMiddleware::class,
         'paginate'              => \App\Http\Middleware\PaginatorMiddleware::class,
         'permissions'           => \App\Http\Middleware\PermissionMiddleware::class,
-        'finalize'              => \App\Http\Middleware\FinalizeResponseMiddleware::class,
     ];
 }

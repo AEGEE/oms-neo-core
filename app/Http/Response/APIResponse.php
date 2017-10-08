@@ -27,7 +27,7 @@ class APIResponse extends JsonResponse {
         $fullContent['success'] = $this->innerSuccess;
         $fullContent['meta'] = $this->innerMeta;
         if ($this->innerSuccess) {
-            $fullContent['data'] = method_exists($this->innerData, "get") ? $this->innerData->get() : $this->innerData;
+            $fullContent['data'] = is_a($this->innerData, "Illuminate\Database\Eloquent\Builder") ? $this->innerData->get() : $this->innerData;
         } else {
             $fullContent['errors'] = $this->innerErrors;
         }
