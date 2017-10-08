@@ -6,39 +6,28 @@ use Closure;
 use Input;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class PaginatorMiddleware {    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
-     * @return mixed
-     */
+class PaginatorMiddleware {
+    
     public function handle($request, Closure $next, $guard = null)
     {
-
         $result = $next($request);
 
         $page = Input::get('page', 1);
         $per_page = Input::get('per_page', 10);
-        $data = $result->getOriginalContent()['data'];
-        $meta = [];
+        $data = $result->getInnerData();
 
-        if (isset($response['data'])) {
-            $paginator = null;
-            if (is_a($response['data'], 'Illuminate\Database\Eloquent\Builder')) {
-                $paginator = $response['data']->paginate($per_page);
-            } else if(is_a($response['data'], 'Illuminate\Support\Collection')) {
-                $paginator = $this->paginateCollection($request, $response['data'], $per_page, $page);
-            }
-
-            if ($paginator) {
-                $response['data'] = $paginator->items();
-                $this->appendMeta($request, $response, $paginator);
-                $response = json_encode($response);
-                $result->setContent($response);
-            }
+        $paginator = null;
+        if (is_a($data, 'Illuminate\Database\Eloquent\Builder')) {
+            $paginator = $data->paginate($per_page);
+        } else if(is_a($data, 'Illuminate\Support\Collection')) {
+            $paginator = $this->paginateCollection($request, $data, $per_page, $page);
         }
+
+        if ($paginator) {
+            $data = $paginator->items();
+            $result->addInnerMeta('pagination', $this->buildMeta($request, $paginator));
+        }
+
         return $result;
     }
 
@@ -55,10 +44,9 @@ class PaginatorMiddleware {    /**
     }
 
 
-    private function appendMeta($request, &$response, $paginator) {
-
-        $response['meta']['pagination'] =
-        [   "current_page"  => $paginator->currentPage(),
+    private function buildMeta($request, $paginator) {
+        return [
+            "current_page"  => $paginator->currentPage(),
             "from"          => $paginator->firstItem(),
             "last_page"     => $paginator->lastPage(),
             "next_page_url" => $paginator->nextPageUrl(),
@@ -66,6 +54,7 @@ class PaginatorMiddleware {    /**
             "per_page"      => $paginator->perPage(),
             "prev_page_url" => $paginator->previousPageUrl(),
             "to"            => $paginator->lastItem(),
-            "total"         => $paginator->total(), ];
+            "total"         => $paginator->total(),
+        ];
     }
 }

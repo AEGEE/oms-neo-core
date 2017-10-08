@@ -25,6 +25,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            'finalize',
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
@@ -32,8 +33,9 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            'finalize',
             'returnErrors',
-            //'paginate',
+            'paginate',
             'permissions',
             'checkKey',
         ],
@@ -59,5 +61,6 @@ class Kernel extends HttpKernel
         'returnErrors'          => \App\Http\Middleware\RespondErrorsMiddleware::class,
         'paginate'              => \App\Http\Middleware\PaginatorMiddleware::class,
         'permissions'           => \App\Http\Middleware\PermissionMiddleware::class,
+        'finalize'              => \App\Http\Middleware\FinalizeResponseMiddleware::class,
     ];
 }

@@ -6,17 +6,11 @@ use Closure;
 
 class PermissionMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @return mixed
-     */
+    
     public function handle($request, Closure $next)
     {
         $result = $next($request);
-        $data = $result->getOriginalContent()['data']->get();
+        $data = $result->getInnerData()->get();
         $permissions = [];
 
         $i = 0;
@@ -26,9 +20,8 @@ class PermissionMiddleware
             }
             $i++;
         }
-        $response = json_decode($result->getContent());
-        $response->meta['permissions'] = $permissions;
-        $result->setContent(json_encode($response));
+
+        $result->addInnerMeta('permissions', $permissions);
         return $result;
     }
 

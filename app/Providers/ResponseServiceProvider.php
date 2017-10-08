@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Response\APIResponse;
+
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
@@ -17,13 +20,7 @@ class ResponseServiceProvider extends ServiceProvider
     public function boot()
     {
         Response::macro('success', function ($data, $meta = null, $message = null) {
-            $response = array(
-                'success'   => true,
-                'meta'      => $meta,
-                'data'      => $data,
-                'message'   => $message
-            );
-            return response()->json($response);
+            return new APIResponse(true, $meta, $data, $message);
         });
         Response::macro('failure', function ($message = 'Request failed', $code = 400, $errors = null) {
             $response = array(
