@@ -8,6 +8,9 @@
         .controller('ProfileController', ProfileController)
         .controller('OwnProfileController', OwnProfileController);
 
+    const baseUrl = baseUrlRepository['oms-core'];
+    const apiUrl = baseUrl + '/api';
+
     /** @ngInject */
     function config($stateProvider)
     {
@@ -18,7 +21,7 @@
                 data: {'pageTitle': 'My Profile'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/profile/profile.html',
+                        templateUrl: baseUrl + 'modules/loggedIn/profile/profile.html',
                         controller: 'OwnProfileController as vm'
                     }
                 }
@@ -28,7 +31,7 @@
                 data: {'pageTitle': 'Profile'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/profile/profile.html',
+                        templateUrl: baseUrl + 'modules/loggedIn/profile/profile.html',
                         controller: 'ProfileController as vm'
                     }
                 }
@@ -36,18 +39,21 @@
     }
 
 
-    function OwnProfileController($http, $stateParams, $state, $scope, $sce, FileUploader) {
+    function OwnProfileController($http, $stateParams, $state, $scope, $sce) {
         // Data
         var vm = this;
         vm.user = {};
         vm.permissions = {
             edit_profile: true
         };
+
+        vm.formInclude = baseUrl + 'modules/loggedIn/profile/edit_profile_form.html';
+
         
         vm.getUser = function() {
             $http({
                 method: 'POST',
-                url: '/api/tokens/user',
+                url: baseUrl + 'api/tokens/user',
                 data: {
                     token: localStorage.getItem("X-Auth-Token")
                 }
@@ -61,7 +67,7 @@
         vm.getCountries = function() {
             $http({
                 method: 'GET',
-                url: '/api/countries'
+                url: baseUrl + 'api/countries'
             })
             .then(function successCallback(response) {
                 vm.countries = response.data.data;
@@ -81,14 +87,14 @@
             // First submit the address, then the body
             $http({
                 method: 'PUT',
-                url: '/api/addresses/' + vm.user.address.id,
+                url: baseUrl + 'api/addresses/' + vm.user.address.id,
                 data: vm.user.address
             })
             .then(function successCallback(response) {
                 // Create the body
                 $http({
                     method: 'PUT',
-                    url: '/api/users/' + vm.user.id,
+                    url: baseUrl + 'api/users/' + vm.user.id,
                     data: vm.user
                 })
                 .then(function successCallback(response) {
@@ -121,19 +127,21 @@
     }
 
 
-    function ProfileController($http, $stateParams, $state, $scope, $sce, FileUploader) {
+    function ProfileController($http, $stateParams, $state, $scope, $sce) {
         // Data
         var vm = this;
         vm.user = {};
         vm.permissions = {
             edit_profile: false
         };
+
+        vm.formInclude = baseUrl + 'modules/loggedIn/profile/edit_profile_form.html';
         
         // TODO check if own user, if yes display OwnProfileController
         vm.getUser = function() {
             $http({
                 method: 'GET',
-                url: '/api/users/' + $stateParams.id,
+                url: baseUrl + 'api/users/' + $stateParams.id,
             })
             .then(function successCallback(response) {
                 vm.user = response.data.data;

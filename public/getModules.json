@@ -1,0 +1,45 @@
+{
+  "name": "OMS Core",
+  "code": "oms-core",
+  "menu_position": 10,
+  "pages": [{
+    "name": "Dashboard",
+    "code": "dashboard",
+    "module_link": "modules/loggedIn/dashboard/dashboard.js",
+    "icon": "fa fa-ticket"
+  }, {
+    "name": "Settings",
+    "code": "settings",
+    "module_link": "modules/loggedIn/settings/settings.js",
+    "icon": "fa fa-wrench"
+  }, {
+    "name": "Users",
+    "code": "users",
+    "module_link": "modules/loggedIn/users/users.js",
+    "icon": "fa fa-wrench"
+  }, {
+    "name": "Admin",
+    "code": "admin",
+    "module_link": "modules/rewrite/admin/admin.js",
+    "icon": "fa fa-wrench"
+  }, {
+    "name": "Body Management",
+    "code": "body_management",
+    "module_link": "modules/rewrite/body_management/body_management.js",
+    "icon": "fa fa-wrench"
+  }, {
+    "name": "Circles",
+    "code": "circles",
+    "module_link": "modules/rewrite/circles/circles.js",
+    "icon": "fa fa-wrench"
+  }, {
+    "name": "My Bodies",
+    "code": "my_bodies",
+    "module_link": "modules/rewrite/my_bodies/my_bodies.js",
+    "icon": "fa fa-wrench"
+  }],
+  "css": [],
+  "js": ["modules/loggedIn/profile/profile.js"],
+  "modules": ["app.profile"],
+  "deps": []
+}

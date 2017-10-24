@@ -1,0 +1,67 @@
+<h1 class="page-header">{{ vm.circle.name }}</h1>
+
+<div class="m-b-40">
+  <div class="row">
+    <div class="col-sm-6">Name</div>
+    <div class="col-sm-6">{{ vm.circle.name }}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">Description</div>
+    <div class="col-sm-6">{{ vm.circle.description }}</div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">Body</div>
+    <div class="col-sm-6">
+      <span ng-show="vm.circle.body_id"><a ui-sref="app.body_management.single({id: vm.circle.body_id})">{{ vm.circle.body_id }}</a></span>
+      <span ng-show="!vm.circle.body_id">This circle is not associated to a body</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">Parent circle</div>
+    <div class="col-sm-6">
+      <span ng-show="vm.circle.parent_circle"><a ui-sref="app.circles.single({id: vm.circle.parent_id})">{{ vm.circle.parent_circle.name }}</a></span>
+      <span ng-show="!vm.circle.parent_circle">This circle is a toplevel circle</span>
+    </div>  
+  </div>
+  <div class="row">
+    <div class="col-sm-6">Child circles</div>
+    <div class="col-sm-6">
+      <ul>
+        <li ng-repeat="child in vm.circle.children_circles">
+          <a ui-sref="app.circles.single({id: child.id})">{{ child.name }}</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<div class="m-b-10">
+  <div class="input-group">
+    <span class="input-group-addon"><i class="fa fa-search"></i> Search members</span>
+    <input type="text" class="form-control" placeholder="Type anything" ng-model="vm.query" ng-change="vm.resetData()" />
+  </div>
+  <button type="button" class="btn btn-primary" ng-click="vm.recursive=true; vm.resetData();" ng-show="!vm.recursive">Enable recursive view</button>
+<button type="button" class="btn btn-primary" ng-click="vm.recursive=false; vm.resetData();" ng-show="vm.recursive">Disable recursive view</button>
+
+</div>
+
+
+<div infinite-scroll="vm.loadNextPage()" infinite-scroll-disabled="vm.infiniteScroll.block" infinite-scroll-distance="1">
+  <ul class="registered-users-list clearfix">
+    <li ng-repeat="user in vm.infiniteScroll.data">
+      <a ui-sref="app.profile({id: user.id})">
+        <img src="assets/img/user-5.jpg" alt="profile pic" />
+        <h4 class="username text-ellipsis">{{ user.first_name }} {{ user.last_name }}</h4>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<p ng-show="vm.infiniteScroll.data.length === 0 && !vm.infiniteScroll.busy">
+  No members found in the circle that match the current search
+</p>
+<p ng-show="vm.infiniteScroll.busy">
+  Searching...
+</p>

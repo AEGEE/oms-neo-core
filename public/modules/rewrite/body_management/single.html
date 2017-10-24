@@ -44,7 +44,7 @@
 <a ui-sref="app.body_management" class="btn btn-white">Back to overview</a>
 <button class="btn btn-white" type="button" ng-click="vm.showBodyModal()" ng-if="vm.permissions.edit_body">Edit Details</button>
 <a ui-sref="app.my_bodies.edit_circles" class="btn btn-white" ng-if="vm.permissions.edit_circles">Edit Circles</a>
-<button class="btn btn-white" type="button">Request to join</button>
+<button class="btn btn-white" type="button" ng-if="vm.permissions.request_join">Request to join</button>
 
 <hr />
 
@@ -52,4 +52,4 @@
 	<circlepanel circle="circle"></circlepanel>
 </div>
 
-<ng-include src="'modules/rewrite/body_management/edit_body_form.html'"></ng-include>
+<ng-include src="vm.formInclude"></ng-include>

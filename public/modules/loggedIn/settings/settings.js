@@ -7,6 +7,9 @@
         .config(config)
         .controller('SettingController', SettingController);
 
+    const baseUrl = baseUrlRepository['oms-core'];
+
+
     /** @ngInject */
     function config($stateProvider)
     {
@@ -17,7 +20,7 @@
                 data: {'pageTitle': 'Settings'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/settings/settings.php',
+                        templateUrl: baseUrl + '/modules/loggedIn/settings/settings.php',
                         controller: 'SettingController as vm'
                     }
                 }

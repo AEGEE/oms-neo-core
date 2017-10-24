@@ -9,6 +9,8 @@
         .controller('BodyListingController', BodyListingController)
         .controller('BodySingleController', BodySingleController);
 
+    const baseUrl = baseUrlRepository['oms-core'];
+
     /** @ngInject */
     function config($stateProvider)
     {
@@ -19,7 +21,7 @@
                 data: {'pageTitle': 'All Bodies'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/rewrite/body_management/list.html',
+                        templateUrl: baseUrl + 'modules/rewrite/body_management/list.html',
                         controller: 'BodyListingController as vm'
                     }
                 }
@@ -29,7 +31,7 @@
                 data: {'pageTitle': 'Body Details'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/rewrite/body_management/single.html',
+                        templateUrl: baseUrl + 'modules/rewrite/body_management/single.html',
                         controller: 'BodySingleController as vm'
                     }
                 }
@@ -42,7 +44,7 @@
             scope: {
                 body: '='
             },
-            templateUrl: 'modules/rewrite/body_management/directive_bodytile.html'
+            templateUrl: baseUrl + 'modules/rewrite/body_management/directive_bodytile.html'
         };
     }
 
@@ -50,48 +52,30 @@
         // Data
         var vm = this;
 
+        vm.formInclude = baseUrl + 'modules/rewrite/body_management/edit_body_form.html';
         // TODO replace with real fetch from backend
         vm.permissions = {
             create_body: true
         };
 
         vm.query = "";
-        vm.bodies = [];
+        
+        vm.injectParams = (params) => {
+            params.name = vm.query
+            return params;
+        }
+        infiniteScroll($http, vm, baseUrl + 'api/bodies', vm.injectParams);
+
+
         vm.body = {};
         vm.body_types = [];
         vm.querytoken = 0;
-
-        vm.getBodies = function() {
-            var active_types = vm.body_types
-                .filter(function(item) {return item.filter_active;})
-                .map(function(item) {return item.id});
-
-            vm.querytoken += 1;
-            var mytoken = vm.querytoken;
-
-            var params = {};
-            if(vm.query)
-                params["name"] = vm.query;
-            //if(active_types.length > 0)
-            //    params["type_id"] = active_types;
-
-            $http({
-                method: 'GET',
-                url: '/api/bodies',
-                params: params
-            })
-            .then(function successCallback(response) {
-                if(mytoken == vm.querytoken) // Make sure no request has surpassed us
-                    vm.bodies = response.data.data;
-            }).catch(function(err) {showError(err);});
-        }
-        vm.getBodies();
 
         vm.getBodyTypes = function() {
 
             $http({
                 method: 'GET',
-                url: '/api/bodies/types'
+                url: baseUrl + 'api/bodies/types'
             })
             .then(function successCallback(response) {
                 vm.body_types = response.data.data.map(function(cur) {cur.filter_active=true; return cur;});
@@ -102,7 +86,7 @@
         vm.getCountries = function() {
             $http({
                 method: 'GET',
-                url: '/api/countries'
+                url: baseUrl + 'api/countries'
             })
             .then(function successCallback(response) {
                 vm.countries = response.data.data;
@@ -114,7 +98,7 @@
             // First create the address object, then the body
             $http({
                 method: 'POST',
-                url: '/api/addresses',
+                url: baseUrl + 'api/addresses',
                 data: vm.body.address
             })
             .then(function successCallback(response) {
@@ -123,7 +107,7 @@
                 // Create the body
                 $http({
                     method: 'POST',
-                    url: '/api/bodies',
+                    url: baseUrl + 'api/bodies',
                     data: vm.body
                 })
                 .then(function successCallback(response) {
@@ -162,9 +146,12 @@
     function BodySingleController($http, $scope, $stateParams) {
         var vm = this;
 
+        vm.formInclude = baseUrl + 'modules/rewrite/body_management/edit_body_form.html';
+
         vm.permissions = {
             edit_body: true,
-            edit_circles: true
+            edit_circles: true,
+            request_join: true
         };
         vm.body = {};
         vm.countries = [];
@@ -173,7 +160,7 @@
         vm.getBody = function(id) {
             $http({
                 method: 'GET',
-                url: '/api/bodies/' + id
+                url: baseUrl + 'api/bodies/' + id
             })
             .then(function successCallback(response) {
                 vm.body = response.data.data;
@@ -185,7 +172,7 @@
         vm.getCountries = function() {
             $http({
                 method: 'GET',
-                url: '/api/countries'
+                url: baseUrl + 'api/countries'
             })
             .then(function successCallback(response) {
                 vm.countries = response.data.data;
@@ -197,7 +184,7 @@
 
             $http({
                 method: 'GET',
-                url: '/api/bodies/types'
+                url: baseUrl + 'api/bodies/types'
             })
             .then(function successCallback(response) {
                 vm.body_types = response.data.data;
@@ -209,14 +196,14 @@
             // First submit the address, then the body
             $http({
                 method: 'PUT',
-                url: '/api/addresses/' + vm.body.address.id,
+                url: baseUrl + 'api/addresses/' + vm.body.address.id,
                 data: vm.body.address
             })
             .then(function successCallback(response) {
                 // Create the body
                 $http({
                     method: 'PUT',
-                    url: '/api/bodies/' + vm.body.id,
+                    url: baseUrl + 'api/bodies/' + vm.body.id,
                     data: vm.body
                 })
                 .then(function successCallback(response) {

@@ -7,7 +7,7 @@
     .controller('LoginModalController', LoginModalController)
     .service('loginModal', LoginModalService);
 
-    function LoginModalService($modal, $rootScope) {
+    function LoginModalService($modal) {
         
         var loginModalConfig = {
             loading: false,
@@ -15,7 +15,6 @@
         };
 
         var assignCurrentUser = function(user) {
-            $rootScope.currentUser = user;
             loginModalConfig.loading = false;
             return user;
         };
@@ -44,7 +43,7 @@
         };
     };
 
-    function LoginModalController($scope, $http) {
+    function LoginModalController($rootScope, $scope, $http) {
 
         this.cancel = $scope.$dismiss;
 
@@ -62,7 +61,6 @@
                     window.localStorage.setItem("X-Auth-Token", response.data.data);
                     $http.defaults.headers.common['X-Auth-Token'] = response.data.data;
                     $.ajaxSetup({headers: { 'X-Auth-Token': response.data.data }});
-
                     $http({
                         method: 'POST',
                         url: '/api/tokens/user',
@@ -71,6 +69,7 @@
                         }
                     })
                     .then(function successCallback(response) {
+                        $rootScope.currentUser = response.data.data;
                         $scope.$close(response.data.data);
                     }).catch(function(err) {
                         $.gritter.add({

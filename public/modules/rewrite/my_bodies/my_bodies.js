@@ -9,6 +9,8 @@
         .controller('MyBodiesController', MyBodiesController)
         .controller('EditCirclesController', EditCirclesController);
 
+    const baseUrl = baseUrlRepository['oms-core'];
+
     /** @ngInject */
     function config($stateProvider)
     {
@@ -19,7 +21,7 @@
                 data: {'pageTitle': 'My Bodies'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/rewrite/my_bodies/my_bodies.html',
+                        templateUrl: baseUrl + 'modules/rewrite/my_bodies/my_bodies.html',
                         controller: 'MyBodiesController as vm'
                     }
                 }
@@ -29,7 +31,7 @@
                 data: {'pageTitle': 'Edit Circles'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/rewrite/my_bodies/edit_circles.html',
+                        templateUrl: baseUrl + 'modules/rewrite/my_bodies/edit_circles.html',
                         controller: 'EditCirclesController as vm'
                     }
                 }
@@ -42,7 +44,7 @@
             scope: {
                 circle: '='
             },
-            templateUrl: 'modules/rewrite/my_bodies/directive_circle.html'
+            templateUrl: baseUrl + 'modules/rewrite/my_bodies/directive_circle.html'
         };
     }
 
@@ -54,7 +56,7 @@
         vm.getUserBodies = function() {
             $http({
                 method: 'POST',
-                url: '/api/tokens/user',
+                url: baseUrl + 'api/tokens/user',
                 data: {
                     token: localStorage.getItem("X-Auth-Token")
                 }

@@ -3,9 +3,11 @@
     'use strict';
 
     angular
-        .module('app.body_admin', [])
+        .module('app.admin', [])
         .config(config)
-        .controller('BodyAdminController', BodyAdminController);
+        .controller('BodyAdminController', BodyAdminController)
+        .controller('AdminController', AdminController)
+        .controller('CircleAdminController', CircleAdminController);
 
     const baseUrl = baseUrlRepository['oms-core'];
 
@@ -14,9 +16,9 @@
     {
         // State
          $stateProvider
-            .state('app.body_admin', {
-                url: '/body_admin',
-                data: {'pageTitle': 'Body Admin'},
+            .state('app.admin', {
+                url: '/admin',
+                data: {'pageTitle': 'Admin'},
                 views   : {
                     'pageContent@app': {
                         templateUrl: baseUrl + 'modules/rewrite/admin/admin.html',
@@ -89,22 +91,9 @@
         }
         vm.getBodyTypes();
 
-        vm.global_circles = [
-            {
-                name: "Board"
-            }, {
-                name: "Member"
-            }
-        ];
-
         vm.showBodyTypeModal = function(bodytype = undefined) {
             vm.edited_body_type = bodytype;
             $('#editBodyTypeModal').modal('show');
-        }
-
-        vm.showGlobalCircleModal = function(circle = undefined) {
-            vm.edited_global_circle = circle;
-            $('#editGlobalCircleModal').modal('show');
         }
 
         vm.saveBodyType = function() {
@@ -142,10 +131,6 @@
                 else
                     showError(err);
             });
-        }
-
-        vm.saveGlobalCircle = function() {
-            alert("Not implemented");
         }
     }
 

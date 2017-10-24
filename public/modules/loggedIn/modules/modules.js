@@ -7,6 +7,9 @@
         .config(config)
         .controller('ModuleController', ModuleController);
 
+    const baseUrl = baseUrlRepository['oms-core'];
+
+
     /** @ngInject */
     function config($stateProvider)
     {
@@ -17,7 +20,7 @@
                 data: {'pageTitle': 'Modules'},
                 views   : {
                     'pageContent@app': {
-                        templateUrl: 'modules/loggedIn/modules/modules.php',
+                        templateUrl: baseUrl + 'modules/loggedIn/modules/modules.php',
                         controller: 'ModuleController as vm'
                     }
                 }
@@ -40,7 +43,7 @@
                 is_grid: 1
             };
 
-            params.url = "/api/modules";
+            params.url = baseUrl + "api/modules";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -114,7 +117,7 @@
             jQuery("#" + subgridDivID).attr('style', 'margin: 4px;');
             jQuery("#" + subgridDivID).append("<div class='row' style='margin-right: 0px'><div class='col-md-12'><center><table id='" + subgridTableID + "'></table></center></div></div>");
             jQuery("#" + subgridTableID).jqGrid({
-                url: '/api/subrid/modules',
+                url: baseUrl + '/api/subrid/modules',
                 caption: "Module pages",
                 datatype: "json",
                 mtype: 'GET',
@@ -191,7 +194,7 @@
             }
             $http({
                 method: "POST",
-                url: '/api/page/' + id + '/activate',
+                url: baseUrl + '/api/page/' + id + '/activate',
                 data: {
                     id: id
                 },
@@ -224,7 +227,7 @@
             }
             $http({
                 method: "POST",
-                url: '/api/module/' + id + '/activate',
+                url: baseUrl + '/api/module/' + id + '/activate',
                 data: {
                     id: id
                 },
@@ -254,7 +257,7 @@
         vm.getSharedSecret = function() {
             $http({
                 method: 'GET',
-                url: "/api/secret/shared"
+                url: baseUrl + "/api/secret/shared"
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $('#sharedSecret').html(response.data.key);
@@ -275,7 +278,7 @@
         vm.generateNewSharedSecret = function() {
             $http({
                 method: 'POST',
-                url: "/api/secret/shared"
+                url: baseUrl + "/api/secret/shared"
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $('#sharedSecret').html(response.data.key);
