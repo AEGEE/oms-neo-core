@@ -26,45 +26,75 @@ RUN apt-get install -y software-properties-common && \
 #
 
 # Install "PHP Extentions", "libraries", "Software's"
-RUN apt-get update && \
-    apt-get install -y --allow-downgrades --allow-remove-essential \
-        --allow-change-held-packages \
-        php7.1-cli \
-        php7.1-common \
-        php7.1-curl \
-        php7.1-json \
-        php7.1-xml \
-        php7.1-mbstring \
-        php7.1-mcrypt \
-        php7.1-mysql \
-        php7.1-pgsql \
-        php7.1-sqlite \
-        php7.1-sqlite3 \
-        php7.1-zip \
-        php7.1-bcmath \
-        php7.1-memcached \
-        php7.1-gd \
-        php7.1-dev \
-        php7.1-intl \
-        pkg-config \
-        libcurl4-openssl-dev \
-        libedit-dev \
-        libssl-dev \
-        libxml2-dev \
-        xz-utils \
-        libsqlite3-dev \
-        sqlite3 \
-        git \
-        curl \
-        vim \
-        nano \
-        postgresql-client \
-        nodejs \
-        npm  && \
-    apt-get clean && \
-    npm install -g gulp && \
-    npm cache clean --force && \
-    ln -s /usr/bin/nodejs /usr/bin/node
+RUN apt-get update
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-cli
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-common
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-curl
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-json
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-xml
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-mbstring
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-mcrypt
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-mysql
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-pgsql
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-sqlite
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-sqlite3
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-zip
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-bcmath
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-memcached
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-gd
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-intl
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        pkg-config
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        libcurl4-openssl-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        libedit-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        libssl-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        libxml2-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        xz-utils
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        libsqlite3-dev
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        sqlite3
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        git
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        curl
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        vim
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        nano
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        postgresql-client
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        nodejs
+RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        npm
+RUN apt-get clean
+RUN npm install -g gulp
+RUN npm cache clean --force
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 #####################################
 # Composer:
