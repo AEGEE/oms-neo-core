@@ -22,6 +22,7 @@ else
 	php artisan config:cache -q    || { echo "Error at config:cache (1)"; exit 13; }
 	php artisan migrate -q         || { echo "Error at migrate"; exit 14; }
 	php artisan key:generate -q    || { echo "Error at key:generate"; exit 15; }
+    chmod a+rw /var/www/storage/key #TODO Why is this necessary?
 	php artisan config:cache -q    || { echo "Error at config:cache (2)"; exit 16; }
 	php artisan db:seed -q         || { echo "Error at db:seed"; exit 17; }
 	php artisan config:cache -q    || { echo "Error at config:cache (3)"; exit 18; }
