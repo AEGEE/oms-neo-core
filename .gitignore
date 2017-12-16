@@ -6,4 +6,7 @@ Homestead.yaml
 Homestead.json
 .env
 composer.lock
-storage/key
+
+# storage/key
+# Seems to be an actual Laravel bug that causes issue, because of this the key file is added.
+# https://github.com/laravel/framework/pull/22304
