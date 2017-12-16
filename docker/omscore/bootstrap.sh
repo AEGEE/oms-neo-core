@@ -30,9 +30,7 @@ else
     echo "Write out API Key:"
 	echo "app()->call([app()->make('App\\Http\\Controllers\\ModuleController'), 'getSharedSecret'], [])->original;" | php artisan tinker || { echo "Error at artisan tinker"; exit 17; }
 
-    cp /var/www/storage/key /var/shared/api-key
-
-	# Copy the key into the volume mount so other
+	# Copy the key into the shared volume mount so other containers can access it
 	mkdir -p /var/shared
 	cp /var/www/storage/key /var/shared/api-key
 
