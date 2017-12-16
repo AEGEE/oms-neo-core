@@ -30,40 +30,54 @@ class UserSeeder extends Seeder
 			'is_superadmin'		=>	1,
             		'seo_url'           	=>  	'superadmin'
 		]);
+	    
 
-	    User::create([
+        User::create([
+           		'address_id'        	=>  	1,
+			'personal_email' 	=> 	'admin',
+			'first_name'		=>	'Super',
+			'last_name'		=>	'Admin',
+			'date_of_birth'		=>	'1985-04-16',
+			'gender'		=>	'other',
+			'password'		=>	Hash::make(config('auth.admin_password')),
+			'activated_at'		=>	date('Y-m-d H:i:s'),
+			'is_superadmin'		=>	1,
+            		'seo_url'           	=>  	'superadmin'
+		]);
+
+	User::create([
             		'address_id'        	=>  	1,
 			'personal_email' 	=> 	'guest@aegee.org',
 			'password'		=>	Hash::make(config('password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
+			'is_superadmin'		=>	0,
             		'seo_url'           	=>  	'guest'
 		]);
 	    
-           User::create([
+	User::create([
             		'address_id'        	=>  	1,
 			'personal_email' 	=> 	'guest1@aegee.org',
 			'password'		=>	Hash::make(config('password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
+			'is_superadmin'		=>	0,
                 	'seo_url'           	=>  	'guest'
 		]);
 	    
-	    User::create([
+	User::create([
             		'address_id'        	=>  	1,
 			'personal_email' 	=> 	'guest2@aegee.org',
 			'password'		=>	Hash::make(config('password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
+			'is_superadmin'		=>	0,
             		'seo_url'           	=>  	'guest'
 		]);
 	    
-	    User::create([
+	User::create([
 			'address_id'        	=>  	1,
 			'personal_email' 	=> 	'guest3@aegee.org',
 			'password'		=>	Hash::make(config('password')),
 			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
+			'is_superadmin'		=>	0,
             		'seo_url'           	=>  	'guest'
 		]);
 	    
