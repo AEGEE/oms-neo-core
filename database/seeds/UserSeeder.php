@@ -19,133 +19,149 @@ class UserSeeder extends Seeder
     {
 
         User::create([
-           		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'admin@aegee.org',
-			'first_name'		=>	'Super',
-			'last_name'		=>	'Admin',
-			'date_of_birth'		=>	'1985-04-16',
-			'gender'		=>	'other',
-			'password'		=>	Hash::make(config('auth.admin_password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
-            		'seo_url'           	=>  	'superadmin'
-		]);
-	    
+            'address_id'        =>  1,
+            'personal_email'    =>  'admin@aegee.org',
+            'first_name'        =>  'Super',
+            'last_name'         =>  'Admin',
+            'date_of_birth'     =>  '1985-04-16',
+            'gender'            =>  'other',
+            'password'          =>  Hash::make(config('auth.admin_password')),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  1,
+            'seo_url'           =>  'superadmin'
+        ]);
+
 
         User::create([
-           		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'admin',
-			'first_name'		=>	'Super',
-			'last_name'		=>	'Admin',
-			'date_of_birth'		=>	'1985-04-16',
-			'gender'		=>	'other',
-			'password'		=>	Hash::make(config('auth.admin_password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
-            		'seo_url'           	=>  	'superadmin'
-		]);
-
-	User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'guest@aegee.org',
-			'password'		=>	Hash::make(config('password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'guest'
-		]);
-	    
-	User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'guest1@aegee.org',
-			'password'		=>	Hash::make(config('password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-                	'seo_url'           	=>  	'guest'
-		]);
-	    
-	User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'guest2@aegee.org',
-			'password'		=>	Hash::make(config('password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'guest'
-		]);
-	    
-	User::create([
-			'address_id'        	=>  	1,
-			'personal_email' 	=> 	'guest3@aegee.org',
-			'password'		=>	Hash::make(config('password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'guest'
-		]);
-	    
-        User::create([
-            		'address_id'        	=>  	2,
-			'personal_email' 	=> 	'derk.snijders@aegee.org',
-		    	'internal_email'    	=>  	'derk.snijders@aegee.eu',
-			'first_name'		=>	'Derk',
-			'last_name'		=>	'Snijders',
-			'date_of_birth'		=>	'1993-10-31',
-			'gender'		=>	'male',
-			'password'		=>	Hash::make(config('auth.admin_password')),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	1,
-            		'seo_url'           	=>  	'i3anaan'
-		]);
+               'address_id'         =>  1,
+                'personal_email'    =>  'admin',
+                'first_name'        =>  'Admin',
+                'last_name'         =>  'Admin',
+                'date_of_birth'     =>  '1985-04-16',
+                'gender'            =>  'other',
+                'password'          =>  Hash::make(config('auth.admin_password')),
+                'activated_at'      =>  date('Y-m-d H:i:s'),
+                'is_superadmin'     =>  1,
+                'seo_url'           =>  'superadmin'
+        ]);
 
         User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'nico.westerbeck@aegee.org',
-			'first_name'		=>	'Nico',
-			'last_name'		=>	'Westerbeck',
-			'date_of_birth'		=>	'1985-04-16',
-			'gender'		=>	'male',
-			'password'		=>	Hash::make('1234'),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'blacksph3re'
-		]);
+                'address_id'        =>  1,
+                'personal_email'    => 'guest',
+                'first_name'        =>  'Guest',
+                'last_name'         =>  '0',
+                'date_of_birth'     =>  '1985-04-16',
+                'gender'            =>  'male',
+                'password'          =>  Hash::make('password'),
+                'activated_at'      =>  date('Y-m-d H:i:s'),
+                'is_superadmin'     =>  0,
+                'seo_url'           =>  'guest'
+        ]);
 
         User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'sergey.peshkov@aegee.org',
-			'first_name'		=>	'Sergey',
-			'last_name'		=>	'Peshkov',
-			'date_of_birth'		=>	'1985-04-16',
-			'gender'		=>	'male',
-			'password'		=>	Hash::make('1234'),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'sergey.peshkov'
-		]);
+                'address_id'        =>  1,
+                'personal_email'    => 'guest1',
+                'first_name'        =>  'Guest',
+                'last_name'         =>  '1',
+                'date_of_birth'     =>  '1985-04-16',
+                'gender'            =>  'female',
+                'password'          =>  Hash::make('password'),
+                'activated_at'      =>  date('Y-m-d H:i:s'),
+                'is_superadmin'     =>  0,
+                'seo_url'           =>  'guest1'
+        ]);
 
         User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'fabrizio.bellicano@aegee.org',
-			'first_name'		=>	'Grace',
-			'last_name'		=>	'Hopper',
-			'date_of_birth'		=>	'1985-04-16',
-			'gender'		=>	'female',
-			'password'		=>	Hash::make('1234'),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'gracehopper'
-		]);
+                'address_id'        =>  1,
+                'personal_email'    => 'guest2',
+                'first_name'        =>  'Guest',
+                'last_name'         =>  '2',
+                'date_of_birth'     =>  '1985-04-16',
+                'gender'            =>  'male',
+                'password'          =>  Hash::make('password'),
+                'activated_at'      =>  date('Y-m-d H:i:s'),
+                'is_superadmin'     =>  0,
+                'seo_url'           =>  'guest2'
+        ]);
 
         User::create([
-            		'address_id'        	=>  	1,
-			'personal_email' 	=> 	'headoffice@aegee.org',
-			'first_name'		=>	'Big',
-			'last_name'		=>	'Boobs',
-			'date_of_birth'		=>	'1998-04-16',
-			'gender'		=>	'female',
-			'password'		=>	Hash::make('1234'),
-			'activated_at'		=>	date('Y-m-d H:i:s'),
-			'is_superadmin'		=>	0,
-            		'seo_url'           	=>  	'boobies'
-		]);
+                'address_id'        =>  1,
+                'personal_email'    => 'guest3',
+                'first_name'        =>  'Guest',
+                'last_name'         =>  '3',
+                'date_of_birth'     =>  '1985-04-16',
+                'gender'            =>  'female',
+                'password'          =>  Hash::make('password'),
+                'activated_at'      =>  date('Y-m-d H:i:s'),
+                'is_superadmin'     =>  0,
+                'seo_url'           =>  'guest3'
+        ]);
+
+        User::create([
+            'address_id'        =>  2,
+            'personal_email'    =>  'derk.snijders@aegee.org',
+            'internal_email'    =>  'derk.snijders@aegee.eu',
+            'first_name'        =>  'Derk',
+            'last_name'         =>  'Snijders',
+            'date_of_birth'     =>  '1993-10-31',
+            'gender'            =>  'male',
+            'password'          =>  Hash::make('password'),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  0,
+            'seo_url'           =>  'i3anaan'
+        ]);
+
+        User::create([
+            'address_id'        =>  1,
+            'personal_email'    => 'nico.westerbeck@aegee.org',
+            'first_name'        =>  'Nico',
+            'last_name'         =>  'Westerbeck',
+            'date_of_birth'     =>  '1985-04-16',
+            'gender'            =>  'male',
+            'password'          =>  Hash::make('password'),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  0,
+            'seo_url'           =>  'blacksph3re'
+        ]);
+
+        User::create([
+            'address_id'        =>  1,
+            'personal_email'    => 'sergey.peshkov@aegee.org',
+            'first_name'        =>  'Sergey',
+            'last_name'         =>  'Peshkov',
+            'date_of_birth'     =>  '1985-04-16',
+            'gender'            =>  'male',
+            'password'          =>  Hash::make('password'),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  0,
+            'seo_url'           =>  'sergey.peshkov'
+        ]);
+
+        User::create([
+            'address_id'        =>  1,
+            'personal_email'    =>  'fabrizio.bellicano@aegee.org',
+            'first_name'        =>  'Grace',
+            'last_name'         =>  'Hopper',
+            'date_of_birth'     =>  '1985-04-16',
+            'gender'            =>  'female',
+            'password'          =>  Hash::make('password'),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  0,
+            'seo_url'           =>  'gracehopper'
+        ]);
+
+        User::create([
+            'address_id'        =>  1,
+            'personal_email'    =>  'headoffice@aegee.org',
+            'first_name'        =>  'Big',
+            'last_name'         =>  'Boobs',
+            'date_of_birth'     =>  '1998-04-16',
+            'gender'            =>  'female',
+            'password'          =>  Hash::make('password'),
+            'activated_at'      =>  date('Y-m-d H:i:s'),
+            'is_superadmin'     =>  0,
+            'seo_url'           =>  'boobies'
+        ]);
 
         BodyMembership::create([
             'user_id'       =>  1,
