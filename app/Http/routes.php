@@ -37,12 +37,12 @@ Route::group(['middleware' => 'api'], function() {
     //Route::post('/api/users/{user_id}/avatars', 'UserController@uploadUserAvatar'); TODO
 
     // Antennae management..
-    Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
+    //Route::group(['middleware' => 'checkAccess:antennae_management'], function() {
         Route::get('/api/bodies', 'BodyController@getBodies');
         Route::get('/api/bodies/{body_id}', 'BodyController@getBody')->where('body_id', '[0-9]+');
         Route::put('/api/bodies/{body_id}', 'BodyController@updateBody')->where('body_id', '[0-9]+');
         Route::post('/api/bodies/', 'BodyController@createBody');
-    });
+    //});
 
     // Roles..
     Route::group(['middleware' => 'checkAccess:roles'], function() {
@@ -54,7 +54,7 @@ Route::group(['middleware' => 'api'], function() {
     });
 
     // Users..
-    Route::group(['middleware' => 'checkAccess:users'], function() {
+    //Route::group(['middleware' => 'checkAccess:users'], function() {
         Route::get('/api/users', 'UserController@getUsers');
         Route::put('/api/users/{user_id}', 'UserController@updateUser')->where('user_id', '[a-zA-Z0-9_]+');
         //Route::get('/api/users/avatars/{avatar_id}', 'UserController@getUserAvatar'); TODO
@@ -74,7 +74,7 @@ Route::group(['middleware' => 'api'], function() {
 
         // DELETE - remove
         //Route::delete('/api/roles/{role_id}', 'UserController@deleteRole'); TODO
-    });
+    //});
 
     // Settings..
     Route::group(['middleware' => 'checkAccess:settings'], function() {

@@ -64,7 +64,7 @@ class EncodingTest extends TestCase
                 $this->fail("Max number of failures reached.");
             }
         }
-        echo PHP_EOL . "Number of failures was acceptable";
+        echo PHP_EOL . "Number of transliteration failures was acceptable";
         return true;
     }
 }
