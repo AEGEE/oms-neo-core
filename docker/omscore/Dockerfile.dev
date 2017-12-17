@@ -96,6 +96,7 @@ RUN npm install -g gulp
 RUN npm cache clean --force
 RUN ln -s /usr/bin/nodejs /usr/bin/node
 
+#TODO: remove the --force from above npm cache?
 #####################################
 # Composer:
 #####################################
