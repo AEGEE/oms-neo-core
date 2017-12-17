@@ -9,7 +9,7 @@ use App\Http\Requests\UpdateAddressRequest;
 class AddressController extends Controller
 {
     public function getAddresses() {
-        return response()->success(Address::All());
+        return response()->success(Address::query());
     }
 
     public function getAddress($address_id) {

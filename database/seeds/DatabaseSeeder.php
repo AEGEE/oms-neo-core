@@ -6,6 +6,19 @@ use App\Models\SeederLog;
 
 class DatabaseSeeder extends Seeder
 {
+
+    public static function getSeeders() {
+        return array(
+            'CountrySeeder',
+            'TypeAndFieldOfStudiesSeeder',
+            'ModuleSeeder',
+            'OptionsSeeder',
+            'BodySeeder',
+            'UserSeeder',
+            'CircleSeeder',
+        );
+    }
+
     /**
      * Run the database seeds.
      *
@@ -13,19 +26,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	$seedersToRun = array(
-    		'CountrySeeder',
-    		'TypeAndFieldOfStudiesSeeder',
-    		'ModuleSeeder',
-    		'OptionsSeeder',
-            'BodySeeder',
-            'UserSeeder',
-            'CircleSeeder',
-    	);
-
     	$seeders = SeederLog::all()->pluck('code')->toArray();
     	$seededSomething = false;
-    	foreach($seedersToRun as $seeder) {
+    	foreach(DatabaseSeeder::getSeeders() as $seeder) {
     		if(in_array($seeder, $seeders)) {
     			continue;
     		}
@@ -41,5 +44,9 @@ class DatabaseSeeder extends Seeder
     	if(!$seededSomething) {
     		echo "Nothing to seed!".PHP_EOL;
     	}
+    }
+
+    public static function isSeeded() {
+        return SeederLog::all()->count() == count(DatabaseSeeder::getSeeders());
     }
 }

@@ -10,11 +10,11 @@ $omsObj = new omsHelperScript();
         <ul class="nav">
             <li class="nav-profile">
                 <div class="image">
-                    <a href="javascript:;"><img src="/api/getUserAvatar/<?=$omsObj->userData['id']?>" alt="" /></a>
+                    <a href="javascript:;"><img src="/assets/img/user-5.jpg" alt="" /></a>
                 </div>
                 <div class="info">
-                    <?=$omsObj->userData['fullname']?>
-                    <small><?=$omsObj->userData['is_superadmin'] == 1 ? "Superadmin" : "Member"?></small>
+                    {{ vm.user.first_name }} {{ vm.user.last_name }}
+                    <small><!-- TODO display user role -->Member</small>
                 </div>
             </li>
         </ul>

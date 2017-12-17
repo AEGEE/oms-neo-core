@@ -33,6 +33,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             'returnErrors',
+            'paginate',
             'checkKey',
         ],
     ];
@@ -57,5 +58,6 @@ class Kernel extends HttpKernel
         'seoURL'                => \App\Http\Middleware\SeoURLMiddleware::class,
         'login'                 => \App\Http\Middleware\LoginMethodMiddleware::class,
         'returnErrors'          => \App\Http\Middleware\RespondErrorsMiddleware::class,
+        'paginate'          => \App\Http\Middleware\PaginatorMiddleware::class,
     ];
 }
