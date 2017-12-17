@@ -28,6 +28,12 @@
         // Data
         var vm = this;
         vm.user = {};
+        console.log("welcome!");
+
+
+        $(function(){
+          $("#logo-container-full").load("modules/notLoggedIn/welcome/animation.html");
+        });
     }
 
 })();
