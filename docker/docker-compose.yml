@@ -10,6 +10,7 @@ services:
           context: ./$PATH_OMS_CORE/omscore/
           dockerfile: ./Dockerfile.dev
         image: aegee/omscore:dev
+        restart: always
         volumes:
             - type: bind
               source: ./$PATH_OMS_CORE/../
@@ -27,6 +28,7 @@ services:
           context: ./$PATH_OMS_CORE/php-fpm/
           dockerfile: ./Dockerfile.dev
         image: aegee/php-fpm:dev
+        restart: always
         volumes:
             - type: bind
               source: ./$PATH_OMS_CORE/../
@@ -41,6 +43,7 @@ services:
           context: ./$PATH_OMS_CORE/omscore-nginx/
           dockerfile: ./Dockerfile.dev
         image: aegee/omscore-nginx:dev
+        restart: always
         volumes:
             - type: bind
               source: ./$PATH_OMS_CORE/../
@@ -64,6 +67,7 @@ services:
 
     postgres:
         image: postgres:10.0
+        restart: always
         volumes:
             - postgres:/var/lib/postgresql/data
         expose:
@@ -73,14 +77,7 @@ services:
             POSTGRES_USER: homestead
             POSTGRES_PASSWORD: secret
 
-### pgAdmin Container #######################################
 
-    pgadmin:
-        image: fenglc/pgadmin4:1.6
-        ports:
-            - "5050:5050"
-        links:
-            - postgres
 ### Volumes Setup ###########################################
 
 volumes:
