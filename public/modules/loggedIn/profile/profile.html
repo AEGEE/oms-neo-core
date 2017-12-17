@@ -1,0 +1,96 @@
+<div class="profile-container">
+    <div class="profile-section">
+        <div class="profile-left">
+            <div class="profile-image">
+                <img src="assets/img/profile-cover.jpg">
+                <i class="fa fa-user hide"></i>
+            </div>
+            <div class="m-b-10" ng-show="vm.permissions.edit_profile">
+                <button type="button" ng-click="vm.changePicture()" class="btn btn-warning btn-block btn-sm">Change Picture</a>
+            </div>
+            <div class="m-b-10" ng-show="vm.permissions.edit_profile">
+                <button type="button" ng-click="vm.showEditProfileModal()" class="btn btn-warning btn-block btn-sm">Edit Profile</a>
+            </div>
+        </div>
+
+        <div class="profile-right">
+            <div class="profile-info">
+                <div class="table-responsive">
+                    <table class="table table-profile">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>
+                                    <h4>{{ vm.user.first_name }} <small>{{ vm.user.last_name }}</small></h4>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="highlight">
+                                <td class="field">Username</td>
+                                <td>{{ vm.user.seo_url }}</a></td>
+                            </tr>
+                            <tr>
+                                <td class="field">Email</td>
+                                <td><a href="mailto:{{ vm.user.contact_email }}">{{ vm.user.contact_email }}</a></td>
+                            </tr>
+                            <tr>
+                                <td class="field">Phone number</td>
+                                <td>{{ vm.user.phone }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field">Date of birth</td>
+                                <td>{{ vm.user.date_of_birth }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field">Gender</td>
+                                <td>{{ vm.user.gender }}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td class="field">Country</td>
+                                <td>{{ vm.user.address.country.name }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field">Street</td>
+                                <td>{{ vm.user.address.street }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field">City</td>
+                                <td>{{ vm.user.address.city }}</td>
+                            </tr>
+                            <tr>
+                                <td class="field">Zipcode</td>
+                                <td>{{ vm.user.address.zipcode }}</td>
+                            </tr>
+                            <tr class="divider">
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr class="highlight">
+                                <td class="field">About Me</td>
+                                <td>{{ vm.user.description }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <div class="row">
+            <!-- Bodies column -->
+            <div class="col-lg-6">
+                <h4 class="title">Bodies</h4>
+                <div class="row" ng-repeat="body in vm.user.bodies">
+                    <bodytile body="body"></bodytile>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ########################### Body types edit modal ###################### -->
+<ng-include src="'modules/loggedIn/profile/edit_profile_form.html'"></ng-include>

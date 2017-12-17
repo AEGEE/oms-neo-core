@@ -2,6 +2,7 @@
 require_once('../../scripts/template_scripts.php');
 $omsObj = new omsHelperScript();
 ?>
+
 <!-- begin #header -->
 <div ui-view="header"></div>
 <!-- end #header -->

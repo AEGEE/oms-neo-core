@@ -38,13 +38,10 @@ session_write_close();
                             <div id="wizard">
                                 <ol>
                                     <li>
-                                        Personal information 
+                                        Personal information
                                     </li>
                                     <li>
-                                        Professional Information
-                                    </li>
-                                    <li>
-                                        Other information
+                                        Finishing up
                                     </li>
                                 </ol>
                                 <!-- begin wizard step-1 -->
@@ -67,14 +64,8 @@ session_write_close();
                                             </div>
                                             <div class="col-md-12">
                                                 <div class="form-group">
-                                                    <label for="date_of_birth">Date of birth *</label>
-                                                    <input id="date_of_birth" type="text" name="date_of_birth" placeholder="date of birth" class="form-control" ng-model="vm.user.date_of_birth" data-parsley-group="wizard-step-1" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
                                                     <label for="gender">Gender *</label>
-                                                    <select id="gender" class="form-control" ng-model="vm.user.gender" ng-options="value.id as value.name for value in vm.genderTypes track by value.id" data-parsley-group="wizard-step-1" required>
+                                                    <select id="gender" class="form-control" ng-model="vm.user.gender" ng-options="value for value in vm.genderTypes" data-parsley-group="wizard-step-1" required>
                                                         <option></option>
                                                     </select>
                                                 </div>
@@ -86,37 +77,7 @@ session_write_close();
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="email">Email address *</label>
-                                                    <input id="email" type="email" name="email" placeholder="Email address" class="form-control" ng-model="vm.user.contact_email" data-parsley-group="wizard-step-1" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="email_validated">Email address repeat *</label>
-                                                    <input id="email_validated" type="email" name="email_validated" placeholder="Email address repeat" class="form-control" ng-model="vm.user.contact_email_confirmation" data-parsley-group="wizard-step-1" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="phone">Phone Number *</label>
-                                                    <input id="phone" type="text" name="phone" placeholder="phone address" class="form-control" ng-model="vm.user.phone" data-parsley-group="wizard-step-1" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="address">Address</label>
-                                                    <input id="address" type="text" name="address" placeholder="address" class="form-control" ng-model="vm.user.address" data-parsley-group="wizard-step-1" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="city">City</label>
-                                                    <input id="city" type="text" name="city" placeholder="city" class="form-control" ng-model="vm.user.city" data-parsley-group="wizard-step-1" />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="zipcode">Zip code</label>
-                                                    <input id="zipcode" type="text" name="zipcode" placeholder="zipcode" class="form-control" ng-model="vm.user.zipcode" data-parsley-group="wizard-step-1" />
+                                                    <input id="email" type="email" name="email" placeholder="Email address" class="form-control" ng-model="vm.user.personal_email" data-parsley-group="wizard-step-1" required />
                                                 </div>
                                             </div>
                                         </div>
@@ -124,39 +85,7 @@ session_write_close();
                                     </fieldset>
                                 </div>
                                 <!-- end wizard step-1 -->
-                                <!-- begin wizard step-2 -->
-                                <div>
-                                    <fieldset>
-                                        <legend class="pull-left width-full">Professional information</legend>
-                                        <!-- begin row -->
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="university">University *</label>
-                                                    <input id="university" type="text" name="university" placeholder="university" class="form-control" ng-model="vm.user.university" data-parsley-group="wizard-step-2" required />
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="studies_type">Study type *</label>
-                                                    <select class="form-control" id="studies_type" ng-model="vm.user.studies_type" data-parsley-group="wizard-step-2" ng-options="type.id as type.name for type in vm.registrationFields.study_type track by type.id" required>
-                                                        <option></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="study_field">Study field *</label>
-                                                    <select class="form-control" id="study_field" ng-model="vm.user.study_field" data-parsley-group="wizard-step-2" ng-options="field.id as field.name for field in vm.registrationFields.study_field track by field.id" required>
-                                                        <option></option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- end row -->
-                                    </fieldset>
-                                </div>
-                                <!-- end wizard step-2 -->
+
                                 <!-- begin wizard step-3 -->
                                 <div>
                                     <fieldset>

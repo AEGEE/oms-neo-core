@@ -1,0 +1,25 @@
+
+<!-- #modal-dialog -->
+<div class="modal fade" id="editGlobalCircleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">Global Circle add/edit</h4>
+            </div>
+            <form name="bodytypeForm" method="POST" class="margin-bottom-0" novalidate>
+                <div class="modal-body">
+                    <div class="form-group m-b-20">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" ng-model="vm.edited_global_circle.name" placeholder="Bodytype name" required/>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <!--<button class="btn btn-sm btn-danger" data-dismiss="modal"><i class="fa fa-ban"></i> Close</button>-->
+                    <button ng-disabled="bodyForm.$pristine || bodyForm.$invalid" class="btn btn-sm btn-success" ng-click="vm.saveGlobalCircle()"><i class="fa fa-save"></i> Save global circle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

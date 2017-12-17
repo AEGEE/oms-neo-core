@@ -13,7 +13,7 @@
         // State
          $stateProvider
             .state('app.modules', {
-                url: '/moduleMangement',
+                url: '/moduleManagement',
                 data: {'pageTitle': 'Modules'},
                 views   : {
                     'pageContent@app': {
@@ -40,7 +40,7 @@
                 is_grid: 1
             };
 
-            params.url = "/api/getModules";
+            params.url = "/api/modules";
             params.datatype = "json";
             params.mtype = 'GET';
             params.styleUI = 'Bootstrap';
@@ -58,7 +58,7 @@
                 {
                     name: 'actions',
                     index: 'actions',
-                    hidden: moduleAccess.modules == 0,
+                    hidden: false,
                     sortable: false,
                     width: 50
                 }, {
@@ -114,7 +114,7 @@
             jQuery("#" + subgridDivID).attr('style', 'margin: 4px;');
             jQuery("#" + subgridDivID).append("<div class='row' style='margin-right: 0px'><div class='col-md-12'><center><table id='" + subgridTableID + "'></table></center></div></div>");
             jQuery("#" + subgridTableID).jqGrid({
-                url: '/api/getModulePagesForSubgrid',
+                url: '/api/subrid/modules',
                 caption: "Module pages",
                 datatype: "json",
                 mtype: 'GET',
@@ -139,7 +139,7 @@
                     {
                         name: 'actions',
                         index: 'actions',
-                        hidden: moduleAccess.modules == 0,
+                        hidden: false,
                         sortable: false,
                         width: 25
                     }, {
@@ -191,7 +191,7 @@
             }
             $http({
                 method: "POST",
-                url: '/api/activateDeactivatePage',
+                url: '/api/page/' + id + '/activate',
                 data: {
                     id: id
                 },
@@ -224,7 +224,7 @@
             }
             $http({
                 method: "POST",
-                url: '/api/activateDeactivateModule',
+                url: '/api/module/' + id + '/activate',
                 data: {
                     id: id
                 },
@@ -254,7 +254,7 @@
         vm.getSharedSecret = function() {
             $http({
                 method: 'GET',
-                url: "/api/getSharedSecret"
+                url: "/api/secret/shared"
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $('#sharedSecret').html(response.data.key);
@@ -275,7 +275,7 @@
         vm.generateNewSharedSecret = function() {
             $http({
                 method: 'POST',
-                url: "/api/generateNewSharedSecret"
+                url: "/api/secret/shared"
             }).then(function successCallback(response) {
                 if(response.data.success == '1') {
                     $('#sharedSecret').html(response.data.key);

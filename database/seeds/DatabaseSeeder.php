@@ -6,6 +6,19 @@ use App\Models\SeederLog;
 
 class DatabaseSeeder extends Seeder
 {
+
+    public static function getSeeders() {
+        return array(
+            'CountrySeeder',
+            'TypeAndFieldOfStudiesSeeder',
+            'ModuleSeeder',
+            'OptionsSeeder',
+            'BodySeeder',
+            'UserSeeder',
+            'CircleSeeder',
+        );
+    }
+
     /**
      * Run the database seeds.
      *
@@ -13,26 +26,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-    	$seedersToRun = array(
-    		'CountrySeeder',
-    		'TypeAndFieldOfStudiesSeeder',
-    		'ModuleSeeder',
-    		'OptionsSeeder',
-    		'EmailTemplateSeeder',
-    		'AddSuperAdmin',
-            'AddRecrutementModuleSeeder',
-            'AddAnnouncementsRole'
-    	);
-
-    	$seeders = SeederLog::all();
-    	$seedersArr = array();
-    	foreach($seeders as $seeder) {
-    		$seedersArr[] = $seeder->code;
-    	}
-
+    	$seeders = SeederLog::all()->pluck('code')->toArray();
     	$seededSomething = false;
-    	foreach($seedersToRun as $seeder) {
-    		if(in_array($seeder, $seedersArr)) {
+    	foreach(DatabaseSeeder::getSeeders() as $seeder) {
+    		if(in_array($seeder, $seeders)) {
     			continue;
     		}
 
@@ -48,23 +45,8 @@ class DatabaseSeeder extends Seeder
     		echo "Nothing to seed!".PHP_EOL;
     	}
     }
-}
 
-class userSeeder extends Seeder {
-	public function run() {
-		User::create([
-			'contact_email' 	=> 	'flaviu@glitch.ro',
-			'first_name'		=>	'Flaviu',
-			'last_name'			=>	'Porutiu',
-			'date_of_birth'		=>	'1994-01-24',
-			'gender'			=>	1,
-			'antenna_id'		=>	$antenna->id,
-			'university'		=>	'UBB Cluj',
-			'studies_type_id'	=>	1,
-			'studies_field_id'	=>	1,
-			'password'			=>	Hash::make('1234'),
-			'activated_at'		=>	date('Y-m-d H:i:S'),
-			'is_superadmin'		=>	1
-		]);
-	}
+    public static function isSeeded() {
+        return SeederLog::all()->count() == count(DatabaseSeeder::getSeeders());
+    }
 }

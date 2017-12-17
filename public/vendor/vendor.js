@@ -13492,7 +13492,7 @@ if ('function' === typeof define && define.amd)
       }
     }
   }
-}))
+})); // eslint-disable-line semi
 
 /* globals define, module, require, angular */
 
@@ -13523,8 +13523,3486 @@ if ('function' === typeof define && define.amd)
   angular.module('ui.bootstrap.datetimepicker').run(['$templateCache', function ($templateCache) {
     $templateCache.put('templates/datetimepicker.html', '<div class="datetimepicker table-responsive">\n    <table class="table table-condensed {{ data.currentView }}-view">\n        <thead>\n        <tr>\n            <th class="left" data-ng-click="changeView(data.currentView, data.leftDate, $event)" data-ng-show="data.leftDate.selectable"><i class="glyphicon glyphicon-arrow-left"><span class="sr-only">{{ screenReader.previous }}</span></i>\n            </th>\n            <th class="switch" colspan="5" data-ng-show="data.previousViewDate.selectable" data-ng-click="changeView(data.previousView, data.previousViewDate, $event)">{{ data.previousViewDate.display }}</th>\n            <th class="right" data-ng-click="changeView(data.currentView, data.rightDate, $event)" data-ng-show="data.rightDate.selectable"><i class="glyphicon glyphicon-arrow-right"><span class="sr-only">{{ screenReader.next }}</span></i>\n            </th>\n        </tr>\n        <tr>\n            <th class="dow" data-ng-repeat="day in data.dayNames">{{ day }}</th>\n        </tr>\n        </thead>\n        <tbody>\n        <tr data-ng-if="data.currentView !== \'day\'">\n            <td colspan="7">\n                          <span class="{{ data.currentView }}" data-ng-repeat="dateObject in data.dates" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}" data-ng-click="changeView(data.nextView, dateObject, $event)">{{ dateObject.display }}</span></td>\n        </tr>\n        <tr data-ng-if="data.currentView === \'day\'" data-ng-repeat="week in data.weeks">\n            <td data-ng-repeat="dateObject in week.dates" data-ng-click="changeView(data.nextView, dateObject, $event)" class="day" data-ng-class="{current: dateObject.current, active: dateObject.active, past: dateObject.past, future: dateObject.future, disabled: !dateObject.selectable}">{{ dateObject.display }}</td>\n        </tr>\n        </tbody>\n    </table>\n</div>\n')
   }])
-}))
+})); // eslint-disable-line semi
 
+/* ng-infinite-scroll - v1.3.0 - 2016-06-30 */
+angular.module('infinite-scroll', []).value('THROTTLE_MILLISECONDS', null).directive('infiniteScroll', [
+  '$rootScope', '$window', '$interval', 'THROTTLE_MILLISECONDS', function($rootScope, $window, $interval, THROTTLE_MILLISECONDS) {
+    return {
+      scope: {
+        infiniteScroll: '&',
+        infiniteScrollContainer: '=',
+        infiniteScrollDistance: '=',
+        infiniteScrollDisabled: '=',
+        infiniteScrollUseDocumentBottom: '=',
+        infiniteScrollListenForEvent: '@'
+      },
+      link: function(scope, elem, attrs) {
+        var changeContainer, checkInterval, checkWhenEnabled, container, handleInfiniteScrollContainer, handleInfiniteScrollDisabled, handleInfiniteScrollDistance, handleInfiniteScrollUseDocumentBottom, handler, height, immediateCheck, offsetTop, pageYOffset, scrollDistance, scrollEnabled, throttle, unregisterEventListener, useDocumentBottom, windowElement;
+        windowElement = angular.element($window);
+        scrollDistance = null;
+        scrollEnabled = null;
+        checkWhenEnabled = null;
+        container = null;
+        immediateCheck = true;
+        useDocumentBottom = false;
+        unregisterEventListener = null;
+        checkInterval = false;
+        height = function(elem) {
+          elem = elem[0] || elem;
+          if (isNaN(elem.offsetHeight)) {
+            return elem.document.documentElement.clientHeight;
+          } else {
+            return elem.offsetHeight;
+          }
+        };
+        offsetTop = function(elem) {
+          if (!elem[0].getBoundingClientRect || elem.css('none')) {
+            return;
+          }
+          return elem[0].getBoundingClientRect().top + pageYOffset(elem);
+        };
+        pageYOffset = function(elem) {
+          elem = elem[0] || elem;
+          if (isNaN(window.pageYOffset)) {
+            return elem.document.documentElement.scrollTop;
+          } else {
+            return elem.ownerDocument.defaultView.pageYOffset;
+          }
+        };
+        handler = function() {
+          var containerBottom, containerTopOffset, elementBottom, remaining, shouldScroll;
+          if (container === windowElement) {
+            containerBottom = height(container) + pageYOffset(container[0].document.documentElement);
+            elementBottom = offsetTop(elem) + height(elem);
+          } else {
+            containerBottom = height(container);
+            containerTopOffset = 0;
+            if (offsetTop(container) !== void 0) {
+              containerTopOffset = offsetTop(container);
+            }
+            elementBottom = offsetTop(elem) - containerTopOffset + height(elem);
+          }
+          if (useDocumentBottom) {
+            elementBottom = height((elem[0].ownerDocument || elem[0].document).documentElement);
+          }
+          remaining = elementBottom - containerBottom;
+          shouldScroll = remaining <= height(container) * scrollDistance + 1;
+          if (shouldScroll) {
+            checkWhenEnabled = true;
+            if (scrollEnabled) {
+              if (scope.$$phase || $rootScope.$$phase) {
+                return scope.infiniteScroll();
+              } else {
+                return scope.$apply(scope.infiniteScroll);
+              }
+            }
+          } else {
+            if (checkInterval) {
+              $interval.cancel(checkInterval);
+            }
+            return checkWhenEnabled = false;
+          }
+        };
+        throttle = function(func, wait) {
+          var later, previous, timeout;
+          timeout = null;
+          previous = 0;
+          later = function() {
+            previous = new Date().getTime();
+            $interval.cancel(timeout);
+            timeout = null;
+            return func.call();
+          };
+          return function() {
+            var now, remaining;
+            now = new Date().getTime();
+            remaining = wait - (now - previous);
+            if (remaining <= 0) {
+              $interval.cancel(timeout);
+              timeout = null;
+              previous = now;
+              return func.call();
+            } else {
+              if (!timeout) {
+                return timeout = $interval(later, remaining, 1);
+              }
+            }
+          };
+        };
+        if (THROTTLE_MILLISECONDS != null) {
+          handler = throttle(handler, THROTTLE_MILLISECONDS);
+        }
+        scope.$on('$destroy', function() {
+          container.unbind('scroll', handler);
+          if (unregisterEventListener != null) {
+            unregisterEventListener();
+            unregisterEventListener = null;
+          }
+          if (checkInterval) {
+            return $interval.cancel(checkInterval);
+          }
+        });
+        handleInfiniteScrollDistance = function(v) {
+          return scrollDistance = parseFloat(v) || 0;
+        };
+        scope.$watch('infiniteScrollDistance', handleInfiniteScrollDistance);
+        handleInfiniteScrollDistance(scope.infiniteScrollDistance);
+        handleInfiniteScrollDisabled = function(v) {
+          scrollEnabled = !v;
+          if (scrollEnabled && checkWhenEnabled) {
+            checkWhenEnabled = false;
+            return handler();
+          }
+        };
+        scope.$watch('infiniteScrollDisabled', handleInfiniteScrollDisabled);
+        handleInfiniteScrollDisabled(scope.infiniteScrollDisabled);
+        handleInfiniteScrollUseDocumentBottom = function(v) {
+          return useDocumentBottom = v;
+        };
+        scope.$watch('infiniteScrollUseDocumentBottom', handleInfiniteScrollUseDocumentBottom);
+        handleInfiniteScrollUseDocumentBottom(scope.infiniteScrollUseDocumentBottom);
+        changeContainer = function(newContainer) {
+          if (container != null) {
+            container.unbind('scroll', handler);
+          }
+          container = newContainer;
+          if (newContainer != null) {
+            return container.bind('scroll', handler);
+          }
+        };
+        changeContainer(windowElement);
+        if (scope.infiniteScrollListenForEvent) {
+          unregisterEventListener = $rootScope.$on(scope.infiniteScrollListenForEvent, handler);
+        }
+        handleInfiniteScrollContainer = function(newContainer) {
+          if ((newContainer == null) || newContainer.length === 0) {
+            return;
+          }
+          if (newContainer.nodeType && newContainer.nodeType === 1) {
+            newContainer = angular.element(newContainer);
+          } else if (typeof newContainer.append === 'function') {
+            newContainer = angular.element(newContainer[newContainer.length - 1]);
+          } else if (typeof newContainer === 'string') {
+            newContainer = angular.element(document.querySelector(newContainer));
+          }
+          if (newContainer != null) {
+            return changeContainer(newContainer);
+          } else {
+            throw new Error("invalid infinite-scroll-container attribute.");
+          }
+        };
+        scope.$watch('infiniteScrollContainer', handleInfiniteScrollContainer);
+        handleInfiniteScrollContainer(scope.infiniteScrollContainer || []);
+        if (attrs.infiniteScrollParent != null) {
+          changeContainer(angular.element(elem.parent()));
+        }
+        if (attrs.infiniteScrollImmediateCheck != null) {
+          immediateCheck = scope.$eval(attrs.infiniteScrollImmediateCheck);
+        }
+        return checkInterval = $interval((function() {
+          if (immediateCheck) {
+            handler();
+          }
+          return $interval.cancel(checkInterval);
+        }));
+      }
+    };
+  }
+]);
+
+if (typeof module !== "undefined" && typeof exports !== "undefined" && module.exports === exports) {
+  module.exports = 'infinite-scroll';
+}
+
+/**
+ * angular-bootstrap3-typeahead
+ * angular directive for https://github.com/bassjobsen/Bootstrap-3-Typeahead
+ *
+ * @version v0.0.1 - 2016-04-04
+ * @author David Konrad (davidkonrad@gmail.com)
+ * @license MIT (https://opensource.org/licenses/MIT)
+**/
+
+(function() {
+'use strict';
+
+//declaration
+angular.module('bootstrap3-typeahead', []);
+
+//implementation
+angular.module('bootstrap3-typeahead')
+	.directive('bs3Typeahead', ["$parse", "$timeout", function ($parse, $timeout) {
+
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function link(scope, element, attrs, controller) {
+
+				/**
+					default typeahead options
+				 */
+        var attrMap = {
+					source: [],
+					items: 8,
+					minLength: 1,
+					showHintOnFocus: false,
+					scrollHeight: 0,
+					displayText: null,
+					afterSelect: null,
+					addItem: false,
+					autoSelect: true,
+					delay: 0,
+					matcher: null,
+					sorter: null,
+					updater: null,
+					highlighter: null
+				}
+
+				/**
+					bootstrap3-typeahead reference
+				 */
+				var instance = null
+
+        /**
+         * return the directive attribute name associated with a typeahead option
+         * 
+         * @param typeahead option name, example items
+         * @returns {string} attrName, example bs3Items
+         */
+				var getAttrName = function(attr) {
+					return 'bs3' + attr.charAt(0).toUpperCase() + attr.toLowerCase().slice(1)					
+				}
+
+        /**
+         * return the value of an attribute declaration
+				 * checks if the attribute value is found in the scope
+         * 
+         * @param bs3-* attrName 
+         * @returns {value} a default value, a custom value or a $scope variable
+         */
+				var getAttrValue = function(attrName) {
+					var value = attrs[attrName], scopeValue = scope[value]
+					return scopeValue !== undefined ? scopeValue : value
+				}	
+
+				/**
+				 * initialize the typeahead
+				 *
+         * @param object attributes, harvested directive attributes translated into jQuery names
+				 *
+				**/
+				var initialize = function(attributes) {
+					if (instance) element.typeahead('destroy')
+					instance = element.typeahead(attributes)
+				}
+
+        /**
+         * read attributes and wait for promise (if any)
+         * calls initialize() when ready
+         */
+				var prepare = function() {
+					var attributes = angular.copy(attrMap)
+					for (var name in attributes) {
+						var value = getAttrValue(getAttrName(name))
+						if (value != undefined) attributes[name] = value
+					}
+					var promise = attrs['bs3Promise']
+					if (promise) {
+						scope.$watch(promise, function(newVal, oldVal, childScope) {
+							if (typeof childScope[promise] == 'object') {
+								attributes['source'] = JSON.parse(angular.toJson(childScope[promise]))
+								initialize(attributes)
+							}
+						})
+					} else {
+						initialize(attributes)	
+					}
+        }
+
+				prepare()
+
+				/**
+					clean up the typeahead instance after destroy
+				**/
+				scope.$on('$destroy', function() {
+					element.typeahead('destroy');
+	 			})
+
+			}
+    }
+  }])
+
+})();
+
+
+
+/*! angularjs-slider - v6.3.0 - 
+ (c) Rafal Zajac <rzajac@gmail.com>, Valentin Hervieu <valentin@hervieu.me>, Jussi Saarivirta <jusasi@gmail.com>, Angelin Sirbu <angelin.sirbu@gmail.com> - 
+ https://github.com/angular-slider/angularjs-slider - 
+ 2017-08-11 */
+/*jslint unparam: true */
+/*global angular: false, console: false, define, module */
+(function(root, factory) {
+  'use strict';
+  /* istanbul ignore next */
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['angular'], factory);
+  } else if (typeof module === 'object' && module.exports) {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    // to support bundler like browserify
+    var angularObj = angular || require('angular');
+    if ((!angularObj || !angularObj.module) && typeof angular != 'undefined') {
+      angularObj = angular;
+    }
+    module.exports = factory(angularObj);
+  } else {
+    // Browser globals (root is window)
+    factory(root.angular);
+  }
+
+}(this, function(angular) {
+  'use strict';
+  var module = angular.module('rzModule', [])
+
+  .factory('RzSliderOptions', function() {
+    var defaultOptions = {
+      floor: 0,
+      ceil: null, //defaults to rz-slider-model
+      step: 1,
+      precision: 0,
+      minRange: null,
+      maxRange: null,
+      pushRange: false,
+      minLimit: null,
+      maxLimit: null,
+      id: null,
+      translate: null,
+      getLegend: null,
+      stepsArray: null,
+      bindIndexForStepsArray: false,
+      draggableRange: false,
+      draggableRangeOnly: false,
+      showSelectionBar: false,
+      showSelectionBarEnd: false,
+      showSelectionBarFromValue: null,
+      showOuterSelectionBars: false,
+      hidePointerLabels: false,
+      hideLimitLabels: false,
+      autoHideLimitLabels: true,
+      readOnly: false,
+      disabled: false,
+      interval: 350,
+      showTicks: false,
+      showTicksValues: false,
+      ticksArray: null,
+      ticksTooltip: null,
+      ticksValuesTooltip: null,
+      vertical: false,
+      getSelectionBarColor: null,
+      getTickColor: null,
+      getPointerColor: null,
+      keyboardSupport: true,
+      scale: 1,
+      enforceStep: true,
+      enforceRange: false,
+      noSwitching: false,
+      onlyBindHandles: false,
+      onStart: null,
+      onChange: null,
+      onEnd: null,
+      rightToLeft: false,
+      boundPointerLabels: true,
+      mergeRangeLabelsIfSame: false,
+      customTemplateScope: null,
+      logScale: false,
+      customValueToPosition: null,
+      customPositionToValue: null,
+      selectionBarGradient: null,
+      ariaLabel: null,
+      ariaLabelledBy: null,
+      ariaLabelHigh: null,
+      ariaLabelledByHigh: null
+    };
+    var globalOptions = {};
+
+    var factory = {};
+    /**
+     * `options({})` allows global configuration of all sliders in the
+     * application.
+     *
+     *   var app = angular.module( 'App', ['rzModule'], function( RzSliderOptions ) {
+     *     // show ticks for all sliders
+     *     RzSliderOptions.options( { showTicks: true } );
+     *   });
+     */
+    factory.options = function(value) {
+      angular.extend(globalOptions, value);
+    };
+
+    factory.getOptions = function(options) {
+      return angular.extend({}, defaultOptions, globalOptions, options);
+    };
+
+    return factory;
+  })
+
+  .factory('rzThrottle', ['$timeout', function($timeout) {
+    /**
+     * rzThrottle
+     *
+     * Taken from underscore project
+     *
+     * @param {Function} func
+     * @param {number} wait
+     * @param {ThrottleOptions} options
+     * @returns {Function}
+     */
+    return function(func, wait, options) {
+      'use strict';
+      /* istanbul ignore next */
+      var getTime = (Date.now || function() {
+        return new Date().getTime();
+      });
+      var context, args, result;
+      var timeout = null;
+      var previous = 0;
+      options = options || {};
+      var later = function() {
+        previous = getTime();
+        timeout = null;
+        result = func.apply(context, args);
+        context = args = null;
+      };
+      return function() {
+        var now = getTime();
+        var remaining = wait - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0) {
+          $timeout.cancel(timeout);
+          timeout = null;
+          previous = now;
+          result = func.apply(context, args);
+          context = args = null;
+        } else if (!timeout && options.trailing !== false) {
+          timeout = $timeout(later, remaining);
+        }
+        return result;
+      };
+    }
+  }])
+
+  .factory('RzSlider', ['$timeout', '$document', '$window', '$compile', 'RzSliderOptions', 'rzThrottle', function($timeout, $document, $window, $compile, RzSliderOptions, rzThrottle) {
+    'use strict';
+
+    /**
+     * Slider
+     *
+     * @param {ngScope} scope            The AngularJS scope
+     * @param {Element} sliderElem The slider directive element wrapped in jqLite
+     * @constructor
+     */
+    var Slider = function(scope, sliderElem) {
+      /**
+       * The slider's scope
+       *
+       * @type {ngScope}
+       */
+      this.scope = scope;
+
+      /**
+       * The slider inner low value (linked to rzSliderModel)
+       * @type {number}
+       */
+      this.lowValue = 0;
+
+      /**
+       * The slider inner high value (linked to rzSliderHigh)
+       * @type {number}
+       */
+      this.highValue = 0;
+
+      /**
+       * Slider element wrapped in jqLite
+       *
+       * @type {jqLite}
+       */
+      this.sliderElem = sliderElem;
+
+      /**
+       * Slider type
+       *
+       * @type {boolean} Set to true for range slider
+       */
+      this.range = this.scope.rzSliderModel !== undefined && this.scope.rzSliderHigh !== undefined;
+
+      /**
+       * Values recorded when first dragging the bar
+       *
+       * @type {Object}
+       */
+      this.dragging = {
+        active: false,
+        value: 0,
+        difference: 0,
+        position: 0,
+        lowLimit: 0,
+        highLimit: 0
+      };
+
+      /**
+       * property that handle position (defaults to left for horizontal)
+       * @type {string}
+       */
+      this.positionProperty = 'left';
+
+      /**
+       * property that handle dimension (defaults to width for horizontal)
+       * @type {string}
+       */
+      this.dimensionProperty = 'width';
+
+      /**
+       * Half of the width or height of the slider handles
+       *
+       * @type {number}
+       */
+      this.handleHalfDim = 0;
+
+      /**
+       * Maximum position the slider handle can have
+       *
+       * @type {number}
+       */
+      this.maxPos = 0;
+
+      /**
+       * Precision
+       *
+       * @type {number}
+       */
+      this.precision = 0;
+
+      /**
+       * Step
+       *
+       * @type {number}
+       */
+      this.step = 1;
+
+      /**
+       * The name of the handle we are currently tracking
+       *
+       * @type {string}
+       */
+      this.tracking = '';
+
+      /**
+       * Minimum value (floor) of the model
+       *
+       * @type {number}
+       */
+      this.minValue = 0;
+
+      /**
+       * Maximum value (ceiling) of the model
+       *
+       * @type {number}
+       */
+      this.maxValue = 0;
+
+
+      /**
+       * The delta between min and max value
+       *
+       * @type {number}
+       */
+      this.valueRange = 0;
+
+
+      /**
+       * If showTicks/showTicksValues options are number.
+       * In this case, ticks values should be displayed below the slider.
+       * @type {boolean}
+       */
+      this.intermediateTicks = false;
+
+      /**
+       * Set to true if init method already executed
+       *
+       * @type {boolean}
+       */
+      this.initHasRun = false;
+
+      /**
+       * Used to call onStart on the first keydown event
+       *
+       * @type {boolean}
+       */
+      this.firstKeyDown = false;
+
+      /**
+       * Internal flag to prevent watchers to be called when the sliders value are modified internally.
+       * @type {boolean}
+       */
+      this.internalChange = false;
+
+      /**
+       * Internal flag to keep track of the visibility of combo label
+       * @type {boolean}
+       */
+      this.cmbLabelShown = false;
+
+      /**
+       * Internal variable to keep track of the focus element
+       */
+      this.currentFocusElement = null;
+
+      // Slider DOM elements wrapped in jqLite
+      this.fullBar = null; // The whole slider bar
+      this.selBar = null; // Highlight between two handles
+      this.minH = null; // Left slider handle
+      this.maxH = null; // Right slider handle
+      this.flrLab = null; // Floor label
+      this.ceilLab = null; // Ceiling label
+      this.minLab = null; // Label above the low value
+      this.maxLab = null; // Label above the high value
+      this.cmbLab = null; // Combined label
+      this.ticks = null; // The ticks
+
+      // Initialize slider
+      this.init();
+    };
+
+    // Add instance methods
+    Slider.prototype = {
+
+      /**
+       * Initialize slider
+       *
+       * @returns {undefined}
+       */
+      init: function() {
+        var thrLow, thrHigh,
+          self = this;
+
+        var calcDimFn = function() {
+          self.calcViewDimensions();
+        };
+
+        this.applyOptions();
+        this.syncLowValue();
+        if (this.range)
+          this.syncHighValue();
+        this.initElemHandles();
+        this.manageElementsStyle();
+        this.setDisabledState();
+        this.calcViewDimensions();
+        this.setMinAndMax();
+        this.addAccessibility();
+        this.updateCeilLab();
+        this.updateFloorLab();
+        this.initHandles();
+        this.manageEventsBindings();
+
+        // Recalculate slider view dimensions
+        this.scope.$on('reCalcViewDimensions', calcDimFn);
+
+        // Recalculate stuff if view port dimensions have changed
+        angular.element($window).on('resize', calcDimFn);
+
+        this.initHasRun = true;
+
+        // Watch for changes to the model
+        thrLow = rzThrottle(function() {
+          self.onLowHandleChange();
+        }, self.options.interval);
+
+        thrHigh = rzThrottle(function() {
+          self.onHighHandleChange();
+        }, self.options.interval);
+
+        this.scope.$on('rzSliderForceRender', function() {
+          self.resetLabelsValue();
+          thrLow();
+          if (self.range) {
+            thrHigh();
+          }
+          self.resetSlider();
+        });
+
+        // Watchers (order is important because in case of simultaneous change,
+        // watchers will be called in the same order)
+        this.scope.$watch('rzSliderOptions()', function(newValue, oldValue) {
+          if (newValue === oldValue)
+            return;
+          self.applyOptions(); // need to be called before synchronizing the values
+          self.syncLowValue();
+          if (self.range)
+            self.syncHighValue();
+          self.resetSlider();
+        }, true);
+
+        this.scope.$watch('rzSliderModel', function(newValue, oldValue) {
+          if (self.internalChange)
+            return;
+          if (newValue === oldValue)
+            return;
+          thrLow();
+        });
+
+        this.scope.$watch('rzSliderHigh', function(newValue, oldValue) {
+          if (self.internalChange)
+            return;
+          if (newValue === oldValue)
+            return;
+          if (newValue != null)
+            thrHigh();
+          if (self.range && newValue == null || !self.range && newValue != null) {
+            self.applyOptions();
+            self.resetSlider();
+          }
+        });
+
+        this.scope.$on('$destroy', function() {
+          self.unbindEvents();
+          angular.element($window).off('resize', calcDimFn);
+          self.currentFocusElement = null;
+        });
+      },
+
+      findStepIndex: function(modelValue) {
+        var index = 0;
+        for (var i = 0; i < this.options.stepsArray.length; i++) {
+          var step = this.options.stepsArray[i];
+          if (step === modelValue) {
+            index = i;
+            break;
+          }
+          else if (angular.isDate(step)) {
+            if (step.getTime() === modelValue.getTime()) {
+              index = i;
+              break;
+            }
+          }
+          else if (angular.isObject(step)) {
+            if (angular.isDate(step.value) && step.value.getTime() === modelValue.getTime() || step.value === modelValue) {
+              index = i;
+              break;
+            }
+          }
+        }
+        return index;
+      },
+
+      syncLowValue: function() {
+        if (this.options.stepsArray) {
+          if (!this.options.bindIndexForStepsArray)
+            this.lowValue = this.findStepIndex(this.scope.rzSliderModel);
+          else
+            this.lowValue = this.scope.rzSliderModel
+        }
+        else
+          this.lowValue = this.scope.rzSliderModel;
+      },
+
+      syncHighValue: function() {
+        if (this.options.stepsArray) {
+          if (!this.options.bindIndexForStepsArray)
+            this.highValue = this.findStepIndex(this.scope.rzSliderHigh);
+          else
+            this.highValue = this.scope.rzSliderHigh
+        }
+        else
+          this.highValue = this.scope.rzSliderHigh;
+      },
+
+      getStepValue: function(sliderValue) {
+        var step = this.options.stepsArray[sliderValue];
+        if (angular.isDate(step))
+          return step;
+        if (angular.isObject(step))
+          return step.value;
+        return step;
+      },
+
+      applyLowValue: function() {
+        if (this.options.stepsArray) {
+          if (!this.options.bindIndexForStepsArray)
+            this.scope.rzSliderModel = this.getStepValue(this.lowValue);
+          else
+            this.scope.rzSliderModel = this.lowValue
+        }
+        else
+          this.scope.rzSliderModel = this.lowValue;
+      },
+
+      applyHighValue: function() {
+        if (this.options.stepsArray) {
+          if (!this.options.bindIndexForStepsArray)
+            this.scope.rzSliderHigh = this.getStepValue(this.highValue);
+          else
+            this.scope.rzSliderHigh = this.highValue
+        }
+        else
+          this.scope.rzSliderHigh = this.highValue;
+      },
+
+      /*
+       * Reflow the slider when the low handle changes (called with throttle)
+       */
+      onLowHandleChange: function() {
+        this.syncLowValue();
+        if (this.range)
+          this.syncHighValue();
+        this.setMinAndMax();
+        this.updateLowHandle(this.valueToPosition(this.lowValue));
+        this.updateSelectionBar();
+        this.updateTicksScale();
+        this.updateAriaAttributes();
+        if (this.range) {
+          this.updateCmbLabel();
+        }
+      },
+
+      /*
+       * Reflow the slider when the high handle changes (called with throttle)
+       */
+      onHighHandleChange: function() {
+        this.syncLowValue();
+        this.syncHighValue();
+        this.setMinAndMax();
+        this.updateHighHandle(this.valueToPosition(this.highValue));
+        this.updateSelectionBar();
+        this.updateTicksScale();
+        this.updateCmbLabel();
+        this.updateAriaAttributes();
+      },
+
+      /**
+       * Read the user options and apply them to the slider model
+       */
+      applyOptions: function() {
+        var sliderOptions;
+        if (this.scope.rzSliderOptions)
+          sliderOptions = this.scope.rzSliderOptions();
+        else
+          sliderOptions = {};
+
+        this.options = RzSliderOptions.getOptions(sliderOptions);
+
+        if (this.options.step <= 0)
+          this.options.step = 1;
+
+        this.range = this.scope.rzSliderModel !== undefined && this.scope.rzSliderHigh !== undefined;
+        this.options.draggableRange = this.range && this.options.draggableRange;
+        this.options.draggableRangeOnly = this.range && this.options.draggableRangeOnly;
+        if (this.options.draggableRangeOnly) {
+          this.options.draggableRange = true;
+        }
+
+        this.options.showTicks = this.options.showTicks || this.options.showTicksValues || !!this.options.ticksArray;
+        this.scope.showTicks = this.options.showTicks; //scope is used in the template
+        if (angular.isNumber(this.options.showTicks) || this.options.ticksArray)
+          this.intermediateTicks = true;
+
+        this.options.showSelectionBar = this.options.showSelectionBar || this.options.showSelectionBarEnd
+          || this.options.showSelectionBarFromValue !== null;
+
+        if (this.options.stepsArray) {
+          this.parseStepsArray();
+        } else {
+          if (this.options.translate)
+            this.customTrFn = this.options.translate;
+          else
+            this.customTrFn = function(value) {
+              return String(value);
+            };
+
+          this.getLegend = this.options.getLegend;
+        }
+
+        if (this.options.vertical) {
+          this.positionProperty = 'bottom';
+          this.dimensionProperty = 'height';
+        }
+
+        if (this.options.customTemplateScope)
+          this.scope.custom = this.options.customTemplateScope;
+      },
+
+      parseStepsArray: function() {
+        this.options.floor = 0;
+        this.options.ceil = this.options.stepsArray.length - 1;
+        this.options.step = 1;
+
+        if (this.options.translate) {
+          this.customTrFn = this.options.translate;
+        }
+        else {
+          this.customTrFn = function(modelValue) {
+            if (this.options.bindIndexForStepsArray)
+              return this.getStepValue(modelValue);
+            return modelValue;
+          };
+        }
+
+        this.getLegend = function(index) {
+          var step = this.options.stepsArray[index];
+          if (angular.isObject(step))
+            return step.legend;
+          return null;
+        };
+      },
+
+      /**
+       * Resets slider
+       *
+       * @returns {undefined}
+       */
+      resetSlider: function() {
+        this.manageElementsStyle();
+        this.addAccessibility();
+        this.setMinAndMax();
+        this.updateCeilLab();
+        this.updateFloorLab();
+        this.unbindEvents();
+        this.manageEventsBindings();
+        this.setDisabledState();
+        this.calcViewDimensions();
+        this.refocusPointerIfNeeded();
+      },
+
+      refocusPointerIfNeeded: function() {
+        if (this.currentFocusElement) {
+          this.onPointerFocus(this.currentFocusElement.pointer, this.currentFocusElement.ref);
+          this.focusElement(this.currentFocusElement.pointer)
+        }
+      },
+
+      /**
+       * Set the slider children to variables for easy access
+       *
+       * Run only once during initialization
+       *
+       * @returns {undefined}
+       */
+      initElemHandles: function() {
+        // Assign all slider elements to object properties for easy access
+        angular.forEach(this.sliderElem.children(), function(elem, index) {
+          var jElem = angular.element(elem);
+
+          switch (index) {
+            case 0:
+              this.leftOutSelBar = jElem;
+              break;
+            case 1:
+              this.rightOutSelBar = jElem;
+              break;
+            case 2:
+              this.fullBar = jElem;
+              break;
+            case 3:
+              this.selBar = jElem;
+              break;
+            case 4:
+              this.minH = jElem;
+              break;
+            case 5:
+              this.maxH = jElem;
+              break;
+            case 6:
+              this.flrLab = jElem;
+              break;
+            case 7:
+              this.ceilLab = jElem;
+              break;
+            case 8:
+              this.minLab = jElem;
+              break;
+            case 9:
+              this.maxLab = jElem;
+              break;
+            case 10:
+              this.cmbLab = jElem;
+              break;
+            case 11:
+              this.ticks = jElem;
+              break;
+          }
+
+        }, this);
+
+        // Initialize position cache properties
+        this.selBar.rzsp = 0;
+        this.minH.rzsp = 0;
+        this.maxH.rzsp = 0;
+        this.flrLab.rzsp = 0;
+        this.ceilLab.rzsp = 0;
+        this.minLab.rzsp = 0;
+        this.maxLab.rzsp = 0;
+        this.cmbLab.rzsp = 0;
+      },
+
+      /**
+       * Update each elements style based on options
+       */
+      manageElementsStyle: function() {
+
+        if (!this.range)
+          this.maxH.css('display', 'none');
+        else
+          this.maxH.css('display', '');
+
+
+        this.alwaysHide(this.flrLab, this.options.showTicksValues || this.options.hideLimitLabels);
+        this.alwaysHide(this.ceilLab, this.options.showTicksValues || this.options.hideLimitLabels);
+
+        var hideLabelsForTicks = this.options.showTicksValues && !this.intermediateTicks;
+        this.alwaysHide(this.minLab, hideLabelsForTicks || this.options.hidePointerLabels);
+        this.alwaysHide(this.maxLab, hideLabelsForTicks || !this.range || this.options.hidePointerLabels);
+        this.alwaysHide(this.cmbLab, hideLabelsForTicks || !this.range || this.options.hidePointerLabels);
+        this.alwaysHide(this.selBar, !this.range && !this.options.showSelectionBar);
+        this.alwaysHide(this.leftOutSelBar, !this.range || !this.options.showOuterSelectionBars);
+        this.alwaysHide(this.rightOutSelBar, !this.range || !this.options.showOuterSelectionBars);
+
+        if ( this.range && this.options.showOuterSelectionBars ) {
+          this.fullBar.addClass('rz-transparent');
+        }
+
+        if (this.options.vertical)
+          this.sliderElem.addClass('rz-vertical');
+
+        if (this.options.draggableRange)
+          this.selBar.addClass('rz-draggable');
+        else
+          this.selBar.removeClass('rz-draggable');
+
+        if (this.intermediateTicks && this.options.showTicksValues)
+          this.ticks.addClass('rz-ticks-values-under');
+      },
+
+      alwaysHide: function(el, hide) {
+        el.rzAlwaysHide = hide;
+        if (hide)
+          this.hideEl(el);
+        else
+          this.showEl(el)
+      },
+
+      /**
+       * Manage the events bindings based on readOnly and disabled options
+       *
+       * @returns {undefined}
+       */
+      manageEventsBindings: function() {
+        if (this.options.disabled || this.options.readOnly)
+          this.unbindEvents();
+        else
+          this.bindEvents();
+      },
+
+      /**
+       * Set the disabled state based on rzSliderDisabled
+       *
+       * @returns {undefined}
+       */
+      setDisabledState: function() {
+        if (this.options.disabled) {
+          this.sliderElem.attr('disabled', 'disabled');
+        } else {
+          this.sliderElem.attr('disabled', null);
+        }
+      },
+
+      /**
+       * Reset label values
+       *
+       * @return {undefined}
+       */
+      resetLabelsValue: function() {
+        this.minLab.rzsv = undefined;
+        this.maxLab.rzsv = undefined;
+      },
+
+      /**
+       * Initialize slider handles positions and labels
+       *
+       * Run only once during initialization and every time view port changes size
+       *
+       * @returns {undefined}
+       */
+      initHandles: function() {
+        this.updateLowHandle(this.valueToPosition(this.lowValue));
+
+        /*
+         the order here is important since the selection bar should be
+         updated after the high handle but before the combined label
+         */
+        if (this.range)
+          this.updateHighHandle(this.valueToPosition(this.highValue));
+        this.updateSelectionBar();
+        if (this.range)
+          this.updateCmbLabel();
+
+        this.updateTicksScale();
+      },
+
+      /**
+       * Translate value to human readable format
+       *
+       * @param {number|string} value
+       * @param {jqLite} label
+       * @param {String} which
+       * @param {boolean} [useCustomTr]
+       * @returns {undefined}
+       */
+      translateFn: function(value, label, which, useCustomTr) {
+        useCustomTr = useCustomTr === undefined ? true : useCustomTr;
+
+        var valStr = '',
+          getDimension = false,
+          noLabelInjection = label.hasClass('no-label-injection');
+
+        if (useCustomTr) {
+          if (this.options.stepsArray && !this.options.bindIndexForStepsArray)
+            value = this.getStepValue(value);
+          valStr = String(this.customTrFn(value, this.options.id, which));
+        }
+        else {
+          valStr = String(value)
+        }
+
+        if (label.rzsv === undefined || label.rzsv.length !== valStr.length || (label.rzsv.length > 0 && label.rzsd === 0)) {
+          getDimension = true;
+          label.rzsv = valStr;
+        }
+
+        if (!noLabelInjection) {
+          label.html(valStr);
+        }
+        ;
+
+        this.scope[which + 'Label'] = valStr;
+
+        // Update width only when length of the label have changed
+        if (getDimension) {
+          this.getDimension(label);
+        }
+      },
+
+      /**
+       * Set maximum and minimum values for the slider and ensure the model and high
+       * value match these limits
+       * @returns {undefined}
+       */
+      setMinAndMax: function() {
+
+        this.step = +this.options.step;
+        this.precision = +this.options.precision;
+
+        this.minValue = this.options.floor;
+        if (this.options.logScale && this.minValue === 0)
+          throw Error("Can't use floor=0 with logarithmic scale");
+
+        if (this.options.enforceStep) {
+          this.lowValue = this.roundStep(this.lowValue);
+          if (this.range)
+            this.highValue = this.roundStep(this.highValue);
+        }
+
+        if (this.options.ceil != null)
+          this.maxValue = this.options.ceil;
+        else
+          this.maxValue = this.options.ceil = this.range ? this.highValue : this.lowValue;
+
+        if (this.options.enforceRange) {
+          this.lowValue = this.sanitizeValue(this.lowValue);
+          if (this.range)
+            this.highValue = this.sanitizeValue(this.highValue);
+        }
+
+        this.applyLowValue();
+        if (this.range)
+          this.applyHighValue();
+
+        this.valueRange = this.maxValue - this.minValue;
+      },
+
+      /**
+       * Adds accessibility attributes
+       *
+       * Run only once during initialization
+       *
+       * @returns {undefined}
+       */
+      addAccessibility: function() {
+        this.minH.attr('role', 'slider');
+        this.updateAriaAttributes();
+        if (this.options.keyboardSupport && !(this.options.readOnly || this.options.disabled))
+          this.minH.attr('tabindex', '0');
+        else
+          this.minH.attr('tabindex', '');
+        if (this.options.vertical)
+          this.minH.attr('aria-orientation', 'vertical');
+        if (this.options.ariaLabel)
+          this.minH.attr('aria-label', this.options.ariaLabel);
+        else if (this.options.ariaLabelledBy)
+          this.minH.attr('aria-labelledby', this.options.ariaLabelledBy);
+
+        if (this.range) {
+          this.maxH.attr('role', 'slider');
+          if (this.options.keyboardSupport && !(this.options.readOnly || this.options.disabled))
+            this.maxH.attr('tabindex', '0');
+          else
+            this.maxH.attr('tabindex', '');
+          if (this.options.vertical)
+            this.maxH.attr('aria-orientation', 'vertical');
+          if (this.options.ariaLabelHigh)
+            this.maxH.attr('aria-label', this.options.ariaLabelHigh);
+          else if (this.options.ariaLabelledByHigh)
+            this.maxH.attr('aria-labelledby', this.options.ariaLabelledByHigh);
+        }
+      },
+
+      /**
+       * Updates aria attributes according to current values
+       */
+      updateAriaAttributes: function() {
+        this.minH.attr({
+          'aria-valuenow': this.scope.rzSliderModel,
+          'aria-valuetext': this.customTrFn(this.scope.rzSliderModel, this.options.id, 'model'),
+          'aria-valuemin': this.minValue,
+          'aria-valuemax': this.maxValue
+        });
+        if (this.range) {
+          this.maxH.attr({
+            'aria-valuenow': this.scope.rzSliderHigh,
+            'aria-valuetext': this.customTrFn(this.scope.rzSliderHigh, this.options.id, 'high'),
+            'aria-valuemin': this.minValue,
+            'aria-valuemax': this.maxValue
+          });
+        }
+      },
+
+      /**
+       * Calculate dimensions that are dependent on view port size
+       *
+       * Run once during initialization and every time view port changes size.
+       *
+       * @returns {undefined}
+       */
+      calcViewDimensions: function() {
+        var handleWidth = this.getDimension(this.minH);
+
+        this.handleHalfDim = handleWidth / 2;
+        this.barDimension = this.getDimension(this.fullBar);
+
+        this.maxPos = this.barDimension - handleWidth;
+
+        this.getDimension(this.sliderElem);
+        this.sliderElem.rzsp = this.sliderElem[0].getBoundingClientRect()[this.positionProperty];
+
+        if (this.initHasRun) {
+          this.updateFloorLab();
+          this.updateCeilLab();
+          this.initHandles();
+          var self = this;
+          $timeout(function() {
+            self.updateTicksScale();
+          });
+        }
+      },
+
+      /**
+       * Update the ticks position
+       *
+       * @returns {undefined}
+       */
+      updateTicksScale: function() {
+        if (!this.options.showTicks) return;
+
+        var ticksArray = this.options.ticksArray || this.getTicksArray(),
+          translate = this.options.vertical ? 'translateY' : 'translateX',
+          self = this;
+
+        if (this.options.rightToLeft)
+          ticksArray.reverse();
+
+        this.scope.ticks = ticksArray.map(function(value) {
+          var position = self.valueToPosition(value);
+
+          if (self.options.vertical)
+            position = self.maxPos - position;
+
+          var translation = translate + '(' + Math.round(position) + 'px)';
+          var tick = {
+            selected: self.isTickSelected(value),
+            style: {
+              '-webkit-transform': translation,
+              '-moz-transform': translation,
+              '-o-transform': translation,
+              '-ms-transform': translation,
+              'transform': translation
+            }
+          };
+          if (tick.selected && self.options.getSelectionBarColor) {
+            tick.style['background-color'] = self.getSelectionBarColor();
+          }
+          if (!tick.selected && self.options.getTickColor) {
+            tick.style['background-color'] = self.getTickColor(value);
+          }
+          if (self.options.ticksTooltip) {
+            tick.tooltip = self.options.ticksTooltip(value);
+            tick.tooltipPlacement = self.options.vertical ? 'right' : 'top';
+          }
+          if (self.options.showTicksValues === true || value % self.options.showTicksValues === 0) {
+            tick.value = self.getDisplayValue(value, 'tick-value');
+            if (self.options.ticksValuesTooltip) {
+              tick.valueTooltip = self.options.ticksValuesTooltip(value);
+              tick.valueTooltipPlacement = self.options.vertical ? 'right' : 'top';
+            }
+          }
+          if (self.getLegend) {
+            var legend = self.getLegend(value, self.options.id);
+            if (legend)
+              tick.legend = legend;
+          }
+          return tick;
+        });
+      },
+
+      getTicksArray: function() {
+        var step = this.step,
+          ticksArray = [];
+        if (this.intermediateTicks)
+          step = this.options.showTicks;
+        for (var value = this.minValue; value <= this.maxValue; value += step) {
+          ticksArray.push(value);
+        }
+        return ticksArray;
+      },
+
+      isTickSelected: function(value) {
+        if (!this.range) {
+          if (this.options.showSelectionBarFromValue !== null) {
+            var center = this.options.showSelectionBarFromValue;
+            if (this.lowValue > center && value >= center && value <= this.lowValue)
+              return true;
+            else if (this.lowValue < center && value <= center && value >= this.lowValue)
+              return true;
+          }
+          else if (this.options.showSelectionBarEnd) {
+            if (value >= this.lowValue)
+              return true;
+          }
+          else if (this.options.showSelectionBar && value <= this.lowValue)
+            return true;
+        }
+        if (this.range && value >= this.lowValue && value <= this.highValue)
+          return true;
+        return false;
+      },
+
+      /**
+       * Update position of the floor label
+       *
+       * @returns {undefined}
+       */
+      updateFloorLab: function() {
+        this.translateFn(this.minValue, this.flrLab, 'floor');
+        this.getDimension(this.flrLab);
+        var position = this.options.rightToLeft ? this.barDimension - this.flrLab.rzsd : 0;
+        this.setPosition(this.flrLab, position);
+      },
+
+      /**
+       * Update position of the ceiling label
+       *
+       * @returns {undefined}
+       */
+      updateCeilLab: function() {
+        this.translateFn(this.maxValue, this.ceilLab, 'ceil');
+        this.getDimension(this.ceilLab);
+        var position = this.options.rightToLeft ? 0 : this.barDimension - this.ceilLab.rzsd;
+        this.setPosition(this.ceilLab, position);
+      },
+
+      /**
+       * Update slider handles and label positions
+       *
+       * @param {string} which
+       * @param {number} newPos
+       */
+      updateHandles: function(which, newPos) {
+        if (which === 'lowValue')
+          this.updateLowHandle(newPos);
+        else
+          this.updateHighHandle(newPos);
+
+        this.updateSelectionBar();
+        this.updateTicksScale();
+        if (this.range)
+          this.updateCmbLabel();
+      },
+
+      /**
+       * Helper function to work out the position for handle labels depending on RTL or not
+       *
+       * @param {string} labelName maxLab or minLab
+       * @param newPos
+       *
+       * @returns {number}
+       */
+      getHandleLabelPos: function(labelName, newPos) {
+        var labelRzsd = this[labelName].rzsd,
+          nearHandlePos = newPos - labelRzsd / 2 + this.handleHalfDim,
+          endOfBarPos = this.barDimension - labelRzsd;
+
+        if (!this.options.boundPointerLabels)
+          return nearHandlePos;
+
+        if (this.options.rightToLeft && labelName === 'minLab' || !this.options.rightToLeft && labelName === 'maxLab') {
+          return Math.min(nearHandlePos, endOfBarPos);
+        } else {
+          return Math.min(Math.max(nearHandlePos, 0), endOfBarPos);
+        }
+      },
+
+      /**
+       * Update low slider handle position and label
+       *
+       * @param {number} newPos
+       * @returns {undefined}
+       */
+      updateLowHandle: function(newPos) {
+        this.setPosition(this.minH, newPos);
+        this.translateFn(this.lowValue, this.minLab, 'model');
+        this.setPosition(this.minLab, this.getHandleLabelPos('minLab', newPos));
+
+        if (this.options.getPointerColor) {
+          var pointercolor = this.getPointerColor('min');
+          this.scope.minPointerStyle = {
+            backgroundColor: pointercolor
+          };
+        }
+
+        if (this.options.autoHideLimitLabels) {
+          this.shFloorCeil();
+        }
+      },
+
+      /**
+       * Update high slider handle position and label
+       *
+       * @param {number} newPos
+       * @returns {undefined}
+       */
+      updateHighHandle: function(newPos) {
+        this.setPosition(this.maxH, newPos);
+        this.translateFn(this.highValue, this.maxLab, 'high');
+        this.setPosition(this.maxLab, this.getHandleLabelPos('maxLab', newPos));
+
+        if (this.options.getPointerColor) {
+          var pointercolor = this.getPointerColor('max');
+          this.scope.maxPointerStyle = {
+            backgroundColor: pointercolor
+          };
+        }
+        if (this.options.autoHideLimitLabels) {
+          this.shFloorCeil();
+        }
+
+      },
+
+      /**
+       * Show/hide floor/ceiling label
+       *
+       * @returns {undefined}
+       */
+      shFloorCeil: function() {
+        // Show based only on hideLimitLabels if pointer labels are hidden
+        if (this.options.hidePointerLabels) {
+          return;
+        }
+        var flHidden = false,
+          clHidden = false,
+          isMinLabAtFloor = this.isLabelBelowFloorLab(this.minLab),
+          isMinLabAtCeil = this.isLabelAboveCeilLab(this.minLab),
+          isMaxLabAtCeil = this.isLabelAboveCeilLab(this.maxLab),
+          isCmbLabAtFloor = this.isLabelBelowFloorLab(this.cmbLab),
+          isCmbLabAtCeil = this.isLabelAboveCeilLab(this.cmbLab);
+
+        if (isMinLabAtFloor) {
+          flHidden = true;
+          this.hideEl(this.flrLab);
+        } else {
+          flHidden = false;
+          this.showEl(this.flrLab);
+        }
+
+        if (isMinLabAtCeil) {
+          clHidden = true;
+          this.hideEl(this.ceilLab);
+        } else {
+          clHidden = false;
+          this.showEl(this.ceilLab);
+        }
+
+        if (this.range) {
+          var hideCeil = this.cmbLabelShown ? isCmbLabAtCeil : isMaxLabAtCeil;
+          var hideFloor = this.cmbLabelShown ? isCmbLabAtFloor : isMinLabAtFloor;
+
+          if (hideCeil) {
+            this.hideEl(this.ceilLab);
+          } else if (!clHidden) {
+            this.showEl(this.ceilLab);
+          }
+
+          // Hide or show floor label
+          if (hideFloor) {
+            this.hideEl(this.flrLab);
+          } else if (!flHidden) {
+            this.showEl(this.flrLab);
+          }
+        }
+      },
+
+      isLabelBelowFloorLab: function(label) {
+        var isRTL = this.options.rightToLeft,
+          pos = label.rzsp,
+          dim = label.rzsd,
+          floorPos = this.flrLab.rzsp,
+          floorDim = this.flrLab.rzsd;
+        return isRTL ?
+          pos + dim >= floorPos - 2 :
+          pos <= floorPos + floorDim + 2;
+      },
+
+      isLabelAboveCeilLab: function(label) {
+        var isRTL = this.options.rightToLeft,
+          pos = label.rzsp,
+          dim = label.rzsd,
+          ceilPos = this.ceilLab.rzsp,
+          ceilDim = this.ceilLab.rzsd;
+        return isRTL ?
+          pos <= ceilPos + ceilDim + 2 :
+          pos + dim >= ceilPos - 2;
+      },
+
+      /**
+       * Update slider selection bar, combined label and range label
+       *
+       * @returns {undefined}
+       */
+      updateSelectionBar: function() {
+        var position = 0,
+          dimension = 0,
+          isSelectionBarFromRight = this.options.rightToLeft ? !this.options.showSelectionBarEnd : this.options.showSelectionBarEnd,
+          positionForRange = this.options.rightToLeft ? this.maxH.rzsp + this.handleHalfDim : this.minH.rzsp + this.handleHalfDim;
+
+        if (this.range) {
+          dimension = Math.abs(this.maxH.rzsp - this.minH.rzsp);
+          position = positionForRange;
+        }
+        else {
+          if (this.options.showSelectionBarFromValue !== null) {
+            var center = this.options.showSelectionBarFromValue,
+              centerPosition = this.valueToPosition(center),
+              isModelGreaterThanCenter = this.options.rightToLeft ? this.lowValue <= center : this.lowValue > center;
+            if (isModelGreaterThanCenter) {
+              dimension = this.minH.rzsp - centerPosition;
+              position = centerPosition + this.handleHalfDim;
+            }
+            else {
+              dimension = centerPosition - this.minH.rzsp;
+              position = this.minH.rzsp + this.handleHalfDim;
+            }
+          }
+          else if (isSelectionBarFromRight) {
+            dimension = Math.abs(this.maxPos - this.minH.rzsp) + this.handleHalfDim;
+            position = this.minH.rzsp + this.handleHalfDim;
+          } else {
+            dimension = this.minH.rzsp + this.handleHalfDim;
+            position = 0;
+          }
+        }
+        this.setDimension(this.selBar, dimension);
+        this.setPosition(this.selBar, position);
+        if (this.range && this.options.showOuterSelectionBars) {
+          if (this.options.rightToLeft) {
+            this.setDimension(this.rightOutSelBar, position);
+            this.setPosition(this.rightOutSelBar, 0);
+            this.setDimension(this.leftOutSelBar, this.getDimension(this.fullBar) - (position + dimension));
+            this.setPosition(this.leftOutSelBar, position + dimension);
+          } else {
+            this.setDimension(this.leftOutSelBar, position);
+            this.setPosition(this.leftOutSelBar, 0);
+            this.setDimension(this.rightOutSelBar, this.getDimension(this.fullBar) - (position + dimension));
+            this.setPosition(this.rightOutSelBar, position + dimension);
+          }
+        }
+        if (this.options.getSelectionBarColor) {
+          var color = this.getSelectionBarColor();
+          this.scope.barStyle = {
+            backgroundColor: color
+          };
+        } else if (this.options.selectionBarGradient) {
+          var offset = this.options.showSelectionBarFromValue !== null ? this.valueToPosition(this.options.showSelectionBarFromValue) : 0,
+            reversed = offset - position > 0 ^ isSelectionBarFromRight,
+            direction = this.options.vertical ? (reversed ? 'bottom' : 'top') : (reversed ? 'left' : 'right');
+          this.scope.barStyle = {
+            backgroundImage: 'linear-gradient(to ' + direction + ', ' + this.options.selectionBarGradient.from + ' 0%,' + this.options.selectionBarGradient.to + ' 100%)'
+          };
+          if (this.options.vertical) {
+            this.scope.barStyle.backgroundPosition = 'center ' + (offset + dimension + position + (reversed ? -this.handleHalfDim : 0)) + 'px';
+            this.scope.barStyle.backgroundSize = '100% ' + (this.barDimension - this.handleHalfDim) + 'px';
+          } else {
+            this.scope.barStyle.backgroundPosition = (offset - position + (reversed ? this.handleHalfDim : 0)) + 'px center';
+            this.scope.barStyle.backgroundSize = (this.barDimension - this.handleHalfDim) + 'px 100%';
+          }
+        }
+      },
+
+      /**
+       * Wrapper around the getSelectionBarColor of the user to pass to
+       * correct parameters
+       */
+      getSelectionBarColor: function() {
+        if (this.range)
+          return this.options.getSelectionBarColor(this.scope.rzSliderModel, this.scope.rzSliderHigh);
+        return this.options.getSelectionBarColor(this.scope.rzSliderModel);
+      },
+
+      /**
+       * Wrapper around the getPointerColor of the user to pass to
+       * correct parameters
+       */
+      getPointerColor: function(pointerType) {
+        if (pointerType === 'max') {
+          return this.options.getPointerColor(this.scope.rzSliderHigh, pointerType);
+        }
+        return this.options.getPointerColor(this.scope.rzSliderModel, pointerType);
+      },
+
+      /**
+       * Wrapper around the getTickColor of the user to pass to
+       * correct parameters
+       */
+      getTickColor: function(value) {
+        return this.options.getTickColor(value);
+      },
+
+      /**
+       * Update combined label position and value
+       *
+       * @returns {undefined}
+       */
+      updateCmbLabel: function() {
+        var isLabelOverlap = null;
+        if (this.options.rightToLeft) {
+          isLabelOverlap = this.minLab.rzsp - this.minLab.rzsd - 10 <= this.maxLab.rzsp;
+        } else {
+          isLabelOverlap = this.minLab.rzsp + this.minLab.rzsd + 10 >= this.maxLab.rzsp;
+        }
+
+        if (isLabelOverlap) {
+          var lowTr = this.getDisplayValue(this.lowValue, 'model'),
+            highTr = this.getDisplayValue(this.highValue, 'high'),
+            labelVal = '';
+          if (this.options.mergeRangeLabelsIfSame && lowTr === highTr) {
+            labelVal = lowTr;
+          } else {
+            labelVal = this.options.rightToLeft ? highTr + ' - ' + lowTr : lowTr + ' - ' + highTr;
+          }
+
+          this.translateFn(labelVal, this.cmbLab, 'cmb', false);
+          var pos = this.options.boundPointerLabels ? Math.min(
+            Math.max(
+              this.selBar.rzsp + this.selBar.rzsd / 2 - this.cmbLab.rzsd / 2,
+              0
+            ),
+            this.barDimension - this.cmbLab.rzsd
+          ) : this.selBar.rzsp + this.selBar.rzsd / 2 - this.cmbLab.rzsd / 2;
+
+          this.setPosition(this.cmbLab, pos);
+          this.cmbLabelShown = true;
+          this.hideEl(this.minLab);
+          this.hideEl(this.maxLab);
+          this.showEl(this.cmbLab);
+        } else {
+          this.cmbLabelShown = false;
+          this.updateHighHandle(this.valueToPosition(this.highValue));
+          this.updateLowHandle(this.valueToPosition(this.lowValue));
+          this.showEl(this.maxLab);
+          this.showEl(this.minLab);
+          this.hideEl(this.cmbLab);
+        }
+        if (this.options.autoHideLimitLabels) {
+          this.shFloorCeil();
+        }
+      },
+
+      /**
+       * Return the translated value if a translate function is provided else the original value
+       * @param value
+       * @param which if it's min or max handle
+       * @returns {*}
+       */
+      getDisplayValue: function(value, which) {
+        if (this.options.stepsArray && !this.options.bindIndexForStepsArray) {
+          value = this.getStepValue(value);
+        }
+        return this.customTrFn(value, this.options.id, which);
+      },
+
+      /**
+       * Round value to step and precision based on minValue
+       *
+       * @param {number} value
+       * @param {number} customStep a custom step to override the defined step
+       * @returns {number}
+       */
+      roundStep: function(value, customStep) {
+        var step = customStep ? customStep : this.step,
+          steppedDifference = parseFloat((value - this.minValue) / step).toPrecision(12);
+        steppedDifference = Math.round(+steppedDifference) * step;
+        var newValue = (this.minValue + steppedDifference).toFixed(this.precision);
+        return +newValue;
+      },
+
+      /**
+       * Hide element
+       *
+       * @param element
+       * @returns {jqLite} The jqLite wrapped DOM element
+       */
+      hideEl: function(element) {
+        return element.css({
+          visibility: 'hidden'
+        });
+      },
+
+      /**
+       * Show element
+       *
+       * @param element The jqLite wrapped DOM element
+       * @returns {jqLite} The jqLite
+       */
+      showEl: function(element) {
+        if (!!element.rzAlwaysHide) {
+          return element;
+        }
+
+        return element.css({
+          visibility: 'visible'
+        });
+      },
+
+      /**
+       * Set element left/top position depending on whether slider is horizontal or vertical
+       *
+       * @param {jqLite} elem The jqLite wrapped DOM element
+       * @param {number} pos
+       * @returns {number}
+       */
+      setPosition: function(elem, pos) {
+        elem.rzsp = pos;
+        var css = {};
+        css[this.positionProperty] = Math.round(pos) + 'px';
+        elem.css(css);
+        return pos;
+      },
+
+      /**
+       * Get element width/height depending on whether slider is horizontal or vertical
+       *
+       * @param {jqLite} elem The jqLite wrapped DOM element
+       * @returns {number}
+       */
+      getDimension: function(elem) {
+        var val = elem[0].getBoundingClientRect();
+        if (this.options.vertical)
+          elem.rzsd = (val.bottom - val.top) * this.options.scale;
+        else
+          elem.rzsd = (val.right - val.left) * this.options.scale;
+        return elem.rzsd;
+      },
+
+      /**
+       * Set element width/height depending on whether slider is horizontal or vertical
+       *
+       * @param {jqLite} elem  The jqLite wrapped DOM element
+       * @param {number} dim
+       * @returns {number}
+       */
+      setDimension: function(elem, dim) {
+        elem.rzsd = dim;
+        var css = {};
+        css[this.dimensionProperty] = Math.round(dim) + 'px';
+        elem.css(css);
+        return dim;
+      },
+
+      /**
+       * Returns a value that is within slider range
+       *
+       * @param {number} val
+       * @returns {number}
+       */
+      sanitizeValue: function(val) {
+        return Math.min(Math.max(val, this.minValue), this.maxValue);
+      },
+
+      /**
+       * Translate value to pixel position
+       *
+       * @param {number} val
+       * @returns {number}
+       */
+      valueToPosition: function(val) {
+        var fn = this.linearValueToPosition;
+        if (this.options.customValueToPosition)
+          fn = this.options.customValueToPosition;
+        else if (this.options.logScale)
+          fn = this.logValueToPosition;
+
+        val = this.sanitizeValue(val);
+        var percent = fn(val, this.minValue, this.maxValue) || 0;
+        if (this.options.rightToLeft)
+          percent = 1 - percent;
+        return percent * this.maxPos;
+      },
+
+      linearValueToPosition: function(val, minVal, maxVal) {
+        var range = maxVal - minVal;
+        return (val - minVal) / range;
+      },
+
+      logValueToPosition: function(val, minVal, maxVal) {
+        val = Math.log(val);
+        minVal = Math.log(minVal);
+        maxVal = Math.log(maxVal);
+        var range = maxVal - minVal;
+        return (val - minVal) / range;
+      },
+
+      /**
+       * Translate position to model value
+       *
+       * @param {number} position
+       * @returns {number}
+       */
+      positionToValue: function(position) {
+        var percent = position / this.maxPos;
+        if (this.options.rightToLeft)
+          percent = 1 - percent;
+        var fn = this.linearPositionToValue;
+        if (this.options.customPositionToValue)
+          fn = this.options.customPositionToValue;
+        else if (this.options.logScale)
+          fn = this.logPositionToValue;
+        return fn(percent, this.minValue, this.maxValue) || 0;
+      },
+
+      linearPositionToValue: function(percent, minVal, maxVal) {
+        return percent * (maxVal - minVal) + minVal;
+      },
+
+      logPositionToValue: function(percent, minVal, maxVal) {
+        minVal = Math.log(minVal);
+        maxVal = Math.log(maxVal);
+        var value = percent * (maxVal - minVal) + minVal;
+        return Math.exp(value);
+      },
+
+      getEventAttr: function(event, attr) {
+        return event.originalEvent === undefined ? event[attr] : event.originalEvent[attr]
+      },
+
+      // Events
+      /**
+       * Get the X-coordinate or Y-coordinate of an event
+       *
+       * @param {Object} event  The event
+       * @param targetTouchId The identifier of the touch with the X/Y coordinates
+       * @returns {number}
+       */
+      getEventXY: function(event, targetTouchId) {
+        /* http://stackoverflow.com/a/12336075/282882 */
+        //noinspection JSLint
+        var clientXY = this.options.vertical ? 'clientY' : 'clientX';
+        if (event[clientXY] !== undefined) {
+          return event[clientXY];
+        }
+
+        var touches = this.getEventAttr(event, 'touches');
+
+        if (targetTouchId !== undefined) {
+          for (var i = 0; i < touches.length; i++) {
+            if (touches[i].identifier === targetTouchId) {
+              return touches[i][clientXY];
+            }
+          }
+        }
+
+        // If no target touch or the target touch was not found in the event
+        // returns the coordinates of the first touch
+        return touches[0][clientXY];
+      },
+
+      /**
+       * Compute the event position depending on whether the slider is horizontal or vertical
+       * @param event
+       * @param targetTouchId If targetTouchId is provided it will be considered the position of that
+       * @returns {number}
+       */
+      getEventPosition: function(event, targetTouchId) {
+        var sliderPos = this.sliderElem.rzsp,
+          eventPos = 0;
+        if (this.options.vertical)
+          eventPos = -this.getEventXY(event, targetTouchId) + sliderPos;
+        else
+          eventPos = this.getEventXY(event, targetTouchId) - sliderPos;
+        return eventPos * this.options.scale - this.handleHalfDim; // #346 handleHalfDim is already scaled
+      },
+
+      /**
+       * Get event names for move and event end
+       *
+       * @param {Event}    event    The event
+       *
+       * @return {{moveEvent: string, endEvent: string}}
+       */
+      getEventNames: function(event) {
+        var eventNames = {
+          moveEvent: '',
+          endEvent: ''
+        };
+
+        if (this.getEventAttr(event, 'touches')) {
+          eventNames.moveEvent = 'touchmove';
+          eventNames.endEvent = 'touchend';
+        } else {
+          eventNames.moveEvent = 'mousemove';
+          eventNames.endEvent = 'mouseup';
+        }
+
+        return eventNames;
+      },
+
+      /**
+       * Get the handle closest to an event.
+       *
+       * @param event {Event} The event
+       * @returns {jqLite} The handle closest to the event.
+       */
+      getNearestHandle: function(event) {
+        if (!this.range) {
+          return this.minH;
+        }
+        var position = this.getEventPosition(event),
+          distanceMin = Math.abs(position - this.minH.rzsp),
+          distanceMax = Math.abs(position - this.maxH.rzsp);
+        if (distanceMin < distanceMax)
+          return this.minH;
+        else if (distanceMin > distanceMax)
+          return this.maxH;
+        else if (!this.options.rightToLeft)
+        //if event is at the same distance from min/max then if it's at left of minH, we return minH else maxH
+          return position < this.minH.rzsp ? this.minH : this.maxH;
+        else
+        //reverse in rtl
+          return position > this.minH.rzsp ? this.minH : this.maxH;
+      },
+
+      /**
+       * Wrapper function to focus an angular element
+       *
+       * @param el {AngularElement} the element to focus
+       */
+      focusElement: function(el) {
+        var DOM_ELEMENT = 0;
+        el[DOM_ELEMENT].focus();
+      },
+
+      /**
+       * Bind mouse and touch events to slider handles
+       *
+       * @returns {undefined}
+       */
+      bindEvents: function() {
+        var barTracking, barStart, barMove;
+
+        if (this.options.draggableRange) {
+          barTracking = 'rzSliderDrag';
+          barStart = this.onDragStart;
+          barMove = this.onDragMove;
+        } else {
+          barTracking = 'lowValue';
+          barStart = this.onStart;
+          barMove = this.onMove;
+        }
+
+        if (!this.options.onlyBindHandles) {
+          this.selBar.on('mousedown', angular.bind(this, barStart, null, barTracking));
+          this.selBar.on('mousedown', angular.bind(this, barMove, this.selBar));
+        }
+
+        if (this.options.draggableRangeOnly) {
+          this.minH.on('mousedown', angular.bind(this, barStart, null, barTracking));
+          this.maxH.on('mousedown', angular.bind(this, barStart, null, barTracking));
+        } else {
+          this.minH.on('mousedown', angular.bind(this, this.onStart, this.minH, 'lowValue'));
+          if (this.range) {
+            this.maxH.on('mousedown', angular.bind(this, this.onStart, this.maxH, 'highValue'));
+          }
+          if (!this.options.onlyBindHandles) {
+            this.fullBar.on('mousedown', angular.bind(this, this.onStart, null, null));
+            this.fullBar.on('mousedown', angular.bind(this, this.onMove, this.fullBar));
+            this.ticks.on('mousedown', angular.bind(this, this.onStart, null, null));
+            this.ticks.on('mousedown', angular.bind(this, this.onTickClick, this.ticks));
+          }
+        }
+
+        if (!this.options.onlyBindHandles) {
+          this.selBar.on('touchstart', angular.bind(this, barStart, null, barTracking));
+          this.selBar.on('touchstart', angular.bind(this, barMove, this.selBar));
+        }
+        if (this.options.draggableRangeOnly) {
+          this.minH.on('touchstart', angular.bind(this, barStart, null, barTracking));
+          this.maxH.on('touchstart', angular.bind(this, barStart, null, barTracking));
+        } else {
+          this.minH.on('touchstart', angular.bind(this, this.onStart, this.minH, 'lowValue'));
+          if (this.range) {
+            this.maxH.on('touchstart', angular.bind(this, this.onStart, this.maxH, 'highValue'));
+          }
+          if (!this.options.onlyBindHandles) {
+            this.fullBar.on('touchstart', angular.bind(this, this.onStart, null, null));
+            this.fullBar.on('touchstart', angular.bind(this, this.onMove, this.fullBar));
+            this.ticks.on('touchstart', angular.bind(this, this.onStart, null, null));
+            this.ticks.on('touchstart', angular.bind(this, this.onTickClick, this.ticks));
+          }
+        }
+
+        if (this.options.keyboardSupport) {
+          this.minH.on('focus', angular.bind(this, this.onPointerFocus, this.minH, 'lowValue'));
+          if (this.range) {
+            this.maxH.on('focus', angular.bind(this, this.onPointerFocus, this.maxH, 'highValue'));
+          }
+        }
+      },
+
+      /**
+       * Unbind mouse and touch events to slider handles
+       *
+       * @returns {undefined}
+       */
+      unbindEvents: function() {
+        this.minH.off();
+        this.maxH.off();
+        this.fullBar.off();
+        this.selBar.off();
+        this.ticks.off();
+      },
+
+      /**
+       * onStart event handler
+       *
+       * @param {?Object} pointer The jqLite wrapped DOM element; if null, the closest handle is used
+       * @param {?string} ref     The name of the handle being changed; if null, the closest handle's value is modified
+       * @param {Event}   event   The event
+       * @returns {undefined}
+       */
+      onStart: function(pointer, ref, event) {
+        var ehMove, ehEnd,
+          eventNames = this.getEventNames(event);
+
+        event.stopPropagation();
+        event.preventDefault();
+
+        // We have to do this in case the HTML where the sliders are on
+        // have been animated into view.
+        this.calcViewDimensions();
+
+        if (pointer) {
+          this.tracking = ref;
+        } else {
+          pointer = this.getNearestHandle(event);
+          this.tracking = pointer === this.minH ? 'lowValue' : 'highValue';
+        }
+
+        pointer.addClass('rz-active');
+
+        if (this.options.keyboardSupport)
+          this.focusElement(pointer);
+
+        ehMove = angular.bind(this, this.dragging.active ? this.onDragMove : this.onMove, pointer);
+        ehEnd = angular.bind(this, this.onEnd, ehMove);
+
+        $document.on(eventNames.moveEvent, ehMove)
+        $document.on(eventNames.endEvent, ehEnd);
+        this.endHandlerToBeRemovedOnEnd = ehEnd;
+
+        this.callOnStart();
+
+        var changedTouches = this.getEventAttr(event, 'changedTouches');
+        if (changedTouches) {
+          // Store the touch identifier
+          if (!this.touchId) {
+            this.isDragging = true;
+            this.touchId = changedTouches[0].identifier;
+          }
+        }
+      },
+
+      /**
+       * onMove event handler
+       *
+       * @param {jqLite} pointer
+       * @param {Event}  event The event
+       * @param {boolean}  fromTick if the event occured on a tick or not
+       * @returns {undefined}
+       */
+      onMove: function(pointer, event, fromTick) {
+        var changedTouches = this.getEventAttr(event, 'changedTouches');
+        var touchForThisSlider;
+        if (changedTouches) {
+          for (var i = 0; i < changedTouches.length; i++) {
+            if (changedTouches[i].identifier === this.touchId) {
+              touchForThisSlider = changedTouches[i];
+              break;
+            }
+          }
+        }
+
+        if (changedTouches && !touchForThisSlider) {
+          return;
+        }
+
+        var newPos = this.getEventPosition(event, touchForThisSlider ? touchForThisSlider.identifier : undefined),
+          newValue,
+          ceilValue = this.options.rightToLeft ? this.minValue : this.maxValue,
+          flrValue = this.options.rightToLeft ? this.maxValue : this.minValue;
+
+        if (newPos <= 0) {
+          newValue = flrValue;
+        } else if (newPos >= this.maxPos) {
+          newValue = ceilValue;
+        } else {
+          newValue = this.positionToValue(newPos);
+          if (fromTick && angular.isNumber(this.options.showTicks))
+            newValue = this.roundStep(newValue, this.options.showTicks);
+          else
+            newValue = this.roundStep(newValue);
+        }
+        this.positionTrackingHandle(newValue);
+      },
+
+      /**
+       * onEnd event handler
+       *
+       * @param {Event}    event    The event
+       * @param {Function} ehMove   The bound move event handler
+       * @returns {undefined}
+       */
+      onEnd: function(ehMove, event) {
+        var changedTouches = this.getEventAttr(event, 'changedTouches');
+        if (changedTouches && changedTouches[0].identifier !== this.touchId) {
+          return;
+        }
+        this.isDragging = false;
+        this.touchId = null;
+
+        if (!this.options.keyboardSupport) {
+          this.minH.removeClass('rz-active');
+          this.maxH.removeClass('rz-active');
+          this.tracking = '';
+        }
+        this.dragging.active = false;
+
+        var eventName = this.getEventNames(event);
+        $document.off(eventName.moveEvent, ehMove);
+        $document.off(eventName.endEvent, this.endHandlerToBeRemovedOnEnd);
+        this.endHandlerToBeRemovedOnEnd = null;
+        this.callOnEnd();
+      },
+
+      onTickClick: function(pointer, event) {
+        this.onMove(pointer, event, true);
+      },
+
+      onPointerFocus: function(pointer, ref) {
+        this.tracking = ref;
+        pointer.one('blur', angular.bind(this, this.onPointerBlur, pointer));
+        pointer.on('keydown', angular.bind(this, this.onKeyboardEvent));
+        pointer.on('keyup', angular.bind(this, this.onKeyUp));
+        this.firstKeyDown = true;
+        pointer.addClass('rz-active');
+
+        this.currentFocusElement = {
+          pointer: pointer,
+          ref: ref
+        };
+      },
+
+      onKeyUp: function() {
+        this.firstKeyDown = true;
+        this.callOnEnd();
+      },
+
+      onPointerBlur: function(pointer) {
+        pointer.off('keydown');
+        pointer.off('keyup');
+        pointer.removeClass('rz-active');
+        if (!this.isDragging) {
+          this.tracking = '';
+          this.currentFocusElement = null
+        }
+      },
+
+      /**
+       * Key actions helper function
+       *
+       * @param {number} currentValue value of the slider
+       *
+       * @returns {?Object} action value mappings
+       */
+      getKeyActions: function(currentValue) {
+        var increaseStep = currentValue + this.step,
+          decreaseStep = currentValue - this.step,
+          increasePage = currentValue + this.valueRange / 10,
+          decreasePage = currentValue - this.valueRange / 10;
+
+        //Left to right default actions
+        var actions = {
+          'UP': increaseStep,
+          'DOWN': decreaseStep,
+          'LEFT': decreaseStep,
+          'RIGHT': increaseStep,
+          'PAGEUP': increasePage,
+          'PAGEDOWN': decreasePage,
+          'HOME': this.minValue,
+          'END': this.maxValue
+        };
+        //right to left means swapping right and left arrows
+        if (this.options.rightToLeft) {
+          actions.LEFT = increaseStep;
+          actions.RIGHT = decreaseStep;
+          // right to left and vertical means we also swap up and down
+          if (this.options.vertical) {
+            actions.UP = decreaseStep;
+            actions.DOWN = increaseStep;
+          }
+        }
+        return actions;
+      },
+
+      onKeyboardEvent: function(event) {
+        var currentValue = this[this.tracking],
+          keyCode = event.keyCode || event.which,
+          keys = {
+            38: 'UP',
+            40: 'DOWN',
+            37: 'LEFT',
+            39: 'RIGHT',
+            33: 'PAGEUP',
+            34: 'PAGEDOWN',
+            36: 'HOME',
+            35: 'END'
+          },
+          actions = this.getKeyActions(currentValue),
+          key = keys[keyCode],
+          action = actions[key];
+        if (action == null || this.tracking === '') return;
+        event.preventDefault();
+
+        if (this.firstKeyDown) {
+          this.firstKeyDown = false;
+          this.callOnStart();
+        }
+
+        var self = this;
+        $timeout(function() {
+          var newValue = self.roundStep(self.sanitizeValue(action));
+          if (!self.options.draggableRangeOnly) {
+            self.positionTrackingHandle(newValue);
+          }
+          else {
+            var difference = self.highValue - self.lowValue,
+              newMinValue, newMaxValue;
+            if (self.tracking === 'lowValue') {
+              newMinValue = newValue;
+              newMaxValue = newValue + difference;
+              if (newMaxValue > self.maxValue) {
+                newMaxValue = self.maxValue;
+                newMinValue = newMaxValue - difference;
+              }
+            } else {
+              newMaxValue = newValue;
+              newMinValue = newValue - difference;
+              if (newMinValue < self.minValue) {
+                newMinValue = self.minValue;
+                newMaxValue = newMinValue + difference;
+              }
+            }
+            self.positionTrackingBar(newMinValue, newMaxValue);
+          }
+        });
+      },
+
+      /**
+       * onDragStart event handler
+       *
+       * Handles dragging of the middle bar.
+       *
+       * @param {Object} pointer The jqLite wrapped DOM element
+       * @param {string} ref     One of the refLow, refHigh values
+       * @param {Event}  event   The event
+       * @returns {undefined}
+       */
+      onDragStart: function(pointer, ref, event) {
+        var position = this.getEventPosition(event);
+        this.dragging = {
+          active: true,
+          value: this.positionToValue(position),
+          difference: this.highValue - this.lowValue,
+          lowLimit: this.options.rightToLeft ? this.minH.rzsp - position : position - this.minH.rzsp,
+          highLimit: this.options.rightToLeft ? position - this.maxH.rzsp : this.maxH.rzsp - position
+        };
+
+        this.onStart(pointer, ref, event);
+      },
+
+      /**
+       * getValue helper function
+       *
+       * gets max or min value depending on whether the newPos is outOfBounds above or below the bar and rightToLeft
+       *
+       * @param {string} type 'max' || 'min' The value we are calculating
+       * @param {number} newPos  The new position
+       * @param {boolean} outOfBounds Is the new position above or below the max/min?
+       * @param {boolean} isAbove Is the new position above the bar if out of bounds?
+       *
+       * @returns {number}
+       */
+      getValue: function(type, newPos, outOfBounds, isAbove) {
+        var isRTL = this.options.rightToLeft,
+          value = null;
+
+        if (type === 'min') {
+          if (outOfBounds) {
+            if (isAbove) {
+              value = isRTL ? this.minValue : this.maxValue - this.dragging.difference;
+            } else {
+              value = isRTL ? this.maxValue - this.dragging.difference : this.minValue;
+            }
+          } else {
+            value = isRTL ? this.positionToValue(newPos + this.dragging.lowLimit) : this.positionToValue(newPos - this.dragging.lowLimit)
+          }
+        } else {
+          if (outOfBounds) {
+            if (isAbove) {
+              value = isRTL ? this.minValue + this.dragging.difference : this.maxValue;
+            } else {
+              value = isRTL ? this.maxValue : this.minValue + this.dragging.difference;
+            }
+          } else {
+            if (isRTL) {
+              value = this.positionToValue(newPos + this.dragging.lowLimit) + this.dragging.difference
+            } else {
+              value = this.positionToValue(newPos - this.dragging.lowLimit) + this.dragging.difference;
+            }
+          }
+        }
+        return this.roundStep(value);
+      },
+
+      /**
+       * onDragMove event handler
+       *
+       * Handles dragging of the middle bar.
+       *
+       * @param {jqLite} pointer
+       * @param {Event}  event The event
+       * @returns {undefined}
+       */
+      onDragMove: function(pointer, event) {
+        var newPos = this.getEventPosition(event),
+          newMinValue, newMaxValue,
+          ceilLimit, flrLimit,
+          isUnderFlrLimit, isOverCeilLimit,
+          flrH, ceilH;
+
+        if (this.options.rightToLeft) {
+          ceilLimit = this.dragging.lowLimit;
+          flrLimit = this.dragging.highLimit;
+          flrH = this.maxH;
+          ceilH = this.minH;
+        } else {
+          ceilLimit = this.dragging.highLimit;
+          flrLimit = this.dragging.lowLimit;
+          flrH = this.minH;
+          ceilH = this.maxH;
+        }
+        isUnderFlrLimit = newPos <= flrLimit;
+        isOverCeilLimit = newPos >= this.maxPos - ceilLimit;
+
+        if (isUnderFlrLimit) {
+          if (flrH.rzsp === 0)
+            return;
+          newMinValue = this.getValue('min', newPos, true, false);
+          newMaxValue = this.getValue('max', newPos, true, false);
+        } else if (isOverCeilLimit) {
+          if (ceilH.rzsp === this.maxPos)
+            return;
+          newMaxValue = this.getValue('max', newPos, true, true);
+          newMinValue = this.getValue('min', newPos, true, true);
+        } else {
+          newMinValue = this.getValue('min', newPos, false);
+          newMaxValue = this.getValue('max', newPos, false);
+        }
+        this.positionTrackingBar(newMinValue, newMaxValue);
+      },
+
+      /**
+       * Set the new value and position for the entire bar
+       *
+       * @param {number} newMinValue   the new minimum value
+       * @param {number} newMaxValue   the new maximum value
+       */
+      positionTrackingBar: function(newMinValue, newMaxValue) {
+
+        if (this.options.minLimit != null && newMinValue < this.options.minLimit) {
+          newMinValue = this.options.minLimit;
+          newMaxValue = newMinValue + this.dragging.difference;
+        }
+        if (this.options.maxLimit != null && newMaxValue > this.options.maxLimit) {
+          newMaxValue = this.options.maxLimit;
+          newMinValue = newMaxValue - this.dragging.difference;
+        }
+
+        this.lowValue = newMinValue;
+        this.highValue = newMaxValue;
+        this.applyLowValue();
+        if (this.range)
+          this.applyHighValue();
+        this.applyModel(true);
+        this.updateHandles('lowValue', this.valueToPosition(newMinValue));
+        this.updateHandles('highValue', this.valueToPosition(newMaxValue));
+      },
+
+      /**
+       * Set the new value and position to the current tracking handle
+       *
+       * @param {number} newValue new model value
+       */
+      positionTrackingHandle: function(newValue) {
+        var valueChanged = false;
+        newValue = this.applyMinMaxLimit(newValue);
+        if (this.range) {
+          if (this.options.pushRange) {
+            newValue = this.applyPushRange(newValue);
+            valueChanged = true;
+          }
+          else {
+            if (this.options.noSwitching) {
+              if (this.tracking === 'lowValue' && newValue > this.highValue)
+                newValue = this.applyMinMaxRange(this.highValue);
+              else if (this.tracking === 'highValue' && newValue < this.lowValue)
+                newValue = this.applyMinMaxRange(this.lowValue);
+            }
+            newValue = this.applyMinMaxRange(newValue);
+            /* This is to check if we need to switch the min and max handles */
+            if (this.tracking === 'lowValue' && newValue > this.highValue) {
+              this.lowValue = this.highValue;
+              this.applyLowValue();
+              this.applyModel();
+              this.updateHandles(this.tracking, this.maxH.rzsp);
+              this.updateAriaAttributes();
+              this.tracking = 'highValue';
+              this.minH.removeClass('rz-active');
+              this.maxH.addClass('rz-active');
+              if (this.options.keyboardSupport)
+                this.focusElement(this.maxH);
+              valueChanged = true;
+            }
+            else if (this.tracking === 'highValue' && newValue < this.lowValue) {
+              this.highValue = this.lowValue;
+              this.applyHighValue();
+              this.applyModel();
+              this.updateHandles(this.tracking, this.minH.rzsp);
+              this.updateAriaAttributes();
+              this.tracking = 'lowValue';
+              this.maxH.removeClass('rz-active');
+              this.minH.addClass('rz-active');
+              if (this.options.keyboardSupport)
+                this.focusElement(this.minH);
+              valueChanged = true;
+            }
+          }
+        }
+
+        if (this[this.tracking] !== newValue) {
+          this[this.tracking] = newValue;
+          if (this.tracking === 'lowValue')
+            this.applyLowValue();
+          else
+            this.applyHighValue();
+          this.applyModel();
+          this.updateHandles(this.tracking, this.valueToPosition(newValue));
+          this.updateAriaAttributes();
+          valueChanged = true;
+        }
+
+        if (valueChanged)
+          this.applyModel(true);
+      },
+
+      applyMinMaxLimit: function(newValue) {
+        if (this.options.minLimit != null && newValue < this.options.minLimit)
+          return this.options.minLimit;
+        if (this.options.maxLimit != null && newValue > this.options.maxLimit)
+          return this.options.maxLimit;
+        return newValue;
+      },
+
+      applyMinMaxRange: function(newValue) {
+        var oppositeValue = this.tracking === 'lowValue' ? this.highValue : this.lowValue,
+          difference = Math.abs(newValue - oppositeValue);
+        if (this.options.minRange != null) {
+          if (difference < this.options.minRange) {
+            if (this.tracking === 'lowValue')
+              return this.highValue - this.options.minRange;
+            else
+              return this.lowValue + this.options.minRange;
+          }
+        }
+        if (this.options.maxRange != null) {
+          if (difference > this.options.maxRange) {
+            if (this.tracking === 'lowValue')
+              return this.highValue - this.options.maxRange;
+            else
+              return this.lowValue + this.options.maxRange;
+          }
+        }
+        return newValue;
+      },
+
+      applyPushRange: function(newValue) {
+        var difference = this.tracking === 'lowValue' ? this.highValue - newValue : newValue - this.lowValue,
+          minRange = this.options.minRange !== null ? this.options.minRange : this.options.step,
+          maxRange = this.options.maxRange;
+        // if smaller than minRange
+        if (difference < minRange) {
+          if (this.tracking === 'lowValue') {
+            this.highValue = Math.min(newValue + minRange, this.maxValue);
+            newValue = this.highValue - minRange;
+            this.applyHighValue();
+            this.updateHandles('highValue', this.valueToPosition(this.highValue));
+          }
+          else {
+            this.lowValue = Math.max(newValue - minRange, this.minValue);
+            newValue = this.lowValue + minRange;
+            this.applyLowValue();
+            this.updateHandles('lowValue', this.valueToPosition(this.lowValue));
+          }
+          this.updateAriaAttributes();
+        }
+        // if greater than maxRange
+        else if (maxRange !== null && difference > maxRange) {
+          if (this.tracking === 'lowValue') {
+            this.highValue = newValue + maxRange;
+            this.applyHighValue();
+            this.updateHandles('highValue', this.valueToPosition(this.highValue));
+          }
+          else {
+            this.lowValue = newValue - maxRange;
+            this.applyLowValue();
+            this.updateHandles('lowValue', this.valueToPosition(this.lowValue));
+          }
+          this.updateAriaAttributes();
+        }
+        return newValue;
+      },
+
+      /**
+       * Apply the model values using scope.$apply.
+       * We wrap it with the internalChange flag to avoid the watchers to be called
+       */
+      applyModel: function(callOnChange) {
+        this.internalChange = true;
+        this.scope.$apply();
+        callOnChange && this.callOnChange();
+        this.internalChange = false;
+      },
+
+      /**
+       * Call the onStart callback if defined
+       * The callback call is wrapped in a $evalAsync to ensure that its result will be applied to the scope.
+       *
+       * @returns {undefined}
+       */
+      callOnStart: function() {
+        if (this.options.onStart) {
+          var self = this,
+            pointerType = this.tracking === 'lowValue' ? 'min' : 'max';
+          this.scope.$evalAsync(function() {
+            self.options.onStart(self.options.id, self.scope.rzSliderModel, self.scope.rzSliderHigh, pointerType);
+          });
+        }
+      },
+
+      /**
+       * Call the onChange callback if defined
+       * The callback call is wrapped in a $evalAsync to ensure that its result will be applied to the scope.
+       *
+       * @returns {undefined}
+       */
+      callOnChange: function() {
+        if (this.options.onChange) {
+          var self = this,
+            pointerType = this.tracking === 'lowValue' ? 'min' : 'max';
+          this.scope.$evalAsync(function() {
+            self.options.onChange(self.options.id, self.scope.rzSliderModel, self.scope.rzSliderHigh, pointerType);
+          });
+        }
+      },
+
+      /**
+       * Call the onEnd callback if defined
+       * The callback call is wrapped in a $evalAsync to ensure that its result will be applied to the scope.
+       *
+       * @returns {undefined}
+       */
+      callOnEnd: function() {
+        if (this.options.onEnd) {
+          var self = this,
+            pointerType = this.tracking === 'lowValue' ? 'min' : 'max';
+          this.scope.$evalAsync(function() {
+            self.options.onEnd(self.options.id, self.scope.rzSliderModel, self.scope.rzSliderHigh, pointerType);
+          });
+        }
+        this.scope.$emit('slideEnded');
+      }
+    };
+
+    return Slider;
+  }])
+
+  .directive('rzslider', ['RzSlider', function(RzSlider) {
+    'use strict';
+
+    return {
+      restrict: 'AE',
+      replace: true,
+      scope: {
+        rzSliderModel: '=?',
+        rzSliderHigh: '=?',
+        rzSliderOptions: '&?',
+        rzSliderTplUrl: '@'
+      },
+
+      /**
+       * Return template URL
+       *
+       * @param {jqLite} elem
+       * @param {Object} attrs
+       * @return {string}
+       */
+      templateUrl: function(elem, attrs) {
+        //noinspection JSUnresolvedVariable
+        return attrs.rzSliderTplUrl || 'rzSliderTpl.html';
+      },
+
+      link: function(scope, elem) {
+        scope.slider = new RzSlider(scope, elem); //attach on scope so we can test it
+      }
+    };
+  }]);
+
+  // IDE assist
+
+  /**
+   * @name ngScope
+   *
+   * @property {number} rzSliderModel
+   * @property {number} rzSliderHigh
+   * @property {Object} rzSliderOptions
+   */
+
+  /**
+   * @name jqLite
+   *
+   * @property {number|undefined} rzsp rzslider label position position
+   * @property {number|undefined} rzsd rzslider element dimension
+   * @property {string|undefined} rzsv rzslider label value/text
+   * @property {Function} css
+   * @property {Function} text
+   */
+
+  /**
+   * @name Event
+   * @property {Array} touches
+   * @property {Event} originalEvent
+   */
+
+  /**
+   * @name ThrottleOptions
+   *
+   * @property {boolean} leading
+   * @property {boolean} trailing
+   */
+
+  module.run(['$templateCache', function($templateCache) {
+  'use strict';
+
+  $templateCache.put('rzSliderTpl.html',
+    "<div class=rzslider><span class=\"rz-bar-wrapper rz-left-out-selection\"><span class=rz-bar></span></span> <span class=\"rz-bar-wrapper rz-right-out-selection\"><span class=rz-bar></span></span> <span class=rz-bar-wrapper><span class=rz-bar></span></span> <span class=rz-bar-wrapper><span class=\"rz-bar rz-selection\" ng-style=barStyle></span></span> <span class=\"rz-pointer rz-pointer-min\" ng-style=minPointerStyle></span> <span class=\"rz-pointer rz-pointer-max\" ng-style=maxPointerStyle></span> <span class=\"rz-bubble rz-limit rz-floor\"></span> <span class=\"rz-bubble rz-limit rz-ceil\"></span> <span class=rz-bubble></span> <span class=rz-bubble></span> <span class=rz-bubble></span><ul ng-show=showTicks class=rz-ticks><li ng-repeat=\"t in ticks track by $index\" class=rz-tick ng-class=\"{'rz-selected': t.selected}\" ng-style=t.style ng-attr-uib-tooltip=\"{{ t.tooltip }}\" ng-attr-tooltip-placement={{t.tooltipPlacement}} ng-attr-tooltip-append-to-body=\"{{ t.tooltip ? true : undefined}}\"><span ng-if=\"t.value != null\" class=rz-tick-value ng-attr-uib-tooltip=\"{{ t.valueTooltip }}\" ng-attr-tooltip-placement={{t.valueTooltipPlacement}}>{{ t.value }}</span> <span ng-if=\"t.legend != null\" class=rz-tick-legend>{{ t.legend }}</span></li></ul></div>"
+  );
+
+}]);
+
+  return module.name
+}));
+
+/**
+ * Angular directive/filter/service for formatting date so that it displays how long ago the given time was compared to now.
+ * @version v0.4.6 - 2017-08-16
+ * @link https://github.com/yaru22/angular-timeago
+ * @author Brian Park <yaru22@gmail.com>
+ * @license MIT License, http://www.opensource.org/licenses/MIT
+ */
+'use strict';
+
+angular.module('yaru22.angular-timeago', []);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ca_ES'] = {
+    prefixAgo: 'fa',
+    prefixFromNow: 'd\'aquí',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menys d\'un minut',
+    minute: 'prop d\'un minut',
+    minutes: '%d minuts',
+    hour: 'prop d\'una hora',
+    hours: 'prop de %d hores',
+    day: 'un dia',
+    days: '%d dies',
+    month: 'prop d\'un mes',
+    months: '%d mesos',
+    year: 'prop d\'un any',
+    years: '%d anys',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+
+  /**
+   * Czech language uses 2 different versions for future based on the digit being
+   * lower than 5 or not.
+   */
+  function resolvePastAndFuture(past, future, future5) {
+    return function(d, millis) {
+      var isFuture = millis < 0;
+
+      if (!isFuture) {
+        return past;
+      } else {
+        if (d <= 4) {
+          return future;
+        } else {
+          return future5;
+        }
+      }
+    };
+  }
+
+  timeAgoSettings.strings['cs_CZ'] = {
+    prefixAgo: 'prěd',
+    prefixFromNow: 'za',
+    suffixAgo: null,
+    suffixFromNow: null,
+
+    //the below works for past
+    seconds: resolvePastAndFuture('méně než minutou', 'méne než minutu', 'méne než minutu'),
+    minute: resolvePastAndFuture('minutou', 'minutu', 'minutu'),
+    minutes: resolvePastAndFuture('%d minutami', '%d minuty', '%d minút'),
+    hour: resolvePastAndFuture('hodinou', 'hodinu', 'hodinu'),
+    hours: resolvePastAndFuture('%d hodinama', '%d hodiny', '%d hodin'),
+    day: resolvePastAndFuture('dnem', 'den', 'den'),
+    days: resolvePastAndFuture('%d dny', '%d dny', '%d dnů'),
+    month: resolvePastAndFuture('měsícem', 'měsíc', 'měsíc'),
+    months: resolvePastAndFuture('%d měsíci', '%d měsíce', '%d měsíců'),
+    year: resolvePastAndFuture('rokem', 'rok', 'rok'),
+    years: resolvePastAndFuture('%d lety', '%d roky', '%d let'),
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['da_DK'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'siden',
+    suffixFromNow: null,
+    seconds: 'mindre end et minut',
+    minute: 'omkring et minut',
+    minutes: '%d minuter',
+    hour: 'omkring en time',
+    hours: 'omkring %d timer',
+    day: 'en dag',
+    days: '%d dage',
+    month: 'omkring en m\xe5ned',
+    months: '%d m\xe5neder',
+    year: 'omkring et \xe5r',
+    years: '%d \xe5r',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['de_DE'] = {
+    prefixAgo: 'vor',
+    prefixFromNow: 'in',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'weniger als einer Minute',
+    minute: 'ca. einer Minute',
+    minutes: '%d Minuten',
+    hour: 'ca. einer Stunde',
+    hours: 'ca. %d Stunden',
+    day: 'einem Tag',
+    days: '%d Tagen',
+    month: 'ca. einem Monat',
+    months: '%d Monaten',
+    year: 'ca. einem Jahr',
+    years: '%d Jahren',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['en_US'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'ago',
+    suffixFromNow: 'from now',
+    seconds: 'less than a minute',
+    minute: 'about a minute',
+    minutes: '%d minutes',
+    hour: 'about an hour',
+    hours: 'about %d hours',
+    day: 'a day',
+    days: '%d days',
+    month: 'about a month',
+    months: '%d months',
+    year: 'about a year',
+    years: '%d years',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['es_ES'] = {
+    prefixAgo: 'hace',
+    prefixFromNow: 'dentro de',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menos de un minuto',
+    minute: 'un minuto',
+    minutes: '%d minutos',
+    hour: 'una hora',
+    hours: '%d horas',
+    day: 'un día',
+    days: '%d días',
+    month: 'un mes',
+    months: '%d meses',
+    year: 'un año',
+    years: '%d años',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['es_LA'] = {
+    prefixAgo: 'hace',
+    prefixFromNow: 'en',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'menos de un minuto',
+    minute: 'un minuto',
+    minutes: '%d minutos',
+    hour: 'una hora',
+    hours: '%d horas',
+    day: 'un día',
+    days: '%d días',
+    month: 'un mes',
+    months: '%d meses',
+    year: 'un año',
+    years: '%d años',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['fr_FR'] = {
+    prefixAgo: 'il y a',
+    prefixFromNow: 'dans',
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'moins d\'une minute',
+    minute: 'environ une minute',
+    minutes: '%d minutes',
+    hour: 'environ une heure',
+    hours: 'environ %d heures',
+    day: 'un jour',
+    days: '%d jours',
+    month: 'environ un mois',
+    months: '%d mois',
+    year: 'environ un an',
+    years: '%d ans',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['he_IL'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'לפני',
+    suffixFromNow: 'מעכשיו',
+    seconds: 'פחות מדקה',
+    minute: 'כדקה',
+    minutes: '%d דקות',
+    hour: 'כשעה',
+    hours: 'כ %d שעות',
+    day: 'יום',
+    days: '%d ימים',
+    month: 'כחודש',
+    months: '%d חודשים',
+    year: 'כשנה',
+    years: '%d שנים',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['hu_HU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: null,
+    suffixFromNow: null,
+    seconds: 'kevesebb mint egy perce',
+    minute: 'körülbelül egy perce',
+    minutes: '%d perce',
+    hour: 'körülbelül egy órája',
+    hours: 'körülbelül %d órája',
+    day: 'egy napja',
+    days: '%d napja',
+    month: 'körülbelül egy hónapja',
+    months: '%d hónapja',
+    year: 'körülbelül egy éve',
+    years: '%d éve',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['it_IT'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'fa',
+    suffixFromNow: 'da ora',
+    seconds: 'meno di un minuto',
+    minute: 'circa un minuto',
+    minutes: '%d minuti',
+    hour: 'circa un\'ora',
+    hours: 'circa %d ore',
+    day: 'un giorno',
+    days: '%d giorni',
+    month: 'circa un mese',
+    months: '%d mesi',
+    year: 'circa un anno',
+    years: '%d anni',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['nl_NL'] = {
+    prefixAgo: null,
+    prefixFromNow: 'over',
+    suffixAgo: 'geleden',
+    suffixFromNow: 'vanaf nu',
+    seconds: 'een paar seconden',
+    minute: 'ongeveer een minuut',
+    minutes: '%d minuten',
+    hour: 'een uur',
+    hours: '%d uur',
+    day: 'een dag',
+    days: '%d dagen',
+    month: 'een maand',
+    months: '%d maanden',
+    year: 'een jaar',
+    years: '%d jaar',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['pl_PL'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'temu',
+    suffixFromNow: 'od teraz',
+    seconds: 'mniej niż minuta',
+    minute: 'około minuty',
+    minutes: '%d minut',
+    hour: 'około godziny',
+    hours: 'około %d godzin',
+    day: 'dzień',
+    days: '%d dni',
+    month: 'około miesiąca',
+    months: '%d miesięcy',
+    year: 'około roku',
+    years: '%d lat',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['pt_BR'] = {
+    prefixAgo: null,
+    prefixFromNow: 'daqui a',
+    suffixAgo: 'atrás',
+    suffixFromNow: null,
+    seconds: 'menos de um minuto',
+    minute: 'cerca de um minuto',
+    minutes: '%d minutos',
+    hour: 'cerca de uma hora',
+    hours: 'cerca de %d horas',
+    day: 'um dia',
+    days: '%d dias',
+    month: 'cerca de um mês',
+    months: '%d meses',
+    year: 'cerca de um ano',
+    years: '%d anos',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ru_RU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'назад',
+    suffixFromNow: 'с текущего момента',
+    seconds: 'менее минуты',
+    minute: 'около минуты',
+    minutes: '%d мин.',
+    hour: 'около часа',
+    hours: 'около %d ч.',
+    day: 'день',
+    days: '%d дн.',
+    month: 'около месяца',
+    months: '%d мес.',
+    year: 'около года',
+    years: '%d года',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['ru_RU'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'назад',
+    suffixFromNow: null,
+    seconds: 'меньше минуты',
+    minute: 'около минуты',
+    minutes: '%d мин.',
+    hour: 'около часа',
+    hours: 'около %d час.',
+    day: 'день',
+    days: '%d дн.',
+    month: 'около месяца',
+    months: '%d мес.',
+    year: 'около года',
+    years: '%d г.',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+
+  /*
+   * Czech language uses 2 different versions for future based on the digit being lower then 5 or not.
+   */
+  function resolvePastAndFuture(past, future, future5) {
+    return function(d, millis) {
+      var isFuture = millis < 0;
+
+      if (!isFuture) {
+        return past;
+      } else {
+        if (d <= 4) {
+          return future;
+        } else {
+          return future5;
+        }
+      }
+    };
+  }
+
+  timeAgoSettings.strings['sk_SK'] = {
+    prefixAgo: 'pred',
+    prefixFromNow: 'za',
+    suffixAgo: null,
+    suffixFromNow: null,
+
+    //the below works for past
+    seconds: resolvePastAndFuture('menej ako minútou', 'menej ako minútu', 'menej ako minútu'),
+    minute: resolvePastAndFuture('minútou', 'minútu', 'minútu'),
+    minutes: resolvePastAndFuture('%d minútami', '%d minúty', '%d minút'),
+    hour: resolvePastAndFuture('hodinou', 'hodinu', 'hodinu'),
+    hours: resolvePastAndFuture('%d hodinami', '%d hodiny', '%d hodín'),
+    day: resolvePastAndFuture('dňom', 'deň', 'deň'),
+    days: resolvePastAndFuture('%d dňami', '%d dni', '%d dní'),
+    month: resolvePastAndFuture('mesiacom', 'mesiac', 'mesiac'),
+    months: resolvePastAndFuture('%d mesiacmi', '%d mesiace', '%d mesiacov'),
+    year: resolvePastAndFuture('rokom', 'rok', 'rok'),
+    years: resolvePastAndFuture('%d rokmi', '%d roky', '%d rokov'),
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['sv_SE'] = {
+    prefixAgo: null,
+    prefixFromNow: 'om',
+    suffixAgo: 'sen',
+    suffixFromNow: null,
+    seconds: 'mindre än en minut',
+    minute: 'cirka en minut',
+    minutes: '%d minuter',
+    hour: 'cirka en timme',
+    hours: 'cirka %d timmar',
+    day: 'en dag',
+    days: '%d dagar',
+    month: 'cirka en månad',
+    months: '%d månader',
+    year: 'cirka ett år',
+    years: '%d år',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['tr_TR'] = {
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: 'önce',
+    suffixFromNow: 'şu andan itibaren',
+    seconds: 'bir dakikadan daha az',
+    minute: 'bir dakika gibi',
+    minutes: '%d dakika',
+    hour: 'bir saat gibi',
+    hours: '%d saat gibi',
+    day: 'bir gün',
+    days: '%d gün',
+    month: 'bir ay gibi',
+    months: '%d ay',
+    year: 'bir yıl gibi',
+    years: '%d yıl',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['zh_CN'] = {
+    wordSeparator: '',
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: '前',
+    suffixFromNow: '后',
+    seconds: '1分钟',
+    minute: '1分钟',
+    minutes: '%d分钟',
+    hour: '1小时',
+    hours: '%d小时',
+    day: '1天',
+    days: '%d天',
+    month: '1个月',
+    months: '%d个月',
+    year: '1年',
+    years: '%d年',
+    numbers: []
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').config(["timeAgoSettings", function(timeAgoSettings) {
+  timeAgoSettings.strings['zh_TW'] = {
+    wordSeparator: '',
+    prefixAgo: null,
+    prefixFromNow: null,
+    suffixAgo: '前',
+    suffixFromNow: '後',
+    seconds: '少於一分鐘',
+    minute: '一分鐘',
+    minutes: '%d分鐘',
+    hour: '一小時',
+    hours: '%d小時',
+    day: '一日',
+    days: '%d日',
+    month: '一個月',
+    months: '%d個月',
+    year: '一年',
+    years: '%d年',
+    numbers: [
+      '零', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
+      '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+      '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十',
+      '卅一', '卅二', '卅三', '卅四', '卅五', '卅六', '卅七', '卅八', '卅九', '四十',
+      '卌一', '卌二', '卌三', '卌四', '卌五', '卌六', '卌七', '卌八', '卌九', '五十',
+      '五十一', '五十二', '五十三', '五十四', '五十五', '五十六', '五十七', '五十八', '五十九', '六十',
+      '六十一', '六十二', '六十三', '六十四', '六十五', '六十六', '六十七', '六十八', '六十九', '七十',
+      '七十一', '七十二', '七十三', '七十四', '七十五', '七十六', '七十七', '七十八', '七十九', '八十',
+      '八十一', '八十二', '八十三', '八十四', '八十五', '八十六', '八十七', '八十八', '八十九', '九十',
+      '九十一', '九十二', '九十三', '九十四', '九十五', '九十六', '九十七', '九十八', '九十九', '一百',
+    ]
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').factory('nowTime', ["$interval", "timeAgo", "timeAgoSettings", function($interval, timeAgo, timeAgoSettings) {
+  var nowTime;
+
+  function updateTime() {
+    nowTime = Date.now();
+  }
+  updateTime();
+  $interval(updateTime, timeAgoSettings.refreshMillis);
+
+  return function() {
+    return nowTime;
+  };
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').constant('timeAgoSettings', {
+  refreshMillis: 1000,
+  allowFuture: false,
+  overrideLang: null,
+  fullDateAfterSeconds: null,
+  strings: {},
+  breakpoints: {
+    secondsToMinute: 45, // in seconds
+    secondsToMinutes: 90, // in seconds
+    minutesToHour: 45, // in minutes
+    minutesToHours: 90, // in minutes
+    hoursToDay: 24, // in hours
+    hoursToDays: 42, // in hours
+    daysToMonth: 30, // in days
+    daysToMonths: 45, // in days
+    daysToYear: 365, // in days
+    yearToYears: 1.5 // in year
+  }
+});
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').directive('timeAgo', ["timeAgo", "nowTime", function(timeAgo, nowTime) {
+  return {
+    scope: {
+      fromTime: '@',
+      format: '@'
+    },
+    restrict: 'EA',
+    link: function(scope, elem) {
+      var fromTime;
+
+      // Track changes to fromTime
+      scope.$watch('fromTime', function() {
+        fromTime = timeAgo.parse(scope.fromTime);
+      });
+
+      // Track changes to time difference
+      scope.$watch(function() {
+        return nowTime() - fromTime;
+      }, function(value) {
+        angular.element(elem).text(timeAgo.inWords(value, fromTime, scope.format));
+      });
+    }
+  };
+}]);
+
+'use strict';
+/*global moment */
+
+angular.module('yaru22.angular-timeago').factory('timeAgo', ["$filter", "timeAgoSettings", function($filter, timeAgoSettings) {
+  var service = {};
+
+  service.inWords = function(distanceMillis, fromTime, format, timezone) {
+
+    var fullDateAfterSeconds = parseInt(timeAgoSettings.fullDateAfterSeconds, 10);
+
+    if (!isNaN(fullDateAfterSeconds)) {
+      var fullDateAfterMillis = fullDateAfterSeconds * 1000;
+      if ((distanceMillis >= 0 && fullDateAfterMillis <= distanceMillis) ||
+        (distanceMillis < 0 && fullDateAfterMillis >= distanceMillis)) {
+        if (format) {
+          return $filter('date')(fromTime, format, timezone);
+        }
+        return fromTime;
+      }
+    }
+
+    var overrideLang = timeAgoSettings.overrideLang;
+    var documentLang = document.documentElement.lang;
+    var sstrings = timeAgoSettings.strings;
+    var lang, $l;
+
+    if (typeof sstrings[overrideLang] !== 'undefined') {
+      lang = overrideLang;
+      $l = sstrings[overrideLang];
+    } else if (typeof sstrings[documentLang] !== 'undefined') {
+      lang = documentLang;
+      $l = sstrings[documentLang];
+    } else {
+      lang = 'en_US';
+      $l = sstrings[lang];
+    }
+
+    var prefix = $l.prefixAgo;
+    var suffix = $l.suffixAgo;
+    if (timeAgoSettings.allowFuture) {
+      if (distanceMillis < 0) {
+        prefix = $l.prefixFromNow;
+        suffix = $l.suffixFromNow;
+      }
+    }
+
+    var seconds = Math.abs(distanceMillis) / 1000;
+    var minutes = seconds / 60;
+    var hours = minutes / 60;
+    var days = hours / 24;
+    var years = days / 365;
+
+    function substitute(stringOrFunction, number) {
+      number = Math.round(number);
+      var string = angular.isFunction(stringOrFunction) ?
+        stringOrFunction(number, distanceMillis) : stringOrFunction;
+      var value = ($l.numbers && $l.numbers[number]) || number;
+      return string.replace(/%d/i, value);
+    }
+
+    var breakpoints = timeAgoSettings.breakpoints;
+    var words = seconds < breakpoints.secondsToMinute && substitute($l.seconds, seconds) ||
+      seconds < breakpoints.secondsToMinutes && substitute($l.minute, 1) ||
+      minutes < breakpoints.minutesToHour && substitute($l.minutes, minutes) ||
+      minutes < breakpoints.minutesToHours && substitute($l.hour, 1) ||
+      hours < breakpoints.hoursToDay && substitute($l.hours, hours) ||
+      hours < breakpoints.hoursToDays && substitute($l.day, 1) ||
+      days < breakpoints.daysToMonth && substitute($l.days, days) ||
+      days < breakpoints.daysToMonths && substitute($l.month, 1) ||
+      days < breakpoints.daysToYear && substitute($l.months, days / 30) ||
+      years < breakpoints.yearToYears && substitute($l.year, 1) ||
+      substitute($l.years, years);
+
+    var separator = $l.wordSeparator === undefined ? ' ' : $l.wordSeparator;
+    if (lang === 'he_IL') {
+      return [prefix, suffix, words].join(separator).trim();
+    } else {
+      return [prefix, words, suffix].join(separator).trim();
+    }
+  };
+
+  service.parse = function(input) {
+    if (input instanceof Date) {
+      return input;
+    } else if ((typeof moment !== 'undefined') && moment.isMoment(input)) {
+      return input.toDate();
+    } else if (angular.isNumber(input)) {
+      return new Date(input);
+    } else if (/^\d+$/.test(input)) {
+      return new Date(parseInt(input, 10));
+    } else {
+      var s = (input || '').trim();
+      s = s.replace(/\.\d+/, ''); // remove milliseconds
+      s = s.replace(/-/, '/').replace(/-/, '/');
+      s = s.replace(/T/, ' ').replace(/Z/, ' UTC');
+      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/, ' $1$2'); // -04:00 -> -0400
+      return new Date(s);
+    }
+  };
+
+  return service;
+}]);
+
+'use strict';
+
+angular.module('yaru22.angular-timeago').filter('timeAgo', ["nowTime", "timeAgo", function(nowTime, timeAgo) {
+  function timeAgoFilter(value, format, timezone) {
+    var fromTime = timeAgo.parse(value);
+    var diff = nowTime() - fromTime;
+    return timeAgo.inWords(diff, fromTime, format, timezone);
+  }
+  timeAgoFilter.$stateful = true;
+  return timeAgoFilter;
+}]);
+
+!function(){function t(e){var n=t.modules[e];if(!n)throw new Error('failed to require "'+e+'"');return"exports"in n||"function"!=typeof n.definition||(n.client=n.component=!0,n.definition.call(this,n.exports={},n),delete n.definition),n.exports}t.loader="component",t.helper={},t.helper.semVerSort=function(t,e){for(var n=t.version.split("."),i=e.version.split("."),o=0;o<n.length;++o){var r=parseInt(n[o],10),s=parseInt(i[o],10);if(r!==s)return r>s?1:-1;var c=n[o].substr((""+r).length),a=i[o].substr((""+s).length);if(""===c&&""!==a)return 1;if(""!==c&&""===a)return-1;if(""!==c&&""!==a)return c>a?1:-1}return 0},t.latest=function(e,n){function i(t){throw new Error('failed to find latest module of "'+t+'"')}var o=/(.*)~(.*)@v?(\d+\.\d+\.\d+[^\/]*)$/,r=/(.*)~(.*)/;r.test(e)||i(e);for(var s=Object.keys(t.modules),c=[],a=[],l=0;l<s.length;l++){var h=s[l];if(new RegExp(e+"@").test(h)){var u=h.substr(e.length+1),d=o.exec(h);null!=d?c.push({version:u,name:h}):a.push({version:u,name:h})}}if(0===c.concat(a).length&&i(e),c.length>0){var p=c.sort(t.helper.semVerSort).pop().name;return n===!0?p:t(p)}var p=a.sort(function(t,e){return t.name>e.name})[0].name;return n===!0?p:t(p)},t.modules={},t.register=function(e,n){t.modules[e]={definition:n}},t.define=function(e,n){t.modules[e]={exports:n}},t.register("abpetkov~transitionize@0.0.3",function(t,e){function n(t,e){return this instanceof n?(this.element=t,this.props=e||{},void this.init()):new n(t,e)}e.exports=n,n.prototype.isSafari=function(){return/Safari/.test(navigator.userAgent)&&/Apple Computer/.test(navigator.vendor)},n.prototype.init=function(){var t=[];for(var e in this.props)t.push(e+" "+this.props[e]);this.element.style.transition=t.join(", "),this.isSafari()&&(this.element.style.webkitTransition=t.join(", "))}}),t.register("ftlabs~fastclick@v0.6.11",function(t,e){function n(t){"use strict";var e,i=this;if(this.trackingClick=!1,this.trackingClickStart=0,this.targetElement=null,this.touchStartX=0,this.touchStartY=0,this.lastTouchIdentifier=0,this.touchBoundary=10,this.layer=t,!t||!t.nodeType)throw new TypeError("Layer must be a document node");this.onClick=function(){return n.prototype.onClick.apply(i,arguments)},this.onMouse=function(){return n.prototype.onMouse.apply(i,arguments)},this.onTouchStart=function(){return n.prototype.onTouchStart.apply(i,arguments)},this.onTouchMove=function(){return n.prototype.onTouchMove.apply(i,arguments)},this.onTouchEnd=function(){return n.prototype.onTouchEnd.apply(i,arguments)},this.onTouchCancel=function(){return n.prototype.onTouchCancel.apply(i,arguments)},n.notNeeded(t)||(this.deviceIsAndroid&&(t.addEventListener("mouseover",this.onMouse,!0),t.addEventListener("mousedown",this.onMouse,!0),t.addEventListener("mouseup",this.onMouse,!0)),t.addEventListener("click",this.onClick,!0),t.addEventListener("touchstart",this.onTouchStart,!1),t.addEventListener("touchmove",this.onTouchMove,!1),t.addEventListener("touchend",this.onTouchEnd,!1),t.addEventListener("touchcancel",this.onTouchCancel,!1),Event.prototype.stopImmediatePropagation||(t.removeEventListener=function(e,n,i){var o=Node.prototype.removeEventListener;"click"===e?o.call(t,e,n.hijacked||n,i):o.call(t,e,n,i)},t.addEventListener=function(e,n,i){var o=Node.prototype.addEventListener;"click"===e?o.call(t,e,n.hijacked||(n.hijacked=function(t){t.propagationStopped||n(t)}),i):o.call(t,e,n,i)}),"function"==typeof t.onclick&&(e=t.onclick,t.addEventListener("click",function(t){e(t)},!1),t.onclick=null))}n.prototype.deviceIsAndroid=navigator.userAgent.indexOf("Android")>0,n.prototype.deviceIsIOS=/iP(ad|hone|od)/.test(navigator.userAgent),n.prototype.deviceIsIOS4=n.prototype.deviceIsIOS&&/OS 4_\d(_\d)?/.test(navigator.userAgent),n.prototype.deviceIsIOSWithBadTarget=n.prototype.deviceIsIOS&&/OS ([6-9]|\d{2})_\d/.test(navigator.userAgent),n.prototype.needsClick=function(t){"use strict";switch(t.nodeName.toLowerCase()){case"button":case"select":case"textarea":if(t.disabled)return!0;break;case"input":if(this.deviceIsIOS&&"file"===t.type||t.disabled)return!0;break;case"label":case"video":return!0}return/\bneedsclick\b/.test(t.className)},n.prototype.needsFocus=function(t){"use strict";switch(t.nodeName.toLowerCase()){case"textarea":return!0;case"select":return!this.deviceIsAndroid;case"input":switch(t.type){case"button":case"checkbox":case"file":case"image":case"radio":case"submit":return!1}return!t.disabled&&!t.readOnly;default:return/\bneedsfocus\b/.test(t.className)}},n.prototype.sendClick=function(t,e){"use strict";var n,i;document.activeElement&&document.activeElement!==t&&document.activeElement.blur(),i=e.changedTouches[0],n=document.createEvent("MouseEvents"),n.initMouseEvent(this.determineEventType(t),!0,!0,window,1,i.screenX,i.screenY,i.clientX,i.clientY,!1,!1,!1,!1,0,null),n.forwardedTouchEvent=!0,t.dispatchEvent(n)},n.prototype.determineEventType=function(t){"use strict";return this.deviceIsAndroid&&"select"===t.tagName.toLowerCase()?"mousedown":"click"},n.prototype.focus=function(t){"use strict";var e;this.deviceIsIOS&&t.setSelectionRange&&0!==t.type.indexOf("date")&&"time"!==t.type?(e=t.value.length,t.setSelectionRange(e,e)):t.focus()},n.prototype.updateScrollParent=function(t){"use strict";var e,n;if(e=t.fastClickScrollParent,!e||!e.contains(t)){n=t;do{if(n.scrollHeight>n.offsetHeight){e=n,t.fastClickScrollParent=n;break}n=n.parentElement}while(n)}e&&(e.fastClickLastScrollTop=e.scrollTop)},n.prototype.getTargetElementFromEventTarget=function(t){"use strict";return t.nodeType===Node.TEXT_NODE?t.parentNode:t},n.prototype.onTouchStart=function(t){"use strict";var e,n,i;if(t.targetTouches.length>1)return!0;if(e=this.getTargetElementFromEventTarget(t.target),n=t.targetTouches[0],this.deviceIsIOS){if(i=window.getSelection(),i.rangeCount&&!i.isCollapsed)return!0;if(!this.deviceIsIOS4){if(n.identifier===this.lastTouchIdentifier)return t.preventDefault(),!1;this.lastTouchIdentifier=n.identifier,this.updateScrollParent(e)}}return this.trackingClick=!0,this.trackingClickStart=t.timeStamp,this.targetElement=e,this.touchStartX=n.pageX,this.touchStartY=n.pageY,t.timeStamp-this.lastClickTime<200&&t.preventDefault(),!0},n.prototype.touchHasMoved=function(t){"use strict";var e=t.changedTouches[0],n=this.touchBoundary;return Math.abs(e.pageX-this.touchStartX)>n||Math.abs(e.pageY-this.touchStartY)>n?!0:!1},n.prototype.onTouchMove=function(t){"use strict";return this.trackingClick?((this.targetElement!==this.getTargetElementFromEventTarget(t.target)||this.touchHasMoved(t))&&(this.trackingClick=!1,this.targetElement=null),!0):!0},n.prototype.findControl=function(t){"use strict";return void 0!==t.control?t.control:t.htmlFor?document.getElementById(t.htmlFor):t.querySelector("button, input:not([type=hidden]), keygen, meter, output, progress, select, textarea")},n.prototype.onTouchEnd=function(t){"use strict";var e,n,i,o,r,s=this.targetElement;if(!this.trackingClick)return!0;if(t.timeStamp-this.lastClickTime<200)return this.cancelNextClick=!0,!0;if(this.cancelNextClick=!1,this.lastClickTime=t.timeStamp,n=this.trackingClickStart,this.trackingClick=!1,this.trackingClickStart=0,this.deviceIsIOSWithBadTarget&&(r=t.changedTouches[0],s=document.elementFromPoint(r.pageX-window.pageXOffset,r.pageY-window.pageYOffset)||s,s.fastClickScrollParent=this.targetElement.fastClickScrollParent),i=s.tagName.toLowerCase(),"label"===i){if(e=this.findControl(s)){if(this.focus(s),this.deviceIsAndroid)return!1;s=e}}else if(this.needsFocus(s))return t.timeStamp-n>100||this.deviceIsIOS&&window.top!==window&&"input"===i?(this.targetElement=null,!1):(this.focus(s),this.deviceIsIOS4&&"select"===i||(this.targetElement=null,t.preventDefault()),!1);return this.deviceIsIOS&&!this.deviceIsIOS4&&(o=s.fastClickScrollParent,o&&o.fastClickLastScrollTop!==o.scrollTop)?!0:(this.needsClick(s)||(t.preventDefault(),this.sendClick(s,t)),!1)},n.prototype.onTouchCancel=function(){"use strict";this.trackingClick=!1,this.targetElement=null},n.prototype.onMouse=function(t){"use strict";return this.targetElement?t.forwardedTouchEvent?!0:t.cancelable&&(!this.needsClick(this.targetElement)||this.cancelNextClick)?(t.stopImmediatePropagation?t.stopImmediatePropagation():t.propagationStopped=!0,t.stopPropagation(),t.preventDefault(),!1):!0:!0},n.prototype.onClick=function(t){"use strict";var e;return this.trackingClick?(this.targetElement=null,this.trackingClick=!1,!0):"submit"===t.target.type&&0===t.detail?!0:(e=this.onMouse(t),e||(this.targetElement=null),e)},n.prototype.destroy=function(){"use strict";var t=this.layer;this.deviceIsAndroid&&(t.removeEventListener("mouseover",this.onMouse,!0),t.removeEventListener("mousedown",this.onMouse,!0),t.removeEventListener("mouseup",this.onMouse,!0)),t.removeEventListener("click",this.onClick,!0),t.removeEventListener("touchstart",this.onTouchStart,!1),t.removeEventListener("touchmove",this.onTouchMove,!1),t.removeEventListener("touchend",this.onTouchEnd,!1),t.removeEventListener("touchcancel",this.onTouchCancel,!1)},n.notNeeded=function(t){"use strict";var e,i;if("undefined"==typeof window.ontouchstart)return!0;if(i=+(/Chrome\/([0-9]+)/.exec(navigator.userAgent)||[,0])[1]){if(!n.prototype.deviceIsAndroid)return!0;if(e=document.querySelector("meta[name=viewport]")){if(-1!==e.content.indexOf("user-scalable=no"))return!0;if(i>31&&window.innerWidth<=window.screen.width)return!0}}return"none"===t.style.msTouchAction?!0:!1},n.attach=function(t){"use strict";return new n(t)},"undefined"!=typeof define&&define.amd?define(function(){"use strict";return n}):"undefined"!=typeof e&&e.exports?(e.exports=n.attach,e.exports.FastClick=n):window.FastClick=n}),t.register("component~indexof@0.0.3",function(t,e){e.exports=function(t,e){if(t.indexOf)return t.indexOf(e);for(var n=0;n<t.length;++n)if(t[n]===e)return n;return-1}}),t.register("component~classes@1.2.1",function(e,n){function i(t){if(!t)throw new Error("A DOM element reference is required");this.el=t,this.list=t.classList}var o=t("component~indexof@0.0.3"),r=/\s+/,s=Object.prototype.toString;n.exports=function(t){return new i(t)},i.prototype.add=function(t){if(this.list)return this.list.add(t),this;var e=this.array(),n=o(e,t);return~n||e.push(t),this.el.className=e.join(" "),this},i.prototype.remove=function(t){if("[object RegExp]"==s.call(t))return this.removeMatching(t);if(this.list)return this.list.remove(t),this;var e=this.array(),n=o(e,t);return~n&&e.splice(n,1),this.el.className=e.join(" "),this},i.prototype.removeMatching=function(t){for(var e=this.array(),n=0;n<e.length;n++)t.test(e[n])&&this.remove(e[n]);return this},i.prototype.toggle=function(t,e){return this.list?("undefined"!=typeof e?e!==this.list.toggle(t,e)&&this.list.toggle(t):this.list.toggle(t),this):("undefined"!=typeof e?e?this.add(t):this.remove(t):this.has(t)?this.remove(t):this.add(t),this)},i.prototype.array=function(){var t=this.el.className.replace(/^\s+|\s+$/g,""),e=t.split(r);return""===e[0]&&e.shift(),e},i.prototype.has=i.prototype.contains=function(t){return this.list?this.list.contains(t):!!~o(this.array(),t)}}),t.register("component~event@0.1.4",function(t,e){var n=window.addEventListener?"addEventListener":"attachEvent",i=window.removeEventListener?"removeEventListener":"detachEvent",o="addEventListener"!==n?"on":"";t.bind=function(t,e,i,r){return t[n](o+e,i,r||!1),i},t.unbind=function(t,e,n,r){return t[i](o+e,n,r||!1),n}}),t.register("component~query@0.0.3",function(t,e){function n(t,e){return e.querySelector(t)}t=e.exports=function(t,e){return e=e||document,n(t,e)},t.all=function(t,e){return e=e||document,e.querySelectorAll(t)},t.engine=function(e){if(!e.one)throw new Error(".one callback required");if(!e.all)throw new Error(".all callback required");return n=e.one,t.all=e.all,t}}),t.register("component~matches-selector@0.1.5",function(e,n){function i(t,e){if(!t||1!==t.nodeType)return!1;if(s)return s.call(t,e);for(var n=o.all(e,t.parentNode),i=0;i<n.length;++i)if(n[i]==t)return!0;return!1}var o=t("component~query@0.0.3"),r=Element.prototype,s=r.matches||r.webkitMatchesSelector||r.mozMatchesSelector||r.msMatchesSelector||r.oMatchesSelector;n.exports=i}),t.register("component~closest@0.1.4",function(e,n){var i=t("component~matches-selector@0.1.5");n.exports=function(t,e,n,o){for(t=n?{parentNode:t}:t,o=o||document;(t=t.parentNode)&&t!==document;){if(i(t,e))return t;if(t===o)return}}}),t.register("component~delegate@0.2.3",function(e,n){var i=t("component~closest@0.1.4"),o=t("component~event@0.1.4");e.bind=function(t,e,n,r,s){return o.bind(t,n,function(n){var o=n.target||n.srcElement;n.delegateTarget=i(o,e,!0,t),n.delegateTarget&&r.call(t,n)},s)},e.unbind=function(t,e,n,i){o.unbind(t,e,n,i)}}),t.register("component~events@1.0.9",function(e,n){function i(t,e){if(!(this instanceof i))return new i(t,e);if(!t)throw new Error("element required");if(!e)throw new Error("object required");this.el=t,this.obj=e,this._events={}}function o(t){var e=t.split(/ +/);return{name:e.shift(),selector:e.join(" ")}}var r=t("component~event@0.1.4"),s=t("component~delegate@0.2.3");n.exports=i,i.prototype.sub=function(t,e,n){this._events[t]=this._events[t]||{},this._events[t][e]=n},i.prototype.bind=function(t,e){function n(){var t=[].slice.call(arguments).concat(h);a[e].apply(a,t)}var i=o(t),c=this.el,a=this.obj,l=i.name,e=e||"on"+l,h=[].slice.call(arguments,2);return i.selector?n=s.bind(c,i.selector,l,n):r.bind(c,l,n),this.sub(l,e,n),n},i.prototype.unbind=function(t,e){if(0==arguments.length)return this.unbindAll();if(1==arguments.length)return this.unbindAllOf(t);var n=this._events[t];if(n){var i=n[e];i&&r.unbind(this.el,t,i)}},i.prototype.unbindAll=function(){for(var t in this._events)this.unbindAllOf(t)},i.prototype.unbindAllOf=function(t){var e=this._events[t];if(e)for(var n in e)this.unbind(t,n)}}),t.register("switchery",function(e,n){function i(t,e){if(!(this instanceof i))return new i(t,e);this.element=t,this.options=e||{};for(var n in a)null==this.options[n]&&(this.options[n]=a[n]);null!=this.element&&"checkbox"==this.element.type&&this.init(),this.isDisabled()===!0&&this.disable()}var o=t("abpetkov~transitionize@0.0.3"),r=t("ftlabs~fastclick@v0.6.11"),s=t("component~classes@1.2.1"),c=t("component~events@1.0.9");n.exports=i;var a={color:"#64bd63",secondaryColor:"#dfdfdf",jackColor:"#fff",jackSecondaryColor:null,className:"switchery",disabled:!1,disabledOpacity:.5,speed:"0.4s",size:"default"};i.prototype.hide=function(){this.element.style.display="none"},i.prototype.show=function(){var t=this.create();this.insertAfter(this.element,t)},i.prototype.create=function(){return this.switcher=document.createElement("span"),this.jack=document.createElement("small"),this.switcher.appendChild(this.jack),this.switcher.className=this.options.className,this.events=c(this.switcher,this),this.switcher},i.prototype.insertAfter=function(t,e){t.parentNode.insertBefore(e,t.nextSibling)},i.prototype.setPosition=function(t){var e=this.isChecked(),n=this.switcher,i=this.jack;t&&e?e=!1:t&&!e&&(e=!0),e===!0?(this.element.checked=!0,i.style.left=window.getComputedStyle?parseInt(window.getComputedStyle(n).width)-parseInt(window.getComputedStyle(i).width)+"px":parseInt(n.currentStyle.width)-parseInt(i.currentStyle.width)+"px",this.options.color&&this.colorize(),this.setSpeed()):(i.style.left=0,this.element.checked=!1,this.switcher.style.boxShadow="inset 0 0 0 0 "+this.options.secondaryColor,this.switcher.style.borderColor=this.options.secondaryColor,this.switcher.style.backgroundColor=this.options.secondaryColor!==a.secondaryColor?this.options.secondaryColor:"#fff",this.jack.style.backgroundColor=this.options.jackSecondaryColor!==this.options.jackColor?this.options.jackSecondaryColor:this.options.jackColor,this.setSpeed())},i.prototype.setSpeed=function(){var t={},e={"background-color":this.options.speed,left:this.options.speed.replace(/[a-z]/,"")/2+"s"};t=this.isChecked()?{border:this.options.speed,"box-shadow":this.options.speed,"background-color":3*this.options.speed.replace(/[a-z]/,"")+"s"}:{border:this.options.speed,"box-shadow":this.options.speed},o(this.switcher,t),o(this.jack,e)},i.prototype.setSize=function(){var t="switchery-small",e="switchery-default",n="switchery-large";switch(this.options.size){case"small":s(this.switcher).add(t);break;case"large":s(this.switcher).add(n);break;default:s(this.switcher).add(e)}},i.prototype.colorize=function(){var t=this.switcher.offsetHeight/2;this.switcher.style.backgroundColor=this.options.color,this.switcher.style.borderColor=this.options.color,this.switcher.style.boxShadow="inset 0 0 0 "+t+"px "+this.options.color,this.jack.style.backgroundColor=this.options.jackColor},i.prototype.handleOnchange=function(t){if(document.dispatchEvent){var e=document.createEvent("HTMLEvents");e.initEvent("change",!0,!0),this.element.dispatchEvent(e)}else this.element.fireEvent("onchange")},i.prototype.handleChange=function(){var t=this,e=this.element;e.addEventListener?e.addEventListener("change",function(){t.setPosition()}):e.attachEvent("onchange",function(){t.setPosition()})},i.prototype.handleClick=function(){var t=this.switcher;r(t),this.events.bind("click","bindClick")},i.prototype.bindClick=function(){var t=this.element.parentNode.tagName.toLowerCase(),e="label"===t?!1:!0;this.setPosition(e),this.handleOnchange(this.element.checked)},i.prototype.markAsSwitched=function(){this.element.setAttribute("data-switchery",!0)},i.prototype.markedAsSwitched=function(){return this.element.getAttribute("data-switchery")},i.prototype.init=function(){this.hide(),this.show(),this.setSize(),this.setPosition(),this.markAsSwitched(),this.handleChange(),this.handleClick()},i.prototype.isChecked=function(){return this.element.checked},i.prototype.isDisabled=function(){return this.options.disabled||this.element.disabled||this.element.readOnly},i.prototype.destroy=function(){this.events.unbind()},i.prototype.enable=function(){this.options.disabled&&(this.options.disabled=!1),this.element.disabled&&(this.element.disabled=!1),this.element.readOnly&&(this.element.readOnly=!1),this.switcher.style.opacity=1,this.events.bind("click","bindClick")},i.prototype.disable=function(){this.options.disabled||(this.options.disabled=!0),this.element.disabled||(this.element.disabled=!0),this.element.readOnly||(this.element.readOnly=!0),this.switcher.style.opacity=this.options.disabledOpacity,this.destroy()}}),"object"==typeof exports?module.exports=t("switchery"):"function"==typeof define&&define.amd?define("Switchery",[],function(){return t("switchery")}):(this||window).Switchery=t("switchery")}(),angular.module("NgSwitchery",[]).directive("uiSwitch",["$window","$timeout","$log","$parse",function(t,e,n,i){function o(n,o,r,s){function c(){e(function(){h&&angular.element(h.switcher).remove(),h=new t.Switchery(o[0],a);var e=h.element;e.checked=n.initValue,h.setPosition(!1),e.addEventListener("change",function(t){n.$apply(function(){s.$setViewValue(e.checked)})})},0)}if(!s)return!1;var a={};try{a=i(r.uiSwitch)(n)}catch(l){}var h,u;r.$observe("disabled",function(t){void 0!=t&&t!=u&&(u=t,c())}),c()}return{require:"ngModel",restrict:"AE",scope:{initValue:"=ngModel"},link:o}}]);
 /*! showdown 06-01-2015 */
 var Showdown={extensions:{}},forEach=Showdown.forEach=function(a,b){if("function"==typeof a.forEach)a.forEach(b);else{var c,d=a.length;for(c=0;d>c;c++)b(a[c],c,a)}},stdExtName=function(a){return a.replace(/[_-]||\s/g,"").toLowerCase()};Showdown.converter=function(a){var b,c,d,e=0,f=[],g=[];if("undefined"!=typeof module&&"undefined"!=typeof exports&&"undefined"!=typeof require){var h=require("fs");if(h){var i=h.readdirSync((__dirname||".")+"/extensions").filter(function(a){return~a.indexOf(".js")}).map(function(a){return a.replace(/\.js$/,"")});Showdown.forEach(i,function(a){var b=stdExtName(a);Showdown.extensions[b]=require("./extensions/"+a)})}}if(this.makeHtml=function(a){return b={},c={},d=[],a=a.replace(/~/g,"~T"),a=a.replace(/\$/g,"~D"),a=a.replace(/\r\n/g,"\n"),a=a.replace(/\r/g,"\n"),a="\n\n"+a+"\n\n",a=M(a),a=a.replace(/^[ \t]+$/gm,""),Showdown.forEach(f,function(b){a=l(b,a)}),a=z(a),a=n(a),a=m(a),a=p(a),a=K(a),a=a.replace(/~D/g,"$$"),a=a.replace(/~T/g,"~"),Showdown.forEach(g,function(b){a=l(b,a)}),a},a&&a.extensions){var j=this;Showdown.forEach(a.extensions,function(a){if("string"==typeof a&&(a=Showdown.extensions[stdExtName(a)]),"function"!=typeof a)throw"Extension '"+a+"' could not be loaded.  It was either not found or is not a valid extension.";Showdown.forEach(a(j),function(a){a.type?"language"===a.type||"lang"===a.type?f.push(a):("output"===a.type||"html"===a.type)&&g.push(a):g.push(a)})})}var k,l=function(a,b){if(a.regex){var c=new RegExp(a.regex,"g");return b.replace(c,a.replace)}return a.filter?a.filter(b):void 0},m=function(a){return a+="~0",a=a.replace(/^[ ]{0,3}\[(.+)\]:[ \t]*\n?[ \t]*<?(\S+?)>?[ \t]*\n?[ \t]*(?:(\n*)["(](.+?)[")][ \t]*)?(?:\n+|(?=~0))/gm,function(a,d,e,f,g){return d=d.toLowerCase(),b[d]=G(e),f?f+g:(g&&(c[d]=g.replace(/"/g,"&quot;")),"")}),a=a.replace(/~0/,"")},n=function(a){a=a.replace(/\n/g,"\n\n");return a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|ins|del)\b[^\r]*?\n<\/\2>[ \t]*(?=\n+))/gm,o),a=a.replace(/^(<(p|div|h[1-6]|blockquote|pre|table|dl|ol|ul|script|noscript|form|fieldset|iframe|math|style|section|header|footer|nav|article|aside)\b[^\r]*?<\/\2>[ \t]*(?=\n+)\n)/gm,o),a=a.replace(/(\n[ ]{0,3}(<(hr)\b([^<>])*?\/?>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(\n\n[ ]{0,3}<!(--[^\r]*?--\s*)+>[ \t]*(?=\n{2,}))/g,o),a=a.replace(/(?:\n\n)([ ]{0,3}(?:<([?%])[^\r]*?\2>)[ \t]*(?=\n{2,}))/g,o),a=a.replace(/\n\n/g,"\n")},o=function(a,b){var c=b;return c=c.replace(/\n\n/g,"\n"),c=c.replace(/^\n/,""),c=c.replace(/\n+$/g,""),c="\n\n~K"+(d.push(c)-1)+"K\n\n"},p=function(a){a=w(a);var b=A("<hr />");return a=a.replace(/^[ ]{0,2}([ ]?\*[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\-[ ]?){3,}[ \t]*$/gm,b),a=a.replace(/^[ ]{0,2}([ ]?\_[ ]?){3,}[ \t]*$/gm,b),a=x(a),a=y(a),a=E(a),a=n(a),a=F(a)},q=function(a){return a=B(a),a=r(a),a=H(a),a=u(a),a=s(a),a=I(a),a=G(a),a=D(a),a=a.replace(/  +\n/g," <br />\n")},r=function(a){var b=/(<[a-z\/!$]("[^"]*"|'[^']*'|[^'">])*>|<!(--.*?--\s*)+>)/gi;return a=a.replace(b,function(a){var b=a.replace(/(.)<\/?code>(?=.)/g,"$1`");return b=N(b,"\\`*_")})},s=function(a){return a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,t),a=a.replace(/(\[((?:\[[^\]]*\]|[^\[\]])*)\]\([ \t]*()<?(.*?(?:\(.*?\).*?)?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,t),a=a.replace(/(\[([^\[\]]+)\])()()()()()/g,t)},t=function(a,d,e,f,g,h,i,j){void 0==j&&(j="");var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(""==n)if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0!=b[m])n=b[m],void 0!=c[m]&&(o=c[m]);else{if(!(k.search(/\(\s*\)$/m)>-1))return k;n=""}n=N(n,"*_");var p='<a href="'+n+'"';return""!=o&&(o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"'),p+=">"+l+"</a>"},u=function(a){return a=a.replace(/(!\[(.*?)\][ ]?(?:\n[ ]*)?\[(.*?)\])()()()()/g,v),a=a.replace(/(!\[(.*?)\]\s?\([ \t]*()<?(\S+?)>?[ \t]*((['"])(.*?)\6[ \t]*)?\))/g,v)},v=function(a,d,e,f,g,h,i,j){var k=d,l=e,m=f.toLowerCase(),n=g,o=j;if(o||(o=""),""==n){if(""==m&&(m=l.toLowerCase().replace(/ ?\n/g," ")),n="#"+m,void 0==b[m])return k;n=b[m],void 0!=c[m]&&(o=c[m])}l=l.replace(/"/g,"&quot;"),n=N(n,"*_");var p='<img src="'+n+'" alt="'+l+'"';return o=o.replace(/"/g,"&quot;"),o=N(o,"*_"),p+=' title="'+o+'"',p+=" />"},w=function(a){function b(a){return a.replace(/[^\w]/g,"").toLowerCase()}return a=a.replace(/^(.+)[ \t]*\n=+[ \t]*\n+/gm,function(a,c){return A('<h1 id="'+b(c)+'">'+q(c)+"</h1>")}),a=a.replace(/^(.+)[ \t]*\n-+[ \t]*\n+/gm,function(a,c){return A('<h2 id="'+b(c)+'">'+q(c)+"</h2>")}),a=a.replace(/^(\#{1,6})[ \t]*(.+?)[ \t]*\#*\n+/gm,function(a,c,d){var e=c.length;return A("<h"+e+' id="'+b(d)+'">'+q(d)+"</h"+e+">")})},x=function(a){a+="~0";var b=/^(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/gm;return e?a=a.replace(b,function(a,b,c){var d=b,e=c.search(/[*+-]/g)>-1?"ul":"ol";d=d.replace(/\n{2,}/g,"\n\n\n");var f=k(d);return f=f.replace(/\s+$/,""),f="<"+e+">"+f+"</"+e+">\n"}):(b=/(\n\n|^\n?)(([ ]{0,3}([*+-]|\d+[.])[ \t]+)[^\r]+?(~0|\n{2,}(?=\S)(?![ \t]*(?:[*+-]|\d+[.])[ \t]+)))/g,a=a.replace(b,function(a,b,c,d){var e=b,f=c,g=d.search(/[*+-]/g)>-1?"ul":"ol",f=f.replace(/\n{2,}/g,"\n\n\n"),h=k(f);return h=e+"<"+g+">\n"+h+"</"+g+">\n"})),a=a.replace(/~0/,"")};k=function(a){return e++,a=a.replace(/\n{2,}$/,"\n"),a+="~0",a=a.replace(/(\n)?(^[ \t]*)([*+-]|\d+[.])[ \t]+([^\r]+?(\n{1,2}))(?=\n*(~0|\2([*+-]|\d+[.])[ \t]+))/gm,function(a,b,c,d,e){var f=e,g=b;return g||f.search(/\n{2,}/)>-1?f=p(L(f)):(f=x(L(f)),f=f.replace(/\n$/,""),f=q(f)),"<li>"+f+"</li>\n"}),a=a.replace(/~0/g,""),e--,a};var y=function(a){return a+="~0",a=a.replace(/(?:\n\n|^)((?:(?:[ ]{4}|\t).*\n+)+)(\n*[ ]{0,3}[^ \t\n]|(?=~0))/g,function(a,b,c){var d=b,e=c;return d=C(L(d)),d=M(d),d=d.replace(/^\n+/g,""),d=d.replace(/\n+$/g,""),d="<pre><code>"+d+"\n</code></pre>",A(d)+e}),a=a.replace(/~0/,"")},z=function(a){return a+="~0",a=a.replace(/(?:^|\n)```(.*)\n([\s\S]*?)\n```/g,function(a,b,c){var d=b,e=c;return e=C(e),e=M(e),e=e.replace(/^\n+/g,""),e=e.replace(/\n+$/g,""),e="<pre><code"+(d?' class="'+d+'"':"")+">"+e+"\n</code></pre>",A(e)}),a=a.replace(/~0/,"")},A=function(a){return a=a.replace(/(^\n+|\n+$)/g,""),"\n\n~K"+(d.push(a)-1)+"K\n\n"},B=function(a){return a=a.replace(/(^|[^\\])(`+)([^\r]*?[^`])\2(?!`)/gm,function(a,b,c,d){var e=d;return e=e.replace(/^([ \t]*)/g,""),e=e.replace(/[ \t]*$/g,""),e=C(e),b+"<code>"+e+"</code>"})},C=function(a){return a=a.replace(/&/g,"&amp;"),a=a.replace(/</g,"&lt;"),a=a.replace(/>/g,"&gt;"),a=N(a,"*_{}[]\\",!1)},D=function(a){return a=a.replace(/(\*\*|__)(?=\S)([^\r]*?\S[*_]*)\1/g,"<strong>$2</strong>"),a=a.replace(/(\*|_)(?=\S)([^\r]*?\S)\1/g,"<em>$2</em>")},E=function(a){return a=a.replace(/((^[ \t]*>[ \t]?.+\n(.+\n)*\n*)+)/gm,function(a,b){var c=b;return c=c.replace(/^[ \t]*>[ \t]?/gm,"~0"),c=c.replace(/~0/g,""),c=c.replace(/^[ \t]+$/gm,""),c=p(c),c=c.replace(/(^|\n)/g,"$1  "),c=c.replace(/(\s*<pre>[^\r]+?<\/pre>)/gm,function(a,b){var c=b;return c=c.replace(/^  /gm,"~0"),c=c.replace(/~0/g,"")}),A("<blockquote>\n"+c+"\n</blockquote>")})},F=function(a){a=a.replace(/^\n+/g,""),a=a.replace(/\n+$/g,"");for(var b=a.split(/\n{2,}/g),c=[],e=b.length,f=0;e>f;f++){var g=b[f];g.search(/~K(\d+)K/g)>=0?c.push(g):g.search(/\S/)>=0&&(g=q(g),g=g.replace(/^([ \t]*)/g,"<p>"),g+="</p>",c.push(g))}e=c.length;for(var f=0;e>f;f++)for(;c[f].search(/~K(\d+)K/)>=0;){var h=d[RegExp.$1];h=h.replace(/\$/g,"$$$$"),c[f]=c[f].replace(/~K\d+K/,h)}return c.join("\n\n")},G=function(a){return a=a.replace(/&(?!#?[xX]?(?:[0-9a-fA-F]+|\w+);)/g,"&amp;"),a=a.replace(/<(?![a-z\/?\$!])/gi,"&lt;")},H=function(a){return a=a.replace(/\\(\\)/g,O),a=a.replace(/\\([`*_{}\[\]()>#+-.!])/g,O)},I=function(a){return a=a.replace(/<((https?|ftp|dict):[^'">\s]+)>/gi,'<a href="$1">$1</a>'),a=a.replace(/<(?:mailto:)?([-.\w]+\@[-a-z0-9]+(\.[-a-z0-9]+)*\.[a-z]+)>/gi,function(a,b){return J(K(b))})},J=function(a){var b=[function(a){return"&#"+a.charCodeAt(0)+";"},function(a){return"&#x"+a.charCodeAt(0).toString(16)+";"},function(a){return a}];return a="mailto:"+a,a=a.replace(/./g,function(a){if("@"==a)a=b[Math.floor(2*Math.random())](a);else if(":"!=a){var c=Math.random();a=c>.9?b[2](a):c>.45?b[1](a):b[0](a)}return a}),a='<a href="'+a+'">'+a+"</a>",a=a.replace(/">.+:/g,'">')},K=function(a){return a=a.replace(/~E(\d+)E/g,function(a,b){var c=parseInt(b);return String.fromCharCode(c)})},L=function(a){return a=a.replace(/^(\t|[ ]{1,4})/gm,"~0"),a=a.replace(/~0/g,"")},M=function(a){return a=a.replace(/\t(?=\t)/g,"    "),a=a.replace(/\t/g,"~A~B"),a=a.replace(/~B(.+?)~A/g,function(a,b){for(var c=b,d=4-c.length%4,e=0;d>e;e++)c+=" ";return c}),a=a.replace(/~A/g,"    "),a=a.replace(/~B/g,"")},N=function(a,b,c){var d="(["+b.replace(/([\[\]\\])/g,"\\$1")+"])";c&&(d="\\\\"+d);var e=new RegExp(d,"g");return a=a.replace(e,O)},O=function(a,b){var c=b.charCodeAt(0);return"~E"+c+"E"}},"undefined"!=typeof module&&(module.exports=Showdown),"function"==typeof define&&define.amd&&define("showdown",function(){return Showdown}),"undefined"!=typeof angular&&"undefined"!=typeof Showdown&&!function(a,b){function c(){function a(){var a=new b.converter(c);this.makeHtml=function(b){return a.makeHtml(b)},this.stripHtml=function(a){return String(a).replace(/<[^>]+>/gm,"")}}var c={extensions:[],stripHtml:!0};this.setOption=function(a,b){return c.key=b,this},this.getOption=function(a){return c.hasOwnProperty(a)?c.key:null},this.loadExtension=function(a){return c.extensions.push(a),this},this.$get=function(){return new a}}function d(a){var b=function(b,c){b.$watch("model",function(b){var d;d="string"==typeof b?a.makeHtml(b):typeof b,c.html(d)})};return{restrict:"A",link:b,scope:{model:"=sdModelToHtml"}}}function e(){return function(a){return String(a).replace(/<[^>]+>/gm,"")}}a.provider("$Showdown",c).directive("sdModelToHtml",["$Showdown",d]).filter("sdStripHtml",e)}(angular.module("Showdown",[]),Showdown);
 /*

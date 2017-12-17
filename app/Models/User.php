@@ -3,70 +3,94 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 use DB;
+use Util;
 
-class User extends Model
+class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
+    use Authenticatable, Authorizable, CanResetPassword;
+
     protected $table = "users";
 
     protected $dates = ['created_at', 'updated_at', 'date_of_birth', 'activated_at'];
 
     protected $hidden = ['password', 'oauth_token', 'oauth_expiration'];
 
+    protected $guarded = ['id', 'oauth_token', 'oauth_token', 'oauth_expiration', 'is_superadmin', 'is_suspended', 'suspended_reason', 'activated_at'];
+
+    public function setFirstNameAttribute($value) {
+        $this->attributes['first_name_simple'] = Util::limitCharacters($value);
+        $this->attributes['first_name'] = $value;
+    }
+
+    public function setLastNameAttribute($value) {
+        $this->attributes['last_name_simple'] = Util::limitCharacters($value);
+        $this->attributes['last_name'] = $value;
+    }
+
+
     // Relationships..
-    public function antenna() {
-    	return $this->belongsTo('App\Models\Antenna');
+    public function bodies() {
+    	return $this->belongsToMany('App\Models\Body', 'body_memberships', 'user_id', 'body_id');
     }
 
-    public function auth() {
-    	return $this->hasMany('App\Models\Auth');
+    public function authToken() {
+    	return $this->hasMany('App\Models\AuthToken');
     }
 
-    public function boardMember() {
-    	return $this->hasMany('App\Models\BoardMember');
+    public function address() {
+    	return $this->belongsTo('App\Models\Address');
     }
 
-    public function department() {
-    	return $this->belongsTo('App\Models\Department');
-    }
-
-    public function fees() {
-        return $this->belongsToMany('App\Models\Fee', 'fee_users', 'user_id', 'fee_id')
-                    ->withPivot('date_paid', 'expiration_date');
-    }
-
-    public function feeUser() {
-    	return $this->hasMany('App\Models\FeeUser');
-    }
-
-    public function recrutedUser() {
-        return $this->belongsTo('App\Models\RecrutedUser');
+    public function bodyMemberships() {
+    	return $this->hasMany('App\Models\BodyMembership');
     }
 
     public function roles() {
         return $this->belongsToMany('App\Models\Roles', 'user_roles', 'user_id', 'role_id');
     }
 
-    public function studyField() {
-    	return $this->belongsTo('App\Models\StudyField', 'studies_field_id');
+    public function studies() {
+    	return $this->hasMany('App\Models\Study');
     }
 
-    public function studyType() {
-    	return $this->belongsTo('App\Models\StudyType', 'studies_type_id');
+    public function studyFields() {
+    	return $this->belongsToMany('App\Models\StudyField', 'studies', 'user_id', 'study_field_id');
+    }
+
+    public function studyTypes() {
+    	return $this->belongsToMany('App\Models\StudyType', 'studies', 'user_id', 'study_type_id');
+    }
+
+    public function universities() {
+    	return $this->belongsToMany('App\Models\University', 'studies', 'user_id', 'university_id');
     }
 
     public function userRole() {
     	return $this->hasMany('App\Models\UserRole');
     }
 
-    public function userWorkingGroup() {
-    	return $this->hasMany('App\Models\UserWorkingGroup');
+    public function getUsernameSlug() {
+        return $this->first_name_slug . '.' . $this->last_name_slug;
     }
 
-    public function workingGroups() {
-        return $this->belongsToMany('App\Models\WorkingGroup', 'user_working_groups', 'user_id', 'work_group_id')
-                    ->withPivot('start_date', 'end_date');
+    public function getDisplayName() {
+        return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function circleMemberships() {
+    	return $this->hasMany('App\Models\CircleMembership');
+    }
+
+    public function circles() {
+        return $this->belongsToMany('App\Models\Circle', 'circle_memberships', 'user_id', 'circle_id');
     }
 
     // Accessors..
@@ -85,10 +109,6 @@ class User extends Model
                 break;
         }
         return $genderText;
-    }
-
-    public function getInternalEmailAttribute($value) {
-        return empty($value) ? "No internal email assigned!" : $value;
     }
 
     public function getStatusTextAttribute($value) {
@@ -117,10 +137,6 @@ class User extends Model
         return $status;
     }
 
-    public function getEmailAddress() {
-        return empty($this->getOriginal('internal_email')) ? $this->contact_email : $this->internal_email;
-    }
-
     // Model methods go down here..
     public function getEmailHash($email) {
         $emailHash = strtolower($email);
@@ -146,97 +162,90 @@ class User extends Model
         return $this->where('email_hash', $emailHash)->where('id', '!=', $exceptId)->count() >= 1;
     }
 
-    public function getFiltered($search = array(), $onlyTotal = false) {
-        $users = $this
-                        ->with('antenna')
-                        ->with('department')
-                        ->with('studyField')
-                        ->with('StudyType');
-
-        // Filters here..
-        if(isset($search['name']) && !empty($search['name'])) {
-            $users = $users->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($search['name']).'%');
+    public function scopeFilterName($query, $name) {
+        if (!empty($name)) {
+            return $query->where(DB::raw('LOWER(CONCAT (first_name, \' \', last_name))'), 'LIKE', '%'.strtolower($name).'%');
+        } else {
+            return $query;
         }
+    }
 
-        if(isset($search['date_of_birth']) && !empty($search['date_of_birth'])) {
-            $users = $users->where('date_of_birth', $search['date_of_birth']);
+
+    public function scopeFilterDateOfBirth($query, $date_of_birth) {
+        if (!empty($date_of_birth)) {
+            return $query->whereDate('date_of_birth', $date_of_birth);
+        } else {
+            return $query;
         }
+    }
 
-        if(isset($search['contact_email']) && !empty($search['contact_email'])) {
-            $users = $users->where('contact_email', $search['contact_email']);
+
+    public function scopefilterPersonalEmail($query, $personal_email) {
+        if (!empty($date_of_birth)) {
+            return $query->where('personal_email', $personal_email);
+        } else {
+            return $query;
         }
+    }
 
-        if(isset($search['gender']) && !empty($search['gender'])) {
-            $users = $users->where('gender', $search['gender']);
+
+    public function scopeFilterGender($query, $gender) {
+        if (!empty($gender)) {
+            return $query->where('gender', $gender);
+        } else {
+            return $query;
         }
+    }
 
-        if(isset($search['antenna_id']) && !empty($search['antenna_id'])) {
-            $users = $users->where('antenna_id', $search['antenna_id']);
-        }
 
-        if(isset($search['department_id']) && !empty($search['department_id'])) {
-            $users = $users->where('department_id', $search['department_id']);
-        }
-
-        if(isset($search['internal_email']) && !empty($search['internal_email'])) {
-            $users = $users->where('internal_email', $search['internal_email']);
-        }
-
-        if(isset($search['studies_type_id']) && !empty($search['studies_type_id'])) {
-            $users = $users->where('studies_type_id', $search['studies_type_id']);
-        }
-
-        if(isset($search['studies_field_id']) && !empty($search['studies_field_id'])) {
-            $users = $users->where('studies_field_id', $search['studies_field_id']);
-        }
-
-        if(isset($search['status']) && !empty($search['status'])) {
-            switch ($search['status']) {
+    public function scopeFilterStatus($query, $status) {
+        if (!empty($status)) {
+            switch ($status) {
                 case '1':
-                    $users = $users->whereNull('is_suspended')->whereNotNull('activated_at');
-                    break;
+                    return $query->whereNull('is_suspended')->whereNotNull('activated_at');
                 case '2':
-                    $users = $users->whereNull('activated_at');
-                    break;
+                    return $query->whereNull('activated_at');
                 case '3':
-                    $users = $users->whereNotNull('is_suspended');
-                    break;
+                    return $query->whereNotNull('is_suspended');
             }
+        } else {
+            return $query;
         }
-        // END filters..
+    }
 
-        if($onlyTotal) {
-            return $users->count();
+    public function scopeFilterBodyID($query, $body_id) {
+        if (!empty($body_id)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->where('body_memberships.body_id', $body_id);
+        } else {
+            return $query;
         }
+    }
 
-        // Ordering..
-        $sOrder = (isset($search['sord']) && ($search['sord'] == 'asc' || $search['sord'] == 'desc')) ? $search['sord'] : 'asc';
-        if(isset($search['sidx'])) {
-            switch ($search['sidx']) {
-                case 'name':
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-                case 'date_of_birth':
-                case 'contact_email':
-                case 'gender':
-                case 'internal_email':
-                    $users = $users->orderBy($search['sidx'], $search['sord']);
-                    break;
-
-                default:
-                    $users = $users->orderBy('last_name', $search['sord'])->orderBy('first_name', $search['sord']);
-                    break;
-            }
+    public function scopeFilterBodyName($query, $body_name) {
+        if (!empty($body_name)) {
+            return $query->select('users.*')
+            ->rightJoin('body_memberships', 'users.id', '=', 'body_memberships.user_id')
+            ->rightJoin('bodies', 'body_memberships.body_id', '=', 'bodies.id')
+            ->where(DB::raw('LOWER(bodies.name)'), 'LIKE', '%'.strtolower($body_name).'%');
+        } else {
+            return $query;
         }
+    }
 
-        if(!isset($search['noLimit']) || !$search['noLimit']) {
-            $limit  = !isset($search['limit']) || empty($search['limit']) ? 10 : $search['limit'];
-            $page   = !isset($search['page']) || empty($search['page']) ? 1 : $search['page'];
-            $from   = ($page - 1)*$limit;
-            $users = $users->take($limit)->skip($from);
-        }
+    public function scopeFilterArray($query, $search = array()) {
+        $query //->with(['bodies' => function ($q) { $q->where('bodies.id', 1);}, 'address' => function ($q) { $q->with('country');}])
+            ->filterName($search['name'] ?? '')
+            ->filterDateOfBirth($search['date_of_birth'] ?? '')
+            ->filterPersonalEmail($search['personal_email'] ?? '')
+            ->filterGender($search['gender'] ?? '')
+            ->filterStatus($search['status'] ?? '')
+            ->filterBodyID($search['body_id'] ?? '')
+            ->filterBodyName($search['body_name'] ?? '');
+        //TODO add study filters
 
-        return $users->get();
+        return $query;
     }
 
     public function generateRandomPassword($max_length = 8) {
@@ -278,7 +287,7 @@ class User extends Model
         return $this->where('seo_url', $url)->count() == 0;
     }
 
-    public function suspendAccount($reason, $suspender = 'System') {
+    public function suspendAccount($suspender = 'System', $reason = 'no reason given') {
         $this->is_suspended = 1;
         $this->suspended_reason = $reason." Suspended by: ".$suspender." on ".date('Y-m-d H:i:s');
         $this->save();
@@ -297,7 +306,7 @@ class User extends Model
     public function getLoginUserArray($authToken) {
         return array(
             'id'                =>  $this->id,
-            'username'          =>  empty($this->internal_email) ? $this->contact_email : $this->internal_email,
+            'username'          =>  empty($this->internal_email) ? $this->personal_email : $this->internal_email,
             'fullname'          =>  $this->first_name." ".$this->last_name,
             'is_superadmin'     =>  $this->is_superadmin,
             'department_id'     =>  $this->department_id,
@@ -318,7 +327,7 @@ class User extends Model
             case 'azure':
                 return $this->createAzureAdAccount($oAuthCredentials, $domain, $seo, $password);
                 break;
-            
+
             default:
                 return false;
                 break;
@@ -385,5 +394,50 @@ class User extends Model
         }
 
         return $response->getStatusCode();
+    }
+
+    public function getAllColumnsNames()
+    {
+        switch (DB::connection()->getConfig('driver')) {
+            case 'pgsql':
+                $query = "SELECT column_name FROM information_schema.columns WHERE table_name = '".$this->getTable()."'";
+                $column_name = 'column_name';
+                $reverse = true;
+                break;
+
+            case 'mysql':
+                $query = 'SHOW COLUMNS FROM '.$this->getTable();
+                $column_name = 'Field';
+                $reverse = false;
+                break;
+
+            case 'sqlsrv':
+                $parts = explode('.', $this->getTable());
+                $num = (count($parts) - 1);
+                $table = $parts[$num];
+                $query = "SELECT column_name FROM ".DB::connection()->getConfig('database').".INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = N'".$table."'";
+                $column_name = 'column_name';
+                $reverse = false;
+                break;
+
+            default:
+                $error = 'Database driver not supported: '.DB::connection()->getConfig('driver');
+                throw new Exception($error);
+                break;
+        }
+
+        $columns = array();
+
+        foreach(DB::select($query) as $column)
+        {
+            $columns[$column->$column_name] = $column->$column_name; // setting the column name as key too
+        }
+
+        if($reverse)
+        {
+            $columns = array_reverse($columns);
+        }
+
+        return $columns;
     }
 }

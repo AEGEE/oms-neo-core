@@ -5,32 +5,41 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
+        "php": "^7.1",
+        "ext-intl": "^1.1",
+        "laravel/framework": "5.4.*",
+        "laravel/tinker": "^1.0",
+        "illuminate/pipeline": "5.4.*",
+        "illuminate/container": "5.4.*",
+        "illuminate/support": "5.4.*",
         "barryvdh/laravel-cors": "^0.8.1",
         "webpatser/laravel-uuid": "2.*",
-        "laravelcollective/bus": "^5.2",
         "maatwebsite/excel": "~2.1.0",
         "doctrine/dbal": "^2.5",
         "intervention/image": "^2.3",
-        "laravel/socialite": "^2.0",
+        "laravel/socialite": "^3.0",
         "google/apiclient": "^2.0",
-        "socialiteproviders/microsoft-live": "^2.0",
-        "socialiteproviders/microsoft-azure": "^2.0"
+        "socialiteproviders/manager": "^3.0",
+        "socialiteproviders/microsoft-live": "^3.0",
+        "socialiteproviders/microsoft-azure": "^3.0",
+        "socialiteproviders/microsoft-graph": "^2.0@dev",
+        "guzzlehttp/guzzle": "^6.0",
+        "pusher/pusher-php-server": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~4.0",
-        "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*"
+        "phpunit/phpunit": "~5.7",
+        "symfony/css-selector": "^3.1",
+        "symfony/dom-crawler": "^3.1"
     },
     "autoload": {
         "classmap": [
             "database"
         ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Tests\\": "tests/"
         }
     },
     "autoload-dev": {

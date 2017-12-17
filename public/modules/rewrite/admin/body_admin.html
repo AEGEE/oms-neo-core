@@ -1,0 +1,26 @@
+
+<h1 class="page-header">Body types ({{vm.body_types.length}})</h4>
+
+
+<button type="button" class="btn btn-primary" ng-click="vm.showBodyTypeModal()"><i class="fa fa-plus"></i>Add new</button>
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="body_type in vm.body_types">
+			<td>{{ body_type.name }}</td>
+			<td>
+				<button type="button" class="btn btn-primary" ng-click="vm.showBodyTypeModal(body_type)"><i class="fa fa-pencil"></i>Edit</button>
+				<!--<button type="button" class="btn btn-danger"><i class="fa fa-minus"></i>Remove</button>-->
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<!-- ########################### Body types edit modal ###################### -->
+<ng-include src="'modules/rewrite/admin/edit_bodytype_form.html'"></ng-include>

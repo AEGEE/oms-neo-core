@@ -1,0 +1,26 @@
+
+<h1 class="page-header">Users listing</h1>
+
+<div class="row">
+	<div class="row">
+		<div class="input-group">
+			<span class="input-group-addon"><i class="fa fa-search"></i> Search</span>
+			<input type="text" class="form-control" placeholder="Type anything" ng-model="vm.query" ng-change="vm.resetData()" />
+		</div>
+	</div>
+</div>
+
+<hr />
+
+<div infinite-scroll="vm.loadNextPage()" infinite-scroll-disabled="vm.infiniteScroll.block" infinite-scroll-distance="1">
+	<div class="m-b-10 m-l-10" ng-repeat="user in vm.infiniteScroll.data">
+		<userpreview user="user"></userpreview>
+	</div>
+</div>
+
+<p ng-show="vm.infiniteScroll.data.length === 0 && !vm.infiniteScroll.busy">
+  No users found that match the current search
+</p>
+<p ng-show="vm.infiniteScroll.busy">
+  Searching...
+</p>

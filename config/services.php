@@ -49,13 +49,19 @@ return [
         'client_id' => env('OAUTH_ID', ''),
         'client_secret' => env('OAUTH_SECRET', ''),
         'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
-    ], 
+    ],
 
     'azure' => [
         'client_id' => env('OAUTH_ID', ''),
         'client_secret' => env('OAUTH_SECRET', ''),
         'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
-    ], 
+    ],
+
+    'graph' => [
+        'client_id' => env('OAUTH_ID', ''),
+        'client_secret' => env('OAUTH_SECRET', ''),
+        'redirect' => env('APP_URL').env('OAUTH_REDIRECT', ''),
+    ],
 
     'google_maps'   =>  env('G_MAPS_API_KEY', ''),
 ];

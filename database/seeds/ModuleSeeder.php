@@ -13,45 +13,6 @@ class ModuleSeeder extends Seeder
      */
     public function run()
     {
-        ModulePage::create([
-        	'name'			=>	'Antennae management',
-        	'code'			=>	'antennae_management',
-        	'module_link'	=>	'modules/loggedIn/antennae_management/antennae_management.js',
-            'icon'          =>  'ion-android-wifi',
-        	'is_active'		=>	1
-        ]);
-
-        ModulePage::create([
-            'name'          =>  'Working groups',
-            'code'          =>  'working_groups',
-            'module_link'   =>  'modules/loggedIn/working_groups/working_groups.js',
-            'icon'          =>  'fa fa-group',
-            'is_active'     =>  1
-        ]);
-        
-        ModulePage::create([
-            'name'          =>  'Departments',
-            'code'          =>  'departments',
-            'module_link'   =>  'modules/loggedIn/departments/departments.js',
-            'icon'          =>  'fa fa-briefcase',
-            'is_active'     =>  1
-        ]);
-
-        ModulePage::create([
-            'name'          =>  'Fees management',
-            'code'          =>  'fees_management',
-            'module_link'   =>  'modules/loggedIn/fees_management/fees_management.js',
-            'icon'          =>  'fa fa-usd',
-            'is_active'     =>  1
-        ]);
-
-        ModulePage::create([
-            'name'          =>  'Roles',
-            'code'          =>  'roles',
-            'module_link'   =>  'modules/loggedIn/roles/roles.js',
-            'icon'          =>  'fa fa-unlock-alt',
-            'is_active'     =>  1
-        ]);
 
         ModulePage::create([
             'name'          =>  'Users',
@@ -61,12 +22,20 @@ class ModuleSeeder extends Seeder
             'is_active'     =>  1
         ]);
 
-        ModulePage::create([
+        /*ModulePage::create([
             'name'          =>  'Settings',
             'code'          =>  'settings',
             'module_link'   =>  'modules/loggedIn/settings/settings.js',
             'icon'          =>  'fa fa-cog',
             'is_active'     =>  1
+        ]);*/
+
+                ModulePage::create([
+            'name'          =>  'Antennae management',
+            'code'          =>  'antennae_management',
+            'module_link'   =>  'modules/loggedIn/antennae_management/antennae_management.js',
+            'icon'          =>  'ion-android-wifi',
+            'is_active'     =>  0
         ]);
 
         ModulePage::create([
@@ -74,6 +43,30 @@ class ModuleSeeder extends Seeder
             'code'          =>  'modules',
             'module_link'   =>  'modules/loggedIn/modules/modules.js',
             'icon'          =>  'fa fa-puzzle-piece',
+            'is_active'     =>  1
+        ]);
+
+        ModulePage::create([
+            'name'          =>  'Bodies',
+            'code'          =>  'body_management',
+            'module_link'   =>  'modules/rewrite/body_management/body_management.js',
+            'icon'          =>  'fa fa-bank',
+            'is_active'     =>  1
+        ]);
+
+         ModulePage::create([
+            'name'          =>  'Circles',
+            'code'          =>  'circles',
+            'module_link'   =>  'modules/rewrite/circles/circles.js',
+            'icon'          =>  'fa fa-circle-o',
+            'is_active'     =>  1
+        ]);
+
+        ModulePage::create([
+            'name'          =>  'Admin',
+            'code'          =>  'admin',
+            'module_link'   =>  'modules/rewrite/admin/admin.js',
+            'icon'          =>  'fa fa-magic',
             'is_active'     =>  1
         ]);
     }

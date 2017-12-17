@@ -1,0 +1,55 @@
+<div class="row">
+	<div class="col-sm-3">Logo still not implemented</div>
+	<div class="col-sm-9">
+		<table class="table">
+			<tr>
+				<td>Name</td>
+				<td>{{ vm.body.name }}</td>
+			</tr>
+			<tr>
+				<td>Description</td>
+				<td>{{ vm.body.description }}</td>
+			</tr>
+			<tr>
+				<td>Code</td>
+				<td>{{ vm.body.legacy_key }}</td>
+			</tr>
+			<tr>
+				<td>Email</td>
+				<td><a href="mailto:{{ vm.body.email }}">{{ vm.body.email }}</a></td>
+			</tr>
+			<tr>
+				<td>Phone</td>
+				<td>{{ vm.body.phone }}</td>
+			</tr>
+			<tr>
+				<td>Name</td>
+				<td>{{ vm.body.name }}</td>
+			</tr>
+			<tr>
+				<td>Type</td>
+				<td>{{ vm.body.type.name }}</td>
+			</tr>
+			<tr>
+				<td>Address</td>
+				<td>
+					{{ vm.body.address.street }}&nbsp;{{ vm.body.address.city }}<br>
+					{{ vm.body.address.zipcode }}&nbsp;{{ vm.body.address.country.name }}
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<a ui-sref="app.body_management" class="btn btn-white">Back to overview</a>
+<button class="btn btn-white" type="button" ng-click="vm.showBodyModal()" ng-if="vm.permissions.edit_body">Edit Details</button>
+<a ui-sref="app.my_bodies.edit_circles" class="btn btn-white" ng-if="vm.permissions.edit_circles">Edit Circles</a>
+<button class="btn btn-white" type="button" ng-if="vm.permissions.request_join">Request to join</button>
+
+<hr />
+
+<div class="row" ng-repeat="circle in vm.body.circles">
+	<circlepanel circle="circle"></circlepanel>
+</div>
+
+<ng-include src="'modules/rewrite/body_management/edit_body_form.html'"></ng-include>
