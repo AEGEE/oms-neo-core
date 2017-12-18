@@ -39,7 +39,7 @@ elixir(function(mix) {
 
   mix.scripts([
     '../../../public/assets/plugins/pace/pace.min.js',
-    '../../../public/assets/plugins/angularjs/angular.min.js',
+    '../../../public/assets/plugins-dev/angularjs/angular.js',
     '../../../public/assets/plugins/angularjs/angular-ui-route.min.js',
     '../../../public/assets/plugins/bootstrap-angular-ui/ui-bootstrap-tpls.min.js',
     '../../../public/assets/plugins/angularjs/ocLazyLoad.min.js',
