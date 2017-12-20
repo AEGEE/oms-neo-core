@@ -5,6 +5,8 @@ FROM 1and1internet/ubuntu-16-php-7.1
 # OS-level Dependencies
 #--------------------------------------------------------------------------
 
+ENTRYPOINT []
+
 RUN DEBIAN_FRONTEND=noninteractive
 RUN locale-gen en_US.UTF-8
 
@@ -76,8 +78,6 @@ WORKDIR /var/www
 
 
 
-CMD chown -R laradock:laradock /var/www \
-    && touch /var/shared/api-key \
-    && chown -R laradock:laradock /var/shared \
+CMD chown -R laradock:laradock /var/www/ \
     && sh /var/scripts/bootstrap.sh \
     && gulp watch # TODO: also run this as laradock
