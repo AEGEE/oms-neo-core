@@ -1,6 +1,9 @@
-FROM phusion/baseimage:latest
+FROM 1and1internet/ubuntu-16-php-7.1
 
-MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+#
+#--------------------------------------------------------------------------
+# OS-level Dependencies
+#--------------------------------------------------------------------------
 
 RUN DEBIAN_FRONTEND=noninteractive
 RUN locale-gen en_US.UTF-8
@@ -19,87 +22,28 @@ ENV TERM xterm
 RUN apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:ondrej/php
 
-#
-#--------------------------------------------------------------------------
-# Software's Installation
-#--------------------------------------------------------------------------
-#
-
 # Install "PHP Extentions", "libraries", "Software's"
 RUN apt-get update
 RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-cli
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-common
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-curl
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-json
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-xml
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-mbstring
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-mcrypt
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-mysql
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-pgsql
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-sqlite
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-sqlite3
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-zip
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-bcmath
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-memcached
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-gd
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-intl
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        pkg-config
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        libcurl4-openssl-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        libedit-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        libssl-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        libxml2-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        xz-utils
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        libsqlite3-dev
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        sqlite3
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        git
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        curl
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        vim
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        nano
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        postgresql-client
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        nodejs
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+        php7.1-intl \
+        git \
+        curl \
+        nano \
         npm
+
 RUN apt-get clean
+
+
+
+#
+#--------------------------------------------------------------------------
+# App-level Dependencies
+#--------------------------------------------------------------------------
+
 RUN npm install -g gulp
 RUN npm cache clean --force
-RUN ln -s /usr/bin/nodejs /usr/bin/node
-
 #TODO: remove the --force from above npm cache?
-#####################################
-# Composer:
-#####################################
+RUN ln -s /usr/bin/nodejs /usr/bin/node
 
 # Install composer and add its bin to the PATH.
 RUN curl -s http://getcomposer.org/installer | php && \
@@ -115,9 +59,11 @@ RUN groupadd -g $PGID laradock && \
 RUN . ~/.bashrc
 
 
-#####################################
-# omscore bootstrap
-#####################################
+
+#
+#--------------------------------------------------------------------------
+# Bootstrap
+#--------------------------------------------------------------------------
 
 ADD ./bootstrap.sh /var/scripts/bootstrap.sh
 
@@ -126,7 +72,8 @@ RUN echo "export PS1=\"\[\e[31m\]\u\[\e[m\]@\[\e[32m\][\[\e[m\]\[\e[32m\]omscore
 
 WORKDIR /var/www
 
-# Create any file in the shared volume to overcome docker bug
+
+
 CMD chown -R laradock:laradock /var/www \
     && touch /var/shared/api-key \
     && chown -R laradock:laradock /var/shared \
