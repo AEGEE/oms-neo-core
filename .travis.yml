@@ -9,7 +9,7 @@ before_script:
     - cd docker
     - docker network create OMS
     - travis_retry docker-compose up -d
-    - sleep 120
+    - sleep 240
     - docker-compose logs
 
 
