@@ -1,39 +1,29 @@
-FROM 1and1internet/ubuntu-16-php-7.1
+FROM php:7.1
 
 #
 #--------------------------------------------------------------------------
 # OS-level Dependencies
 #--------------------------------------------------------------------------
 
-ENTRYPOINT []
-
 RUN DEBIAN_FRONTEND=noninteractive
-RUN locale-gen en_US.UTF-8
 
 #oms-core simply serves as a file system, therefore it only needs to check if it can access the files.
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD [ -f /var/www/app/Http/Kernel.php ]
 
-ENV LANGUAGE=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-ENV LC_CTYPE=en_US.UTF-8
-ENV LANG=en_US.UTF-8
 ENV TERM xterm
 
-# Add the "PHP 7" ppa
-RUN apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:ondrej/php
-
-# Install "PHP Extentions", "libraries", "Software's"
 RUN apt-get update
-RUN apt-get install -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
-        php7.1-intl \
-        php7.1-pgsql \
-        phpunit \
+RUN apt-get install -y \
+        zlib1g-dev libicu-dev g++ \
+        libpq-dev \
         git \
         curl \
         nano \
         npm
+
+RUN docker-php-ext-install intl
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 RUN apt-get clean
 
