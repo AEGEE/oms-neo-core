@@ -185,15 +185,15 @@
             vm.searchModulesGrid();
         }
 
-        vm.activateDeactivatePage = function(id, what) {
+        vm.activateDeactivatePage = function(code, what) {
             if(!confirm("Are you sure you want to "+what+" this page?")) {
                 return;
             }
             $http({
                 method: "POST",
-                url: '/api/page/' + id + '/activate',
+                url: '/api/page/' + code + '/activate',
                 data: {
-                    id: id
+                    code: code
                 },
             })
             .then(function successCallback(response) {
@@ -218,15 +218,15 @@
             });
         }
 
-        vm.activateDeactivateModule = function(id, what) {
+        vm.activateDeactivateModule = function(code, what) {
             if(!confirm("Are you sure you want to "+what+" this module?")) {
                 return;
             }
             $http({
                 method: "POST",
-                url: '/api/module/' + id + '/activate',
+                url: '/api/module/' + code + '/activate',
                 data: {
-                    id: id
+                    code: code
                 },
             })
             .then(function successCallback(response) {
