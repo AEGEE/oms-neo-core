@@ -39,7 +39,7 @@ class AuthToken extends Model
 
     public function prepareAuthToken(Request $req){
         $this->ip_address = $req->ip();
-        $this->user_agent = $req->header('User-Agent');
+        $this->user_agent = empty($req->header('User-Agent')) ? "unkown" : $req->header('User-Agent');
 
         $rawRequestParams = http_build_query($req->all());
         $rawRequestParams = preg_replace('/password=.*/', "password=CENSORED", $rawRequestParams);

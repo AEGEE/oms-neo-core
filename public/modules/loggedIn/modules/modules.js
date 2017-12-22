@@ -186,7 +186,7 @@
         }
 
         vm.activateDeactivatePage = function(code, what) {
-            if(!confirm("Are you sure you want to "+what+" this page?")) {
+            if(!confirm("Are you sure you want to "+what+" page "+code+"?")) {
                 return;
             }
             $http({
@@ -219,7 +219,7 @@
         }
 
         vm.activateDeactivateModule = function(code, what) {
-            if(!confirm("Are you sure you want to "+what+" this module?")) {
+            if(!confirm("Are you sure you want to "+what+" module "+code+"?")) {
                 return;
             }
             $http({

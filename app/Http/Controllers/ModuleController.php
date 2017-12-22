@@ -12,6 +12,7 @@ use App\Models\Module;
 use App\Models\ModulePage;
 
 use Input;
+use Log;
 
 class ModuleController extends Controller
 {
@@ -50,12 +51,12 @@ class ModuleController extends Controller
                 case 0:
                     $toolTipTitle = "Activate";
                     $toolTip = "fa-check";
-                    $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(".$code.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(\"".$code."\", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                     break;
                 case 1:
                     $toolTipTitle = "Deactivate";
                     $toolTip = "fa-ban";
-                    $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(".$code.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModule' title='".$toolTipTitle."' ng-click='vm.activateDeactivateModule(\"".$code."\", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                     break;
             }
 
@@ -105,12 +106,12 @@ class ModuleController extends Controller
                 case 0:
                     $toolTipTitle = "Activate";
                     $toolTip = "fa-check";
-                    $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(".$code.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(\"".$code."\", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                     break;
                 case 1:
                     $toolTipTitle = "Deactivate";
                     $toolTip = "fa-ban";
-                    $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(".$code.", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
+                    $actions .= "<button class='btn btn-default btn-xs clickMeModulePage' title='".$toolTipTitle."' ng-click='vm.activateDeactivatePage(\"".$code."\", \"".$toolTipTitle."\")'><i class='fa ".$toolTip."'></i></button>";
                     break;
                 }
 
@@ -143,7 +144,7 @@ class ModuleController extends Controller
     private function getModuleFromRegistry($code) {
         $modules = $this->getModulesFromRegistry();
         foreach ($modules as $module) {
-            if ($module->code == $code) {
+            if (!empty($module->modules) && !empty($module->modules->code) && $module->modules->code == $code) {
                 return $module;
             }
         }
@@ -178,7 +179,6 @@ class ModuleController extends Controller
         if (empty($dbPage)) {
             // Not in db yet, create new record.
             $page = $this->getModulePageFromRegistry($code);
-            dump($page);
             $newPage = new ModulePage();
             $newPage->is_active = 1;
             $newPage->name = $page->name;
@@ -206,12 +206,12 @@ class ModuleController extends Controller
         if (empty($dbModule)) {
             // Not in db yet, create new record.
             $module = $this->getModuleFromRegistry($code);
-
             $newMod = new Module();
             $newMod->is_active = 1;
-            $newMod->name = $module->name;
+            $newMod->name = $module->modules->name;
             $newMod->code = $code;
-            $newMod->base_url = $module->url;
+            $newMod->base_url = $module->modules->url;
+            $newMod->handshake_token = "A very firm handshake"; //TODO lel
             $newMod->save();
         } else {
             // Already in db, toggle active state.
