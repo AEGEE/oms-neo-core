@@ -43,32 +43,32 @@ class GenericController extends Controller
         $addToView['modulesNames'] = "";
         $addToView['moduleAccess'] = "";
 
-      
+
         // Render all possible modules, TODO decide in the frontend which ones the user can see
         $modules = ModulePage::with('module')->whereNotNull('module_pages.is_active')
-                                ->orderBy('module_pages.module_id', 'ASC NULLS FIRST')
+                                ->orderBy('module_pages.module_code', 'ASC NULLS FIRST')
                                 ->orderBy('module_pages.name', 'ASC')->get();
-        
-        $lastModuleId = 0;
+
+        $lastModuleId = "";
         $menuMarkUp = "";
         $moduleAccess = array();
         foreach($modules as $module) {
-            $moduleBase = empty($module->module_id) ? "" : $module->module->base_url."/";
+            $moduleBase = empty($module->module_code) ? "" : $module->module->base_url."/";
 
-            if(!empty($module->module_id) && empty($module->module->is_active)) {
+            if(!empty($module->module_code) && empty($module->module->is_active)) {
                 continue;
             }
 
             $addToView['modulesSrc'] .= "<script type='text/javascript' src='".$moduleBase.$module->module_link."'></script>";
             $addToView['modulesNames'] .= ", 'app.".$module->code."'";
 
-            if($lastModuleId != $module->module_id) {
+            if($lastModuleId != $module->module_code) {
                 if(strlen($addToView['baseUrlRepo']) > 0) {
                     $addToView['baseUrlRepo'] .= ",";
                 }
 
                 $addToView['baseUrlRepo'] .= "'".$module->module->code."': '".$moduleBase."'";
-                $lastModuleId = $module->module_id;
+                $lastModuleId = $module->module_code;
                 $menuMarkUp .= '<li class="nav-header">'.$module->module->name.'</li>';
             }
 
@@ -100,7 +100,7 @@ class GenericController extends Controller
 
         Session::put('moduleAccess', $moduleAccess);
 
-        
+
         // TODO is this still used?
         $addToView['oAuthDefined'] = LoginMethodMiddleware::isOauthDefined();
 

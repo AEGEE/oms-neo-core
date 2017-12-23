@@ -157,7 +157,11 @@ class ModuleController extends Controller
         $pages = array();
         foreach($modules as $module) {
             if (!empty($module->modules)) {
-                $pages = array_merge($pages, $module->modules->pages);
+                $newPages = $module->modules->pages;
+                foreach ($newPages as $newPage) {
+                    $newPage->module_code = $module->modules->code;
+                }
+                $pages = array_merge($pages, $newPages);
             }
         }
         return $pages;
@@ -181,6 +185,7 @@ class ModuleController extends Controller
             $page = $this->getModulePageFromRegistry($code);
             $newPage = new ModulePage();
             $newPage->is_active = 1;
+            $newPage->module_code = $page->module_code;
             $newPage->name = $page->name;
             $newPage->code = $page->code;
             $newPage->module_link = $page->module_link;

@@ -10,7 +10,7 @@ class ModulePage extends Model
 
     // Relationships..
     public function module() {
-    	return $this->belongsTo('App\Models\Module', 'module_id');
+    	return $this->belongsTo('App\Models\Module', 'module_code', 'code');
     }
 
     public function roles() {
