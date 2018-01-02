@@ -1,12 +1,11 @@
 /vendor
 /node_modules
 /public/storage
+/public/vendor/vendor.*
 /storage/userAvatars
 Homestead.yaml
 Homestead.json
 .env
 composer.lock
 
-# storage/key
-# Seems to be an actual Laravel bug that causes issue, because of this the key file is added.
-# https://github.com/laravel/framework/pull/22304
+storage/key
