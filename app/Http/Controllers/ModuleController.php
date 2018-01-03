@@ -40,6 +40,7 @@ class ModuleController extends Controller
             if (empty($module->modules)) {
                 continue; //No modules to toggle, skip
             }
+
             $dbModule = Module::where('code', $module->modules->code)->first();
             //dump($dbModule);
 
@@ -76,7 +77,7 @@ class ModuleController extends Controller
 
 
     public function getModulePages(ModulePage $page, Request $req) {
-        $pages = $this->getModulePagesFromRegistry();
+        $pages = $this->getModulePagesFromRegistry(intval(Input::get('id')));
         $pagesCount = count($pages);
 
         $limit = empty(Input::get('rows')) ? 10 : Input::get('rows');
@@ -151,12 +152,20 @@ class ModuleController extends Controller
         return null;
     }
 
-    private function getModulePagesFromRegistry() {
+    private function getModulePagesFromRegistry($rowID = -1) {
         $modules = $this->getModulesFromRegistry();
+
+        // Hack to manage frontend passing the rowid instead of module code...
+        $currentRowID = 0;
 
         $pages = array();
         foreach($modules as $module) {
             if (!empty($module->modules)) {
+                $currentRowID++;
+                if ($rowID > 0 && $currentRowID != $rowID) {
+                    //Row counting starts at 1...
+                    continue;
+                }
                 $newPages = $module->modules->pages;
                 foreach ($newPages as $newPage) {
                     $newPage->module_code = $module->modules->code;
